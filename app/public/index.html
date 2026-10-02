@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>没事就玩大富翁 · 联机版</title>
+<link rel="stylesheet" href="style.css?v=__V__">
+</head>
+<body>
+<div id="app">
+  <!-- 大厅 -->
+  <div id="lobby" class="screen">
+    <div class="lobby-box">
+      <div class="logo-mini">没事就玩大富翁</div>
+      <div class="lobby-sub">UNIVERSITY MONOPOLY · 联机版</div>
+      <div id="lobby-home">
+        <input id="nameInput" class="inp" maxlength="8" placeholder="你的昵称">
+        <button id="btnCreate" class="btn primary big">创建房间</button>
+        <div class="or-split"><span>或加入朋友的房间</span></div>
+        <div class="join-row">
+          <input id="codeInput" class="inp" maxlength="6" inputmode="numeric" placeholder="6 位房间号">
+          <button id="btnJoin" class="btn big">加入</button>
+        </div>
+        <div id="lobbyErr" class="err"></div>
+        <div id="connStatus" class="conn" style="display:none"></div>
+        <button id="btnRulesLobby" class="btn ghost-wide">📖 规则介绍</button>
+      </div>
+      <div id="lobby-room" style="display:none">
+        <div class="code-label">房间号</div>
+        <div id="roomCode" class="room-code">------</div>
+        <button id="btnCopy" class="btn small">复制邀请链接</button>
+        <div id="playerList" class="player-list"></div>
+        <div class="code-label" style="margin-top:6px">选择你的专业（技能每局限次，自动发动）</div>
+        <div id="majorRow" class="major-row"></div>
+        <div id="majorHint" class="major-hint"></div>
+        <div class="btn-row">
+          <button id="btnAddAI" class="btn">补位 AI</button>
+          <button id="btnStart" class="btn primary">开始游戏</button>
+        </div>
+        <div class="hint">把房间号或链接发给朋友，2~5 人开局</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 游戏主界面 -->
+  <div id="game" class="screen" style="display:none">
+    <div id="playCol">
+      <div id="boardWrap">
+        <svg id="board" viewBox="0 0 1500 940"></svg>
+        <div id="fxLayer"></div>
+        <canvas id="confetti"></canvas>
+        <button id="btnDrop" class="btn ctrl-btn" style="display:none">🚪</button>
+      </div>
+      <div id="assetsBar"><div id="assets"></div></div>
+    </div>
+    <div id="side">
+      <div id="ctrlBar">
+        <button id="btnSpeed" class="btn ctrl-btn" title="节奏：从容 / 快速">🐢</button>
+        <button id="btnSound" class="btn ctrl-btn" title="音效开关">🔊</button>
+        <button id="btnRules" class="btn ctrl-btn" title="规则介绍：随时翻阅">📖 规则</button>
+        <button id="btnMic" class="btn ctrl-btn" title="开麦语音：点一下开启麦克风，房间里的人就能听到你">🎤 开麦</button>
+        <button id="btnQuit" class="btn ctrl-btn quit" title="退出对局，AI 接管">🚪 退出</button>
+      </div>
+      <div id="turnBanner">等待开始…</div>
+      <div id="players"></div>
+      <div id="actionArea"></div>
+      <div id="logBox"></div>
+      <div id="chatBar">
+        <div id="voiceBar" class="voice-bar" style="display:none"></div>
+        <div id="emojiRow">
+          <button class="emo" data-e="😂" title="大笑">😂</button>
+          <button class="emo" data-e="😡" title="生气">😡</button>
+          <button class="emo" data-e="🤑" title="发财">🤑</button>
+          <button class="emo" data-e="😭" title="哭">😭</button>
+          <button class="emo" data-e="👍" title="赞">👍</button>
+          <button class="emo" data-e="🤔" title="思考">🤔</button>
+          <button class="emo" data-e="🎉" title="庆祝">🎉</button>
+          <button class="emo" data-e="💩" title="坑">💩</button>
+          <button class="emo" data-e="🤣" title="笑翻">🤣</button>
+          <button class="emo" data-e="😎" title="淡定">😎</button>
+          <button class="emo" data-e="😱" title="震惊">😱</button>
+          <button class="emo" data-e="🥹" title="感动">🥹</button>
+          <button class="emo" data-e="🔥" title="燃">🔥</button>
+          <button class="emo" data-e="💸" title="破财">💸</button>
+          <button class="emo" data-e="🏆" title="冠军">🏆</button>
+          <button class="emo" data-e="🙏" title="求饶">🙏</button>
+          <button class="emo" data-e="😏" title="得意">😏</button>
+          <button class="emo" data-e="🤝" title="成交">🤝</button>
+          <button class="emo" data-e="💔" title="心碎">💔</button>
+          <button class="emo" data-e="🚀" title="起飞">🚀</button>
+          <button class="emo" data-e="👏" title="鼓掌">👏</button>
+          <button class="emo" data-e="🤯" title="崩溃">🤯</button>
+          <button class="emo" data-e="🐶" title="狗头">🐶</button>
+          <button class="emo" data-e="🍚" title="干饭">🍚</button>
+        </div>
+        <div id="quickTabs">
+          <button class="qt on" data-g="0">🙂 常规</button>
+          <button class="qt" data-g="1">🔥 得意</button>
+          <button class="qt" data-g="2">😭 求饶</button>
+          <button class="qt" data-g="3">🎉 庆祝</button>
+        </div>
+        <div id="quickRow">
+          <div class="qgroup on" data-g="0">
+            <button class="quick" data-tone="up" data-q="快点啊，等你好久了">⏩ 快点啊</button>
+            <button class="quick" data-tone="soft" data-q="手下留情啊朋友">🥺 手下留情</button>
+            <button class="quick" data-tone="up" data-q="干得漂亮！">👏 干得漂亮</button>
+            <button class="quick" data-tone="sad" data-q="我太难了……">😭 我太难了</button>
+            <button class="quick" data-tone="warn" data-q="别买那块地！">🙅 别买那块</button>
+            <button class="quick" data-tone="cool" data-q="这波稳了">😎 这波稳了</button>
+            <button class="quick" data-tone="angry" data-q="你等着，我记下了">😤 我记下了</button>
+            <button class="quick" data-tone="soft" data-q="友谊第一，比赛第二">🤝 友谊第一</button>
+          </div>
+          <div class="qgroup" data-g="1">
+            <button class="quick" data-tone="cool" data-q="就这？再来一局">😏 就这？</button>
+            <button class="quick" data-tone="cool" data-q="收租收到手抽筋">🤑 收到手抽筋</button>
+            <button class="quick" data-tone="cool" data-q="我这地一平都比你贵">🏢 一平比你贵</button>
+            <button class="quick" data-tone="up" data-q="谢谢老板的过路费">💸 谢谢老板</button>
+            <button class="quick" data-tone="cool" data-q="钱多也是一种烦恼">💰 钱多的烦恼</button>
+            <button class="quick" data-tone="cool" data-q="这就是名校的实力">🎓 名校实力</button>
+            <button class="quick" data-tone="cool" data-q="别急，慢慢还">😌 慢慢还</button>
+            <button class="quick" data-tone="cool" data-q="我已经在数你破产了">🚩 数你破产</button>
+          </div>
+          <div class="qgroup" data-g="2">
+            <button class="quick" data-tone="sad" data-q="大哥，饶我一次">🙏 饶我一次</button>
+            <button class="quick" data-tone="sad" data-q="我真的一分钱都没有了">💸 一分没有了</button>
+            <button class="quick" data-tone="sad" data-q="求你了，别盖旅馆">🏨 别盖旅馆</button>
+            <button class="quick" data-tone="sad" data-q="让我喘口气吧">💨 喘口气</button>
+            <button class="quick" data-tone="sad" data-q="我错了，我下次还敢">😅 下次还敢</button>
+            <button class="quick" data-tone="sad" data-q="这局我认输一半">🙇 认输一半</button>
+            <button class="quick" data-tone="soft" data-q="借我点钱渡个劫">🆘 借点钱</button>
+            <button class="quick" data-tone="sad" data-q="我连饭都快吃不起了">🍚 吃不起饭</button>
+          </div>
+          <div class="qgroup" data-g="3">
+            <button class="quick" data-tone="up" data-q="起飞！">🚀 起飞！</button>
+            <button class="quick" data-tone="up" data-q="稳了稳了，稳如老狗">😎 稳如老狗</button>
+            <button class="quick" data-tone="up" data-q="这一手绝了">👏 这一手绝了</button>
+            <button class="quick" data-tone="up" data-q="瞧瞧这运气">🍀 瞧瞧这运气</button>
+            <button class="quick" data-tone="up" data-q="恭喜发财，红包拿来">🧧 红包拿来</button>
+            <button class="quick" data-tone="up" data-q="全场最佳就是我">🏆 全场最佳</button>
+            <button class="quick" data-tone="up" data-q="认命吧，这就是天意">🔮 这就是天意</button>
+            <button class="quick" data-tone="up" data-q="今晚加鸡腿">🍗 今晚加鸡腿</button>
+          </div>
+        </div>
+        <div class="chat-input-row">
+          <input id="chatInput" class="inp small" maxlength="30" placeholder="说点什么…（回车发送）">
+          <button id="btnChat" class="btn small">发送</button>
+          <button id="btnMic2" class="btn small mic2" title="开麦语音">🎤</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 开局公告 -->
+  <div id="announce" class="announce-bg" style="display:none">
+    <div class="announce-card">
+      <div class="announce-logo">🎓 没事就玩大富翁</div>
+      <div class="announce-sub">UNIVERSITY MONOPOLY · v5.0</div>
+      <div class="announce-body">
+        <p>🎲 本游戏是一款<b>免费休闲小游戏</b>：无需付费、没有内购、没有广告，纯属课余娱乐之作</p>
+        <p>🔒 对局数据只保存在房间内存里，关闭页面即释放，<b>不收集任何个人信息</b></p>
+        <p>🏫 大学主题同人作品，与任何高校官方无关，校名仅为趣味排名演绎</p>
+        <p>🎁 欢迎把链接发给朋友一起玩，祝武运昌隆！</p>
+      </div>
+      <div class="announce-author">✨ 作者 · fangzhongxing ✨</div>
+      <button id="btnAnnounce" class="btn primary big">知道了，下一步 →</button>
+    </div>
+  </div>
+
+  <!-- v5.0 更新简介 -->
+  <div id="intro" class="announce-bg" style="display:none">
+    <div class="announce-card intro-card">
+      <div class="announce-logo" style="font-size:24px">🎉 v5.0 大版本更新</div>
+      <div class="announce-sub">环形大地图 · 30 所中国名校随机分布 · 23 种专业 · 32 句快捷语音</div>
+      <div class="announce-body intro-body">
+        <p>🗺️ <b>地图改回环形</b>：主路线 48 格绕成一圈，两条岔路（学术长廊 / 创业大道）搬到棋盘正中央。棋盘改成<b>宽长方形</b>，右栏压缩到 250px 以内，把空间全让给地图——格子更大、校名与价格更醒目、棋子也更大</p>
+        <p>🏫 <b>30 所名校随机打乱</b>：不再按排名从低到高排，开局每所大学落在哪个格子都是随机的（同色组不相邻）。按你的要求，<b>香港大学与清华大学的地价对调</b>（清华 ¥4200 最贵）</p>
+        <p>🎓 <b>专业扩到 23 种</b>：新增农学 / 戏剧 / 机械 / 统计 / 航天 / 金融 / 地质 / 军事，技能依旧自动发动</p>
+        <p>🃏 <b>卡牌翻倍更有趣</b>：机会 61 张、命运 61 张（各新增 12 张），保研上岸、创业大赛金奖、直播带货翻车……</p>
+        <p>💬 <b>表情与快捷语音</b>：表情扩到 <b>24 个</b>，新增 <b>8 句快捷语言</b>；点一下自动发送并<b>配中文语音朗读</b>（别人发送时你这边也会读出声音）</p>
+        <p>🔧 <b>体验优化</b>：创房界面补上「输入房间号加入」入口；对局内与创房页都能随时翻阅「规则介绍」</p>
+        <p>⚙️ <b>本轮再调</b>：<b>校史馆</b>改为领 2 张免租金卡（要停留 2 回合学习）、<b>校企合作中心</b>改为 +¥2500（也要停留 2 回合）；<b>长廊入口 ↔ 教育基金会</b>、<b>校园商城 ↔ 北理工</b>位置对调；两条岔路用<b>虚线箭头</b>标出「入口 → 首格」「末格 → 回主路落点」；「我的资产」搬到地图下方，重投按钮缩小弱化，免罚符与发起结束并排缩小；新增更多特效与音效</p>
+        <p>🏷️ <b>改名</b>：游戏名由「名校大富翁」改为 <b>「没事就玩大富翁」</b>（网站标题、开局公告、棋盘中央信息卡同步替换）</p>
+        <p>🛡️ <b>免罚符降价改「分段价」</b>：第 1~8 轮 ¥280+60×轮、第 9~20 轮 ¥760+120×(轮−8)、第 21 轮起 ¥2200+160×(轮−20)。前期便宜好上手，中期平缓，后期才加速——<b>整条曲线都低于原来的一条直线涨价</b></p>
+        <p>🎨 <b>棋盘美术重绘</b>：每个格子铺了一层<b>色组淡彩底 + 斜向柔光</b>，色带加了高光和色组小圆徽，价格多了同色胶囊托底；中央信息卡换成<b>双层金边 + 渐变缎带 + 四角金饰</b>；内场加暗角与两枚徽章；两条岔路各加整排底板与格号角标，箭头会呼吸</p>
+        <p>💥 <b>场景特效大扩</b>：新增一套<b>粒子特效引擎</b>，给每个场景配了专属效果——<b>盖房</b>星芒+地面冲击环、<b>拆房</b>木屑砖块四散+震屏、<b>抽卡</b>按机会/命运溅紫/绿星芒+弹窗染色+牌背光晕、<b>擂台对决</b>开场鼓点→双方能量对撞→中点爆星+双侧冲击环、<b>收租</b>付款方红色破财碎屑/收款方金币迸溅、<b>破产</b>全屏红光+碎块四散</p>
+        <p>🏆 <b>新增「垄断达成」庆祝</b>：买齐同色 3 所名校时，号角 + 金币雨 + 彩带 + 该色全屏闪光 + 三格依次脉冲，并弹出专属横幅</p>
+        <p>🔊 <b>音效再增 11 种</b>：号角 / 金属撞击 / 闪光叮咚 / 重物落地 / 鼓点铺垫 / 失败低鸣 / 盖章 / 上下扫频 / 滚动鼓点 / 金币串响，总数达 <b>49 种</b>（仍是 WebAudio 实时合成，零素材零流量）</p>
+        <p>💬 <b>快捷语音 8 → 32 句</b>：拆成「🙂 常规 / 🔥 得意 / 😭 求饶 / 🎉 庆祝」四组，一次只显示一组，聊天框不占地方。朗读也更有语气了——每句按情绪配不同的语速和音调（兴奋快而高、沮丧慢而低），还会自动补句末语气标点，并优先挑系统里最自然的中文音色</p>
+      </div>
+      <button id="btnIntro" class="btn primary big">开始游戏 🎲</button>
+    </div>
+  </div>
+
+  <!-- 规则介绍 -->
+  <div id="rules" class="rules-bg" style="display:none">
+    <div class="rules-card">
+      <div class="rules-head"><b>📖 规则介绍</b><span>与传统大富翁不同的地方</span><button id="btnRulesClose" class="btn small">关闭 ✕</button></div>
+      <div class="rules-body">
+        <h4>🎯 基本目标</h4>
+        <p>买地、盖房、收租，把对手的现金榨干。2~5 人，电脑可补位。开局每人 ¥30000，经过起点领 ¥2000；<b>第 15 轮起进入「经济寒冬」</b>，银行停发工资，只能靠地租和支线生意过日子。</p>
+
+        <h4>🎓 环形地图与两条岔路</h4>
+        <p>主路线 48 格绕成一圈，从起点格出发，按格子上标的 <b>出发 ▶</b> 方向前进。棋盘正中央横排着两条岔路：上层 <b>学术长廊</b>、下层 <b>创业大道</b>，中间那块牌子实时显示赛季、天气、教育基金池和当前该谁行动。</p>
+        <p>岔路怎么走？棋盘上用 <b>虚线 + 箭头</b> 标了出来：从主环的「入口格」沿虚线进入岔路第一格，走完 7 格后从「出口格」沿虚线回到主环的落点格，接着原地图继续走。<br>· 学术长廊：<b>长廊入口 → 科研基金处 … 校史馆 → 教育基金会</b><br>· 创业大道：<b>大道入口 → 创业孵化器 … 校企合作中心 → 校园商城</b></p>
+
+        <h4>🏛️ 大学地产（30 所）</h4>
+        <p>30 所中国名校<b>随机散布</b>在环形地图上（不按排名顺序排列，同色组也不会相邻）。价格越高的学校过路费越贵；集齐同色 3 所即为「垄断」，裸地租金 ×3；没集齐时踩到也要付 ×1.5 的过路费。造访自己的地可逐级加盖（买地 → 3 栋房 → 旅馆，共 5 次造访）。</p>
+
+        <h4>✈️ 机场 / 文印店 / 快递驿站</h4>
+        <p>4 座机场（浦东 / 白云 / 宝安 / 大兴）按持有数量收租 ¥900 / ¥1800 / ¥3600 / ¥7200；文印店与快递驿站按骰子点数收租，一家 ×¥100、两家 ×¥400。</p>
+
+        <h4>🎓 学术长廊（温和支线 · 持有 ≥2 块地皮可进）</h4>
+        <p>科研基金处（投 ¥2000，2 轮后返 ¥3600）、教授工作室（随机 ±）、校庆礼品屋（随机送道具）、奖学金长廊（下回合移动 +3）、杰出校友厅（领基金池 25% 分红）、通宵自习室（+¥2500 但停一回合）。</p>
+        <p><b>出口「校史馆」</b>：领 <b>2 张「免租金卡」</b>（可一直留着，付租金时自动消耗），但要留在<b>校史馆学习 2 回合</b>（停 2 回合），之后从「教育基金会」接着走。</p>
+
+        <h4>🚀 创业大道（高风险支线 · 无门槛）</h4>
+        <p>创业孵化器（投 ¥2000，40% 返 ¥6000）、毕业跳蚤市场（随机摆摊收益）、校园运动会（挑战总资产首富，赢 ¥2000 / 输 ¥1500）、国际交流站（投 ¥1200，70% 返 ¥4000）、创业基金厅（基金池分红）、实习直通车（+¥2500 但停一回合）。</p>
+        <p><b>出口「校企合作中心」</b>：领 <b>¥2500 现金</b>，但要在里面<b>学习 2 回合</b>，之后从「校园商城」接着走。</p>
+
+        <h4>⚔️ 擂台对决（碰运气，也碰胆量）</h4>
+        <p>踩到 44 号「辩论擂台」时，系统<b>随机抽一名</b>存活对手，双方各掷 1 颗骰子 PK：点数高者赢，<b>输者付给赢者 ¥1500</b>（现金不足就付光为止），战平则各回各家。付出去的钱会打断输者的收租连击。「校园运动会」同理，但对手固定是<b>总资产最高</b>的那位，赌注 ¥2000。</p>
+
+        <h4>🎲 重掷骰与免罚符</h4>
+        <p>掷骰后若不满意，可花 ¥1200 <b>重投一次</b>（每回合限一次；「重投一次」按钮刻意做得比「就这样走」小、不抢眼，别手滑点到）；掷骰前可买 <b>免罚符</b>（价格<b>分段上涨</b>：第 1~8 轮 ¥280+60×轮，第 9~20 轮 ¥760+120×(轮−8)，第 21 轮起 ¥2200+160×(轮−20)；仅当轮有效，踩到别人地免租一次）。</p>
+
+        <h4>🏅 教育基金池</h4>
+        <p>缴学费、物业税、买道具与重投花费的一部分都会流进基金池（上限 ¥30000，超出部分全体平分）。谁踩到「教育基金会」谁就一次领走全池——所以钱攒多了要提防别人踩到。</p>
+
+        <h4>🌦️ 淡旺季市场（每轮开局的季节）</h4>
+        <p>每轮开局会掷出市场骰决定季节，共三档：<b>🍂 淡季</b> 收租 ×0.85、盖房 ×0.9；<b>🌤️ 平季</b> 都 ×1；<b>🔥 旺季</b> 收租 ×1.15、盖房 ×1.1。也就是说——<b>淡季适合囤地盖楼（便宜），旺季适合坐等收租（贵）</b>，一低一高形成循环。季节还带惯性：上一轮旺，这一轮更容易继续旺。</p>
+
+        <h4>☀️ 天气（每天随机）</h4>
+        <p><b>晴天</b> 掷骰 +1 步；<b>阴天</b> 无影响；<b>雨天</b> 掷骰 −1 步；<b>台风</b> 全场租金 ×0.7。天气会轻微影响走位与收入，长期不改变大局，但能造出"今天手气如何"的体感。</p>
+
+        <h4>📅 校历事件（每 3 轮一次 · 共 14 种）</h4>
+        <p>第 3、6、9… 轮开场会抽一个校园节日，<b>全场同时生效</b>，例如：<span class="rules-tag">🎒 开学季</span>全体 +¥1500；<span class="rules-tag">📚 考试周</span>全场移动 −2；<span class="rules-tag">🎉 校庆周</span>租金 ×1.5；<span class="rules-tag">🎓 毕业季</span>租金 −50%；<span class="rules-tag">🥮 中秋节</span>发月饼 +¥800；<span class="rules-tag">🛒 双十一</span>全体剁手各缴 ¥600；<span class="rules-tag">🏃 校运会</span>全场移动 +2；<span class="rules-tag">🇨🇳 国庆假期</span>消费补贴——现金不足 ¥8000 的人各得 ¥2000；<span class="rules-tag">🌸 樱花季</span>租金 ×1.25；<span class="rules-tag">📄 毕业论文季</span>全体各缴 ¥400；<span class="rules-tag">🤝 校友返校日</span>最富者捐 ¥2000；<span class="rules-tag">🌱 迎新季</span>现金最少者 +¥2500；<span class="rules-tag">🚧 校园改造季</span>盖房 ×0.7；<span class="rules-tag">☔ 梅雨季节</span>移动 −1、租金 −25%。</p>
+
+        <h4>💰 抵押与赎回（翻盘关键）</h4>
+        <p>钱不够时可以把地皮抵押给银行换现金（约地价的一半），抵押地不再收租、也不再显示归属色条；之后随时可以赎回。掷骰前、升级房产时、筹钱时都能抵押——落后时「抵押一块闲地换现金搏一把」常常就是翻盘的起手式。</p>
+
+        <h4>🚧 挂科留级（本作的"监狱"）</h4>
+        <p>踩到 30 号「挂科留级」或抽到相应卡片会原地停留一回合（不能掷骰）；部分卡片还会让人"跳过下一回合"。法学的「法律援助」与哲学的「批判思维」可以免疫这类判定。</p>
+
+        <h4>🎓 专业身份（23 种）</h4>
+        <p>开局选专业，每种一个<b>被动技能</b>，满足条件时自动发动、每局限 3 次（哲学 2 次）。涵盖走位、防守、抗压、进攻、建设、买地折扣、过路钱、复利、抵押加成等维度——不用手点，专心玩就行。</p>
+
+        <h4>🃏 机会与命运（各 61 张）</h4>
+        <p>机会牌正负面混合、命运牌以负面为主；含拆地、拆房、悬赏、陷害、首富税、扶持落后者等特殊效果——运气也得讲策略，别把身家全押在抽卡上。</p>
+
+        <h4>🏆 成就与收租连击</h4>
+        <p>达成「包场王 / 五星酒店 / 收租之王 / 地产大亨 / 三连收租 / 终结者 / 校园首富」等成就可额外拿奖金；连续向不同玩家收租会累积<b>连击</b>，最高额外 ×1.45 租金，一旦自己付出去就归零。</p>
+
+        <h4>💬 快捷语音</h4>
+        <p>对局中可发 <b>24 个表情</b>与 <b>32 句快捷语言</b>（分「🙂 常规 / 🔥 得意 / 😭 求饶 / 🎉 庆祝」四组切换）；快捷语言会自动用中文语音朗读出来，而且<b>每句带各自的语气</b>（语速、音调不同，兴奋的快而高、沮丧的慢而低），所有人都能听到（可在右上角 🔊 关闭音效）。</p>
+
+        <h4>💡 其他</h4>
+        <p>一键退出由 AI 接管、开麦语音房（点 🎤，双方都开麦即可通话）、节奏键 🐢/🐇 切换快慢。欢迎把链接发给朋友一起玩！</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 弹窗层 -->
+  <div id="modal" class="modal-bg" style="display:none">
+    <div id="cardModal" class="card-flip" style="display:none">
+      <div class="card-inner">
+        <div class="card-face card-front"><div class="card-type" id="cardType">机会</div></div>
+        <div class="card-face card-back">
+          <div class="card-title" id="cardTitle"></div>
+          <div class="card-desc" id="cardDesc"></div>
+        </div>
+      </div>
+    </div>
+    <div id="askModal" class="ask-box" style="display:none">
+      <div class="ask-title" id="askTitle"></div>
+      <div class="ask-desc" id="askDesc"></div>
+      <div class="btn-row" id="askBtns"></div>
+    </div>
+  </div>
+</div>
+<script src="client.js?v=__V__"></script>
+</body>
+</html>

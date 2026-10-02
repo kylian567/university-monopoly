@@ -1,0 +1,12 @@
+{
+  "name": "university-monopoly",
+  "version": "5.0.0",
+  "description": "没事就玩大富翁 · 联机网页版",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
