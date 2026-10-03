@@ -497,14 +497,19 @@ body {
 #btnAnnounce { margin-top:14px; width:100%; }
 
 /* ---------- v5.0：对局控制条（顶部一排，不再压在棋盘格子上） ---------- */
-#ctrlBar { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px; }
+#ctrlBar { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px; position:relative; z-index:170; }
+/* v5.5 修复：投票浮层(.fac-layer z150)会盖住整个屏幕导致对局内「📖 规则」等按钮点不了；
+   把控制条抬到浮层之上（仍低于公告 200 / 规则弹窗 210），开局投票期间也能随时翻规则 / 托管 / 退出 */
 .ctrl-btn { padding:6px 10px; font-size:12.5px; border-radius:9px; }
 .ctrl-btn.quit { color:#a4453a; }
 .ctrl-btn.live { color:#fff; background:linear-gradient(180deg,#e8544a,#b3281f); border-color:#ffb3ad; animation:micPulse 1.7s infinite; }
 .ghost-wide { width:100%; margin-top:10px; background:linear-gradient(180deg,#fffdf7,#f6efdd); }
 
 /* ---------- v5.0：v5.0 更新简介 ---------- */
-.intro-card { width:min(92vw,520px); text-align:left; }
+.intro-card { width:min(92vw,520px); text-align:left; max-height:92vh; overflow-y:auto; }
+/* v5.6 修复：公告里多个版本段落并列导致卡片远超一屏，遮罩不滚动 → 开始游戏按钮够不着 */
+.intro-card::-webkit-scrollbar { width:6px; }
+.intro-card::-webkit-scrollbar-thumb { background:#d8c9a4; border-radius:3px; }
 .intro-body { max-height:52vh; overflow-y:auto; }
 .intro-body p { font-size:13px; line-height:1.7; }
 
@@ -933,3 +938,17 @@ body {
 @keyframes fvUrgentTick { 0%,100% { transform:scale(1); } 30% { transform:scale(1.5); } }
 .fv-timer.urgent .fv-bar { animation:fvBarPulse 1s ease-in-out infinite; }
 @keyframes fvBarPulse { 0%,100% { box-shadow:inset 0 1px 2px rgba(90,70,40,.24); } 50% { box-shadow:0 0 0 3px rgba(200,60,40,.28); } }
+
+/* ==================== v5.6：免费轮/免租轮大屏抽签 ==================== */
+.fd-draw-panel { text-align:center; width:min(96vw,760px); }
+.fd-t { font-size:26px; font-weight:900; letter-spacing:8px; color:var(--fc,#4E9B2A); margin:4px 0 6px; }
+.fd-sub { font-size:12.5px; color:#8a7f6a; letter-spacing:2px; }
+.fd-slots { display:flex; gap:12px; justify-content:center; align-items:center; margin:18px 0 10px; flex-wrap:wrap; }
+.fd-slot { min-width:96px; padding:14px 10px; border-radius:16px; font-size:24px; font-weight:900; color:#7a6a4a;
+  background:linear-gradient(180deg,#fffef9,#f3ecd9); border:3px solid var(--fc,#4E9B2A);
+  box-shadow:0 10px 24px rgba(60,42,18,.2), inset 0 2px 0 rgba(255,255,255,.95); }
+.fd-slot.big { min-width:150px; font-size:34px; padding:18px 14px; }
+.fd-slot.hit { color:var(--fc); border-color:var(--fc); box-shadow:0 0 0 4px color-mix(in srgb, var(--fc) 30%, transparent), 0 0 34px color-mix(in srgb, var(--fc) 55%, transparent);
+  animation:fdHit .55s cubic-bezier(.2,1.6,.4,1); }
+@keyframes fdHit { 0% { transform:scale(.6); } 60% { transform:scale(1.22); } 100% { transform:scale(1); } }
+.fd-note { font-size:12px; color:#a89c88; }

@@ -109,7 +109,7 @@ function sliceFn(src, name) {
     console.log('\n[2] 开局公告与规则弹窗');
     const ann = await page.evaluate(() => (document.querySelector('#intro .announce-logo') || {}).textContent || '');
     ok(/v5\.\d+/.test(ann), `开局公告标题：${ann}`);
-    const body = await page.evaluate(() => (document.querySelector('#intro .intro-body') || {}).textContent || '');
+    const body = await page.evaluate(() => [...document.querySelectorAll('#intro .intro-body')].map(e => e.textContent).join('\n'));   // v5.6：多版本段落为并列 body，全部拼接
     ok(/60 种/.test(body) && /电气/.test(body), '公告正文写明"专业 33 → 60 种"并点名电气');
     ok(/不再整个屏幕晃/.test(body) || /不再.*晃/.test(body), '公告写明"骰子掷完不再晃屏"');
     ok(/雷声只响一次/.test(body), '公告写明"台风雷声只响一次"');

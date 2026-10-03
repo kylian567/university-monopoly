@@ -55,7 +55,7 @@ for (let k = 0; k < 7; k++) BRANCH_POS[48 + k] = [BR_CX(k), BR_ROW_A];   // 学�
 for (let k = 0; k < 7; k++) BRANCH_POS[55 + k] = [BR_CX(k), BR_ROW_B];   // 创业大道 55~61
 // 中央看板（季节 / 天气 / 基金池 / 轮次 / 校历）
 const CTR_CARD = { x: 430, y: 288, w: 640, h: 356 };
-const POOL_PT = () => [CTR_CARD.x + CTR_CARD.w / 2, CTR_CARD.y + 279];   // v5.5：基金池胶囊中心（金币飞入目标点）
+const POOL_PT = () => [CTR_CARD.x + CTR_CARD.w / 2, CTR_CARD.y + 240];   // v5.6：基金池胶囊中心（金币飞入目标点）
 const BANK_PT = () => [PAD + CW / 2, -20];
 
 const GROUPS = { g1:'#A1887F', g2:'#90CAF9', g3:'#F48FB1', g4:'#FFB74D', g5:'#E57373', g6:'#E8D06F', g7:'#A5D6A7', g8:'#4DB6AC', g9:'#9FA8DA', g10:'#B39DDB' };
@@ -1145,7 +1145,9 @@ window.filterMajors = filterMajors;
 // ---------- 动画队列 ----------
 const ANIMATED = new Set(['roll', 'move', 'card', 'buy', 'build', 'charge', 'money', 'mortgage', 'redeem', 'gojail', 'stay', 'jackpot', 'bankrupt', 'turn', 'quit', 'season', 'weather', 'calevent', 'caleventHit', 'tax', 'ach', 'skill', 'duel', 'item', 'shield', 'medal', 'voucher', 'medalBuy', 'medalGain', 'combo', 'demolish', 'cardBuild', 'calwave', 'gift', 'buff', 'invest', 'rollpay', 'draw', 'major_switch', 'endgame', 'mono', 'trustee',
   // v5.2：校园风貌
-  'faculty_offer', 'faculty_vote', 'faculty_chosen', 'faculty_round', 'faculty_wave', 'facfx', 'stay_free', 'stay_free_gain', 'free_rent']);
+  'faculty_offer', 'faculty_vote', 'faculty_chosen', 'faculty_round', 'faculty_wave', 'facfx', 'stay_free', 'stay_free_gain', 'free_rent',
+  // v5.6：双数再掷提示 + 免费轮/免租轮大屏抽签
+  'doubles', 'faculty_draw']);
 let animPending = 0;   // 排队中的动画数；>0 时 renderTokens 冻结，防止棋子瞬移
 let visLog = [];       // 已"播放"的日志：按事件流逐步出现，与地图动画严格同节奏（不超前、不滞后）
 let logRendered = 0;   // visLog 中已渲染的下标数（增量渲染，避免每次重排 200+ 行）
@@ -1195,7 +1197,14 @@ async function handleAnim(e) {
   if (!S) return;   // 已退出/重置后不再播动画
   switch (e.t) {
     case 'log': { visLog.push(e.msg); if (e.ts) dispLag = Date.now() - e.ts; break; }
-    case 'roll': SFX.pop(); await diceAnim(e.d1, e.d2); break;
+    case 'roll': SFX.pop(); await diceAnim(e.d1, e.d2, e.single); break;
+    case 'doubles': {   // v5.6：掷出双数 —— 全场横幅提示"再来一次"
+      SFX.glint(); SFX.dice();
+      const who = ownerName(e.pid);
+      announce(e.again ? `🎲 <span class="who">${esc(who)}</span> 掷出双数！再来一次（本回合第 ${e.nth} 掷）` : `🎲 <span class="who">${esc(who)}</span> 掷出双数，但一回合最多掷两次`, 1500);
+      break;
+    }
+    case 'faculty_draw': await facultyDrawAnim(e); break;   // v5.6：免费轮/免租轮大屏抽签
     case 'move': await moveAnim(e); break;
     case 'card': {
       SFX.card(); SFX.sparkle();
@@ -1786,11 +1795,52 @@ function facultyRoundBanner(e) {
   });
 }
 
+// v5.6：免费轮 / 免租轮 —— 大屏抽签动画（加冕演出结束后紧跟播放，全场见证抽到第几轮）
+function facultyDrawAnim(e) {
+  return new Promise(async res => {
+    const isFR = e.kind === 'freeRound';
+    const rounds = (e.rounds || []).slice();
+    const col = isFR ? '#4E9B2A' : '#3FBF9E';
+    const d = document.createElement('div');
+    d.className = 'fac-layer fd-draw-layer';
+    d.innerHTML = `<div class="fv-panel fd-draw-panel" style="--fc:${col}">
+        <div class="fv-glow"></div><div class="fv-beam"></div>
+        <div class="fd-t">${isFR ? '🎟️ 免 费 轮 · 抽 签' : '🕊️ 免 租 轮 · 抽 签'}</div>
+        <div class="fd-sub">本局风貌附带的轮次抽取 · 全场共同见证</div>
+        <div class="fd-slots">${rounds.map((_, i) => `<div class="fd-slot${isFR ? ' big' : ''}" id="fdSlot${i}">？</div>`).join('')}</div>
+        <div class="fd-note">${isFR ? '抽中的那一轮：全场买地皮、盖楼完全免费' : '抽中的四轮：全场踩到谁的地都不用交租金'}</div>
+      </div>`;
+    $('fxLayer').appendChild(d);
+    requestAnimationFrame(() => requestAnimationFrame(() => d.classList.add('show')));
+    SFX.facRise();
+    await sleep(sp(750));
+    for (let i = 0; i < rounds.length; i++) {
+      const slot = d.querySelector('#fdSlot' + i);
+      const total = 13;
+      for (let k = 0; k < total; k++) {
+        slot.textContent = String(2 + Math.floor(Math.random() * 13));
+        SFX.facRoll();
+        await sleep(k >= total - 5 ? 100 + (k - (total - 5)) * 52 : 62);
+      }
+      slot.textContent = '第 ' + rounds[i] + ' 轮';
+      slot.classList.add('hit');
+      SFX.facBadge();
+      flashScreen(`radial-gradient(circle at 50% 46%, ${hexA(col, .3)}, ${hexA(col, 0)} 68%)`, 650);
+      if (i === rounds.length - 1) { SFX.facCrown(); confettiBurst(90); fxCoinRain(22); }
+      await sleep(sp(700));
+    }
+    await sleep(sp(1400));
+    d.classList.remove('show');
+    setTimeout(() => d.remove(), 620);
+    res();
+  });
+}
+
 // 地图中央常驻徽章（每帧 renderPanel 调用；landing=true 时播放落位特效）
 function renderFacultyBadge(landing) {
   const g = $('facBadge'); if (!g) return;
   const C = CTR_CARD;
-  const bx = C.x + 20, by = C.y + 102, bw = C.w - 40, bh = 74;
+  const bx = C.x + 20, by = C.y + 78, bw = C.w - 40, bh = 62;   // v5.6：徽章上移压扁，给下方胶囊区让位
   const key = S ? S.faculty : null;
   if (!key || !FACULTY[key]) {
     if (facBadgeKey === '__none__') return;
@@ -1807,16 +1857,16 @@ function renderFacultyBadge(landing) {
   g.innerHTML = `
     <rect x="${bx}" y="${by}" width="${bw}" height="${bh}" rx="16" fill="${hexA(col, .12)}" stroke="${hexA(col, .5)}" stroke-width="1.6"/>
     <rect x="${bx}" y="${by}" width="5.5" height="${bh}" rx="3" fill="${col}"/>
-    <circle cx="${bx + 46}" cy="${cy}" r="25" fill="${hexA(col, .18)}" stroke="${col}" stroke-width="1.8"/>
-    <circle cx="${bx + 46}" cy="${cy}" r="30.5" fill="none" stroke="${col}" stroke-width="1.2" stroke-dasharray="4 7" opacity=".55">
-      <animateTransform attributeName="transform" type="rotate" from="0 ${bx + 46} ${cy}" to="360 ${bx + 46} ${cy}" dur="16s" repeatCount="indefinite"/>
+    <circle cx="${bx + 42}" cy="${cy}" r="21" fill="${hexA(col, .18)}" stroke="${col}" stroke-width="1.8"/>
+    <circle cx="${bx + 42}" cy="${cy}" r="26.5" fill="none" stroke="${col}" stroke-width="1.2" stroke-dasharray="4 7" opacity=".55">
+      <animateTransform attributeName="transform" type="rotate" from="0 ${bx + 42} ${cy}" to="360 ${bx + 42} ${cy}" dur="16s" repeatCount="indefinite"/>
     </circle>
-    <text x="${bx + 46}" y="${cy + 10}" text-anchor="middle" font-size="26">${f.icon || '🏫'}</text>
-    <text x="${bx + 86}" y="${by + 25}" font-size="11" fill="#a3946f" letter-spacing="2">本局校园风貌 · 全场共享</text>
-    <text x="${bx + 86}" y="${by + 50}" font-size="21" font-weight="800" fill="${shade(col, -58)}">${esc(f.name)}</text>
-    <text x="${bx + 86}" y="${by + 68}" font-size="12.5" fill="#7a6a52">▸ ${esc(f.lead)}　｜　代价：${esc(f.cost)}</text>
-    <rect x="${bx + bw - 62}" y="${by + 7}" width="52" height="19" rx="9.5" fill="${hexA(col, .18)}" stroke="${hexA(col, .45)}" stroke-width="1"/>
-    <text x="${bx + bw - 36}" y="${by + 21}" text-anchor="middle" font-size="10.5" font-weight="700" fill="${shade(col, -58)}">详情</text>`;
+    <text x="${bx + 42}" y="${cy + 8.5}" text-anchor="middle" font-size="23">${f.icon || '🏫'}</text>
+    <text x="${bx + 78}" y="${by + 21}" font-size="10.5" fill="#a3946f" letter-spacing="2">本局校园风貌 · 全场共享</text>
+    <text x="${bx + 78}" y="${by + 42}" font-size="19" font-weight="800" fill="${shade(col, -58)}">${esc(f.name)}</text>
+    <text x="${bx + 78}" y="${by + 56.5}" font-size="12" fill="#7a6a52">▸ ${esc(f.lead)}　｜　代价：${esc(f.cost)}</text>
+    <rect x="${bx + bw - 62}" y="${by + 6}" width="52" height="17" rx="8.5" fill="${hexA(col, .18)}" stroke="${hexA(col, .45)}" stroke-width="1"/>
+    <text x="${bx + bw - 36}" y="${by + 18.5}" text-anchor="middle" font-size="10.5" font-weight="700" fill="${shade(col, -58)}">详情</text>`;
   g.style.cursor = 'pointer';
   if (!g.dataset.bound) { g.dataset.bound = '1'; g.addEventListener('click', openFacDetail); }
   if (landing) {
@@ -2318,18 +2368,20 @@ function drawWeather() {
 window.addEventListener('resize', () => { if (curWeather) startWeatherFx(curWeather); });
 
 // ---------- 特效实现 ----------
-function diceAnim(d1, d2) {
+function diceAnim(d1, d2, single) {
   return new Promise(res => {
     const box = document.createElement('div');
     box.className = 'dice-wrap'; box.style.cssText = 'position:absolute;left:50%;top:63%;transform:translate(-50%,-50%);z-index:28;';
     // v5.1：骰子放进有透视的容器里，滚动时做真正的 3D 翻滚（rotateX + rotateY + 位移弹跳），
     // 而不是原地晃两下就出点数；落地时补一圈冲击波与灰尘。
+    // v5.6：岔路内只掷一颗骰子（single=true 时只渲染一枚，居中放大）
     box.innerHTML = `<div class="die-wrap"><div class="die">${dieDots(1)}</div><i class="die-shadow"></i></div>`
-      + `<div class="die-wrap"><div class="die">${dieDots(1)}</div><i class="die-shadow"></i></div>`;
+      + (single ? '' : `<div class="die-wrap"><div class="die">${dieDots(1)}</div><i class="die-shadow"></i></div>`);
+    if (single) box.querySelector('.die-wrap').style.transform = 'scale(1.28)';
     $('fxLayer').appendChild(box);
     SFX.dice();
     const dice = box.querySelectorAll('.die');
-    box.querySelectorAll('.die-wrap')[1].style.animationDelay = '.07s';
+    if (!single) box.querySelectorAll('.die-wrap')[1].style.animationDelay = '.07s';
     dice.forEach(d => d.classList.add('rolling'));
     const iv = setInterval(() => { dice.forEach(d => d.innerHTML = dieDots(1 + Math.floor(Math.random() * 6))); }, sp(105));
     setTimeout(() => {
@@ -2338,7 +2390,8 @@ function diceAnim(d1, d2) {
       // v5.3：骰子落定不再晃动整个屏幕（用户反馈"整屏晃一下"太晕），
       // 改成只在骰子落点画一圈扩散涟漪 + 光晕，观感干净、不晕人。
       setTimeout(() => { try { SFX.diceSettle(); diceRipple(box); } catch (e) {} }, sp(70));
-      dice[0].innerHTML = dieDots(d1); dice[1].innerHTML = dieDots(d2);
+      dice[0].innerHTML = dieDots(d1);
+      if (!single) dice[1].innerHTML = dieDots(d2);
       dice.forEach(d => { d.classList.remove('rolling'); d.classList.add('land'); });
       const im = document.createElement('div'); im.className = 'dice-impact';
       box.appendChild(im); setTimeout(() => im.remove(), 900);
@@ -3397,11 +3450,11 @@ function buildBoard() {
     { i: 61, c: '#AD1457', icon: '🤝', name: '校企合作中心' },
   ], '#3f5a7a', BR_ROW_B);
 
-  // ---------- 中央看板文字 ----------
+  // ---------- 中央看板文字（v5.6：标题区压缩，给下方信息胶囊腾空间） ----------
   const ccx = C.x + C.w / 2;
-  html += `<text x="${ccx}" y="${C.y + 58}" text-anchor="middle" font-size="30" font-weight="800" fill="#7a1522" letter-spacing="6" font-family="STKaiti,KaiTi,'PingFang SC',serif">没事就玩大富翁</text>`;
-  html += `<text x="${ccx}" y="${C.y + 82}" text-anchor="middle" font-size="12" fill="#a89c88" letter-spacing="5">UNIVERSITY MONOPOLY</text>`;
-  html += `<line x1="${C.x + 60}" y1="${C.y + 100}" x2="${C.x + C.w - 60}" y2="${C.y + 100}" stroke="#e0d3b4" stroke-width="1.4" stroke-dasharray="5 5"/>`;
+  html += `<text x="${ccx}" y="${C.y + 46}" text-anchor="middle" font-size="24" font-weight="800" fill="#7a1522" letter-spacing="5" font-family="STKaiti,KaiTi,'PingFang SC',serif">没事就玩大富翁</text>`;
+  html += `<text x="${ccx}" y="${C.y + 63}" text-anchor="middle" font-size="10.5" fill="#a89c88" letter-spacing="4">UNIVERSITY MONOPOLY</text>`;
+  html += `<line x1="${C.x + 80}" y1="${C.y + 74}" x2="${C.x + C.w - 80}" y2="${C.y + 74}" stroke="#e0d3b4" stroke-width="1.3" stroke-dasharray="5 5"/>`;
   // v5.2：校园风貌常驻徽章（内容由 renderFacultyBadge() 动态填充）——永久挂在地图正中央
   html += `<g id="facBadge"></g>`;
   // ---------- v5.5 中央信息区（胶囊化美化） ----------
@@ -3416,26 +3469,26 @@ function buildBoard() {
   };
   const gx0 = C.x + 24, gw = C.w - 48;
   // 第 1 行：季节（学院四季）
-  html += chipRow(C.y + 188, 31, '#c98a1e', gx0, gw);
-  html += `<text id="seasonText" x="${ccx + 6}" y="${C.y + 209}" text-anchor="middle" font-size="16.5" font-weight="800" fill="#8a6d1a"></text>`;
+  html += chipRow(C.y + 150, 32, '#c98a1e', gx0, gw);
+  html += `<text id="seasonText" x="${ccx + 6}" y="${C.y + 174}" text-anchor="middle" font-size="17" font-weight="800" fill="#8a6d1a"></text>`;
   // 第 2 行：天气（今日天气 + 效果）
-  html += chipRow(C.y + 225, 31, '#4f9ad1', gx0, gw);
-  html += `<text id="weatherText" x="${ccx + 6}" y="${C.y + 246}" text-anchor="middle" font-size="14.5" font-weight="700" fill="#587a4e"></text>`;
+  html += chipRow(C.y + 186, 32, '#4f9ad1', gx0, gw);
+  html += `<text id="weatherText" x="${ccx + 6}" y="${C.y + 210}" text-anchor="middle" font-size="14.5" font-weight="700" fill="#587a4e"></text>`;
   // 第 3 行：教育基金池（金灿灿的一行，带两枚呼吸闪光的小金币）
-  html += chipRow(C.y + 262, 34, '#d9a418', gx0, gw);
-  html += `<circle cx="${gx0 + 26}" cy="${C.y + 279}" r="7.5" fill="url(#goldBar)" opacity=".9"><animate attributeName="opacity" values=".45;1;.45" dur="2.6s" repeatCount="indefinite"/></circle>`;
-  html += `<text x="${gx0 + 26}" y="${C.y + 284}" text-anchor="middle" font-size="10">✦</text>`;
-  html += `<circle cx="${gx0 + gw - 26}" cy="${C.y + 279}" r="6.5" fill="url(#goldBar)" opacity=".8"><animate attributeName="opacity" values="1;.4;1" dur="3.1s" repeatCount="indefinite"/></circle>`;
-  html += `<text x="${gx0 + gw - 26}" y="${C.y + 283}" text-anchor="middle" font-size="9">✦</text>`;
-  html += `<text id="poolText" x="${ccx + 6}" y="${C.y + 285}" text-anchor="middle" font-size="18.5" font-weight="800" fill="#a5720e">💰 教育基金池 ¥0</text>`;
+  html += chipRow(C.y + 222, 36, '#d9a418', gx0, gw);
+  html += `<circle cx="${gx0 + 26}" cy="${C.y + 240}" r="7.5" fill="url(#goldBar)" opacity=".9"><animate attributeName="opacity" values=".45;1;.45" dur="2.6s" repeatCount="indefinite"/></circle>`;
+  html += `<text x="${gx0 + 26}" y="${C.y + 245}" text-anchor="middle" font-size="10">✦</text>`;
+  html += `<circle cx="${gx0 + gw - 26}" cy="${C.y + 240}" r="6.5" fill="url(#goldBar)" opacity=".8"><animate attributeName="opacity" values="1;.4;1" dur="3.1s" repeatCount="indefinite"/></circle>`;
+  html += `<text x="${gx0 + gw - 26}" y="${C.y + 244}" text-anchor="middle" font-size="9">✦</text>`;
+  html += `<text id="poolText" x="${ccx + 6}" y="${C.y + 248}" text-anchor="middle" font-size="19" font-weight="800" fill="#a5720e">💰 教育基金池 ¥0</text>`;
   // 第 4 行：左轮次 + 右校历（对半双胶囊）
   const hw = (gw - 12) / 2;
-  html += chipRow(C.y + 302, 30, '#7a6a52', gx0, hw);
-  html += chipRow(C.y + 302, 30, '#3a7bd5', gx0 + hw + 12, hw);
-  html += `<text id="roundText" x="${gx0 + hw / 2 + 6}" y="${C.y + 322}" text-anchor="middle" font-size="12.5" font-weight="700" fill="#6a6252"></text>`;
-  html += `<text id="calText" x="${gx0 + hw + 12 + hw / 2 + 6}" y="${C.y + 322}" text-anchor="middle" font-size="12.5" font-weight="700" fill="#3a7bd5"></text>`;
+  html += chipRow(C.y + 262, 34, '#7a6a52', gx0, hw);
+  html += chipRow(C.y + 262, 34, '#3a7bd5', gx0 + hw + 12, hw);
+  html += `<text id="roundText" x="${gx0 + hw / 2 + 6}" y="${C.y + 284}" text-anchor="middle" font-size="13" font-weight="700" fill="#6a6252"></text>`;
+  html += `<text id="calText" x="${gx0 + hw + 12 + hw / 2 + 6}" y="${C.y + 284}" text-anchor="middle" font-size="13" font-weight="700" fill="#3a7bd5"></text>`;
   // 底部一行小星标装饰（替换原静态说明文字，留白更干净）
-  html += `<text x="${ccx}" y="${C.y + 348}" text-anchor="middle" font-size="10.5" fill="#c3b89f" letter-spacing="8">✦ ✦ ✦</text>`;
+  html += `<text x="${ccx}" y="${C.y + 320}" text-anchor="middle" font-size="10.5" fill="#c3b89f" letter-spacing="8">✦ ✦ ✦</text>`;
 
   html += `<g id="ownLayer"></g><g id="tokenLayer"></g>`;
   svg.innerHTML = html;

@@ -769,6 +769,7 @@ class Room {
     if (key === 'freeRound') {
       this.freeRound = 2 + Math.floor(Math.random() * 12);   // 第 2 ~ 13 轮
       this.addLog(`🎟️ 【免费轮校区】已抽定：第 ${this.freeRound} 轮全场买地皮、盖楼完全免费`);
+      this.ev({ t: 'faculty_draw', kind: 'freeRound', rounds: [this.freeRound] });   // v5.6：大屏抽签动画
     }
     if (key === 'freeRent') {
       const pool = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
@@ -776,6 +777,7 @@ class Room {
       while (got.length < 4 && pool.length) got.push(pool.splice(Math.floor(Math.random() * pool.length), 1)[0]);
       this.freeRentRounds = got.sort((a, b) => a - b);
       this.addLog(`🕊️ 【免租轮校区】已抽定免租轮：第 ${this.freeRentRounds.join(' / ')} 轮，这些轮次全场踩到谁的地都不用付租金`);
+      this.ev({ t: 'faculty_draw', kind: 'freeRent', rounds: this.freeRentRounds.slice() });   // v5.6：大屏抽签动画
     }
   }
   facIs(k) { return this.faculty === k; }
@@ -1069,17 +1071,19 @@ class Room {
     if (freeRoll) p.skillLeft--;
     else { p.cash -= cost; this.addToFund(Math.round(cost * FUND_SHARE)); }   // v5.0：重掷花费的 1/3 进教育基金池
     p.rerollUsed = true;
-    const [d1, d2] = this.rollDice(p);
-    this.dice = [d1, d2];
+    const onBr = this.onBranch(p.pos);   // v5.6：岔路内重投也是单骰
+    const [d1, d2] = this.rollDice(p, onBr);
+    this.dice = onBr ? [d1, 0] : [d1, d2];
+    const rollTxt = onBr ? `${d1} 点（岔路单骰）` : `${d1} + ${d2} = ${d1 + d2}`;
     if (freeRoll) {
       const mj = MAJORS[p.major] || {};
-      this.addLog(`${mj.icon} ${p.name} 发动【${mj.skill}】免费重投一次：${d1} + ${d2} = ${d1 + d2}`);
-      this.ev({ t: 'skill', pid: p.id, major: p.major, name: mj.skill, detail: `免费重投 ${d1}+${d2}`, active: false });
+      this.addLog(`${mj.icon} ${p.name} 发动【${mj.skill}】免费重投一次：${rollTxt}`);
+      this.ev({ t: 'skill', pid: p.id, major: p.major, name: mj.skill, detail: `免费重投 ${onBr ? d1 + ' 点' : d1 + '+' + d2}`, active: false });
     } else {
-      this.addLog(`🎲 ${p.name} 花 ¥${cost} 重投一次：${d1} + ${d2} = ${d1 + d2}`);
-      this.ev({ t: 'item', pid: p.id, item: 'reroll', cost, name: '重掷骰', detail: `重投 ${d1}+${d2}` });
+      this.addLog(`🎲 ${p.name} 花 ¥${cost} 重投一次：${rollTxt}`);
+      this.ev({ t: 'item', pid: p.id, item: 'reroll', cost, name: '重掷骰', detail: `重投 ${onBr ? d1 + ' 点' : d1 + '+' + d2}` });
     }
-    this.ev({ t: 'roll', pid: p.id, d1, d2 });
+    this.ev({ t: 'roll', pid: p.id, d1, d2: onBr ? 0 : d2, single: onBr });
     this.execRoll(p);
   }
   aiReroll(p) {
@@ -1350,6 +1354,7 @@ class Room {
     if (p.discount) p.discount = false; // 折扣卡仅当轮有效
     p.shield = false;                   // 道具仅当轮有效
     p.rerollUsed = false;               // 重掷骰每回合重置
+    p.rollsThisTurn = 0;                // v5.6：本回合已掷次数（双数再掷上限 2 次）
     p.skillUsedThisTurn = false;        // v5.1 主动技：本回合可询问一次
     p.buildCutTurn = 0;                 // v5.1 主动技临时折扣到期
     p.buyCutTurn = 0;                   // v5.3 主动技「峰谷套利」临时买地折扣到期
@@ -1520,11 +1525,11 @@ class Room {
   }
 
   // ---------- 掷骰与移动 ----------
-  // 掷一次骰（含计算机"算法优化"技能），返回 [d1, d2]
-  rollDice(p) {
+  // 掷一次骰（含计算机"算法优化"技能），返回 [d1, d2]；single=true 时只掷一颗（v5.6 岔路内）
+  rollDice(p, single = false) {
     let d1 = 1 + Math.floor(Math.random() * 6), d2 = 1 + Math.floor(Math.random() * 6);
-    // 专业：计算机 · 算法优化（不足 7 点自动重掷取更优，每局限次）
-    if (p.major === 'cs' && p.skillLeft > 0 && d1 + d2 < 7) {
+    // 专业：计算机 · 算法优化（不足 7 点自动重掷取更优，每局限次）—— 岔路单骰时不生效
+    if (!single && p.major === 'cs' && p.skillLeft > 0 && d1 + d2 < 7) {
       const n1 = 1 + Math.floor(Math.random() * 6), n2 = 1 + Math.floor(Math.random() * 6);
       p.skillLeft--;
       this.ev({ t: 'skill', pid: p.id, major: 'cs', name: '算法优化', detail: `重掷 ${n1} + ${n2}` });
@@ -1532,11 +1537,17 @@ class Room {
     }
     return [d1, d2];
   }
+  // v5.6：是否站在岔路（学术长廊 48~54 / 创业大道 55~61）—— 岔路内只掷一颗骰子
+  onBranch(pos) { return (pos >= BRANCH.START && pos <= BRANCH.EXIT) || (pos >= BRANCH2.START && pos <= BRANCH2.EXIT); }
   doRoll(p) {
     if (this.phase !== 'roll' || this.curp() !== p) return;
-    const [d1, d2] = this.rollDice(p);
-    this.dice = [d1, d2];   // 双数判定与公用事业租金按最终点数计算
-    this.ev({ t: 'roll', pid: p.id, d1, d2 });
+    p.rollsThisTurn = (p.rollsThisTurn || 0) + 1;   // v5.6：双数再掷上限 2 次/回合
+    const onBr = this.onBranch(p.pos);              // v5.6：岔路内只掷一颗骰子
+    const [d1, d2] = this.rollDice(p, onBr);
+    this.dice = onBr ? [d1, 0] : [d1, d2];   // 双数判定与公用事业租金按最终点数计算（单骰第二位记 0，永不成双）
+    this.ev({ t: 'roll', pid: p.id, d1, d2: onBr ? 0 : d2, single: onBr });
+    const rollTxt = onBr ? `${d1} 点（岔路单骰）` : `${d1} + ${d2} = ${d1 + d2}`;
+    const dblTxt = (!onBr && d1 === d2) ? '（双数，可再掷一次）' : '';
     // v4.1：掷骰后可花 ¥1200 重投一次（每回合每人限一次，现金够且未用过才提供选项）
     const rc0 = this.rerollCostFor(p);   // v5.2：文体校区每轮首次重投只要 ¥900
     if (!p.rerollUsed && p.cash >= rc0) {
@@ -1544,13 +1555,13 @@ class Room {
       // v5.1：重投询问时就把"这一走会落到哪一格"预测出来，全场都能在地图上看到虚影
       const pv = this.previewLanding(p);
       this.pendingReroll = { pid: p.id, cost: rc0, from: p.pos, target: pv ? pv.cell : null, steps: pv ? pv.steps : (d1 + d2) };
-      this.addLog(`${p.name} 掷出 ${d1} + ${d2} = ${d1 + d2}${d1 === d2 ? '（双数，可再掷一次）' : ''}`);
-      this.ev({ t: 'ask_reroll', pid: p.id, d1, d2, cost: rc0, target: this.pendingReroll.target, steps: this.pendingReroll.steps });
+      this.addLog(`${p.name} 掷出 ${rollTxt}${dblTxt}`);
+      this.ev({ t: 'ask_reroll', pid: p.id, d1, d2, cost: rc0, target: this.pendingReroll.target, steps: this.pendingReroll.steps, single: onBr });
       this.setTimer(TURN_MS, () => this.confirmRoll(this.curp()));
       if (p.isAI) this.aiTimers.push(setTimeout(() => this.aiReroll(p), rnd(1800, 4200)));
       return;
     }
-    this.addLog(`${p.name} 掷出 ${d1} + ${d2} = ${d1 + d2}${d1 === d2 ? '（双数，可再掷一次）' : ''}`);
+    this.addLog(`${p.name} 掷出 ${rollTxt}${dblTxt}`);
     this.execRoll(p);
   }
   // 按最终点数实际移动并结算（天气/校历/陷害/长廊加成都在这里叠加）
@@ -2457,12 +2468,18 @@ class Room {
   }
 
   afterResolve(p, resolvable) {
-    // 双数：同玩家再掷一次
-    if (this.dice && this.dice[0] === this.dice[1] && p.alive) {
-      this.addLog(`${p.name} 掷出双数，再掷一次！`);
-      this.phase = 'roll';
-      this.schedule();
-      return;
+    // 双数：同玩家再掷一次（v5.6：一回合最多掷两次；被罚停留 / 留级期间不再追加）
+    if (this.dice && this.dice[0] === this.dice[1] && this.dice[1] > 0 && p.alive
+        && !p.skipNext && !(p.skipTurns > 0)) {
+      if ((p.rollsThisTurn || 0) < 2) {
+        this.addLog(`🎲 ${p.name} 掷出双数，再掷一次！（本回合第 ${p.rollsThisTurn + 1} 掷）`);
+        this.ev({ t: 'doubles', pid: p.id, again: true, nth: p.rollsThisTurn + 1 });
+        this.phase = 'roll';
+        this.schedule();
+        return;
+      }
+      this.addLog(`🎲 ${p.name} 掷出双数，但一回合最多掷两次，就到这里`);
+      this.ev({ t: 'doubles', pid: p.id, again: false });
     }
     this.endTurn();
   }
