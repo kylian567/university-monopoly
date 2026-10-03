@@ -201,7 +201,9 @@ console.log('\n[5] 经济寒冬：第 15 轮起停发工资');
       r5.resolveCell(w);
       // v5.1：校园商城改为随机抽 1~2 张效果卡（免租金卡 / 免租券 / 技能次数 +1 / 8折卡 / 加速卡 / 现金 / 免罚符）
       // v5.3：补上 discount（8折卡）与 shield（免罚符）两种不带计数的卡，消除随机抽卡造成的偶发误报
-      const gained = w.medal > 0 || w.voucher > 0 || w.skillLeft > ws || w.stepBuffs.length > 0 || w.cash > wc || w.discount || w.shield;
+      // v5.8：卡池 9 张——voucher/shield 已移出，新增 fineFree（免罚款）/ buildCutCard（盖房9折）/ stayFree（免停留）
+      const gained = w.medal > 0 || w.voucher > 0 || w.skillLeft > ws || w.stepBuffs.length > 0 || w.cash > wc || w.discount || w.shield
+        || w.fineFree > 0 || w.buildCutCard > 0 || w.stayFree > 0;
       ok(gained, `踩校园商城抽到效果卡（medal=${w.medal} voucher=${w.voucher} 技能+${w.skillLeft - ws} 加速×${w.stepBuffs.length} 现金${w.cash - wc >= 0 ? '+' : ''}${w.cash - wc}）`);
       console.log(`\n结果：${pass} 通过 / ${fail} 失败`);
       process.exit(fail ? 1 : 0);
