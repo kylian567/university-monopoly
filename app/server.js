@@ -54,10 +54,17 @@ function snapshot(room) {
       medal: p.medal || 0, stayFree: p.stayFree || 0,
       buffSteps: p.buffSteps || 0, stepBuffs: (p.stepBuffs || []).slice(),
       hexList: (p.hexList || []).slice(),   // v5.7：已立项的研究项目（供他人查看 / 玩家卡片标签）
+      fundBanned: !!p.fundBanned,           // v5.8：被教育基金拉黑
+      fineFree: p.fineFree || 0,            // v5.8：免罚款卡张数
+      stayFree: p.stayFree || 0,            // v5.8：免停留卡张数
+      buildCutCard: p.buildCutCard || 0,    // v5.8：盖房 9 折卡张数
+      shieldLock: (room.round - (p.shieldRound || -9)) <= 1,   // v5.8：免罚符购买冷却中
+      rerollLock: (p.rerollStreak || 0) >= 2,                  // v5.8：重投连用锁定
       invest: p.invest ? { due: p.invest.due, back: p.invest.back } : null,
       rentBuff: p.rentBuff || 0, defBuff: p.defBuff || 0, buildCutTurn: p.buildCutTurn || 0,
       voice: !!p.voice,   // 是否开着麦（语音房状态，仅用于同步 UI 与建连时机）
     })),
+    incomeMul: room.incomeMul ? room.incomeMul() : 1,   // v5.8：非租金收益衰减倍率
     cells: room.cells.map((cs) => ({ ...cs })),
     pendingBuy: room.pendingBuy, pendingBuild: room.pendingBuild,
     pendingReroll: room.pendingReroll || null,

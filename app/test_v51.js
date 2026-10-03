@@ -226,7 +226,7 @@ console.log('\n[6] 岔路 12 格：逐格结算不崩 + 关键数值');
 
 console.log('\n[7] 效果卡池（校园商城 / 校庆礼品屋）');
 {
-  ok(EFFECT_CARDS.length === 7, `效果卡池 = ${EFFECT_CARDS.length} 张`);
+  ok(EFFECT_CARDS.length === 9, `效果卡池 = ${EFFECT_CARDS.length} 张（v5.8 重做：删免租券/免罚符，加盖房9折/免停留/免罚款/偷师）`);
   ok(EFFECT_CARDS.some(c => c.id === 'skill'), '卡池含「技能次数 +1」');
   const r = mkRoom(2);
   const p = cur(r); p.skillLeft = 3;
@@ -399,7 +399,7 @@ console.log('\n[11] 校历事件扩充（三轮一次）');
     r.players.forEach(q => { q.discount = false; q.shield = false; q.stepBuffs = []; });
     const ev = CALEVENTS.find(e => e.id === 'gala');
     r.applyCalEvent(ev);
-    const gotCards = r.players.every(q => q.medal + q.voucher + q.skillLeft + q.stepBuffs.length + (q.discount ? 1 : 0) + (q.shield ? 1 : 0) > 0 || q.cash === 10800);
+    const gotCards = r.players.every(q => q.medal + (q.fineFree || 0) + (q.buildCutCard || 0) + (q.stayFree || 0) + q.skillLeft + q.stepBuffs.length + (q.discount ? 1 : 0) > 0 || q.cash === 10800 || q.cash === 10500);
     ok(gotCards, '校庆嘉年华：每位玩家都领到了 1 张效果卡');
     const big = r.players.filter(q => q.cash >= 10000 + ev.amount).length;
     ok(big === 1, `校庆嘉年华：随机 1 人抽中大奖 ¥${ev.amount}`);

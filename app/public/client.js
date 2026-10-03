@@ -54,8 +54,9 @@ const BRANCH_POS = {};
 for (let k = 0; k < 7; k++) BRANCH_POS[48 + k] = [BR_CX(k), BR_ROW_A];   // 学术长廊 48~54
 for (let k = 0; k < 7; k++) BRANCH_POS[55 + k] = [BR_CX(k), BR_ROW_B];   // 创业大道 55~61
 // 中央看板（季节 / 天气 / 基金池 / 轮次 / 校历）
-const CTR_CARD = { x: 430, y: 288, w: 640, h: 356 };
-const POOL_PT = () => [CTR_CARD.x + CTR_CARD.w / 2, CTR_CARD.y + 240];   // v5.6：基金池胶囊中心（金币飞入目标点）
+// v5.8：中央看板加高扩容（356→384，上移 8px），五层信息胶囊间距更大、不拥挤
+const CTR_CARD = { x: 430, y: 280, w: 640, h: 384 };
+const POOL_PT = () => [CTR_CARD.x + CTR_CARD.w / 2, CTR_CARD.y + 249];   // v5.8：基金池胶囊中心（金币飞入目标点）
 const BANK_PT = () => [PAD + CW / 2, -20];
 
 const GROUPS = { g1:'#A1887F', g2:'#90CAF9', g3:'#F48FB1', g4:'#FFB74D', g5:'#E57373', g6:'#E8D06F', g7:'#A5D6A7', g8:'#4DB6AC', g9:'#9FA8DA', g10:'#B39DDB' };
@@ -192,60 +193,60 @@ const HEX_TIERS = {
 };
 const PROJECTS = {
   // ===== 校级（银）× 20 =====
-  stipend:   { tier: 'silver', icon: '🚶', name: '勤工俭学',  desc: '每次经过起点额外 +¥400', mods: { goCash: 400 } },
+  stipend:   { tier: 'silver', icon: '🚶', name: '勤工俭学',  desc: '每次经过起点额外 +¥300', mods: { goCash: 300 } },
   thrift:    { tier: 'silver', icon: '🧾', name: '精打细算',  desc: '盖房费用 −10%', mods: { buildCut: 0.10 } },
   agent:     { tier: 'silver', icon: '🏠', name: '房产中介',  desc: '买入无主地 9 折', mods: { buyCut: 0.10 } },
-  openbook:  { tier: 'silver', icon: '📖', name: '开卷有益',  desc: '每抽一张机会/命运卡 +¥200', mods: { cardGain: 200 } },
-  allowance: { tier: 'silver', icon: '🤝', name: '助学金',    desc: '每轮开始 +¥300', mods: { turnCash: 300 } },
+  openbook:  { tier: 'silver', icon: '📖', name: '开卷有益',  desc: '每抽一张机会/命运卡 +¥150', mods: { cardGain: 150 } },
+  allowance: { tier: 'silver', icon: '🤝', name: '助学金',    desc: '每轮开始 +¥250', mods: { turnCash: 250 } },
   microlend: { tier: 'silver', icon: '🏦', name: '小额贷',    desc: '抵押地产时多拿 15%', mods: { mortgageUp: 0.15 } },
   timemgmt:  { tier: 'silver', icon: '⏰', name: '时间管理',  desc: '被罚停留的回合数 −1（多于 1 回合时）', mods: { stayCut: 1 } },
-  earlybird: { tier: 'silver', icon: '🐦', name: '早起鸟',    desc: '立即 +¥1500', once: 'cash', amt: 1500 },
-  bookmark:  { tier: 'silver', icon: '🎫', name: '祖传票券',  desc: '立即获得 1 张免租券', once: 'pack', voucher: 1 },
-  milk:      { tier: 'silver', icon: '🍼', name: '营养快线',  desc: '每轮开始若现金 <¥4000，+¥500', mods: { poorCash: 500, poorCashUnder: 4000 } },
-  cashback:  { tier: 'silver', icon: '💳', name: '积分返现',  desc: '每次付款返还 5%（单笔封顶 ¥150）', mods: { cashbackPct: 0.05, cashbackCap: 150 } },
+  earlybird: { tier: 'silver', icon: '🐦', name: '早起鸟',    desc: '立即 +¥1200', once: 'cash', amt: 1200 },
+  bookmark:  { tier: 'silver', icon: '🎫', name: '祖传票券',  desc: '立即获得 1 张免租金卡', once: 'pack', medal: 1 },
+  milk:      { tier: 'silver', icon: '🍼', name: '营养快线',  desc: '每轮开始若现金 <¥4000，+¥400', mods: { poorCash: 400, poorCashUnder: 4000 } },
+  cashback:  { tier: 'silver', icon: '💳', name: '积分返现',  desc: '每次付款返还 4%（单笔封顶 ¥120）', mods: { cashbackPct: 0.04, cashbackCap: 120 } },
   talisman:  { tier: 'silver', icon: '🧿', name: '平安符',    desc: '每回合开始自动获得免罚符（当轮有效）', mods: { shieldEach: 1 } },
-  sprint:    { tier: 'silver', icon: '🏃', name: '低点冲刺',  desc: '掷出 ≤5 点时 +¥250', mods: { lowRollCash: 250 } },
-  twins:     { tier: 'silver', icon: '🎲', name: '双倍喜悦',  desc: '掷出双数时 +¥200', mods: { doubleCash: 200 } },
-  usedbook:  { tier: 'silver', icon: '📚', name: '二手书摊',  desc: '立即 +¥800', once: 'cash', amt: 800 },
+  sprint:    { tier: 'silver', icon: '🏃', name: '低点冲刺',  desc: '掷出 ≤5 点时 +¥200', mods: { lowRollCash: 200 } },
+  twins:     { tier: 'silver', icon: '🎲', name: '双倍喜悦',  desc: '掷出双数时 +¥150', mods: { doubleCash: 150 } },
+  usedbook:  { tier: 'silver', icon: '📚', name: '二手书摊',  desc: '立即 +¥600', once: 'cash', amt: 600 },
   firstaid:  { tier: 'silver', icon: '💊', name: '应急药箱',  desc: '被收租 ≥¥1000 时减免 15%（3 次）', mods: { tollShield: 3, tollShieldPct: 0.15, tollShieldMin: 1000 } },
-  freelance: { tier: 'silver', icon: '💻', name: '技术接单',  desc: '每轮开始若名下没有地产，+¥600', mods: { noLandCash: 600 } },
-  umbrella:  { tier: 'silver', icon: '☔', name: '雨具出租',  desc: '雨 / 雾 / 雪 / 台风天，每轮开始 +¥400', mods: { weatherCash: 400 } },
-  network:   { tier: 'silver', icon: '📶', name: '情报网',    desc: '重掷骰费用 −25%', mods: { rerollCut: 0.25 } },
-  sponsor:   { tier: 'silver', icon: '🏅', name: '赛事赞助',  desc: '立即 +¥1200', once: 'cash', amt: 1200 },
+  freelance: { tier: 'silver', icon: '💻', name: '技术接单',  desc: '每轮开始若名下没有地产，+¥500', mods: { noLandCash: 500 } },
+  umbrella:  { tier: 'silver', icon: '☔', name: '雨具出租',  desc: '雨 / 雾 / 雪 / 台风天，每轮开始 +¥300', mods: { weatherCash: 300 } },
+  network:   { tier: 'silver', icon: '📶', name: '情报网',    desc: '重掷骰费用 −20%', mods: { rerollCut: 0.20 } },
+  sponsor:   { tier: 'silver', icon: '🏅', name: '赛事赞助',  desc: '立即 +¥1000', once: 'cash', amt: 1000 },
   // ===== 省级（金）× 20 =====
-  raise:      { tier: 'gold', icon: '💼', name: '涨薪合同',   desc: '每次经过起点额外 +¥800', mods: { goCash: 800 } },
-  overseer:   { tier: 'gold', icon: '🏗️', name: '工程监理',  desc: '盖房费用 −20%', mods: { buildCut: 0.20 } },
-  landrush:   { tier: 'gold', icon: '🗺️', name: '圈地许可',  desc: '买入无主地 85 折', mods: { buyCut: 0.15 } },
-  fortune:    { tier: 'gold', icon: '🎴', name: '卡运亨通',   desc: '每抽一张卡 +¥500', mods: { cardGain: 500 } },
-  scholarship:{ tier: 'gold', icon: '🎖️', name: '一等奖学金', desc: '每轮开始 +¥700', mods: { turnCash: 700 } },
-  leverage:   { tier: 'gold', icon: '🏦', name: '杠杆大师',   desc: '抵押地产时多拿 25%', mods: { mortgageUp: 0.25 } },
-  tollpass:   { tier: 'gold', icon: '🎫', name: '通行优惠',   desc: '被收租时一律减免 15%', mods: { tollCut: 0.15 } },
-  rentboost:  { tier: 'gold', icon: '📈', name: '收租培训',   desc: '单笔收租 ≥¥1200 时 +25%', mods: { rentGainPct: 0.25, rentGainMin: 1200 } },
-  medkit:     { tier: 'gold', icon: '⛑️', name: '急救包',     desc: '被收租 ≥¥800 时减免 25%（5 次）', mods: { tollShield: 5, tollShieldPct: 0.25, tollShieldMin: 800 } },
-  giftbag:    { tier: 'gold', icon: '🎁', name: '票券大礼包', desc: '立即获得 2 张免租券 + 1 张免租金卡', once: 'pack', voucher: 2, medal: 1 },
-  deposit:    { tier: 'gold', icon: '🏛️', name: '定期存款',  desc: '每轮开始现金 ≥¥15000 时生息 5%（封顶 ¥1200）', mods: { interestPct: 0.05, interestMin: 15000, interestCap: 1200 } },
-  safetynet:  { tier: 'gold', icon: '🛏️', name: '最低保障',  desc: '每轮开始若名下没有地产，+¥1200', mods: { noLandCash: 1200 } },
-  luckydice:  { tier: 'gold', icon: '🍀', name: '幸运双骰',   desc: '掷出双数时 +¥600', mods: { doubleCash: 600 } },
-  burst:      { tier: 'gold', icon: '⚡', name: '爆发体质',   desc: '掷出 ≤5 点时 +¥600', mods: { lowRollCash: 600 } },
-  rebate:     { tier: 'gold', icon: '💰', name: '消费返现',   desc: '每次付款返还 8%（单笔封顶 ¥300）', mods: { cashbackPct: 0.08, cashbackCap: 300 } },
-  buildcash:  { tier: 'gold', icon: '🔨', name: '盖房返现',   desc: '每次盖房返还 ¥200', mods: { buildCash: 200 } },
-  buycash:    { tier: 'gold', icon: '🏷️', name: '拿地返现',   desc: '每次买地返还 ¥150', mods: { buyCash: 150 } },
+  raise:      { tier: 'gold', icon: '💼', name: '涨薪合同',   desc: '每次经过起点额外 +¥600', mods: { goCash: 600 } },
+  overseer:   { tier: 'gold', icon: '🏗️', name: '工程监理',  desc: '盖房费用 −15%', mods: { buildCut: 0.15 } },
+  landrush:   { tier: 'gold', icon: '🗺️', name: '圈地许可',  desc: '买入无主地 88 折', mods: { buyCut: 0.12 } },
+  fortune:    { tier: 'gold', icon: '🎴', name: '卡运亨通',   desc: '每抽一张卡 +¥350', mods: { cardGain: 350 } },
+  scholarship:{ tier: 'gold', icon: '🎖️', name: '一等奖学金', desc: '每轮开始 +¥550', mods: { turnCash: 550 } },
+  leverage:   { tier: 'gold', icon: '🏦', name: '杠杆大师',   desc: '抵押地产时多拿 20%', mods: { mortgageUp: 0.20 } },
+  tollpass:   { tier: 'gold', icon: '🎫', name: '通行优惠',   desc: '被收租时一律减免 12%', mods: { tollCut: 0.12 } },
+  rentboost:  { tier: 'gold', icon: '📈', name: '收租培训',   desc: '单笔收租 ≥¥1500 时 +20%', mods: { rentGainPct: 0.20, rentGainMin: 1500 } },
+  medkit:     { tier: 'gold', icon: '⛑️', name: '急救包',     desc: '被收租 ≥¥800 时减免 20%（4 次）', mods: { tollShield: 4, tollShieldPct: 0.20, tollShieldMin: 800 } },
+  giftbag:    { tier: 'gold', icon: '🎁', name: '票券大礼包', desc: '立即获得 3 张免租金卡', once: 'pack', medal: 3 },
+  deposit:    { tier: 'gold', icon: '🏛️', name: '定期存款',  desc: '每轮开始现金 ≥¥15000 时生息 4%（封顶 ¥900）', mods: { interestPct: 0.04, interestMin: 15000, interestCap: 900 } },
+  safetynet:  { tier: 'gold', icon: '🛏️', name: '最低保障',  desc: '每轮开始若名下没有地产，+¥900', mods: { noLandCash: 900 } },
+  luckydice:  { tier: 'gold', icon: '🍀', name: '幸运双骰',   desc: '掷出双数时 +¥450', mods: { doubleCash: 450 } },
+  burst:      { tier: 'gold', icon: '⚡', name: '爆发体质',   desc: '掷出 ≤5 点时 +¥450', mods: { lowRollCash: 450 } },
+  rebate:     { tier: 'gold', icon: '💰', name: '消费返现',   desc: '每次付款返还 6%（单笔封顶 ¥220）', mods: { cashbackPct: 0.06, cashbackCap: 220 } },
+  buildcash:  { tier: 'gold', icon: '🔨', name: '盖房返现',   desc: '每次盖房返还 ¥150', mods: { buildCash: 150 } },
+  buycash:    { tier: 'gold', icon: '🏷️', name: '拿地返现',   desc: '每次买地返还 ¥120', mods: { buyCash: 120 } },
   patron:     { tier: 'gold', icon: '🛡️', name: '学术保护',   desc: '额外获得 2 次免疫负面判定的机会', mods: { immuneBonus: 2 } },
-  startup:    { tier: 'gold', icon: '🚀', name: '创业启动金', desc: '立即 +¥3500', once: 'cash', amt: 3500 },
-  intuition:  { tier: 'gold', icon: '🧠', name: '考场直觉',   desc: '掷出 ≥9 点时 +¥650', mods: { highRollCash: 650 } },
+  startup:    { tier: 'gold', icon: '🚀', name: '创业启动金', desc: '立即 +¥2800', once: 'cash', amt: 2800 },
+  intuition:  { tier: 'gold', icon: '🧠', name: '考场直觉',   desc: '掷出 ≥9 点时 +¥500', mods: { highRollCash: 500 } },
   // ===== 国家级（棱彩）× 14 =====
   salaryx2:    { tier: 'prism', icon: '💵', name: '双倍工资',   desc: '经过起点工资 ×2（整局）', mods: { salaryX2: 1 } },
-  monopoly:    { tier: 'prism', icon: '🏆', name: '垄断宣言',   desc: '立即随机占有一块无主地，并 +¥2000', once: 'land', amt: 2000 },
-  seize:       { tier: 'prism', icon: '💎', name: '强取豪夺',   desc: '立即夺取现金最多者 20% 的现金（封顶 ¥5000）', once: 'seize', pct: 0.2, amt: 5000 },
+  monopoly:    { tier: 'prism', icon: '🏆', name: '垄断宣言',   desc: '立即随机占有一块无主地，并 +¥1500', once: 'land', amt: 1500 },
+  seize:       { tier: 'prism', icon: '💎', name: '强取豪夺',   desc: '立即夺取现金最多者 15% 的现金（封顶 ¥4000）', once: 'seize', pct: 0.15, amt: 4000 },
   nirvana:     { tier: 'prism', icon: '🔥', name: '涅槃',       desc: '首次破产时以 ¥6000 复活并免除该笔债务（限 1 次）', mods: { nirvana: 1 } },
-  aegis:       { tier: 'prism', icon: '🛡️', name: '绝对防御',  desc: '免疫 3 次负面判定（挂科留级 / 拆地拆房等）', mods: { immuneCharges: 3 } },
-  tollbooth:   { tier: 'prism', icon: '🚧', name: '收费站',     desc: '对手经过你的地产时每次付 ¥300（单次移动封顶 ¥900）', mods: { tollBooth: 300 } },
-  fatewheel:   { tier: 'prism', icon: '🎲', name: '命运改写',   desc: '抽到负面卡自动重抽（3 次）', mods: { rerollBad: 3 } },
+  aegis:       { tier: 'prism', icon: '🛡️', name: '绝对防御',  desc: '免疫 2 次负面判定（挂科留级 / 拆地拆房等）', mods: { immuneCharges: 2 } },
+  tollbooth:   { tier: 'prism', icon: '🚧', name: '收费站',     desc: '对手经过你的地产时每次付 ¥250（单次移动封顶 ¥750）', mods: { tollBooth: 250 } },
+  fatewheel:   { tier: 'prism', icon: '🎲', name: '命运改写',   desc: '抽到负面卡自动重抽（2 次）', mods: { rerollBad: 2 } },
   wallstreet:  { tier: 'prism', icon: '🐺', name: '华尔街之狼', desc: '抵押地产可获得地价 100%', mods: { mortgage100: 1 } },
-  legacy:      { tier: 'prism', icon: '🧧', name: '遗产继承',   desc: '每轮开始，当前总资产最低者向你支付 ¥800', mods: { legacy: 1 } },
-  dividends:   { tier: 'prism', icon: '🏛️', name: '基金抽成',  desc: '教育基金池每次进账，你抽成 10%（单笔封顶 ¥500）', mods: { fundKick: 0.10 } },
-  headstart:   { tier: 'prism', icon: '⚡', name: '先发优势',   desc: '每轮开始 +¥1000', mods: { turnCash: 1000 } },
-  landmark:    { tier: 'prism', icon: '🏙️', name: '地标经济',   desc: '每轮开始按名下建筑数 ×¥60 收益', mods: { landmark: 60 } },
+  legacy:      { tier: 'prism', icon: '🧧', name: '遗产继承',   desc: '每轮开始，当前总资产最低者向你支付 ¥600', mods: { legacy: 1 } },
+  dividends:   { tier: 'prism', icon: '🏛️', name: '基金抽成',  desc: '教育基金池每次进账，你抽成 8%（单笔封顶 ¥400）', mods: { fundKick: 0.08 } },
+  headstart:   { tier: 'prism', icon: '⚡', name: '先发优势',   desc: '每轮开始 +¥750', mods: { turnCash: 750 } },
+  landmark:    { tier: 'prism', icon: '🏙️', name: '地标经济',   desc: '每轮开始按名下建筑数 ×¥45 收益', mods: { landmark: 45 } },
   rerollmaster:{ tier: 'prism', icon: '🔁', name: '重投大师',   desc: '每回合首次重投免费', mods: { freeReroll: 1 } },
   safety:      { tier: 'prism', icon: '💯', name: '风险兜底',   desc: '每轮开始若现金 <¥2000，直接补到 ¥2000', mods: { floor: 2000 } },
 };
@@ -462,6 +463,12 @@ const SFX = {
   hexPick: () => { noiseFx({ d: 0.05, v: 0.16, hp: 800 }); [660, 990].forEach((f, i) => tone({ f, t: 'sine', d: 0.14, v: 0.16, when: i * 0.08 })); },
   hexHit: () => [523, 784].forEach((f, i) => tone({ f, t: 'triangle', d: 0.16, v: 0.16, when: i * 0.09 })),
   hexPrism: () => [523, 659, 784, 1047, 1319, 1568].forEach((f, i) => tone({ f, t: 'sine', d: 0.2, v: 0.18, when: i * 0.07 })),
+  // v5.8：市场收紧警报（三连下行锯齿）
+  decay: () => [220, 165, 110].forEach((f, i) => tone({ f, t: 'sawtooth', d: 0.4, v: 0.16, when: i * 0.2 })),
+  // v5.8：投资失败（下坠 + 低频崩落）
+  investFail: () => { tone({ f: 330, t: 'square', d: 0.14, v: 0.13 }); tone({ f: 196, slide: 60, t: 'sawtooth', d: 0.6, v: 0.18, when: 0.14 }); },
+  // v5.8：偷师得手（鬼祟三连音）
+  steal: () => [880, 1175, 587].forEach((f, i) => tone({ f, t: 'triangle', d: 0.1, v: 0.13, when: i * 0.09 })),
   // 卡片翻入：清脆三连（第二幕）
   facFlip: n => tone({ f: 660 + Math.max(0, Math.min(3, n || 0)) * 120, t: 'triangle', d: 0.12, v: 0.14 }),
   // 投票落槌：一记定音（玩家投票）
@@ -1231,7 +1238,7 @@ const ANIMATED = new Set(['roll', 'move', 'card', 'buy', 'build', 'charge', 'mon
   // v5.6：双数再掷提示 + 免费轮/免租轮大屏抽签
   'doubles', 'faculty_draw',
   // v5.7：研究项目（海克斯）
-  'project_offer', 'project_pick', 'project_grant', 'hexfx']);
+  'project_offer', 'project_pick', 'project_grant', 'hexfx', 'income_decay', 'item_locked', 'reroll_lock', 'fund_banned', 'fine_free', 'skill_steal', 'buildcut_used', 'invest_fail']);
 let animPending = 0;   // 排队中的动画数；>0 时 renderTokens 冻结，防止棋子瞬移
 let visLog = [];       // 已"播放"的日志：按事件流逐步出现，与地图动画严格同节奏（不超前、不滞后）
 let logRendered = 0;   // visLog 中已渲染的下标数（增量渲染，避免每次重排 200+ 行）
@@ -1350,6 +1357,14 @@ async function handleAnim(e) {
     case 'gojail': { SFX.jail(); SFX.sweepDown(); fxBurst(playerCell(e.pid), { kind: 'shard', n: 12, speed: 3, size: 3.6, life: 44, color: ['#8d8d8d', '#b23b3b', '#6d6d6d'], gravity: 0.3 }); await announce(`📉 <span class="who">${esc(ownerName(e.pid))}</span> 挂科留级，休整一回合！`, 1550); break; }
     case 'stay': { SFX.stay(); await announce(`💤 ${esc(ownerName(e.pid))} 停留一回合${e.left > 0 ? `（还要停留 ${e.left} 回合）` : ''}`, 1250); break; }
     case 'jackpot': { SFX.jackpot(); SFX.fanfare(); SFX.coinRain(); confettiBurst(); fxCoinRain(30); flashScreen('radial-gradient(circle at 50% 46%, rgba(255,232,160,.45), rgba(255,214,90,0) 64%)', 600); flyCoin(POOL_PT(), cellCenter(playerCell(e.pid)), 8); await announce(`🎓 <span class="who">${esc(ownerName(e.pid))}</span> 领取教育基金 <span class="amt">¥${e.amount}</span>！`, 1950); break; }
+    case 'income_decay': { SFX.decay(); await announce(`📉 第 ${e.round} 轮起<b>市场收紧</b>：除房产租金外的一切奖金收入 <span class="amt">×${Math.round(e.mul * 100)}%</span>`, 2600); break; }
+    case 'invest_fail': { SFX.investFail(); fxAt(playerCell(e.pid), '<div class="floaty minus">💥 投资失败</div>'); fxBurst(playerCell(e.pid), { kind: 'smoke', n: 14, speed: 1.8, size: 4, life: 40, color: ['#8a8a8a', '#b05a3a', '#5a5a5a'], gravity: -0.02 }); await announce(`💥 <span class="who">${esc(ownerName(e.pid))}</span> 的投资失败！本局被<b>教育基金拉黑</b>`, 2200); break; }
+    case 'fund_banned': { SFX.investFail(); await announce(`🚫 <span class="who">${esc(ownerName(e.pid))}</span> 已被教育基金拉黑，领不了这笔钱`, 1700); break; }
+    case 'fine_free': { SFX.item(); await announce(`📜 <span class="who">${esc(ownerName(e.pid))}</span> 使用「免罚款卡」，免除「${esc(e.reason || '罚款')}」¥${e.amount}`, 1700); break; }
+    case 'skill_steal': { SFX.steal(); await announce(`🕵️ <span class="who">${esc(ownerName(e.pid))}</span> 对 <span class="who">${esc(e.targetName || '')}</span> 使用「偷师卡」，偷走 1 次技能！`, 1900); break; }
+    case 'item_locked': { SFX.tick(); await announce(`🔒 <span class="who">${esc(ownerName(e.pid))}</span> ${esc(e.reason || '道具冷却中')}`, 1500); break; }
+    case 'reroll_lock': { SFX.tick(); await announce(`🔒 <span class="who">${esc(ownerName(e.pid))}</span> 连续两回合重投，本回合锁定`, 1500); break; }
+    case 'buildcut_used': { SFX.chip(); break; }
     case 'endgame': { SFX.seasonDown(); flashScreen('linear-gradient(180deg, rgba(150,200,255,.4), rgba(120,160,220,0))', 900); await announce(`❄️ <b>经济寒冬来临！</b><br>第 ${e.round} 轮起银行停发工资`, 2300); break; }
     case 'bankrupt': {
       // v5.3：破产不再晃屏（用户反馈整屏晃太晕）—— 改成心跳低鸣 + 全屏灰化慢镜 + 红色冲击
@@ -3079,6 +3094,13 @@ function renderPanel(s) {
   renderGhost(s);   // v5.1：重投阶段的落点虚影（跟着动画队列一起出现/消失）
   renderLog();
   const pool = $('poolText'); if (pool) pool.textContent = `💰 教育基金池 ¥${s.fundPool}`;
+  // v5.8：收益衰减常驻提示（15/25/40 轮后非租金奖金 ×70%/×50%/×25%）
+  const dec = $('decayText');
+  if (dec) {
+    const m = s.incomeMul != null ? s.incomeMul : 1;
+    dec.textContent = m < 1 ? `📉 市场收紧 · 非租金收益 ×${Math.round(m * 100)}%` : `📈 市场正常 · 非租金收益 ×100%`;
+    dec.style.opacity = m < 1 ? '1' : '.55';
+  }
   const rt = $('roundText');
   if (rt) rt.textContent = `第 ${s.round} 轮 · ${s.players.filter(p => p.alive).length} 人在场` + (s.phase === 'roll' ? ` · 轮到 ${s.players[s.cur].name}` : '');
   const szEl = $('seasonText');
@@ -3165,10 +3187,15 @@ function renderGhost(s) {
   const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
   g.setAttribute('class', 'ghost');
   g.innerHTML =
-    // 浓底色填充（比 v5.3 加深一倍）
-    `<rect x="${x + 2}" y="${y + 2}" width="${w - 4}" height="${h - 4}" rx="12" fill="rgba(255,158,44,.48)"/>`
-    // 内层暖光渐变，营造"高亮聚光"感
-    + `<rect x="${x + 2}" y="${y + 2}" width="${w - 4}" height="${h - 4}" rx="12" fill="rgba(255,220,120,.30)"/>`
+    // v5.8：底色改为「左淡右浓」横向渐变 —— 左侧让出归属色条与房子，右侧保持高亮提示
+    `<defs><linearGradient id="ghostFade" x1="0" y1="0" x2="1" y2="0">
+       <stop offset="0" stop-color="rgba(255,158,44,.10)"/>
+       <stop offset="0.42" stop-color="rgba(255,158,44,.30)"/>
+       <stop offset="1" stop-color="rgba(255,158,44,.52)"/>
+     </linearGradient></defs>`
+    + `<rect x="${x + 2}" y="${y + 2}" width="${w - 4}" height="${h - 4}" rx="12" fill="url(#ghostFade)"/>`
+    // 内层暖光渐变，营造"高亮聚光"感（同样左淡右浓）
+    + `<rect x="${x + 2}" y="${y + 2}" width="${w - 4}" height="${h - 4}" rx="12" fill="rgba(255,220,120,.20)"/>`
     // 主描边：加粗 + 流动虚线
     + `<rect x="${x + 2}" y="${y + 2}" width="${w - 4}" height="${h - 4}" rx="12" fill="none" stroke="#ff8c1a" stroke-width="5" stroke-dasharray="14 8">`
     + `<animate attributeName="opacity" values="0.65;1;0.65" dur="0.85s" repeatCount="indefinite"/></rect>`
@@ -3214,7 +3241,9 @@ function renderTokens(s) {
   for (const p of s.players.filter(p => p.alive)) {
     const idx = byCell[p.pos].indexOf(p);
     const [cx, cy] = cellCenter(p.pos);
-    const off = byCell[p.pos].length > 1 ? [[-20, -20], [20, -20], [-20, 20], [20, 20], [0, 0]][idx % 5] : [0, 0];
+    // v5.8：地皮格上棋子整体下移 9px，给上移后的房子让位
+    const dy = BOARD[p.pos] && BOARD[p.pos].type === 'prop' ? 9 : 0;
+    const off = byCell[p.pos].length > 1 ? [[-20, -11], [20, -11], [-20, 16], [20, 16], [0, dy]][idx % 5] : [0, dy];
     const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     g.setAttribute('transform', `translate(${cx + off[0]},${cy + off[1]})`);
     const active = s.phase !== 'over' && s.players[s.cur] && s.players[s.cur].id === p.id;
@@ -3265,13 +3294,13 @@ function renderBuildings(s) {
       // 房屋 / 旅馆：v5.1 放大更醒目，并挪到「色带与校名之间」的空档，不再压住价格
       if (!cs.mortgaged && tp === 'prop' && cs.level > 0) {
         if (cs.level < 4) {
-          const s2 = 17, gap = 3, n = cs.level;   // 4 栋时 4×17+3×3 = 77 < 85
+          const s2 = 15, gap = 3, n = cs.level;   // v5.8：房子上移到色带正下方（y+18），棋子站上去不再挡房
           const total = n * s2 + (n - 1) * gap;
           let hx = x + CW / 2 - total / 2;
-          for (let k = 0; k < n; k++) { inner += houseSvg(hx, y + 21, s2, oc); hx += s2 + gap; }
+          for (let k = 0; k < n; k++) { inner += houseSvg(hx, y + 18, s2, oc); hx += s2 + gap; }
         } else {
-          const w = 60, h = 19;
-          inner += hotelSvg(x + CW / 2 - w / 2, y + 20, w, h, oc);
+          const w = 56, h = 17;
+          inner += hotelSvg(x + CW / 2 - w / 2, y + 18, w, h, oc);
         }
       }
     }
@@ -3297,7 +3326,7 @@ function renderActions(s) {
   const pb0 = s.pendingBuy, pbd0 = s.pendingBuild, au0 = s.auction, rs0 = s.raise, pm0 = s.pendingMedal, pr0 = s.pendingReroll, pbr0 = s.pendingBranch, pin0 = s.pendingInvest, psk0 = s.pendingSkill;
   // 按钮内容只由这些字段决定：没变就不重建 DOM（避免每个事件都重排一次带 onclick 的按钮）
   const key = [s.phase, s.cur, s.season, myPid, me ? dcash(me) : '-', me && me.alive ? 1 : 0,
-    me && me.discount ? 1 : 0, me && me.shield ? 1 : 0,
+    me && me.discount ? 1 : 0, me && me.shield ? 1 : 0, me && me.shieldLock ? 1 : 0, me && me.rerollLock ? 1 : 0, me && me.fundBanned ? 1 : 0,
     pb0 ? pb0.cell + ':' + pb0.price + ':' + (pb0.base || 0) + ':' + (pb0.mortgageBuy ? 1 : 0) : '-',
     pbd0 ? pbd0.cell + ':' + (pbd0.cost || 0) : '-',
     pm0 ? pm0.price : '-', pr0 ? pr0.pid + ':' + (pr0.target == null ? '-' : pr0.target) : '-',
@@ -3318,13 +3347,15 @@ function renderActions(s) {
     const ib = k => {
       const it = ITEMS[k];
       const cost = k === 'shield' ? shieldCost : it.cost;
-      return `<button class="btn small" title="${it.desc || ''}" ${me.cash >= cost ? '' : 'disabled'} onclick="act({type:'item',item:'${k}'})">${it.icon} ${it.name} ¥${cost}</button>`;
+      const locked = k === 'shield' && me.shieldLock;
+      return `<button class="btn small" title="${locked ? '冷却中：上轮刚买过，本轮不能再买' : (it.desc || '')}" ${me.cash >= cost && !locked ? '' : 'disabled'} onclick="act({type:'item',item:'${k}'})">${it.icon} ${it.name}${locked ? ' 🔒' : ''} ¥${cost}</button>`;
     };
     html = `<button class="btn primary big" onclick="act({type:'roll'})">🎲 掷骰子</button>
       <div class="btn-row" style="margin-top:8px">${ib('shield')}<button class="btn small" onclick="act({type:'voteEnd'})">🤝 发起结束</button></div>
-      <div style="font-size:12px;color:#9a938a;margin-top:6px">💡 🛡️ 免罚符仅本回合有效、价格随轮数上涨；掷骰后可花 ¥${REROLL_COST} 重投一次（每回合限一次）</div>`;
+      <div style="font-size:12px;color:#9a938a;margin-top:6px">💡 🛡️ 免罚符仅本回合有效、价格随轮数上涨、<b>不能连着两轮买</b>（买了隔一轮才能再买）；掷骰后可花 ¥${REROLL_COST} 重投（连用两回合第三回合锁定）</div>`;
   }
   else if (s.phase === 'reroll' && s.pendingReroll && s.pendingReroll.pid === myPid) {
+    if (me.rerollLock) { /* 服务端已直接 execRoll，这里仅兜底显示 */ }
     const d = s.dice || [0, 0];
     const tgt = s.pendingReroll.target;
     const tname = (tgt != null && BOARD[tgt]) ? BOARD[tgt].name : '';
@@ -3457,13 +3488,16 @@ function openPlayerViewer(pid) {
   const hexes = (p.hexList || []).map(k => {
     const pr = PROJECTS[k] || {};
     const T = HEX_TIERS[pr.tier] || {};
-    return `<span class="hxp-chip t-${pr.tier || 'silver'}" title="${esc(pr.desc || '')}">${T.icon || ''} ${pr.icon || ''} ${esc(pr.name || k)}</span>`;
+    // v5.8：胶囊内直接展示项目效果，不用悬停猜
+    return `<span class="hxp-chip t-${pr.tier || 'silver'} hxp-rich"><b>${T.icon || ''} ${pr.icon || ''} ${esc(pr.name || k)}</b><i>${esc(pr.desc || '')}</i></span>`;
   }).join('');
   const items = [];
   if (p.medal > 0) items.push(`🎫 免租金卡 ×${p.medal}`);
-  if (p.voucher > 0) items.push(`🎟️ 免租券 ×${p.voucher}`);
   if (p.stayFree > 0) items.push(`🎯 免停留卡 ×${p.stayFree}`);
-  if (p.skillLeft > 0) items.push(`✨ 技能次数 ×${p.skillLeft}`);
+  if (p.fineFree > 0) items.push(`📜 免罚款卡 ×${p.fineFree}`);
+  if ((p.buildCutCard || 0) > 0) items.push(`🔨 盖房 9 折卡 ×${p.buildCutCard}`);
+  if (p.discount) items.push(`🏷️ 买地皮 8 折卡`);
+  if (p.fundBanned) items.push(`🚫 教育基金拉黑`);
   const owned = [];
   for (let i = 0; i < BOARD.length; i++) {
     const cs = dcell(i);
@@ -3478,13 +3512,13 @@ function openPlayerViewer(pid) {
   d.className = 'hxp-layer';
   d.innerHTML = `<div class="hxp-card">
       <div class="hxp-head"><span class="dot" style="background:${p.color}"></span>
-        <b>${esc(p.name)}</b>${p.isAI ? '<span class="tag">AI</span>' : ''}${!p.alive ? '<span class="tag dead">出局</span>' : ''}
+        <b>${esc(p.name)}</b>${p.isAI ? '<span class="tag">AI</span>' : ''}${!p.alive ? '<span class="tag dead">出局</span>' : ''}${p.fundBanned ? '<span class="tag dead">🚫 基金拉黑</span>' : ''}
         <span class="hxp-cash">现金 ¥${dcash(p)} · 总资产 ¥${netWorth(S, p)}</span>
         <button class="btn small" id="hxpClose">关闭 ✕</button></div>
       <div class="hxp-sec"><div class="hxp-sec-t">🧪 研究项目（${(p.hexList || []).length}）</div>
         <div class="hxp-hexes">${hexes || '<span class="hxp-empty">还没有立项</span>'}</div></div>
       <div class="hxp-sec"><div class="hxp-sec-t">🎓 专业与技能卡</div>
-        <div class="hxp-hexes"><span class="hxp-chip t-major">${mj.icon || '🎓'} ${esc(mj.name || '—')} · ${esc(mj.skill || '')}</span>${items.map(x => `<span class="hxp-chip t-item">${x}</span>`).join('') || ''}${!items.length && !(p.skillLeft > 0) ? '<span class="hxp-empty">暂无道具</span>' : ''}</div></div>
+        <div class="hxp-hexes"><span class="hxp-chip t-major hxp-rich"><b>${mj.icon || '🎓'} ${esc(mj.name || '—')} · ${esc(mj.skill || '')}</b><i>${esc(mj.desc || '')}${mj.skill ? `（剩余 ${p.skillLeft} 次）` : ''}</i></span>${items.map(x => `<span class="hxp-chip t-item">${x}</span>`).join('')}</div></div>
       <div class="hxp-sec"><div class="hxp-sec-t">🏠 资产（${owned.length} 块地皮）</div>
         <div class="hxp-assets">${owned.join('') || '<span class="hxp-empty">名下没有地产</span>'}</div></div>
     </div>`;
@@ -3599,6 +3633,16 @@ function buildBoard() {
   html += dashLink(cellC(36), MHW, MHH, BRANCH_POS[55], BHW, BHH, '#4f5fae');   // 大道入口 → 创业孵化器
   html += dashLink(BRANCH_POS[61], BHW, BHH, cellC(39), MHW, MHH, '#4f5fae');   // 校企合作中心 → 校园商城
 
+  // ---------- 两条岔路的整排底板（v5.8：提前到中央看板之前绘制，看板加高后自然盖住底板上沿） ----------
+  const branchPlate = (accent, cy) => {
+    const x0 = BR_CX(0) - BR_W / 2 - 16, x1 = BR_CX(6) + BR_W / 2 + 16;
+    let s = `<rect x="${x0}" y="${cy - BR_H / 2 - 44}" width="${x1 - x0}" height="${BR_H + 62}" rx="20" fill="${accent}" opacity=".055"/>`;
+    s += `<rect x="${x0}" y="${cy - BR_H / 2 - 44}" width="${x1 - x0}" height="${BR_H + 62}" rx="20" fill="none" stroke="${accent}" stroke-width="1.2" stroke-dasharray="6 7" opacity=".3"/>`;
+    return s;
+  };
+  html += branchPlate('#7a6a3a', BR_ROW_A);
+  html += branchPlate('#3f5a7a', BR_ROW_B);
+
   // ---------- 中央看板底板 ----------
   const C = CTR_CARD;
   html += `<rect x="${C.x - 10}" y="${C.y + 10}" width="${C.w + 20}" height="${C.h}" rx="30" fill="rgba(96,76,46,.18)"/>`;
@@ -3687,10 +3731,8 @@ function buildBoard() {
 
   // ---------- 两条岔路（横排在棋盘正中央） ----------
   const branchRow = (title, sub, cells, accent, cy) => {
-    // 整排底板：把 7 格圈成"一条支线"，与主环路区分开
-    const x0 = BR_CX(0) - BR_W / 2 - 16, x1 = BR_CX(6) + BR_W / 2 + 16;
-    let s = `<rect x="${x0}" y="${cy - BR_H / 2 - 44}" width="${x1 - x0}" height="${BR_H + 62}" rx="20" fill="${accent}" opacity=".055"/>`;
-    s += `<rect x="${x0}" y="${cy - BR_H / 2 - 44}" width="${x1 - x0}" height="${BR_H + 62}" rx="20" fill="none" stroke="${accent}" stroke-width="1.2" stroke-dasharray="6 7" opacity=".3"/>`;
+    // 整排底板已由 branchPlate 提前绘制（v5.8）
+    let s = '';
     s += `<text x="${VIEWW / 2}" y="${cy - BR_H / 2 - 28}" text-anchor="middle" font-size="19" font-weight="800" fill="${accent}" letter-spacing="3" font-family="STKaiti,KaiTi,'PingFang SC',serif">${title}</text>`;
     s += `<text x="${VIEWW / 2}" y="${cy - BR_H / 2 - 9}" text-anchor="middle" font-size="12.5" fill="#8d8577" letter-spacing="0.5">${sub}</text>`;
     // 行进箭头（带脉冲动画）
@@ -3716,7 +3758,7 @@ function buildBoard() {
     });
     return s;
   };
-  html += branchRow('🎓 学术长廊', '持有 ≥2 块地皮 · 从「长廊入口」进 · 出口「校史馆」领 2 张免租金卡 · 停留 2 回合', [
+  html += branchRow('🎓 学术长廊', '持有 ≥2 块地皮 · 从「长廊入口」进 · 出口「校史馆」领 1 张免租金卡 · 停留 1 回合', [
     { i: 48, c: '#5C6BC0', icon: '🔬', name: '科研基金处' },
     { i: 49, c: '#8D6E63', icon: '🧑‍🏫', name: '教授工作室' },
     { i: 50, c: '#AB47BC', icon: '🎁', name: '校庆礼品屋' },
@@ -3725,7 +3767,7 @@ function buildBoard() {
     { i: 53, c: '#455A64', icon: '📚', name: '通宵自习室' },
     { i: 54, c: '#2E7D32', icon: '🏛️', name: '校史馆' },
   ], '#7a6a3a', BR_ROW_A);
-  html += branchRow('🚀 创业大道', '无门槛 · 从「大道入口」进 · 出口「校企合作中心」领 ¥2500 · 停留 2 回合', [
+  html += branchRow('🚀 创业大道', '无门槛 · 从「大道入口」进 · 出口「校企合作中心」领 ¥2000 · 停留 1 回合', [
     { i: 55, c: '#E65100', icon: '🚀', name: '创业孵化器' },
     { i: 56, c: '#6A1B9A', icon: '🛒', name: '跳蚤市场' },
     { i: 57, c: '#2E7D32', icon: '🏟️', name: '校园运动会' },
@@ -3753,27 +3795,31 @@ function buildBoard() {
     return s;
   };
   const gx0 = C.x + 24, gw = C.w - 48;
+  // v5.8：胶囊区重新排版 —— 行高普遍 +2~4px、行距统一 4px，五层信息呼吸感更好
   // 第 1 行：季节（学院四季）
-  html += chipRow(C.y + 150, 32, '#c98a1e', gx0, gw);
-  html += `<text id="seasonText" x="${ccx + 6}" y="${C.y + 174}" text-anchor="middle" font-size="17" font-weight="800" fill="#8a6d1a"></text>`;
+  html += chipRow(C.y + 154, 34, '#c98a1e', gx0, gw);
+  html += `<text id="seasonText" x="${ccx + 6}" y="${C.y + 177}" text-anchor="middle" font-size="17" font-weight="800" fill="#8a6d1a"></text>`;
   // 第 2 行：天气（今日天气 + 效果）
-  html += chipRow(C.y + 186, 32, '#4f9ad1', gx0, gw);
-  html += `<text id="weatherText" x="${ccx + 6}" y="${C.y + 210}" text-anchor="middle" font-size="14.5" font-weight="700" fill="#587a4e"></text>`;
+  html += chipRow(C.y + 192, 34, '#4f9ad1', gx0, gw);
+  html += `<text id="weatherText" x="${ccx + 6}" y="${C.y + 215}" text-anchor="middle" font-size="14.5" font-weight="700" fill="#587a4e"></text>`;
   // 第 3 行：教育基金池（金灿灿的一行，带两枚呼吸闪光的小金币）
-  html += chipRow(C.y + 222, 36, '#d9a418', gx0, gw);
-  html += `<circle cx="${gx0 + 26}" cy="${C.y + 240}" r="7.5" fill="url(#goldBar)" opacity=".9"><animate attributeName="opacity" values=".45;1;.45" dur="2.6s" repeatCount="indefinite"/></circle>`;
-  html += `<text x="${gx0 + 26}" y="${C.y + 245}" text-anchor="middle" font-size="10">✦</text>`;
-  html += `<circle cx="${gx0 + gw - 26}" cy="${C.y + 240}" r="6.5" fill="url(#goldBar)" opacity=".8"><animate attributeName="opacity" values="1;.4;1" dur="3.1s" repeatCount="indefinite"/></circle>`;
-  html += `<text x="${gx0 + gw - 26}" y="${C.y + 244}" text-anchor="middle" font-size="9">✦</text>`;
-  html += `<text id="poolText" x="${ccx + 6}" y="${C.y + 248}" text-anchor="middle" font-size="19" font-weight="800" fill="#a5720e">💰 教育基金池 ¥0</text>`;
+  html += chipRow(C.y + 230, 38, '#d9a418', gx0, gw);
+  html += `<circle cx="${gx0 + 26}" cy="${C.y + 249}" r="7.5" fill="url(#goldBar)" opacity=".9"><animate attributeName="opacity" values=".45;1;.45" dur="2.6s" repeatCount="indefinite"/></circle>`;
+  html += `<text x="${gx0 + 26}" y="${C.y + 254}" text-anchor="middle" font-size="10">✦</text>`;
+  html += `<circle cx="${gx0 + gw - 26}" cy="${C.y + 249}" r="6.5" fill="url(#goldBar)" opacity=".8"><animate attributeName="opacity" values="1;.4;1" dur="3.1s" repeatCount="indefinite"/></circle>`;
+  html += `<text x="${gx0 + gw - 26}" y="${C.y + 253}" text-anchor="middle" font-size="9">✦</text>`;
+  html += `<text id="poolText" x="${ccx + 6}" y="${C.y + 257}" text-anchor="middle" font-size="19" font-weight="800" fill="#a5720e">💰 教育基金池 ¥0</text>`;
   // 第 4 行：左轮次 + 右校历（对半双胶囊）
   const hw = (gw - 12) / 2;
-  html += chipRow(C.y + 262, 34, '#7a6a52', gx0, hw);
-  html += chipRow(C.y + 262, 34, '#3a7bd5', gx0 + hw + 12, hw);
-  html += `<text id="roundText" x="${gx0 + hw / 2 + 6}" y="${C.y + 284}" text-anchor="middle" font-size="13" font-weight="700" fill="#6a6252"></text>`;
-  html += `<text id="calText" x="${gx0 + hw + 12 + hw / 2 + 6}" y="${C.y + 284}" text-anchor="middle" font-size="13" font-weight="700" fill="#3a7bd5"></text>`;
+  html += chipRow(C.y + 272, 36, '#7a6a52', gx0, hw);
+  html += chipRow(C.y + 272, 36, '#3a7bd5', gx0 + hw + 12, hw);
+  html += `<text id="roundText" x="${gx0 + hw / 2 + 6}" y="${C.y + 295}" text-anchor="middle" font-size="13" font-weight="700" fill="#6a6252"></text>`;
+  html += `<text id="calText" x="${gx0 + hw + 12 + hw / 2 + 6}" y="${C.y + 295}" text-anchor="middle" font-size="13" font-weight="700" fill="#3a7bd5"></text>`;
+  // v5.8：第 5 行 —— 收益衰减常驻提示（15/25/40 轮后 ×70%/×50%/×25%）
+  html += chipRow(C.y + 312, 30, '#b05a3a', gx0, gw);
+  html += `<text id="decayText" x="${ccx + 6}" y="${C.y + 332}" text-anchor="middle" font-size="13.5" font-weight="800" fill="#b05a3a"></text>`;
   // 底部一行小星标装饰（替换原静态说明文字，留白更干净）
-  html += `<text x="${ccx}" y="${C.y + 320}" text-anchor="middle" font-size="10.5" fill="#c3b89f" letter-spacing="8">✦ ✦ ✦</text>`;
+  html += `<text x="${ccx}" y="${C.y + 358}" text-anchor="middle" font-size="10.5" fill="#c3b89f" letter-spacing="8">✦ ✦ ✦</text>`;
 
   html += `<g id="ownLayer"></g><g id="tokenLayer"></g>`;
   svg.innerHTML = html;

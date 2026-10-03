@@ -356,13 +356,16 @@ const ITEMS = {
 
 // ---------- v5.1：效果卡池（校园商城 / 校庆礼品屋 随机抽取 1~2 张） ----------
 const EFFECT_CARDS = [
-  { id: 'medal',    name: '免租金卡',        icon: '🎫', desc: '下次应付租金时自动消耗' },
-  { id: 'voucher',  name: '免租券',          icon: '🎟️', desc: '下次应付租金时自动消耗（可与免租金卡叠加持有）' },
-  { id: 'skill',    name: '技能次数 +1',     icon: '✨', desc: '本局专业技剩余次数 +1' },
-  { id: 'discount', name: '买房 8 折卡',     icon: '🏷️', desc: '当回合买地自动 8 折' },
-  { id: 'step',     name: '加速卡',          icon: '👟', desc: '下一次移动 +3 步' },
-  { id: 'cash',     name: '现金红包',        icon: '🧧', desc: '立刻到账 ¥800' },
-  { id: 'shield',   name: '免罚符',          icon: '🛡️', desc: '本回合踩到他人地产免租' },
+  // v5.8：卡池重做 —— 删去「免租券」与「免罚符」，所有卡均可保留到条件满足时自动使用
+  { id: 'medal',     name: '免租金卡',        icon: '🎫', desc: '保留到下次应付租金时自动消耗（可叠加持有）' },
+  { id: 'skill',     name: '技能次数 +1',     icon: '✨', desc: '本局专业技剩余次数 +1' },
+  { id: 'discount',  name: '买地皮 8 折卡',   icon: '🏷️', desc: '保留到下次买地时自动 8 折' },
+  { id: 'buildcut',  name: '盖房 9 折卡',     icon: '🔨', desc: '保留到下次盖房 / 升级时自动 9 折' },
+  { id: 'step',      name: '加速卡',          icon: '👟', desc: '保留到下一次移动，额外 +4 步' },
+  { id: 'cash',      name: '现金红包',        icon: '🧧', desc: '立刻到账 ¥800' },
+  { id: 'stayfree',  name: '免停留卡',        icon: '🎯', desc: '保留到下次纯惩罚性停留时自动消耗（罚款照付）' },
+  { id: 'finefree',  name: '免罚款卡',        icon: '📜', desc: '保留到下次缴纳「非租金罚款」时自动免除' },
+  { id: 'steal',     name: '偷师卡',          icon: '🕵️', desc: '立刻随机偷取一名玩家 1 次技能使用次数' },
 ];
 
 // ---------- 卡牌（30 机会 + 30 命运） ----------
@@ -384,7 +387,7 @@ const CHANCE = [
   { name: '空调罢工', desc: '宿舍空调坏了，支付 ¥700 维修费', kind: 'money', amount: -700 },
   { name: '步数霸榜', desc: '微信运动全校第一，收 ¥1100', kind: 'money', amount: 1100 },
   { name: '赶飞机', desc: '立即移动到任意一个机场（不领工资）', kind: 'moveAnyTrans' },
-  { name: '室友带饭', desc: '室友承包一个月饭卡——免租券：下次应付租金全免', kind: 'voucher' },
+  { name: '室友带饭', desc: '室友承包一个月饭卡——免租金卡：下次应付租金全免', kind: 'medal' },
   { name: '论文接收', desc: '论文被顶刊接收，收 ¥4000', kind: 'money', amount: 4000 },
   { name: '阿姨手抖', desc: '食堂阿姨手不抖了，多打一勺红烧肉，心情大好，收 ¥400', kind: 'money', amount: 400 },
   { name: '二手书出清', desc: '期末摆摊卖教材，收 ¥1200', kind: 'money', amount: 1200 },
@@ -541,7 +544,7 @@ const FACULTY = {
   freeRent: { name: '免租轮校区', icon: '🕊️', color: '#3FBF9E', lead: '随机 4 轮全场所有人免交租金',           cost: '其余轮次全场租金 ×1.05',            tag: '这四轮，谁也别想收租' },
 };
 const FACULTY_KEYS = Object.keys(FACULTY);
-const FACULTY_VOTE_MS = 24000;   // 开局风貌投票时长（v5.5 由 15s 拉长到 24s：看清楚再投，超时未投者随机补票）
+const FACULTY_VOTE_MS = 28000;   // 开局风貌投票时长（v5.8 由 24s 拉长到 28s：与海克斯一起更从容，超时未投者随机补票）
 const FACULTY_MAX_RARE = 0;      // 本版无稀有风貌（原「变数校区」已按要求删去）
 
 // ---------- v5.7：海克斯 · 研究项目（校级=银 / 省级=金 / 国家级=棱彩） ----------
@@ -557,69 +560,73 @@ const HEX_TIERS = {
 };
 const PROJECTS = {
   // ===== 校级（银）× 20 =====
-  stipend:   { tier: 'silver', icon: '🚶', name: '勤工俭学',  desc: '每次经过起点额外 +¥400', mods: { goCash: 400 } },
+  stipend:   { tier: 'silver', icon: '🚶', name: '勤工俭学',  desc: '每次经过起点额外 +¥300', mods: { goCash: 300 } },
   thrift:    { tier: 'silver', icon: '🧾', name: '精打细算',  desc: '盖房费用 −10%', mods: { buildCut: 0.10 } },
   agent:     { tier: 'silver', icon: '🏠', name: '房产中介',  desc: '买入无主地 9 折', mods: { buyCut: 0.10 } },
-  openbook:  { tier: 'silver', icon: '📖', name: '开卷有益',  desc: '每抽一张机会/命运卡 +¥200', mods: { cardGain: 200 } },
-  allowance: { tier: 'silver', icon: '🤝', name: '助学金',    desc: '每轮开始 +¥300', mods: { turnCash: 300 } },
+  openbook:  { tier: 'silver', icon: '📖', name: '开卷有益',  desc: '每抽一张机会/命运卡 +¥150', mods: { cardGain: 150 } },
+  allowance: { tier: 'silver', icon: '🤝', name: '助学金',    desc: '每轮开始 +¥250', mods: { turnCash: 250 } },
   microlend: { tier: 'silver', icon: '🏦', name: '小额贷',    desc: '抵押地产时多拿 15%', mods: { mortgageUp: 0.15 } },
   timemgmt:  { tier: 'silver', icon: '⏰', name: '时间管理',  desc: '被罚停留的回合数 −1（多于 1 回合时）', mods: { stayCut: 1 } },
-  earlybird: { tier: 'silver', icon: '🐦', name: '早起鸟',    desc: '立即 +¥1500', once: 'cash', amt: 1500 },
-  bookmark:  { tier: 'silver', icon: '🎫', name: '祖传票券',  desc: '立即获得 1 张免租券', once: 'pack', voucher: 1 },
-  milk:      { tier: 'silver', icon: '🍼', name: '营养快线',  desc: '每轮开始若现金 <¥4000，+¥500', mods: { poorCash: 500, poorCashUnder: 4000 } },
-  cashback:  { tier: 'silver', icon: '💳', name: '积分返现',  desc: '每次付款返还 5%（单笔封顶 ¥150）', mods: { cashbackPct: 0.05, cashbackCap: 150 } },
+  earlybird: { tier: 'silver', icon: '🐦', name: '早起鸟',    desc: '立即 +¥1200', once: 'cash', amt: 1200 },
+  bookmark:  { tier: 'silver', icon: '🎫', name: '祖传票券',  desc: '立即获得 1 张免租金卡', once: 'pack', medal: 1 },
+  milk:      { tier: 'silver', icon: '🍼', name: '营养快线',  desc: '每轮开始若现金 <¥4000，+¥400', mods: { poorCash: 400, poorCashUnder: 4000 } },
+  cashback:  { tier: 'silver', icon: '💳', name: '积分返现',  desc: '每次付款返还 4%（单笔封顶 ¥120）', mods: { cashbackPct: 0.04, cashbackCap: 120 } },
   talisman:  { tier: 'silver', icon: '🧿', name: '平安符',    desc: '每回合开始自动获得免罚符（当轮有效）', mods: { shieldEach: 1 } },
-  sprint:    { tier: 'silver', icon: '🏃', name: '低点冲刺',  desc: '掷出 ≤5 点时 +¥250', mods: { lowRollCash: 250 } },
-  twins:     { tier: 'silver', icon: '🎲', name: '双倍喜悦',  desc: '掷出双数时 +¥200', mods: { doubleCash: 200 } },
-  usedbook:  { tier: 'silver', icon: '📚', name: '二手书摊',  desc: '立即 +¥800', once: 'cash', amt: 800 },
+  sprint:    { tier: 'silver', icon: '🏃', name: '低点冲刺',  desc: '掷出 ≤5 点时 +¥200', mods: { lowRollCash: 200 } },
+  twins:     { tier: 'silver', icon: '🎲', name: '双倍喜悦',  desc: '掷出双数时 +¥150', mods: { doubleCash: 150 } },
+  usedbook:  { tier: 'silver', icon: '📚', name: '二手书摊',  desc: '立即 +¥600', once: 'cash', amt: 600 },
   firstaid:  { tier: 'silver', icon: '💊', name: '应急药箱',  desc: '被收租 ≥¥1000 时减免 15%（3 次）', mods: { tollShield: 3, tollShieldPct: 0.15, tollShieldMin: 1000 } },
-  freelance: { tier: 'silver', icon: '💻', name: '技术接单',  desc: '每轮开始若名下没有地产，+¥600', mods: { noLandCash: 600 } },
-  umbrella:  { tier: 'silver', icon: '☔', name: '雨具出租',  desc: '雨 / 雾 / 雪 / 台风天，每轮开始 +¥400', mods: { weatherCash: 400 } },
-  network:   { tier: 'silver', icon: '📶', name: '情报网',    desc: '重掷骰费用 −25%', mods: { rerollCut: 0.25 } },
-  sponsor:   { tier: 'silver', icon: '🏅', name: '赛事赞助',  desc: '立即 +¥1200', once: 'cash', amt: 1200 },
+  freelance: { tier: 'silver', icon: '💻', name: '技术接单',  desc: '每轮开始若名下没有地产，+¥500', mods: { noLandCash: 500 } },
+  umbrella:  { tier: 'silver', icon: '☔', name: '雨具出租',  desc: '雨 / 雾 / 雪 / 台风天，每轮开始 +¥300', mods: { weatherCash: 300 } },
+  network:   { tier: 'silver', icon: '📶', name: '情报网',    desc: '重掷骰费用 −20%', mods: { rerollCut: 0.20 } },
+  sponsor:   { tier: 'silver', icon: '🏅', name: '赛事赞助',  desc: '立即 +¥1000', once: 'cash', amt: 1000 },
   // ===== 省级（金）× 20 =====
-  raise:      { tier: 'gold', icon: '💼', name: '涨薪合同',   desc: '每次经过起点额外 +¥800', mods: { goCash: 800 } },
-  overseer:   { tier: 'gold', icon: '🏗️', name: '工程监理',  desc: '盖房费用 −20%', mods: { buildCut: 0.20 } },
-  landrush:   { tier: 'gold', icon: '🗺️', name: '圈地许可',  desc: '买入无主地 85 折', mods: { buyCut: 0.15 } },
-  fortune:    { tier: 'gold', icon: '🎴', name: '卡运亨通',   desc: '每抽一张卡 +¥500', mods: { cardGain: 500 } },
-  scholarship:{ tier: 'gold', icon: '🎖️', name: '一等奖学金', desc: '每轮开始 +¥700', mods: { turnCash: 700 } },
-  leverage:   { tier: 'gold', icon: '🏦', name: '杠杆大师',   desc: '抵押地产时多拿 25%', mods: { mortgageUp: 0.25 } },
-  tollpass:   { tier: 'gold', icon: '🎫', name: '通行优惠',   desc: '被收租时一律减免 15%', mods: { tollCut: 0.15 } },
-  rentboost:  { tier: 'gold', icon: '📈', name: '收租培训',   desc: '单笔收租 ≥¥1200 时 +25%', mods: { rentGainPct: 0.25, rentGainMin: 1200 } },
-  medkit:     { tier: 'gold', icon: '⛑️', name: '急救包',     desc: '被收租 ≥¥800 时减免 25%（5 次）', mods: { tollShield: 5, tollShieldPct: 0.25, tollShieldMin: 800 } },
-  giftbag:    { tier: 'gold', icon: '🎁', name: '票券大礼包', desc: '立即获得 2 张免租券 + 1 张免租金卡', once: 'pack', voucher: 2, medal: 1 },
-  deposit:    { tier: 'gold', icon: '🏛️', name: '定期存款',  desc: '每轮开始现金 ≥¥15000 时生息 5%（封顶 ¥1200）', mods: { interestPct: 0.05, interestMin: 15000, interestCap: 1200 } },
-  safetynet:  { tier: 'gold', icon: '🛏️', name: '最低保障',  desc: '每轮开始若名下没有地产，+¥1200', mods: { noLandCash: 1200 } },
-  luckydice:  { tier: 'gold', icon: '🍀', name: '幸运双骰',   desc: '掷出双数时 +¥600', mods: { doubleCash: 600 } },
-  burst:      { tier: 'gold', icon: '⚡', name: '爆发体质',   desc: '掷出 ≤5 点时 +¥600', mods: { lowRollCash: 600 } },
-  rebate:     { tier: 'gold', icon: '💰', name: '消费返现',   desc: '每次付款返还 8%（单笔封顶 ¥300）', mods: { cashbackPct: 0.08, cashbackCap: 300 } },
-  buildcash:  { tier: 'gold', icon: '🔨', name: '盖房返现',   desc: '每次盖房返还 ¥200', mods: { buildCash: 200 } },
-  buycash:    { tier: 'gold', icon: '🏷️', name: '拿地返现',   desc: '每次买地返还 ¥150', mods: { buyCash: 150 } },
+  raise:      { tier: 'gold', icon: '💼', name: '涨薪合同',   desc: '每次经过起点额外 +¥600', mods: { goCash: 600 } },
+  overseer:   { tier: 'gold', icon: '🏗️', name: '工程监理',  desc: '盖房费用 −15%', mods: { buildCut: 0.15 } },
+  landrush:   { tier: 'gold', icon: '🗺️', name: '圈地许可',  desc: '买入无主地 88 折', mods: { buyCut: 0.12 } },
+  fortune:    { tier: 'gold', icon: '🎴', name: '卡运亨通',   desc: '每抽一张卡 +¥350', mods: { cardGain: 350 } },
+  scholarship:{ tier: 'gold', icon: '🎖️', name: '一等奖学金', desc: '每轮开始 +¥550', mods: { turnCash: 550 } },
+  leverage:   { tier: 'gold', icon: '🏦', name: '杠杆大师',   desc: '抵押地产时多拿 20%', mods: { mortgageUp: 0.20 } },
+  tollpass:   { tier: 'gold', icon: '🎫', name: '通行优惠',   desc: '被收租时一律减免 12%', mods: { tollCut: 0.12 } },
+  rentboost:  { tier: 'gold', icon: '📈', name: '收租培训',   desc: '单笔收租 ≥¥1500 时 +20%', mods: { rentGainPct: 0.20, rentGainMin: 1500 } },
+  medkit:     { tier: 'gold', icon: '⛑️', name: '急救包',     desc: '被收租 ≥¥800 时减免 20%（4 次）', mods: { tollShield: 4, tollShieldPct: 0.20, tollShieldMin: 800 } },
+  giftbag:    { tier: 'gold', icon: '🎁', name: '票券大礼包', desc: '立即获得 3 张免租金卡', once: 'pack', medal: 3 },
+  deposit:    { tier: 'gold', icon: '🏛️', name: '定期存款',  desc: '每轮开始现金 ≥¥15000 时生息 4%（封顶 ¥900）', mods: { interestPct: 0.04, interestMin: 15000, interestCap: 900 } },
+  safetynet:  { tier: 'gold', icon: '🛏️', name: '最低保障',  desc: '每轮开始若名下没有地产，+¥900', mods: { noLandCash: 900 } },
+  luckydice:  { tier: 'gold', icon: '🍀', name: '幸运双骰',   desc: '掷出双数时 +¥450', mods: { doubleCash: 450 } },
+  burst:      { tier: 'gold', icon: '⚡', name: '爆发体质',   desc: '掷出 ≤5 点时 +¥450', mods: { lowRollCash: 450 } },
+  rebate:     { tier: 'gold', icon: '💰', name: '消费返现',   desc: '每次付款返还 6%（单笔封顶 ¥220）', mods: { cashbackPct: 0.06, cashbackCap: 220 } },
+  buildcash:  { tier: 'gold', icon: '🔨', name: '盖房返现',   desc: '每次盖房返还 ¥150', mods: { buildCash: 150 } },
+  buycash:    { tier: 'gold', icon: '🏷️', name: '拿地返现',   desc: '每次买地返还 ¥120', mods: { buyCash: 120 } },
   patron:     { tier: 'gold', icon: '🛡️', name: '学术保护',   desc: '额外获得 2 次免疫负面判定的机会', mods: { immuneBonus: 2 } },
-  startup:    { tier: 'gold', icon: '🚀', name: '创业启动金', desc: '立即 +¥3500', once: 'cash', amt: 3500 },
-  intuition:  { tier: 'gold', icon: '🧠', name: '考场直觉',   desc: '掷出 ≥9 点时 +¥650', mods: { highRollCash: 650 } },
+  startup:    { tier: 'gold', icon: '🚀', name: '创业启动金', desc: '立即 +¥2800', once: 'cash', amt: 2800 },
+  intuition:  { tier: 'gold', icon: '🧠', name: '考场直觉',   desc: '掷出 ≥9 点时 +¥500', mods: { highRollCash: 500 } },
   // ===== 国家级（棱彩）× 14 =====
   salaryx2:    { tier: 'prism', icon: '💵', name: '双倍工资',   desc: '经过起点工资 ×2（整局）', mods: { salaryX2: 1 } },
-  monopoly:    { tier: 'prism', icon: '🏆', name: '垄断宣言',   desc: '立即随机占有一块无主地，并 +¥2000', once: 'land', amt: 2000 },
-  seize:       { tier: 'prism', icon: '💎', name: '强取豪夺',   desc: '立即夺取现金最多者 20% 的现金（封顶 ¥5000）', once: 'seize', pct: 0.2, amt: 5000 },
+  monopoly:    { tier: 'prism', icon: '🏆', name: '垄断宣言',   desc: '立即随机占有一块无主地，并 +¥1500', once: 'land', amt: 1500 },
+  seize:       { tier: 'prism', icon: '💎', name: '强取豪夺',   desc: '立即夺取现金最多者 15% 的现金（封顶 ¥4000）', once: 'seize', pct: 0.15, amt: 4000 },
   nirvana:     { tier: 'prism', icon: '🔥', name: '涅槃',       desc: '首次破产时以 ¥6000 复活并免除该笔债务（限 1 次）', mods: { nirvana: 1 } },
-  aegis:       { tier: 'prism', icon: '🛡️', name: '绝对防御',  desc: '免疫 3 次负面判定（挂科留级 / 拆地拆房等）', mods: { immuneCharges: 3 } },
-  tollbooth:   { tier: 'prism', icon: '🚧', name: '收费站',     desc: '对手经过你的地产时每次付 ¥300（单次移动封顶 ¥900）', mods: { tollBooth: 300 } },
-  fatewheel:   { tier: 'prism', icon: '🎲', name: '命运改写',   desc: '抽到负面卡自动重抽（3 次）', mods: { rerollBad: 3 } },
+  aegis:       { tier: 'prism', icon: '🛡️', name: '绝对防御',  desc: '免疫 2 次负面判定（挂科留级 / 拆地拆房等）', mods: { immuneCharges: 2 } },
+  tollbooth:   { tier: 'prism', icon: '🚧', name: '收费站',     desc: '对手经过你的地产时每次付 ¥250（单次移动封顶 ¥750）', mods: { tollBooth: 250 } },
+  fatewheel:   { tier: 'prism', icon: '🎲', name: '命运改写',   desc: '抽到负面卡自动重抽（2 次）', mods: { rerollBad: 2 } },
   wallstreet:  { tier: 'prism', icon: '🐺', name: '华尔街之狼', desc: '抵押地产可获得地价 100%', mods: { mortgage100: 1 } },
-  legacy:      { tier: 'prism', icon: '🧧', name: '遗产继承',   desc: '每轮开始，当前总资产最低者向你支付 ¥800', mods: { legacy: 1 } },
-  dividends:   { tier: 'prism', icon: '🏛️', name: '基金抽成',  desc: '教育基金池每次进账，你抽成 10%（单笔封顶 ¥500）', mods: { fundKick: 0.10 } },
-  headstart:   { tier: 'prism', icon: '⚡', name: '先发优势',   desc: '每轮开始 +¥1000', mods: { turnCash: 1000 } },
-  landmark:    { tier: 'prism', icon: '🏙️', name: '地标经济',   desc: '每轮开始按名下建筑数 ×¥60 收益', mods: { landmark: 60 } },
+  legacy:      { tier: 'prism', icon: '🧧', name: '遗产继承',   desc: '每轮开始，当前总资产最低者向你支付 ¥600', mods: { legacy: 1 } },
+  dividends:   { tier: 'prism', icon: '🏛️', name: '基金抽成',  desc: '教育基金池每次进账，你抽成 8%（单笔封顶 ¥400）', mods: { fundKick: 0.08 } },
+  headstart:   { tier: 'prism', icon: '⚡', name: '先发优势',   desc: '每轮开始 +¥750', mods: { turnCash: 750 } },
+  landmark:    { tier: 'prism', icon: '🏙️', name: '地标经济',   desc: '每轮开始按名下建筑数 ×¥45 收益', mods: { landmark: 45 } },
   rerollmaster:{ tier: 'prism', icon: '🔁', name: '重投大师',   desc: '每回合首次重投免费', mods: { freeReroll: 1 } },
   safety:      { tier: 'prism', icon: '💯', name: '风险兜底',   desc: '每轮开始若现金 <¥2000，直接补到 ¥2000', mods: { floor: 2000 } },
 };
 const PROJECT_KEYS = { silver: [], gold: [], prism: [] };
 for (const k in PROJECTS) PROJECT_KEYS[PROJECTS[k].tier].push(k);
-// 三次立项的档位概率（银/金/彩）——完全随机，不是按顺序升档
-const HEX_TRIGGERS = [2, 10, 20];
-const HEX_TIER_P = [[0.70, 0.20, 0.10], [0.40, 0.40, 0.20], [0.30, 0.40, 0.30]];
-const HEX_PICK_MS = 32000;       // 三选一决策时长（超时自动随机补选）
+// 四次立项的档位概率（银/金/彩）——完全随机，不是按顺序升档（v5.8：新增第 30 轮第四次）
+const HEX_TRIGGERS = [2, 10, 20, 30];
+const HEX_TIER_P = [[0.70, 0.20, 0.10], [0.40, 0.40, 0.20], [0.30, 0.40, 0.30], [0.30, 0.30, 0.40]];
+const HEX_PICK_MS = 38000;       // 三选一决策时长（v5.8：32s → 38s，超时自动随机补选）
+// v5.8：第 15/25/40 轮后，除「房产租金」外的一切奖金收入衰减为 ×70% / ×50% / ×25%
+const INCOME_DECAY = [{ r: 15, mul: 0.70 }, { r: 25, mul: 0.50 }, { r: 40, mul: 0.25 }];
+// 衰减豁免的入账理由（非「奖金」类：转账 / 返还 / 返现 / 兜底等）
+const INCOME_EXEMPT = ['抵押', '赎回', '拆除回售', '卖房', '返现', '遗产继承', '收费站过路费', '风险兜底', '涅槃', '投资结项', '转移', '对决', '带货', '偷', '强取豪夺', '模型推理', '帮扶', '慈善', '捐款', '接管', '基金会划拨', '众筹'];
 
 const SALARY = 2000, START_CASH = 30000, TURN_MS = 30000, AUCTION_MS = 15000;
 const rnd = (a, b) => a + Math.random() * (b - a);
@@ -675,6 +682,31 @@ class Room {
     this.hexDoneRounds = [];      // 已触发过立项的轮次（防重复触发）
   }
   ev(e) {
+    // v5.8：收益衰减中央拦截 —— 第 15/25/40 轮后，除「房产租金」外的一切奖金收入 ×70%/×50%/×25%。
+    // 所有入账口统一在此打折（t:'money' 单人入账 + calwave/faculty_wave 全场波及），租金与转账类理由豁免。
+    if (e && e.t === 'money' && e.amount > 0 && this.round >= INCOME_DECAY[0].r
+        && !INCOME_EXEMPT.some(w => (e.reason || '').includes(w))) {
+      const p = this.players.find(q => q.id === e.pid);
+      if (p) {
+        const cut = Math.round(e.amount * (1 - this.incomeMul()));
+        if (cut > 0) { p.cash -= cut; e.amount -= cut; e.decayed = true; }
+      }
+    }
+    if (e && (e.t === 'calwave' || e.t === 'faculty_wave') && e.gain && this.round >= INCOME_DECAY[0].r
+        && Array.isArray(e.items)) {
+      const m = this.incomeMul();
+      if (m < 1) {
+        let total = 0;
+        for (const it of e.items) {
+          const q = this.players.find(x => x.id === it.pid);
+          if (!q || !(it.amount > 0)) continue;
+          const cut = Math.round(it.amount * (1 - m));
+          if (cut > 0) { q.cash -= cut; it.amount -= cut; }
+          total += it.amount;
+        }
+        e.total = total;
+      }
+    }
     // v5.1：为每个事件附带「发出时刻的增量状态」（现金 / 地皮 / 基金池）。
     // 客户端会在播完该事件对应的动画后才套用这份增量，于是资金与资产的变化严格晚于动画，
     // 并且评论区、资产面板、玩家现金条会在同一时刻一起变化。
@@ -719,13 +751,18 @@ class Room {
       if (alive.length) {
         const share = Math.floor(overflow / alive.length);
         if (share > 0) {
-          for (const q of alive) { q.cash += share; this.ev({ t: 'money', pid: q.id, amount: share, reason: '基金溢出均分' }); }
+          for (const q of alive) { if (q.fundBanned) continue; q.cash += share; this.ev({ t: 'money', pid: q.id, amount: share, reason: '基金溢出均分' }); }
           this.addLog(`💰 教育基金突破上限 ¥${cap}，溢出部分均分：每人 +¥${share}`);
         }
       }
     }
   }
 
+  // v5.8：效果卡盲盒张数 1/2/3，概率 50% / 30% / 20%
+  rollCardCount() {
+    const r = Math.random();
+    return r < 0.5 ? 1 : (r < 0.8 ? 2 : 3);
+  }
   // v5.1：效果卡抽取（校园商城 / 校庆礼品屋共用）
   grantCards(p, idx, n, label) {
     const drawn = [];
@@ -734,12 +771,27 @@ class Room {
       drawn.push(card);
       switch (card.id) {
         case 'medal':    p.medal++; break;
-        case 'voucher':  p.voucher++; break;
         case 'skill':    p.skillLeft++; break;
         case 'discount': p.discount = true; break;
-        case 'step':     p.stepBuffs.push(3); break;
+        case 'buildcut': p.buildCutCard = (p.buildCutCard || 0) + 1; break;
+        case 'step':     p.stepBuffs.push(4); break;   // v5.8：加速卡加强 +3 → +4
         case 'cash':     p.cash += 800; this.ev({ t: 'money', pid: p.id, amount: 800, reason: '现金红包' }); break;
-        case 'shield':   p.shield = true; break;
+        case 'stayfree': p.stayFree = (p.stayFree || 0) + 1; break;
+        case 'finefree': p.fineFree = (p.fineFree || 0) + 1; break;
+        case 'steal': {
+          // v5.8：偷师卡 —— 随机偷一名还有技能次数的玩家 1 次（对方 -1，我 +1）
+          const cands = this.alive().filter(q => q !== p && (q.skillLeft || 0) > 0);
+          if (cands.length) {
+            const t = pick(cands);
+            t.skillLeft--; p.skillLeft++;
+            this.addLog('🕵️ ' + p.name + ' 对 ' + t.name + ' 使用「偷师卡」：偷走 1 次技能使用次数');
+            this.ev({ t: 'skill_steal', pid: p.id, target: t.id, targetName: t.name });
+          } else {
+            p.cash += 500;   // 没得偷就折现补偿
+            this.ev({ t: 'money', pid: p.id, amount: 500, reason: '偷师卡·无人可偷折现' });
+          }
+          break;
+        }
         default: break;
       }
     }
@@ -761,7 +813,10 @@ class Room {
       id: 'p' + (this.players.length + 1), name, isAI,
       token: Math.random().toString(36).slice(2, 12),
       cash: START_CASH, pos: 0, alive: true,
-      voucher: 0, discount: false, skipNext: false, skipTurns: 0, color: PCOLOR[this.players.length],
+      discount: false, buildCutCard: 0, fineFree: 0, skipNext: false, skipTurns: 0, color: PCOLOR[this.players.length],
+      fundBanned: false,        // v5.8：科研投资失败后被教育基金拉黑
+      shieldRound: -9,          // v5.8：上一次购买免罚符的轮次（购买冷却 1 轮）
+      rerollStreak: 0, rerollLastRound: -9,   // v5.8：连续重投计手（连用 2 回合第 3 回合锁定）
       invest: null,             // 科研投资 {due, back}（学术长廊）
       buffSteps: 0,             // 奖学金长廊浪漫加成（下回合移动 +N）
       stepBuffs: [],            // v5.1：移动加成队列（可连续多回合，如奖学金长廊「下两次各 +3」）
@@ -968,10 +1023,8 @@ class Room {
         detail = `立即 +¥${pr.amt}`;
         break;
       case 'pack': {
-        if (pr.voucher) p.voucher += pr.voucher;
         if (pr.medal) p.medal += pr.medal;
         const parts = [];
-        if (pr.voucher) parts.push(`${pr.voucher} 张免租券`);
         if (pr.medal) parts.push(`${pr.medal} 张免租金卡`);
         detail = `获得 ${parts.join(' + ')}`;
         break;
@@ -1000,7 +1053,7 @@ class Room {
           for (const q of others) if (q.cash > richest.cash) richest = q;
           const amt = Math.min(pr.amt || 5000, Math.round(richest.cash * (pr.pct || 0.2)));
           if (amt > 0) {
-            richest.cash -= amt; p.cash += amt;
+            richest.cash -= amt; richest.combo = 0; p.cash += amt;
             this.ev({ t: 'money', pid: p.id, amount: amt, reason: `强取豪夺 ← ${richest.name}` });
             detail = `夺取 ${richest.name} 的 ¥${amt}`;
           } else detail = '对方现金见底，分文未得';
@@ -1074,6 +1127,13 @@ class Room {
       this.addLog(`❄️ 第 ${stop} 轮起进入「经济寒冬」：银行停发工资，全靠地租和生意过日子！`);
       this.ev({ t: 'endgame', round: stop });
     }
+    // v5.8：收益衰减到点播报（15 / 25 / 40 轮），中央看板同步常驻显示当前倍率
+    for (const d of INCOME_DECAY) {
+      if (this.round === d.r) {
+        this.addLog(`📉 第 ${d.r} 轮起市场收紧：除房产租金外的一切奖金收入衰减为 ×${Math.round(d.mul * 100)}%！`);
+        this.ev({ t: 'income_decay', round: d.r, mul: d.mul });
+      }
+    }
     if (this.round > 1 && this.round % 3 === 0) {
       const e = pick(CALEVENTS);
       this.calEvent = e;
@@ -1144,7 +1204,7 @@ class Room {
       case 'payAll': {
         const items = []; let sum = 0;
         for (const q of alive) {
-          const pay = Math.min(q.cash, e.amount); q.cash -= pay; sum += pay;
+          const pay = Math.min(q.cash, e.amount); q.cash -= pay; q.combo = 0; sum += pay;
           items.push({ pid: q.id, amount: pay });
         }
         this.addToFund(sum);
@@ -1155,7 +1215,7 @@ class Room {
         if (!alive.length) break;
         const rich = alive.slice().sort((x, y) => this.netWorth(y) - this.netWorth(x))[0];
         const pay = Math.max(0, Math.min(e.amount, rich.cash));
-        rich.cash -= pay; this.addToFund(pay);
+        rich.cash -= pay; rich.combo = 0; this.addToFund(pay);
         this.addLog(`💝 ${rich.name} 向教育基金池捐赠 ¥${pay}`);
         this.ev({ t: 'charge', pid: rich.id, amount: pay, creditor: null, reason: e.name, cell: rich.pos, toPool: true });
         this.ev({ t: 'paid', pid: rich.id, amount: pay, creditor: null, toPool: true });
@@ -1195,11 +1255,13 @@ class Room {
         if (!alive.length || this.fundPool <= 0) break;
         const total = Math.floor(this.fundPool * (e.share || 0.5));
         if (total <= 0) break;
-        const share = Math.floor(total / alive.length);
+        const recv = alive.filter(q => !q.fundBanned);
+        if (!recv.length) break;
+        const share = Math.floor(total / recv.length);
         if (share <= 0) break;
-        this.fundPool -= share * alive.length;
+        this.fundPool -= share * recv.length;
         const items = [];
-        for (const q of alive) { q.cash += share; items.push({ pid: q.id, amount: share }); }
+        for (const q of recv) { q.cash += share; items.push({ pid: q.id, amount: share }); }
         this.addLog(`🏦 校历【${e.name}】：教育基金池分出 ¥${share * alive.length}，每人 +¥${share}`);
         this.ev({ t: 'calwave', icon: e.icon, name: e.name, gain: true, items, total: share * alive.length });
         break;
@@ -1210,7 +1272,7 @@ class Room {
         const poor = alive.slice().sort((x, y) => x.cash - y.cash)[0];
         if (!rich || !poor || rich.id === poor.id) break;
         const pay = Math.max(0, Math.min(e.amount, rich.cash));
-        rich.cash -= pay; poor.cash += pay;
+        rich.cash -= pay; rich.combo = 0; poor.cash += pay;
         this.addLog(`🤲 校历【${e.name}】：${rich.name} → ${poor.name} 转移 ¥${pay}`);
         this.ev({ t: 'charge', pid: rich.id, amount: pay, creditor: null, reason: e.name, cell: rich.pos, toPool: false });
         this.ev({ t: 'paid', pid: rich.id, amount: pay, creditor: null, toPool: false });
@@ -1220,7 +1282,8 @@ class Room {
       case 'cardsLottery': {
         const items = [];
         for (const q of alive) if (e.cards > 0) this.grantCards(q, q.pos, e.cards, e.name);
-        const lucky = alive.length ? pick(alive) : null;
+        const cand = alive.filter(q => !q.fundBanned);
+        const lucky = cand.length ? pick(cand) : null;
         if (lucky) {
           lucky.cash += e.amount;
           this.addLog(`🎪 校历【${e.name}】：${lucky.name} 嘉年华抽中大奖 ¥${e.amount}`);
@@ -1276,7 +1339,7 @@ class Room {
       tax = Math.min(tax, 1800);   // v5.0：税率与上限小幅下调
       if (tax <= 0) continue;
       if (p.cash < tax) continue;   // 现金不足则本年暂缓，避免与筹钱逻辑纠缠
-      p.cash -= tax;
+      p.cash -= tax; p.combo = 0;   // v5.8：扣钱断连击
       this.addToFund(tax);
       this.addLog(`🏛️ ${p.name} 名下 ${hold} 块地产 / ${bld} 级建筑，缴纳物业税 ¥${tax}`);
       items.push({ pid: p.id, amount: tax });
@@ -1316,9 +1379,15 @@ class Room {
     if (this.phase !== 'roll' || this.curp() !== p) return;
     const it = ITEMS[item]; if (!it) return;
     const cost = item === 'shield' ? this.shieldCost() : it.cost;
+    if (item === 'shield' && this.round - (p.shieldRound || -9) <= 1) {
+      // v5.8：免罚符不能连续购买 —— 本轮买了，下轮锁定
+      this.addLog(`🛡️ ${p.name} 刚买过免罚符（冷却中），本轮不能再买`);
+      this.ev({ t: 'item_locked', pid: p.id, item, reason: '免罚符冷却中（上轮刚买，下轮才能再买）' });
+      return;
+    }
     if (p.cash < cost) return;
     p.cash -= cost;
-    if (item === 'shield') p.shield = true;
+    if (item === 'shield') { p.shield = true; p.shieldRound = this.round; }
     this.addToFund(Math.round(cost * FUND_SHARE));   // v5.0：道具花费的 1/3 进教育基金池
     this.addLog(`🎒 ${p.name} 花 ¥${cost} 使用道具「${it.name}」（其中 ¥${Math.round(cost * FUND_SHARE)} 进教育基金池）`);
     this.ev({ t: 'item', pid: p.id, item, cost, name: it.name });
@@ -1341,6 +1410,8 @@ class Room {
     if (freeRoll && !hexFree) p.skillLeft--;
     else { p.cash -= cost; this.addToFund(Math.round(cost * FUND_SHARE)); }   // v5.0：重掷花费的 1/3 进教育基金池
     p.rerollUsed = true;
+    p.rerollStreak = (p.rerollLastRound === this.round - 1) ? (p.rerollStreak || 0) + 1 : 1;   // v5.8：连用计手
+    p.rerollLastRound = this.round;
     const onBr = this.onBranch(p.pos);   // v5.6：岔路内重投也是单骰
     const [d1, d2] = this.rollDice(p, onBr);
     this.dice = onBr ? [d1, 0] : [d1, d2];
@@ -1435,7 +1506,7 @@ class Room {
     const { cost, back, rounds } = this.pendingInvest;
     this.pendingInvest = null;
     if (p.cash < cost) { this.declineInvest(p); return; }
-    p.cash -= cost;
+    p.cash -= cost; p.combo = 0;   // v5.8：扣钱断连击
     p.invest = { due: this.round + rounds, back };
     this.addLog(`🔬 ${p.name} 投入 ¥${cost} 科研经费，第 ${p.invest.due} 轮返还 ¥${back}`);
     this.ev({ t: 'invest', pid: p.id, cost, back });
@@ -1501,7 +1572,7 @@ class Room {
         for (const q of this.alive()) {
           if (q.id === p.id) continue;
           const pay = Math.min(300, Math.max(0, q.cash));
-          q.cash -= pay; p.cash += pay; extra += pay;
+          q.cash -= pay; q.combo = 0; p.cash += pay; extra += pay;
           this.ev({ t: 'money', pid: q.id, amount: -pay, reason: '共鸣演出·出场费' });
         }
         if (extra > 0) this.ev({ t: 'money', pid: p.id, amount: extra, reason: '共鸣演出·出场费' });
@@ -1513,7 +1584,7 @@ class Room {
         let rich = others[0];
         for (const q of others) if (this.netWorth(q) > this.netWorth(rich)) rich = q;
         const take = Math.min(1200, Math.max(0, rich.cash));
-        rich.cash -= take; p.cash += take;
+        rich.cash -= take; rich.combo = 0; p.cash += take;
         this.ev({ t: 'money', pid: rich.id, amount: -take, reason: '被读心' });
         this.ev({ t: 'money', pid: p.id, amount: take, reason: '读心术' });
         return `从 ${rich.name} 处取得 ¥${take}`;
@@ -1537,7 +1608,7 @@ class Room {
           let rich = others[0];
           for (const q of others) if (this.netWorth(q) > this.netWorth(rich)) rich = q;
           got = Math.min(800, Math.max(0, rich.cash));
-          rich.cash -= got; p.cash += got;
+          rich.cash -= got; rich.combo = 0; p.cash += got;
           this.ev({ t: 'money', pid: rich.id, amount: -got, reason: '被模型推理' });
           this.ev({ t: 'money', pid: p.id, amount: got, reason: '模型推理' });
         }
@@ -1555,7 +1626,7 @@ class Room {
         for (const q of this.alive()) {
           if (q.id === p.id) continue;
           const pay = Math.min(250, Math.max(0, q.cash));
-          q.cash -= pay; p.cash += pay; extra += pay;
+          q.cash -= pay; q.combo = 0; p.cash += pay; extra += pay;
           this.ev({ t: 'money', pid: q.id, amount: -pay, reason: '带货直播·坑位费' });
         }
         if (extra > 0) this.ev({ t: 'money', pid: p.id, amount: extra, reason: '带货直播·坑位费' });
@@ -1624,7 +1695,6 @@ class Room {
     if (this.round === 1 && p.isAI && !p.trustee && Math.random() < 0.65) {
       this.aiTimers.push(setTimeout(() => this.aiChat(p, pick(['大家好，请多关照！', '这局我来带节奏', '稳住，我们能赢', '友尽局开始了吗？', '闲庭信步，走起！🚶'])), rnd(800, 2600)));
     }
-    if (p.discount) p.discount = false; // 折扣卡仅当轮有效
     p.shield = false;                   // 道具仅当轮有效
     p.rerollUsed = false;               // 重掷骰每回合重置
     p.rollsThisTurn = 0;                // v5.6：本回合已掷次数（双数再掷上限 2 次）
@@ -1839,6 +1909,14 @@ class Room {
     const dblTxt = (!onBr && d1 === d2) ? '（双数，可再掷一次）' : '';
     // v4.1：掷骰后可花 ¥1200 重投一次（每回合每人限一次，现金够且未用过才提供选项）
     const rc0 = this.rerollCostFor(p);   // v5.2：文体校区每轮首次重投只要 ¥900
+    // v5.8：连续两个回合都用了重投，第三回合锁定一次
+    if (!p.rerollUsed && (p.rerollStreak || 0) >= 2) {
+      this.addLog(`🔒 ${p.name} 已连续两个回合使用重投，本回合重投锁定`);
+      this.ev({ t: 'reroll_lock', pid: p.id, round: this.round });
+      this.addLog(`${p.name} 掷出 ${rollTxt}${dblTxt}`);
+      this.execRoll(p);
+      return;
+    }
     if (!p.rerollUsed && p.cash >= rc0) {
       this.phase = 'reroll';
       // v5.1：重投询问时就把"这一走会落到哪一格"预测出来，全场都能在地图上看到虚影
@@ -1925,7 +2003,7 @@ class Room {
         toll = Math.min(toll, 900);
         const pay = Math.min(p.cash, toll);
         if (pay > 0) {
-          p.cash -= pay; boothOwner.cash += pay;
+          p.cash -= pay; p.combo = 0; boothOwner.cash += pay;   // v5.8：扣钱断连击
           this.addLog(`🚧 ${p.name} 经过 ${boothOwner.name} 的地产，被收费站收下 ¥${pay}`);
           this.hexFx(boothOwner, 'tollbooth', `${p.name} 缴过路费 ¥${pay}`);
           this.ev({ t: 'money', pid: boothOwner.id, amount: pay, reason: '收费站过路费' });
@@ -1945,6 +2023,12 @@ class Room {
     }
     this.ev({ t: 'move', pid: p.id, path, final: pos });
     setTimeout(() => this.resolveCell(p), 0); // 客户端先播移动动画；引擎立即结算事件随后广播
+  }
+  // v5.8：当前非租金奖金收入的衰减倍率（15 轮后 ×0.7、25 轮后 ×0.5、40 轮后 ×0.25）
+  incomeMul() {
+    let m = 1;
+    for (const d of INCOME_DECAY) if (this.round >= d.r) m = d.mul;
+    return m;
   }
   // 是否还发工资（v4.0 终局模式；v5.2：停发轮次受校园风貌影响）
   salaryOn() { return this.round < this.salaryStop(); }
@@ -2121,9 +2205,15 @@ class Room {
           if (cell.type !== 'prop') { this.afterResolve(p, false); return; }
           if (cs.mortgaged) { this.addLog(`${p.name} 回到自己的抵押地「${cell.name}」，可随时在资产面板赎回`); this.afterResolve(p, false); return; }
           if (cs.level < 4) {
-            // v5.7：研究项目的盖房折扣（精打细算/工程监理）
+            // v5.7：研究项目的盖房折扣（精打细算/工程监理）；v5.8：盖房 9 折卡（用后消耗）
             const cost0 = this.seasonCost(GROUPS[cell.g].build);
-            const cost = (p.hex && p.hex.buildCut) ? Math.max(1, Math.round(cost0 * (1 - p.hex.buildCut))) : cost0;
+            let cost = (p.hex && p.hex.buildCut) ? Math.max(1, Math.round(cost0 * (1 - p.hex.buildCut))) : cost0;
+            if ((p.buildCutCard || 0) > 0) {
+              cost = Math.max(1, Math.round(cost * 0.9));
+              p.buildCutCard--;
+              this.addLog(`🔨 ${p.name} 使用「盖房 9 折卡」（还剩 ${p.buildCutCard} 张）`);
+              this.ev({ t: 'buildcut_used', pid: p.id, left: p.buildCutCard });
+            }
             this.phase = 'build';
             this.pendingBuild = { pid: p.id, cell: idx, cost };
             this.addLog(`${p.name} 踩到自己的「${cell.name}」，可升级（Lv${cs.level}→Lv${cs.level + 1}，¥${cost}）`);
@@ -2156,12 +2246,6 @@ class Room {
           p.medal--;
           this.addLog(`🎫 ${p.name} 的免租金卡生效，免除「${cell.name}」的租金`);
           this.ev({ t: 'medal', pid: p.id, cell: idx });
-          this.afterResolve(p, false); return;
-        }
-        if (p.voucher > 0) {
-          p.voucher--;
-          this.addLog(`🎫 ${p.name} 的免租券生效，免除「${cell.name}」的租金`);
-          this.ev({ t: 'voucher', pid: p.id, cell: idx });
           this.afterResolve(p, false); return;
         }
         // v5.2 免租轮校区：抽中的那 4 轮，全场踩到谁的地都不用付租金
@@ -2268,7 +2352,7 @@ class Room {
       case 'jail': {
         // 校园商城（v5.1）：随机抽 1 张（35% 概率抽到 2 张）效果卡，卡池含「免租金卡 / 免租券 / 技能次数 +1」等
         // v5.2 艺术校区：盲盒每次多抽 1 张
-        const n = ((Math.random() < 0.35) ? 2 : 1) + (this.facIs('art') ? 1 : 0);
+        const n = this.rollCardCount() + (this.facIs('art') ? 1 : 0);
         this.addLog(`🛍️ ${p.name} 走进校园商城，店员塞给他 ${n} 张效果卡盲盒${this.facIs('art') ? '（艺术校区多送 1 张）' : ''}`);
         this.grantCards(p, idx, n, '校园商城');
         this.afterResolve(p, false); return;
@@ -2294,6 +2378,11 @@ class Room {
       case 'parking': {
         const got = this.fundPool;
         if (got > 0) {
+          if (p.fundBanned) {
+            this.addLog(`🚫 ${p.name} 想领教育基金，但已被拉黑（投资失败），一分都拿不到`);
+            this.ev({ t: 'fund_banned', pid: p.id, cell: idx });
+            this.afterResolve(p, false); return;
+          }
           this.fundPool = 0; p.cash += got;
           this.addLog(`${p.name} 走进教育基金会，领取教育基金 ¥${got}！`);
           this.ev({ t: 'jackpot', pid: p.id, amount: got, cell: idx });
@@ -2416,7 +2505,7 @@ class Room {
       case 'shop': {
         // 校庆礼品屋（v5.1）：与校园商城同款，随机抽 1~2 张效果卡（含「技能次数 +1」）
         // v5.2 艺术校区：盲盒每次多抽 1 张
-        const n = ((Math.random() < 0.35) ? 2 : 1) + (this.facIs('art') ? 1 : 0);
+        const n = this.rollCardCount() + (this.facIs('art') ? 1 : 0);
         this.addLog(`🎁 ${p.name} 走进校庆礼品屋，工作人员送出 ${n} 张效果卡盲盒${this.facIs('art') ? '（艺术校区多送 1 张）' : ''}`);
         this.grantCards(p, idx, n, '校庆礼品屋');
         this.afterResolve(p, false); return;
@@ -2428,7 +2517,7 @@ class Room {
           const poor = this.alive().slice().sort((x, y) => this.netWorth(x) - this.netWorth(y))[0];
           if (poor && poor.id !== p.id) {
             const give = Math.min(2500, Math.max(0, p.cash));
-            p.cash -= give; poor.cash += give;
+            p.cash -= give; p.combo = 0; poor.cash += give;
             this.addLog(`📢 ${p.name} 在奖学金长廊被举报，¥${give} 转给了总资产最少的 ${poor.name}`);
             this.ev({ t: 'money', pid: p.id, amount: -give, reason: '被举报·转让' });
             this.ev({ t: 'money', pid: poor.id, amount: give, reason: '同学举报所得' });
@@ -2448,12 +2537,25 @@ class Room {
       }
       case 'hall': {
         // 校友会馆 / 杰出校友厅：领基金池 25% 分红（至少 ¥600）；杰出校友厅额外有 10% 被举报风险
+        // v5.8：创业基金厅（无 risk 标记的 hall）—— 15% 概率投资失败，本局被教育基金拉黑
+        if (!cell.risk && Math.random() < 0.15) {
+          this.evRoll(p, idx, '创业基金厅·投资审核', ['领取基金分红', '💥 投资失败 → 被教育基金拉黑'], 1, 'bad');
+          p.fundBanned = true;
+          this.addLog(`💥 ${p.name} 在创业基金厅的投资失败！本局被教育基金拉黑（基金分红 / 独吞奖池都领不了）`);
+          this.ev({ t: 'invest_fail', pid: p.id, cell: idx });
+          this.afterResolve(p, false); return;
+        }
         if (cell.risk && Math.random() < 0.10) {
           this.evRoll(p, idx, '杰出校友厅·论文抽查', ['领取基金分红', '被耿同学举报论文造假 → 缴 ¥2000'], 1, 'bad');
           const fine = this.facFine(2000);
           this.addLog(`📑 耿同学实名举报 ${p.name} 论文造假，缴 ¥${fine} 进教育基金池`);
           this.charge(p, fine, null, '论文造假罚款', idx, true);
           return;
+        }
+        if (p.fundBanned) {
+          this.addLog(`🚫 ${p.name} 已被教育基金拉黑（投资失败），${cell.name} 的分红领不了`);
+          this.ev({ t: 'fund_banned', pid: p.id, cell: idx });
+          this.afterResolve(p, false); return;
         }
         const take = Math.max(600, this.facBranch(Math.floor(this.fundPool * 0.25)));
         const fromPool = Math.min(take, this.fundPool);
@@ -2502,11 +2604,11 @@ class Room {
         return;
       }
       case 'exchange': {
-        // 国际交流站（v5.1）：花 ¥1200 报名，50% 拿到 ¥4000 奖学金
+        // 国际交流站（v5.1；v5.8：中签率 50% → 40%，负面 60%）
         if (p.cash < 1200) { this.addLog(`${p.name} 现金不足，只能看看交换项目宣传册`); this.afterResolve(p, false); return; }
-        const win = Math.random() < 0.5;
+        const win = Math.random() < 0.4;
         this.evRoll(p, idx, '国际交流站·名额抽签', ['🎉 中签 → 领 ¥4000', '😢 落选 → 报名费打水漂'], win ? 0 : 1, win ? 'good' : 'bad');
-        p.cash -= 1200;
+        p.cash -= 1200; p.combo = 0;   // v5.8：扣钱断连击
         if (win) {
           const gain = this.facBranch(4000);
           p.cash += gain;
@@ -2678,7 +2780,7 @@ class Room {
         this.ev({ t: 'money', pid: p.id, amount: bmj.buyCash, reason: bmj.skill });
       }
     }
-    p.cash -= price;
+    p.cash -= price; p.combo = 0;   // v5.8：扣钱断连击
     cs.own = p.id; cs.mortgaged = false; cs.mortgageAt = 0;
     if (p.discount) p.discount = false;
     // v5.7：研究项目的买地返现（拿地返现）
@@ -2745,7 +2847,7 @@ class Room {
     const a = this.auction, cell = a.cell, c = BOARD[cell];
     if (a.bidder) {
       const w = this.players.find(p => p.id === a.bidder);
-      w.cash -= a.highest;
+      w.cash -= a.highest; w.combo = 0;   // v5.8：扣钱断连击
       this.cells[cell].own = w.id;
       this.addLog(`${w.name} 以 ¥${a.highest} 拍得「${c.name}」`);
       this.ev({ t: 'buy', pid: w.id, cell, price: a.highest, auction: true });
@@ -2794,7 +2896,7 @@ class Room {
         }
         for (const [, , actv] of usedCuts) if (!actv) p.skillLeft--;
       }
-      p.cash -= price; cs.level++;
+      p.cash -= price; p.combo = 0; cs.level++;   // v5.8：扣钱断连击
       // v5.7：研究项目的盖房返现（盖房返现）
       if (p.hex && p.hex.buildCash && price > 0) {
         p.cash += p.hex.buildCash;
@@ -2855,12 +2957,12 @@ class Room {
       }
       else {
         const full = this.groupCells(c.g).every(i => this.cells[i].own === owner.id);
-        // v3.5：裸地租金 ×1.5（早期踩地有痛感），垄断 ×3（集齐一组价值更高）
-        base = c.rent * (full ? 3 : 1.5);
+        // v3.5 裸地加成；v5.8：裸地 ×1.3、垄断裸地 ×2（削弱早期踩地痛感）
+        base = c.rent * (full ? 2 : 1.3);
       }
     } else if (c.type === 'transport') {
       const n = BOARD.reduce((s, cc, i) => s + (cc.type === 'transport' && this.cells[i].own === owner.id ? 1 : 0), 0);
-      base = 900 * Math.pow(2, n - 1);   // v5.0：机场过路费小幅削弱
+      base = 600 + 500 * (n - 1);   // v5.8：机场租金削弱（1家600/2家1100/3家1600/4家2100，原 900×2^(n-1) 最高 7200）
     } else if (c.type === 'util') {
       const n = BOARD.reduce((s, cc, i) => s + (cc.type === 'util' && this.cells[i].own === owner.id ? 1 : 0), 0);
       // 文印店/快递驿站：一家 = 点数×100，两家垄断 = 点数×350（v5.1：×400 → ×350 削弱）
@@ -2871,7 +2973,8 @@ class Room {
     const W = WEATHER[this.weather];
     if (W && W.rentMul) mul *= W.rentMul;
     if (this.calEvent && this.calEvent.mul) mul *= this.calEvent.mul;
-    if (owner && owner.combo >= 2) mul *= 1 + Math.min(0.15 * (owner.combo - 1), 0.45);
+    // v5.8：收租连击 —— 三连 ×1.15、四连及以上 ×1.3（封顶 1.3）；扣钱即断（重投/免罚符购买除外）
+    if (owner && owner.combo >= 2) mul *= owner.combo === 2 ? 1.15 : 1.3;
     mul *= this.facRentMul();   // v5.2：校园风貌（幅度控制在 ±8% 以内）
     // v5.2 生活区校区：只减免「公用事业（文印店/快递驿站）」与「机场路费」，不碰学生宿舍地皮租金
     if (this.facIs('life') && (c.type === 'util' || c.type === 'transport')) mul *= 0.92;
@@ -2879,6 +2982,15 @@ class Room {
   }
 
   charge(p, amount, creditor, reason, cellIdx, toPool = false) {
+    // v5.8：免罚款卡 —— 免去一次「不是租金」的罚款（租金走 creditor，不受影响）
+    if (!creditor && amount > 0 && (p.fineFree || 0) > 0) {
+      p.fineFree--;
+      this.addLog(`📜 ${p.name} 使用「免罚款卡」，免除「${reason}」¥${amount}（还剩 ${p.fineFree} 张）`);
+      this.ev({ t: 'charge', pid: p.id, amount, creditor: null, reason, cell: cellIdx, toPool, waived: true });
+      this.ev({ t: 'fine_free', pid: p.id, reason, amount, left: p.fineFree });
+      this.finishPay(p);
+      return true;
+    }
     this.ev({ t: 'charge', pid: p.id, amount, creditor: creditor ? creditor.id : null, reason, cell: cellIdx, toPool });
     const r = this.tryPay(p, amount, creditor, toPool);
     // v5.1：表情包必须排在付款事件之后 —— 否则人机会在移动动画还没播完时就抢先发表情（剧透结果）
@@ -2901,9 +3013,11 @@ class Room {
         creditor.cash += amount;
         if (creditor.combo >= 2) { this.addLog(`🔥 ${creditor.name} 连击 ×${creditor.combo + 1} 收租`); this.ev({ t: 'combo', pid: creditor.id, n: creditor.combo + 1 }); }
         creditor.combo = (creditor.combo || 0) + 1;
-        this.checkCombo(creditor); p.combo = 0;
+        this.checkCombo(creditor);
       }
       else if (toPool) this.addToFund(amount);
+      // v5.8：只要扣钱就打断收租连击（重投骰子 / 免罚符购买不走 tryPay，天然豁免）
+      p.combo = 0;
       this.ev({ t: 'paid', pid: p.id, amount, creditor: creditor ? creditor.id : null, toPool });
       this.finishPay(p);
       return true;
@@ -2990,7 +3104,7 @@ class Room {
     let mp = Math.floor(c.price * (this.facIs('biz') ? 0.58 : 0.5));
     if (this.facIs('biz')) mp = Math.round(mp * 1.08);   // v5.2 商科校区：赎回额外付 8% 手续费
     if (p.cash < mp) return;
-    p.cash -= mp; cs.mortgaged = false; cs.mortgageAt = 0;
+    p.cash -= mp; p.combo = 0; cs.mortgaged = false; cs.mortgageAt = 0;   // v5.8：扣钱断连击
     this.addLog(`${p.name} 花 ¥${mp} 赎回「${c.name}」${this.facIs('biz') ? '（含 8% 手续费）' : ''}`);
     this.ev({ t: 'redeem', pid: p.id, cell });
     if (this.phase === 'raise' && this.raise && this.raise.pid === p.id) this.settleRaise();
@@ -3068,7 +3182,7 @@ class Room {
     });
     if (creditor) { creditor.cash += p.cash; this.addLog(`${p.name} 破产出局！全部资产移交给 ${creditor.name}`); }
     else { total += p.cash; this.addLog(`${p.name} 破产出局！资产清算给银行`); }
-    p.cash = 0; p.voucher = 0; p.invest = null; p.buffSteps = 0; p.stepBuffs = []; p.medal = 0; p.skipTurns = 0;
+    p.cash = 0; p.invest = null; p.buffSteps = 0; p.stepBuffs = []; p.medal = 0; p.skipTurns = 0; p.fineFree = 0; p.buildCutCard = 0;
     this.ev({ t: 'bankrupt', pid: p.id, creditor: creditor ? creditor.id : null });
     if (creditor) { this.giveAch(creditor, 'assassin'); this.aiChat(creditor, pick(['😈', '🤣']), true); }
     this.raise = null;
@@ -3253,14 +3367,14 @@ class Room {
         const others = this.players.filter(q => q.alive && q.id !== p.id);
         if (card.dir === 'in') {
           let total = 0;
-          for (const q of others) { const pay = Math.min(q.cash, card.amount); q.cash -= pay; total += pay; }
+          for (const q of others) { const pay = Math.min(q.cash, card.amount); q.cash -= pay; q.combo = 0; total += pay; }
           p.cash += total;
           this.addLog(`${p.name} 从每位玩家处收到共 ¥${total}`);
           this.ev({ t: 'each', pid: p.id, amount: total, dir: 'in' });
         } else {
           for (const q of others) {
             const pay = Math.min(q.cash, card.amount);
-            q.cash -= pay; p.cash += pay;
+            q.cash -= pay; q.combo = 0; p.cash += pay;
             this.ev({ t: 'charge', pid: q.id, amount: pay, creditor: p.id, reason: card.name, cell: p.pos, toPool: false });
             this.ev({ t: 'paid', pid: q.id, amount: pay, creditor: p.id, toPool: false });
           }
@@ -3285,7 +3399,7 @@ class Room {
         this.ev({ t: 'teleport', pid: p.id, cell: t.i });
         this.resolveCell(p); return;
       }
-      case 'voucher': { p.voucher++; this.afterResolve(p, false); return; }
+      case 'medal': { p.medal++; this.afterResolve(p, false); return; }   // v5.8：免租券并入免租金卡
       case 'bounty': {   // 悬赏令：向当前最富有的玩家索取赏金
         const others = this.alive().filter(q => q.id !== p.id);
         if (!others.length) { this.afterResolve(p, false); return; }
@@ -3386,7 +3500,7 @@ class Room {
         let sum = 0;
         for (const q of this.aliveList()) {
           const pay = Math.min(q.cash, card.amount);
-          q.cash -= pay; sum += pay;
+          q.cash -= pay; q.combo = 0; sum += pay;
           this.ev({ t: 'charge', pid: q.id, amount: pay, creditor: null, reason: card.name, cell: q.pos, toPool: true });
           this.ev({ t: 'paid', pid: q.id, amount: pay, creditor: null, toPool: true });
         }
@@ -3420,7 +3534,7 @@ class Room {
             if (q.id === poor.id) continue;
             const pay = Math.min(q.cash, card.amount);
             if (pay <= 0) continue;
-            q.cash -= pay; poor.cash += pay; sum += pay;
+            q.cash -= pay; q.combo = 0; poor.cash += pay; sum += pay;
             this.ev({ t: 'charge', pid: q.id, amount: pay, creditor: poor.id, reason: card.name, cell: q.pos });
             this.ev({ t: 'paid', pid: q.id, amount: pay, creditor: poor.id });
           }
@@ -3496,7 +3610,7 @@ class Room {
         this.afterResolve(p, false); return;
       }
       case 'drawCards': {       // 抽效果卡（校园商城同款卡池）
-        const n = card.n || ((Math.random() < 0.35) ? 2 : 1);
+        const n = card.n || this.rollCardCount();
         this.grantCards(p, p.pos, n, card.name);
         this.afterResolve(p, false); return;
       }

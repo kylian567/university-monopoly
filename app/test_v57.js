@@ -56,8 +56,8 @@ section(1, 'PROJECTS / HEX_TIERS 镜像一致 + 表完整性');
   let keysOK = Object.values(G.PROJECT_KEYS).flat().length === Object.keys(G.PROJECTS).length;
   ok(keysOK, 'PROJECT_KEYS 三档分组完整');
   // 同档内效果幅度一致（平衡约束抽查：同名修正在不同项目里的量纲统一）
-  ok(G.HEX_TIER_P.length === 3 && G.HEX_TIER_P.every(r => Math.abs(r[0] + r[1] + r[2] - 1) < 1e-9), '三次立项档位概率各自归一');
-  ok(JSON.stringify(G.HEX_TRIGGERS) === JSON.stringify([2, 10, 20]), '触发轮次 = 第 2 / 10 / 20 轮');
+  ok(G.HEX_TIER_P.length === 4 && G.HEX_TIER_P.every(r => Math.abs(r[0] + r[1] + r[2] - 1) < 1e-9), '四次立项档位概率各自归一（v5.8 新增第 30 轮 30/30/40）');
+  ok(JSON.stringify(G.HEX_TRIGGERS) === JSON.stringify([2, 10, 20, 30]), '触发轮次 = 第 2 / 10 / 20 / 30 轮');
 }
 
 // ================= [2] maybeProject 流程与发牌 =================

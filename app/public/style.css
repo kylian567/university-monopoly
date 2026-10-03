@@ -9,16 +9,48 @@ body {
 .screen { min-height:100vh; }
 
 /* ---------- 大厅 ---------- */
-#lobby { display:flex; align-items:center; justify-content:center; background:
+/* v5.8：创房界面美化 —— 流动渐变背景 + 漂浮光斑 + 浮动棋子装饰 + 卡片入场与呼吸辉光 */
+#lobby { display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; background:
   radial-gradient(circle at 20% 20%, rgba(253,248,238,.9) 0%, transparent 55%),
   linear-gradient(160deg, #f7f1e2, #e8dbc2); }
+#lobby::before { content:""; position:absolute; inset:-20%; pointer-events:none;
+  background:
+    radial-gradient(closest-side, rgba(232,176,75,.20), transparent 70%),
+    radial-gradient(closest-side, rgba(122,21,34,.12), transparent 70%),
+    radial-gradient(closest-side, rgba(29,94,86,.12), transparent 70%);
+  background-repeat:no-repeat;
+  background-size:52vmax 52vmax, 44vmax 44vmax, 40vmax 40vmax;
+  background-position:-8% -12%, 108% 30%, 40% 115%;
+  animation:lobbyDrift 16s ease-in-out infinite alternate; }
+@keyframes lobbyDrift {
+  0%   { background-position:-8% -12%, 108% 30%, 40% 115%; }
+  50%  { background-position:14% 22%, 86% 4%, 66% 92%; }
+  100% { background-position:-4% 34%, 112% 62%, 22% 100%; } }
+.lobby-deco { position:absolute; inset:0; pointer-events:none; }
+.lobby-deco span { position:absolute; opacity:0; filter:drop-shadow(0 6px 10px rgba(90,70,40,.25));
+  animation:lobbyFloat 7s ease-in-out var(--d,0s) infinite; }
+@keyframes lobbyFloat {
+  0%   { transform:translateY(18px) rotate(-6deg); opacity:0; }
+  18%  { opacity:.85; }
+  50%  { transform:translateY(-16px) rotate(7deg); opacity:.95; }
+  82%  { opacity:.8; }
+  100% { transform:translateY(20px) rotate(-5deg); opacity:0; } }
 .lobby-box { background:rgba(255,255,255,.88); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,1);
   border-radius:24px; padding:42px 46px; width:min(430px,92vw); position:relative; overflow:hidden;
-  box-shadow:0 24px 60px rgba(90,70,40,.22), 0 4px 14px rgba(90,70,40,.12); text-align:center; }
+  box-shadow:0 24px 60px rgba(90,70,40,.22), 0 4px 14px rgba(90,70,40,.12); text-align:center;
+  animation:lobbyIn .65s cubic-bezier(.22,1,.36,1) both, lobbyGlow 4.5s ease-in-out 1s infinite; }
+@keyframes lobbyIn { from { transform:translateY(26px) scale(.96); opacity:0; } to { transform:none; opacity:1; } }
+@keyframes lobbyGlow {
+  0%,100% { box-shadow:0 24px 60px rgba(90,70,40,.22), 0 4px 14px rgba(90,70,40,.12), 0 0 0 rgba(232,176,75,0); }
+  50%     { box-shadow:0 24px 60px rgba(90,70,40,.22), 0 4px 14px rgba(90,70,40,.12), 0 0 34px rgba(232,176,75,.4); } }
 .lobby-box::before { content:""; position:absolute; left:0; right:0; top:0; height:6px;
   background:linear-gradient(90deg,#7a1522,#e8b04b,#1d5e56,#7a1522); background-size:300% 100%; animation:ribbonslide 6s linear infinite; }
 @keyframes ribbonslide { 0%{background-position:0 0} 100%{background-position:300% 0} }
-.logo-mini { font-size:36px; font-weight:800; letter-spacing:6px; color:#7a1522; filter:drop-shadow(0 2px 3px rgba(122,21,34,.25)); }
+.logo-mini { font-size:36px; font-weight:800; letter-spacing:6px;
+  background:linear-gradient(100deg,#7a1522 20%,#e8b04b 42%,#7a1522 62%); background-size:220% 100%;
+  -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 2px 3px rgba(122,21,34,.25)); animation:logoShine 5s ease-in-out infinite; }
+@keyframes logoShine { 0%,100%{background-position:0% 0} 50%{background-position:100% 0} }
 .lobby-sub { font-size:12px; color:#9a938a; margin:10px 0 26px; letter-spacing:3px; }
 .inp { width:100%; padding:13px 15px; border:1.5px solid #ddd3c4; border-radius:12px; font-size:16px; outline:none;
   background:#faf7f1; box-shadow:inset 0 2px 5px rgba(90,70,40,.08); transition:.2s; }
@@ -1063,6 +1095,10 @@ body {
 .hxp-chip.t-prism { --tc:#B76CE8; background:linear-gradient(92deg,#f6effc,#efe0fb,#f6effc); box-shadow:0 0 10px rgba(183,108,232,.35); }
 .hxp-chip.t-major { --tc:#8fb2d9; background:linear-gradient(180deg,#f2f7fd,#e4eef9); }
 .hxp-chip.t-item { --tc:#7cc79b; background:linear-gradient(180deg,#f0faf4,#e0f2e8); }
+/* v5.8：查看他人浮层 —— 两行胶囊（上行名称 / 下行效果描述） */
+.hxp-rich { display:inline-flex; flex-direction:column; align-items:flex-start; gap:1px; padding:5px 10px; max-width:100%; }
+.hxp-rich b { font-size:12px; line-height:1.35; }
+.hxp-rich i { font-style:normal; font-weight:500; font-size:10.5px; line-height:1.35; color:#6a7288; }
 .hxp-empty { font-size:12px; color:#a89c88; font-style:italic; }
 .hxp-assets { display:flex; flex-direction:column; gap:4px; max-height:32vh; overflow:auto; }
 .hxp-asset { display:flex; align-items:center; gap:7px; font-size:12.5px; background:rgba(255,255,255,.65);

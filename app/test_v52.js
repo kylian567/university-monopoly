@@ -310,13 +310,13 @@ console.log('\n[19] 生活区校区：公用事业/机场 ×0.92 / 地价 +3%');
   const utilRent = r.calcRent(ui, [3, 4]);
   ok(utilRent === Math.round(7 * 100 * 0.92), `公用事业租金（1 家 ×100）= ¥${utilRent}（已 ×0.92）`);
   const trRent = r.calcRent(ti, [3, 4]);
-  ok(trRent === Math.round(900 * 0.92), `机场路费（1 座 ¥900）= ¥${trRent}（已 ×0.92）`);
+  ok(trRent === Math.round(600 * 0.92), `机场路费（1 座 ¥600，v5.8 削弱）= ¥${trRent}（已 ×0.92）`);
   const g = landOf('general', 10000), l = landOf('life', 10000);
   ok(Math.abs(l - g * 1.03) <= 1, `地价 +3%：¥${g} → ¥${l}`);
   // 对照：普通风貌下不加成
   const r2 = mkRoom(2, ['agri', 'agri'], 'general');
   r2.cells[ui].own = r2.players[0].id; r2.cells[ti].own = r2.players[0].id;
-  ok(r2.calcRent(ui, [3, 4]) === 700 && r2.calcRent(ti, [3, 4]) === 900, '对照（综合校区）：原价 ¥700 / ¥900');
+  ok(r2.calcRent(ui, [3, 4]) === 700 && r2.calcRent(ti, [3, 4]) === 600, '对照（综合校区）：原价 ¥700 / ¥600（机场 v5.8 削弱）');
 }
 
 // ---------------- [20] 紧缩校区 ----------------
