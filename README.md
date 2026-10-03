@@ -10,6 +10,8 @@
 
 **当前版本：v5.7**（2026-10-03）
 
+[![CI](https://github.com/kylian567/university-monopoly/actions/workflows/ci.yml/badge.svg)](https://github.com/kylian567/university-monopoly/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) ![Node](https://img.shields.io/badge/Node.js-%E2%89%A518-green)
+
 ![整屏](docs/screenshots/screen.jpg)
 
 </div>
@@ -44,6 +46,16 @@
 <div align="center">
 
 ![棋盘](docs/screenshots/board.jpg)
+
+**🧪 研究项目 · 三选一**（棱彩档 · 深色实验室风） | **🏫 校园风貌 · 全员推选**
+
+![海克斯三选一](docs/screenshots/hex.jpg)
+
+![校园风貌推选](docs/screenshots/faculty.jpg)
+
+**👀 点击右侧玩家名，随时查看他人的项目 / 技能卡 / 资产**
+
+![查看他人](docs/screenshots/viewer.jpg)
 
 </div>
 

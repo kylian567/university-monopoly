@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  engine-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 引擎单测（v4.x ~ v5.7 共 504 项）
+        working-directory: app
+        run: |
+          set -e
+          for t in test_v57 test_v55 test_v54 test_v53 test_v52 test_v51 test_v50 test_v40 test_majors; do
+            echo "▶ node $t.js"
+            node "$t.js"
+          done
+
+      - name: AI 自动对局冒烟
+        working-directory: app
+        run: node simulate.js
