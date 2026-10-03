@@ -126,9 +126,10 @@ section(4, 'pickProject → settleProject → 立项生效 → 回到 roll');
   room.round = 2; room.maybeProject();
   const tier = room.project.tier;
   for (const p of room.players) room.pickProject(p, room.project.offers[p.id][0]);
-  ok(room.phase === 'roll' && room.project === null, '全员选完自动结算并回到 roll 阶段');
+  // 结算后 startTurn 可能因主动技专业进入 skill 阶段，只要离开 project 即为成功
+  ok(room.project === null && room.phase !== 'project', '全员选完自动结算并离开 project 阶段');
   ok(room.players.every(p => p.hexList.length === 1), '每人 hexList 各有一条立项记录');
-  ok(room.players.every(p => Object.keys(p.hex).length > 0), '效果修正已写入 p.hex');
+  ok(room.players.every(p => Object.keys(p.hex).length > 0 || G.PROJECTS[p.hexList[0]].once), '效果生效：mods 写入 p.hex（once 类为立即结算）');
   const granted = room.players.map(p => G.PROJECTS[p.hexList[0]]);
   ok(granted.every(pr => pr.tier === tier), '发到手的档位与公示档位一致');
   room.clearTimer(); room.clearAiTimers();
@@ -137,7 +138,7 @@ section(4, 'pickProject → settleProject → 立项生效 → 回到 roll');
   room2.start(); room2.clearTimer(); room2.clearAiTimers();
   room2.round = 10; room2.maybeProject();
   for (const p of room2.players) room2.aiProject(p);
-  ok(room2.phase === 'roll' && room2.players.every(p => p.hexList.length === 1), 'AI 自动三选一也能走完整个流程');
+  ok(room2.project === null && room2.phase !== 'project' && room2.players.every(p => p.hexList.length === 1), 'AI 自动三选一也能走完整个流程');
   room2.clearTimer(); room2.clearAiTimers();
 }
 
