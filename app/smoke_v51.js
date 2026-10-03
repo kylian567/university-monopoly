@@ -1,8 +1,10 @@
 'use strict';
 // v5.1 浏览器实机验收：新天气引擎 / 校历事件特效 / 擂台分步动画 / 骰子 3D 翻滚 /
 // 盖房施工动画 / 重投虚影 / 现金显示态 / 快捷语音去前缀去回音。
-// 依赖：本地已启动 server.js（localhost:3000），Playwright 在 NODE_PATH 里。
+// 依赖：已启动 server.js（默认 localhost:3000；用 BASE_URL 可指向线上链接），Playwright 在 NODE_PATH 里。
 const { chromium } = require('playwright');
+
+const BASE = process.env.BASE_URL || 'http://localhost:3000';
 
 let pass = 0, fail = 0;
 const ok = (cond, msg) => { if (cond) { pass++; console.log('  ✓', msg); } else { fail++; console.log('  ✗', msg); } };
@@ -15,7 +17,7 @@ const ok = (cond, msg) => { if (cond) { pass++; console.log('  ✓', msg); } els
   page.on('pageerror', e => errors.push('PAGEERROR: ' + e.message));
 
   try {
-    await page.goto('http://localhost:3000', { waitUntil: 'domcontentloaded' });
+    await page.goto(BASE, { waitUntil: 'domcontentloaded' });
     await page.waitForTimeout(700);
     // 跳过作者公告与更新简介
     await page.click('#btnAnnounce'); await page.waitForTimeout(250);
@@ -56,6 +58,14 @@ const ok = (cond, msg) => { if (cond) { pass++; console.log('  ✓', msg); } els
     });
     ok(disp.after === disp.before + 5000, `事件增量能改"显示现金"（${disp.before} → ${disp.after}）`);
     ok(disp.back === disp.before, `队列排空后显示态与服务端对齐（回到 ${disp.back}）`);
+
+    // 线上对局里 AI 会持续推进并播放动画。做合成 DOM 检查前必须先等队列排空：
+    // renderGhost 在 animPending>0 时按设计不显示，否则断言会误报失败。
+    const waitIdle = async () => {
+      await page.evaluate(async () => {
+        for (let i = 0; i < 240; i++) { if (animPending === 0 && qDepth === 0) return; await new Promise(r => setTimeout(r, 250)); }
+      });
+    };
 
     console.log('\n[3] 天气引擎：8 种各画各的');
     const wx = await page.evaluate(async () => {
@@ -103,25 +113,30 @@ const ok = (cond, msg) => { if (cond) { pass++; console.log('  ✓', msg); } els
 
     console.log('\n[5] 骰子 3D 翻滚 + 落定冲击');
     const dice = await page.evaluate(async () => {
-      // 服务器 30s 超时会替玩家自动掷骰，这里先把已有骰子清掉，只统计本次的这一副
+      // 清掉残留（服务器 30s 超时会替玩家自动掷骰），再只统计本次这一副
       document.querySelectorAll('.dice-wrap').forEach(e => e.remove());
       const p = diceAnim(3, 5);
+      // 立刻打标记：清空后第一副就是我们这一副，线上并发的另一副不会影响统计
+      const wrap = document.querySelector('.dice-wrap');
+      if (wrap) wrap.dataset.mine = '1';
       await new Promise(r => setTimeout(r, 300));
+      const my = document.querySelector('.dice-wrap[data-mine="1"]');
       const mid = {
-        boxes: document.querySelectorAll('.die-wrap').length,
-        shadows: document.querySelectorAll('.die-shadow').length,
-        rolling: document.querySelectorAll('.die.rolling').length,
-        html: (document.querySelector('.dice-wrap') || { innerHTML: '(none)' }).innerHTML.slice(0, 240),
+        boxes: my ? my.querySelectorAll('.die-wrap').length : 0,
+        shadows: my ? my.querySelectorAll('.die-shadow').length : 0,
+        rolling: my ? my.querySelectorAll('.die.rolling').length : 0,
+        html: (my || { innerHTML: '(none)' }).innerHTML.slice(0, 240),
       };
       await p;
-      return { mid, gone: document.querySelectorAll('.dice-wrap').length };
+      return { mid, mineGone: !document.querySelector('.dice-wrap[data-mine="1"]') };
     });
     console.log('   · dice mid =', JSON.stringify(dice.mid));
     ok(dice.mid.boxes === 2 && dice.mid.shadows === 2, '两颗骰子各有独立容器与投影');
     ok(dice.mid.rolling === 2, '滚动中两颗骰子都在翻滚');
-    ok(dice.gone === 0, '动画结束后骰子容器已清理');
+    ok(dice.mineGone, '动画结束后骰子容器已清理');
 
     console.log('\n[6] 辩论擂台分步动画');
+    await waitIdle();
     const duel = await page.evaluate(async () => {
       const p = duelAnim({ t: 'duel', label: '辩论擂台', pid: S.players[0].id, opp: S.players[1].id, a: 5, b: 2, winner: S.players[0].id, amount: 1200 });
       await new Promise(r => setTimeout(r, 500));
@@ -155,6 +170,7 @@ const ok = (cond, msg) => { if (cond) { pass++; console.log('  ✓', msg); } els
     ok(arena, '校园运动会复用同一套分步演出且不报错');
 
     console.log('\n[7] 盖房施工动画 + 拆除烟尘');
+    await waitIdle();
     const build = await page.evaluate(async () => {
       const cell = 3;
       buildAnim({ pid: S.players[0].id, cell, hotel: false, level: 2 });
@@ -176,6 +192,8 @@ const ok = (cond, msg) => { if (cond) { pass++; console.log('  ✓', msg); } els
     ok(build.s2.collapse === 1 && build.s2.bits >= 3, `拆除烟尘与坠落碎块（${build.s2.bits} 块）`);
 
     console.log('\n[8] 重投虚影（全场可见的落点提示）');
+    // 线上对局可能在放动画；renderGhost 在 animPending>0 时按设计不显示，先等队列排空
+    await waitIdle();
     const ghost = await page.evaluate(() => {
       const pid = S.players[0].id;
       renderGhost({ phase: 'reroll', pendingReroll: { pid, target: 10, steps: 7, from: 3 }, players: S.players, cells: S.cells });
@@ -188,6 +206,7 @@ const ok = (cond, msg) => { if (cond) { pass++; console.log('  ✓', msg); } els
     ok(ghost.on === 1, '重投阶段地图上出现落点虚影');
     ok(ghost.off === 0, '非重投阶段虚影立即消失');
     // 分支格（岔路）也要能标
+    await waitIdle();
     const ghost2 = await page.evaluate(() => {
       renderGhost({ phase: 'reroll', pendingReroll: { pid: S.players[0].id, target: 50, steps: 9, from: 20 }, players: S.players, cells: S.cells });
       const on = document.querySelectorAll('#board .ghost').length;
