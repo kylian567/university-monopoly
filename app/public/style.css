@@ -349,22 +349,11 @@ body {
 .major-btn .mj-name { font-size:13px; font-weight:700; color:#3a3630; }
 .major-btn .mj-skill { font-size:10.5px; color:#8a847a; line-height:1.28; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
 .major-hint { font-size:12px; color:#9a938a; min-height:16px; margin-bottom:8px; }
-/* v5.3：60 个专业的选择区（分组 + 搜索） */
+/* v5.3：专业搜索框（专业列表本身保持 v5.2 之前的平铺样式不变） */
 .major-search { width:100%; box-sizing:border-box; margin:6px 0 8px; padding:7px 11px; font-size:12.5px;
   border:1.5px solid #e5d9b8; border-radius:10px; background:linear-gradient(180deg,#fffdf8,#f8f2e6); color:#3a3630;
   box-shadow:inset 0 1px 2px rgba(120,100,60,.08); outline:none; }
 .major-search:focus { border-color:#c9a05a; box-shadow:0 0 0 3px rgba(201,160,90,.16); }
-.major-row { display:block; margin:0 0 6px; max-height:340px; overflow-y:auto; padding-right:3px; }
-.mj-block { margin-bottom:8px; }
-.mj-group { display:flex; align-items:center; gap:7px; font-size:11.5px; font-weight:700; color:#7a6a4a;
-  padding:3px 2px 5px; position:sticky; top:0; background:linear-gradient(180deg,#fff9ec,#fff9ec00); z-index:2; }
-.mj-group .mj-sub { font-weight:400; font-size:10.5px; color:#a89f90; }
-.mj-group .mj-count { margin-left:auto; font-weight:600; font-size:10.5px; color:#b0a48f;
-  background:#f4ecda; border:1px solid #e7dcc2; border-radius:999px; padding:0 7px; }
-.mj-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:6px; }
-.major-btn .mj-skillname { font-size:11px; font-weight:600; color:#a8763a; }
-.major-btn .mj-active { font-style:normal; font-size:9px; font-weight:700; color:#fff; background:#e0674a;
-  border-radius:999px; padding:0 5px; margin-left:5px; vertical-align:1px; }
 .player-item .mj-tag { font-size:11px; background:#f3e9d6; border:1px solid #e5d9b8; border-radius:6px; padding:1px 6px; color:#7a6a4a; }
 
 /* ---------- 新机制特效 ---------- */

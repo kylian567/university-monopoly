@@ -4,7 +4,7 @@
 //       台风的雷声只在"切到台风"那一下响（drawWeather 的 storm 分支不再播 thunder）；
 //       新视觉类与音效表齐备
 //   [2] 开局公告已是 v5.3
-//   [3] 选专业界面：60 个专业按钮 / 3 个梯队分组 / 搜索框过滤
+//   [3] 选专业界面：60 个专业按钮 / 平铺样式 / 搜索框过滤
 //   [4] 新视觉函数与镜像表在运行时可用（60 专业、91 音效、5 个新特效函数）
 //   [5] 掷骰落定涟漪动效可复现（不再晃屏）
 //   [6] 带新专业开局不报错
@@ -126,14 +126,13 @@ function sliceFn(src, name) {
     await page.waitForTimeout(300);
     const picker = await page.evaluate(() => ({
       btns: document.querySelectorAll('#majorRow .major-btn').length,
-      blocks: document.querySelectorAll('#majorRow .mj-block').length,
-      groups: [...document.querySelectorAll('#majorRow .mj-group')].map(e => e.textContent.trim().slice(0, 8)),
       majors: Object.keys(MAJORS).length,
       keys: (typeof MAJOR_KEYS !== 'undefined') ? MAJOR_KEYS.length : Object.keys(MAJORS).length,
       hasSearch: !!document.getElementById('majorSearch'),
+      noTierDom: document.querySelectorAll('#majorRow .mj-block, #majorRow .mj-group').length,
     }));
     ok(picker.btns === 60, `选专业界面列出 ${picker.btns} 个专业按钮（预期 60）`);
-    ok(picker.blocks === 3, `按 ${picker.blocks} 个梯队分组展示：${picker.groups.join(' / ')}`);
+    ok(picker.noTierDom === 0, '没有梯队分组 DOM（平铺样式与 v5.2 之前一致）');
     ok(picker.majors === 60 && picker.keys === 60, `前端镜像：MAJORS ${picker.majors} 项 / MAJOR_KEYS ${picker.keys} 项`);
     ok(picker.hasSearch, '搜索框已渲染');
     await shot('01-picker.png');
@@ -158,9 +157,8 @@ function sliceFn(src, name) {
     await page.waitForTimeout(260);
     const s3 = await page.evaluate(() => ({
       vis: [...document.querySelectorAll('#majorRow .major-btn')].filter(b => b.style.display !== 'none').length,
-      blocks: [...document.querySelectorAll('#majorRow .mj-block')].filter(b => b.style.display !== 'none').length,
     }));
-    ok(s3.vis === 0 && s3.blocks === 0, '无匹配时按钮与整组标题一并收起');
+    ok(s3.vis === 0, '无匹配时全部按钮隐藏');
 
     await page.fill('#majorSearch', '');
     await page.waitForTimeout(260);
@@ -189,14 +187,13 @@ function sliceFn(src, name) {
     console.log('\n[6] 运行时镜像 + 新特效函数可用');
     const rt = await page.evaluate(() => ({
       majors: Object.keys(MAJORS).length,
-      tiers: MAJOR_TIERS.length,
       elec: MAJORS.elec.name,
       elecMode: MAJORS.elec.mode,
       sfx: Object.keys(SFX).length,
       fns: ['skillBeam', 'upgradePillar', 'crownAt', 'greyMoment', 'diceRipple'].map(f => typeof window[f]),
       fac: FACULTY_KEYS.length,
     }));
-    ok(rt.majors === 60 && rt.tiers === 3, `运行时 MAJORS ${rt.majors} 项 / ${rt.tiers} 个梯队`);
+    ok(rt.majors === 60, `运行时 MAJORS ${rt.majors} 项`);
     ok(rt.elec === '电气工程' && rt.elecMode === 'active', `电气工程 = ${rt.elec}（${rt.elecMode} 主动技）`);
     ok(rt.sfx === 91, `运行时音效表 ${rt.sfx} 种`);
     ok(rt.fns.every(t => t === 'function'), `5 个新特效函数均已挂载：${rt.fns.join('/')}`);

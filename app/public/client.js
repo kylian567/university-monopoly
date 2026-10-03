@@ -1070,7 +1070,7 @@ function renderLobby() {
   const me = S.players.find(p => p.id === myPid);
   const row = $('majorRow');
   if (row) {
-    // v5.3：专业扩到 60 种 —— 按梯队分组 + 可搜索；用签名守卫避免每次状态推送都重建 DOM
+    // v5.3：专业扩到 60 种 —— 平铺样式不变，仅新增搜索；用签名守卫避免每次状态推送都重建 DOM
     // （否则正在输入的搜索词与滚动位置会被重置）
     const sig = (me ? me.major : '') + ':' + S.players.length;
     if (sig !== majorRowSig) { majorRowSig = sig; row.innerHTML = buildMajorHtml(me); filterMajors($('majorSearch') ? $('majorSearch').value : ''); }
@@ -1082,37 +1082,22 @@ function renderLobby() {
     mh.textContent = `你的专业：${m.name || '—'} · 技能「${m.skill || ''}」${how}（每局 ${m.uses} 次）`;
   }
 }
-// v5.3：专业选择列表 —— 按 tier 分组，每个按钮带 data-txt 供搜索
+// v5.3：专业扩到 60 种 —— 布局与 v5.2 之前的平铺样式完全一致，仅新增搜索；
+// 用签名守卫避免每次状态推送都重建 DOM（否则正在输入的搜索词与滚动位置会被重置）
 let majorRowSig = '';
-const MAJOR_TIERS = [[1, '🥇 第一梯队', '开局就是强'], [2, '🥈 主流强度', '各有专业特色'], [3, '🥉 特色向', '小额高频 / 玩梗']];
 function buildMajorHtml(me) {
-  const all = Object.values(MAJORS);
-  let html = '';
-  for (const [t, label, sub] of MAJOR_TIERS) {
-    const list = all.filter(m => m.tier === t);
-    if (!list.length) continue;
-    html += `<div class="mj-block" data-tier="${t}"><div class="mj-group">${label}<span class="mj-sub">${sub}</span><span class="mj-count">${list.length} 种</span></div><div class="mj-grid">`;
-    html += list.map(m => `<button class="major-btn ${me && me.major === m.id ? 'sel' : ''}" data-txt="${esc((m.name + ' ' + m.skill + ' ' + m.desc + ' ' + m.id).toLowerCase())}" onclick="act({type:'major',major:'${m.id}'})">
-        <span class="mj-name">${m.icon} ${esc(m.name)}${m.mode === 'active' ? '<i class="mj-active">主动</i>' : ''}</span>
-        <span class="mj-skillname">${esc(m.skill)}</span>
+  return Object.values(MAJORS).map(m => `<button class="major-btn ${me && me.major === m.id ? 'sel' : ''}" data-txt="${esc((m.name + ' ' + m.skill + ' ' + m.desc + ' ' + m.id).toLowerCase())}" onclick="act({type:'major',major:'${m.id}'})">
+        <span class="mj-name">${m.icon} ${esc(m.name)} · ${esc(m.skill)}</span>
         <span class="mj-skill">${esc(m.desc)}（每局 ${m.uses} 次）</span>
       </button>`).join('');
-    html += '</div></div>';
-  }
-  return html;
 }
-// 搜索过滤：隐藏不匹配的按钮；整组都不匹配时把组标题一并收起
+// 搜索过滤：隐藏不匹配的专业按钮
 function filterMajors(q) {
   const row = $('majorRow'); if (!row) return;
   q = String(q || '').trim().toLowerCase();
-  row.querySelectorAll('.mj-block').forEach(blk => {
-    let shown = 0;
-    blk.querySelectorAll('.major-btn').forEach(btn => {
-      const hit = !q || (btn.dataset.txt || '').includes(q);
-      btn.style.display = hit ? '' : 'none';
-      if (hit) shown++;
-    });
-    blk.style.display = shown ? '' : 'none';
+  row.querySelectorAll('.major-btn').forEach(btn => {
+    const hit = !q || (btn.dataset.txt || '').includes(q);
+    btn.style.display = hit ? '' : 'none';
   });
 }
 window.filterMajors = filterMajors;
