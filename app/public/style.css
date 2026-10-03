@@ -952,3 +952,126 @@ body {
   animation:fdHit .55s cubic-bezier(.2,1.6,.4,1); }
 @keyframes fdHit { 0% { transform:scale(.6); } 60% { transform:scale(1.22); } 100% { transform:scale(1); } }
 .fd-note { font-size:12px; color:#a89c88; }
+
+/* ================= v5.7：海克斯 · 研究项目 ================= */
+/* 与校园风貌的"暖色牌匾"区分：立项是深色实验室风，靠档位色发光 —— 银灰蓝 / 琥珀金 / 棱彩流光 */
+.hx-layer { position:fixed; inset:0; z-index:150; display:flex; align-items:center; justify-content:center;
+  padding:16px; pointer-events:auto; opacity:0; transition:opacity .42s ease;
+  background:radial-gradient(circle at 50% 40%, rgba(16,20,38,.78), rgba(7,9,20,.92)); backdrop-filter:blur(3px); }
+.hx-layer.show { opacity:1; }
+.hx-panel { position:relative; width:min(96vw,1000px); max-height:96vh; overflow:auto; padding:22px 26px 18px; border-radius:24px;
+  background:linear-gradient(168deg,#20263e,#121627 62%,#0d1020);
+  border:3px solid var(--hx,#8FA6BF);
+  box-shadow:0 30px 90px rgba(0,0,0,.62), 0 0 60px color-mix(in srgb, var(--hx,#8FA6BF) 26%, transparent), inset 0 2px 0 rgba(255,255,255,.08);
+  opacity:0; transform:translateY(30px) scale(.93);
+  transition:transform .52s cubic-bezier(.2,1.35,.4,1), opacity .4s ease; }
+.hx-layer.show .hx-panel { opacity:1; transform:none; }
+.hx-panel.t-silver { --hx:#8FA6BF; }
+.hx-panel.t-gold   { --hx:#E8B04B; }
+.hx-panel.t-prism  { --hx:#B76CE8; }
+/* 背景辉光 / 扫光 / 光点（比风貌更快更"电子"） */
+.hx-glow { position:absolute; inset:-40%; pointer-events:none;
+  background:radial-gradient(circle at 50% 38%, color-mix(in srgb, var(--hx,#8FA6BF) 30%, transparent), transparent 58%);
+  animation:hxGlow 3.6s ease-in-out infinite; }
+@keyframes hxGlow { 0%,100% { opacity:.55; } 50% { opacity:1; } }
+.hx-beam { position:absolute; inset:0; pointer-events:none; overflow:hidden; border-radius:22px; }
+.hx-beam::before { content:''; position:absolute; top:-60%; left:-30%; width:34%; height:220%;
+  background:linear-gradient(100deg, transparent, rgba(255,255,255,.09), transparent);
+  transform:rotate(14deg); animation:hxBand 5.2s linear infinite; }
+@keyframes hxBand { 0% { left:-40%; } 100% { left:130%; } }
+.hx-mote { position:absolute; width:5px; height:5px; border-radius:50%; pointer-events:none;
+  background:color-mix(in srgb, var(--hx,#8FA6BF) 75%, white); opacity:.6; box-shadow:0 0 10px var(--hx,#8FA6BF);
+  animation:hxFloat 6s ease-in-out infinite; }
+.hx-mote.m2 { animation-delay:1.1s; } .hx-mote.m3 { animation-delay:2.2s; } .hx-mote.m4 { animation-delay:3.1s; }
+.hx-mote.m5 { animation-delay:4s; } .hx-mote.m6 { animation-delay:5.1s; }
+@keyframes hxFloat { 0%,100% { transform:translateY(0); opacity:.35; } 50% { transform:translateY(-26px); opacity:.85; } }
+.hx-plaque { position:relative; text-align:center; padding:8px 14px 10px; border-radius:16px; margin-bottom:14px;
+  background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.02));
+  border:1px solid color-mix(in srgb, var(--hx,#8FA6BF) 45%, transparent); }
+.hx-kicker { font-size:11.5px; letter-spacing:7px; color:#9fb0c8; }
+.hx-big { font-size:30px; font-weight:900; letter-spacing:8px; margin:4px 0 6px; color:var(--hx,#8FA6BF);
+  text-shadow:0 0 26px color-mix(in srgb, var(--hx,#8FA6BF) 75%, transparent); }
+.hx-big.t-prism { background:linear-gradient(92deg,#8FA6BF,#E8B04B,#B76CE8,#4FC3F7,#B76CE8); background-size:220% 100%;
+  -webkit-background-clip:text; background-clip:text; color:transparent; animation:hxRainbow 3.2s linear infinite;
+  text-shadow:none; }
+@keyframes hxRainbow { 0% { background-position:0% 0; } 100% { background-position:220% 0; } }
+.hx-hint { font-size:12px; line-height:1.7; color:#aeb9d0; }
+/* 三张项目卡 */
+.hx-row { position:relative; display:flex; gap:16px; justify-content:center; flex-wrap:wrap; }
+.hx-card { position:relative; width:min(286px,30vw); min-width:218px; padding:14px 14px 10px; border-radius:18px; cursor:pointer;
+  background:linear-gradient(180deg,#f8faFF,#e9edf7);
+  border:3px solid var(--hc,#8FA6BF);
+  box-shadow:0 12px 30px rgba(0,0,0,.45), 0 0 22px color-mix(in srgb, var(--hc,#8FA6BF) 34%, transparent), inset 0 2px 0 rgba(255,255,255,.95);
+  opacity:0; transform:translateY(30px) rotateY(58deg) scale(.82);
+  animation:hxIn .62s cubic-bezier(.2,1.35,.4,1) forwards;
+  transition:transform .24s ease, box-shadow .24s ease; }
+@keyframes hxIn { to { opacity:1; transform:translateY(0) rotateY(0) scale(1); } }
+.hx-card:hover { transform:translateY(-6px) scale(1.03);
+  box-shadow:0 18px 44px rgba(0,0,0,.5), 0 0 36px color-mix(in srgb, var(--hc,#8FA6BF) 62%, transparent); }
+.hx-card.t-gold { box-shadow:0 12px 30px rgba(0,0,0,.45), 0 0 28px rgba(232,176,75,.42), inset 0 2px 0 rgba(255,255,255,.95); }
+.hx-card.t-gold::after { content:''; position:absolute; inset:3px; border-radius:14px; pointer-events:none;
+  background:linear-gradient(115deg, transparent 42%, rgba(255,224,140,.35) 50%, transparent 58%);
+  background-size:260% 100%; animation:hxSheen 2.8s linear infinite; }
+@keyframes hxSheen { 0% { background-position:130% 0; } 100% { background-position:-130% 0; } }
+.hx-card.t-prism { background:linear-gradient(180deg,#fbf7ff,#efe4fa); }
+.hx-card.t-prism::before { content:''; position:absolute; inset:-7px; border-radius:22px; z-index:-1;
+  background:conic-gradient(#B76CE8,#4FC3F7,#4ade80,#E8B04B,#ef6b93,#B76CE8);
+  filter:blur(7px); opacity:.75; animation:hxSpin 3.4s linear infinite; }
+@keyframes hxSpin { to { transform:rotate(360deg); } }
+.hx-card.picked { box-shadow:0 0 0 4px var(--hc), 0 20px 46px rgba(0,0,0,.5), 0 0 44px color-mix(in srgb, var(--hc,#8FA6BF) 70%, transparent);
+  transform:translateY(-4px) scale(1.03); }
+.hx-ico { font-size:44px; text-align:center; line-height:1; filter:drop-shadow(0 0 12px color-mix(in srgb, var(--hc,#8FA6BF) 55%, transparent)); }
+.hx-name { text-align:center; font-size:20px; font-weight:900; color:#232a3d; margin:6px 0 8px; letter-spacing:1px; }
+.hx-desc { font-size:12px; line-height:1.55; color:#39415a; background:rgba(63,81,140,.09); border-radius:10px; padding:6px 9px; min-height:38px; }
+.hx-tier { text-align:center; font-size:11px; font-weight:800; letter-spacing:2px; color:var(--hc); margin-top:7px; }
+.hx-voters { display:flex; flex-wrap:wrap; gap:4px; justify-content:center; min-height:18px; margin-top:4px; }
+.hx-chip { font-size:10.5px; font-style:normal; padding:2px 7px; border-radius:8px; background:#dde3f0; color:#4b5470; }
+.hx-chip.me { background:#3b2d68; color:#fff; }
+.hx-picked { display:none; text-align:center; font-size:11px; font-weight:800; color:#1d6b40; margin-top:5px; }
+.hx-card.picked .hx-picked { display:block; }
+.hx-layer.waiting .hx-card:not(.picked) { filter:grayscale(.5) brightness(.92); }
+/* 倒计时 */
+.hx-timer { display:flex; align-items:center; gap:12px; justify-content:center; margin-top:16px; position:relative; }
+.hx-bar { flex:1; max-width:540px; height:9px; border-radius:6px; background:rgba(255,255,255,.1); overflow:hidden; box-shadow:inset 0 1px 2px rgba(0,0,0,.5); }
+.hx-bar b { display:block; height:100%; width:100%; border-radius:6px;
+  background:linear-gradient(90deg,#8FA6BF,#E8B04B,#c0392b); transition:width 1s linear; }
+.hx-bar b.warn { background:linear-gradient(90deg,#E8B04B,#e07b39); }
+.hx-bar b.danger { background:linear-gradient(90deg,#e05548,#a82418); }
+.hx-timer span { font-size:12px; color:#aeb9d0; white-space:nowrap; }
+.hx-timer em { font-style:normal; font-weight:900; color:#ffd76a; font-size:15px; }
+.hx-timer.urgent em { animation:hxUrgent .5s ease-in-out infinite; }
+@keyframes hxUrgent { 0%,100% { transform:scale(1); } 50% { transform:scale(1.28); } }
+
+/* ---------- 玩家查看浮层（点击右侧玩家名） ---------- */
+.hxp-layer { position:fixed; inset:0; z-index:160; display:flex; align-items:center; justify-content:center; pointer-events:auto;
+  padding:16px; opacity:0; transition:opacity .26s ease;
+  background:rgba(10,12,24,.6); backdrop-filter:blur(2px); }
+.hxp-layer.show { opacity:1; }
+.hxp-card { width:min(94vw,520px); max-height:88vh; overflow:auto; border-radius:20px; padding:16px 18px 14px;
+  background:linear-gradient(170deg,#fffdf6,#f4ecd9); border:3px solid #e8b04b;
+  box-shadow:0 26px 70px rgba(0,0,0,.5), inset 0 2px 0 rgba(255,255,255,.9); }
+.hxp-head { display:flex; align-items:center; gap:8px; flex-wrap:wrap; padding-bottom:10px; border-bottom:1px dashed #d8cdb8; margin-bottom:10px; }
+.hxp-head .dot { width:13px; height:13px; border-radius:50%; display:inline-block; box-shadow:0 0 0 2px rgba(255,255,255,.7), 0 1px 4px rgba(0,0,0,.3); }
+.hxp-head b { font-size:17px; color:#4a3a20; }
+.hxp-cash { font-size:12px; color:#8a6d1a; margin-left:auto; }
+.hxp-sec { margin-bottom:10px; }
+.hxp-sec-t { font-size:12.5px; font-weight:800; color:#7a5a1e; margin-bottom:6px; letter-spacing:1px; }
+.hxp-hexes { display:flex; flex-wrap:wrap; gap:6px; }
+.hxp-chip { font-size:11.5px; padding:4px 9px; border-radius:9px; border:2px solid var(--tc,#9aa5b8); background:#fff; color:#3c4258; font-weight:700; }
+.hxp-chip.t-silver { --tc:#8FA6BF; background:linear-gradient(180deg,#f6f9fc,#e7edf4); }
+.hxp-chip.t-gold { --tc:#E8B04B; background:linear-gradient(180deg,#fffaf0,#f7ecd2); }
+.hxp-chip.t-prism { --tc:#B76CE8; background:linear-gradient(92deg,#f6effc,#efe0fb,#f6effc); box-shadow:0 0 10px rgba(183,108,232,.35); }
+.hxp-chip.t-major { --tc:#8fb2d9; background:linear-gradient(180deg,#f2f7fd,#e4eef9); }
+.hxp-chip.t-item { --tc:#7cc79b; background:linear-gradient(180deg,#f0faf4,#e0f2e8); }
+.hxp-empty { font-size:12px; color:#a89c88; font-style:italic; }
+.hxp-assets { display:flex; flex-direction:column; gap:4px; max-height:32vh; overflow:auto; }
+.hxp-asset { display:flex; align-items:center; gap:7px; font-size:12.5px; background:rgba(255,255,255,.65);
+  border:1px solid #e6dcc4; border-radius:9px; padding:5px 8px; }
+.hxp-asset .swatch { width:11px; height:11px; border-radius:3px; flex:none; box-shadow:inset 0 0 0 1px rgba(0,0,0,.14); }
+.hxp-asset .aname { color:#4a3a20; font-weight:600; }
+.hxp-asset .lvl { margin-left:auto; font-size:11px; }
+.hxp-asset .mortgaged { margin-left:auto; font-size:11px; color:#a05540; }
+/* 右侧玩家卡可点击 */
+.pcard { cursor:pointer; }
+.pcard:hover { filter:brightness(1.05); }
+.tag.hx-tag { background:#efe4fa; color:#7a3cb0; }

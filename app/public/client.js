@@ -184,6 +184,74 @@ const FACULTY = {
 const FACULTY_KEYS = Object.keys(FACULTY);
 const FACULTY_VOTE_MS = 24000;   // v5.5：与服务端同步拉长（原 15s），看清楚再投
 
+// ---------- v5.7：海克斯 · 研究项目（与服务端 game.js 的 PROJECTS/HEX_TIERS 表逐字同步，改一边必须改另一边） ----------
+const HEX_TIERS = {
+  silver: { name: '校级项目', short: '校级', icon: '🥈', color: '#8FA6BF' },
+  gold:   { name: '省级项目', short: '省级', icon: '🥇', color: '#E8B04B' },
+  prism:  { name: '国家级项目', short: '国家级', icon: '💎', color: '#B76CE8' },
+};
+const PROJECTS = {
+  // ===== 校级（银）× 20 =====
+  stipend:   { tier: 'silver', icon: '🚶', name: '勤工俭学',  desc: '每次经过起点额外 +¥400', mods: { goCash: 400 } },
+  thrift:    { tier: 'silver', icon: '🧾', name: '精打细算',  desc: '盖房费用 −10%', mods: { buildCut: 0.10 } },
+  agent:     { tier: 'silver', icon: '🏠', name: '房产中介',  desc: '买入无主地 9 折', mods: { buyCut: 0.10 } },
+  openbook:  { tier: 'silver', icon: '📖', name: '开卷有益',  desc: '每抽一张机会/命运卡 +¥200', mods: { cardGain: 200 } },
+  allowance: { tier: 'silver', icon: '🤝', name: '助学金',    desc: '每轮开始 +¥300', mods: { turnCash: 300 } },
+  microlend: { tier: 'silver', icon: '🏦', name: '小额贷',    desc: '抵押地产时多拿 15%', mods: { mortgageUp: 0.15 } },
+  timemgmt:  { tier: 'silver', icon: '⏰', name: '时间管理',  desc: '被罚停留的回合数 −1（多于 1 回合时）', mods: { stayCut: 1 } },
+  earlybird: { tier: 'silver', icon: '🐦', name: '早起鸟',    desc: '立即 +¥1500', once: 'cash', amt: 1500 },
+  bookmark:  { tier: 'silver', icon: '🎫', name: '祖传票券',  desc: '立即获得 1 张免租券', once: 'pack', voucher: 1 },
+  milk:      { tier: 'silver', icon: '🍼', name: '营养快线',  desc: '每轮开始若现金 <¥4000，+¥500', mods: { poorCash: 500, poorCashUnder: 4000 } },
+  cashback:  { tier: 'silver', icon: '💳', name: '积分返现',  desc: '每次付款返还 5%（单笔封顶 ¥150）', mods: { cashbackPct: 0.05, cashbackCap: 150 } },
+  talisman:  { tier: 'silver', icon: '🧿', name: '平安符',    desc: '每回合开始自动获得免罚符（当轮有效）', mods: { shieldEach: 1 } },
+  sprint:    { tier: 'silver', icon: '🏃', name: '低点冲刺',  desc: '掷出 ≤5 点时 +¥250', mods: { lowRollCash: 250 } },
+  twins:     { tier: 'silver', icon: '🎲', name: '双倍喜悦',  desc: '掷出双数时 +¥200', mods: { doubleCash: 200 } },
+  usedbook:  { tier: 'silver', icon: '📚', name: '二手书摊',  desc: '立即 +¥800', once: 'cash', amt: 800 },
+  firstaid:  { tier: 'silver', icon: '💊', name: '应急药箱',  desc: '被收租 ≥¥1000 时减免 15%（3 次）', mods: { tollShield: 3, tollShieldPct: 0.15, tollShieldMin: 1000 } },
+  freelance: { tier: 'silver', icon: '💻', name: '技术接单',  desc: '每轮开始若名下没有地产，+¥600', mods: { noLandCash: 600 } },
+  umbrella:  { tier: 'silver', icon: '☔', name: '雨具出租',  desc: '雨 / 雾 / 雪 / 台风天，每轮开始 +¥400', mods: { weatherCash: 400 } },
+  network:   { tier: 'silver', icon: '📶', name: '情报网',    desc: '重掷骰费用 −25%', mods: { rerollCut: 0.25 } },
+  sponsor:   { tier: 'silver', icon: '🏅', name: '赛事赞助',  desc: '立即 +¥1200', once: 'cash', amt: 1200 },
+  // ===== 省级（金）× 20 =====
+  raise:      { tier: 'gold', icon: '💼', name: '涨薪合同',   desc: '每次经过起点额外 +¥800', mods: { goCash: 800 } },
+  overseer:   { tier: 'gold', icon: '🏗️', name: '工程监理',  desc: '盖房费用 −20%', mods: { buildCut: 0.20 } },
+  landrush:   { tier: 'gold', icon: '🗺️', name: '圈地许可',  desc: '买入无主地 85 折', mods: { buyCut: 0.15 } },
+  fortune:    { tier: 'gold', icon: '🎴', name: '卡运亨通',   desc: '每抽一张卡 +¥500', mods: { cardGain: 500 } },
+  scholarship:{ tier: 'gold', icon: '🎖️', name: '一等奖学金', desc: '每轮开始 +¥700', mods: { turnCash: 700 } },
+  leverage:   { tier: 'gold', icon: '🏦', name: '杠杆大师',   desc: '抵押地产时多拿 25%', mods: { mortgageUp: 0.25 } },
+  tollpass:   { tier: 'gold', icon: '🎫', name: '通行优惠',   desc: '被收租时一律减免 15%', mods: { tollCut: 0.15 } },
+  rentboost:  { tier: 'gold', icon: '📈', name: '收租培训',   desc: '单笔收租 ≥¥1200 时 +25%', mods: { rentGainPct: 0.25, rentGainMin: 1200 } },
+  medkit:     { tier: 'gold', icon: '⛑️', name: '急救包',     desc: '被收租 ≥¥800 时减免 25%（5 次）', mods: { tollShield: 5, tollShieldPct: 0.25, tollShieldMin: 800 } },
+  giftbag:    { tier: 'gold', icon: '🎁', name: '票券大礼包', desc: '立即获得 2 张免租券 + 1 张免租金卡', once: 'pack', voucher: 2, medal: 1 },
+  deposit:    { tier: 'gold', icon: '🏛️', name: '定期存款',  desc: '每轮开始现金 ≥¥15000 时生息 5%（封顶 ¥1200）', mods: { interestPct: 0.05, interestMin: 15000, interestCap: 1200 } },
+  safetynet:  { tier: 'gold', icon: '🛏️', name: '最低保障',  desc: '每轮开始若名下没有地产，+¥1200', mods: { noLandCash: 1200 } },
+  luckydice:  { tier: 'gold', icon: '🍀', name: '幸运双骰',   desc: '掷出双数时 +¥600', mods: { doubleCash: 600 } },
+  burst:      { tier: 'gold', icon: '⚡', name: '爆发体质',   desc: '掷出 ≤5 点时 +¥600', mods: { lowRollCash: 600 } },
+  rebate:     { tier: 'gold', icon: '💰', name: '消费返现',   desc: '每次付款返还 8%（单笔封顶 ¥300）', mods: { cashbackPct: 0.08, cashbackCap: 300 } },
+  buildcash:  { tier: 'gold', icon: '🔨', name: '盖房返现',   desc: '每次盖房返还 ¥200', mods: { buildCash: 200 } },
+  buycash:    { tier: 'gold', icon: '🏷️', name: '拿地返现',   desc: '每次买地返还 ¥150', mods: { buyCash: 150 } },
+  patron:     { tier: 'gold', icon: '🛡️', name: '学术保护',   desc: '额外获得 2 次免疫负面判定的机会', mods: { immuneBonus: 2 } },
+  startup:    { tier: 'gold', icon: '🚀', name: '创业启动金', desc: '立即 +¥3500', once: 'cash', amt: 3500 },
+  intuition:  { tier: 'gold', icon: '🧠', name: '考场直觉',   desc: '掷出 ≥9 点时 +¥650', mods: { highRollCash: 650 } },
+  // ===== 国家级（棱彩）× 14 =====
+  salaryx2:    { tier: 'prism', icon: '💵', name: '双倍工资',   desc: '经过起点工资 ×2（整局）', mods: { salaryX2: 1 } },
+  monopoly:    { tier: 'prism', icon: '🏆', name: '垄断宣言',   desc: '立即随机占有一块无主地，并 +¥2000', once: 'land', amt: 2000 },
+  seize:       { tier: 'prism', icon: '💎', name: '强取豪夺',   desc: '立即夺取现金最多者 20% 的现金（封顶 ¥5000）', once: 'seize', pct: 0.2, amt: 5000 },
+  nirvana:     { tier: 'prism', icon: '🔥', name: '涅槃',       desc: '首次破产时以 ¥6000 复活并免除该笔债务（限 1 次）', mods: { nirvana: 1 } },
+  aegis:       { tier: 'prism', icon: '🛡️', name: '绝对防御',  desc: '免疫 3 次负面判定（挂科留级 / 拆地拆房等）', mods: { immuneCharges: 3 } },
+  tollbooth:   { tier: 'prism', icon: '🚧', name: '收费站',     desc: '对手经过你的地产时每次付 ¥300（单次移动封顶 ¥900）', mods: { tollBooth: 300 } },
+  fatewheel:   { tier: 'prism', icon: '🎲', name: '命运改写',   desc: '抽到负面卡自动重抽（3 次）', mods: { rerollBad: 3 } },
+  wallstreet:  { tier: 'prism', icon: '🐺', name: '华尔街之狼', desc: '抵押地产可获得地价 100%', mods: { mortgage100: 1 } },
+  legacy:      { tier: 'prism', icon: '🧧', name: '遗产继承',   desc: '每轮开始，当前总资产最低者向你支付 ¥800', mods: { legacy: 1 } },
+  dividends:   { tier: 'prism', icon: '🏛️', name: '基金抽成',  desc: '教育基金池每次进账，你抽成 10%（单笔封顶 ¥500）', mods: { fundKick: 0.10 } },
+  headstart:   { tier: 'prism', icon: '⚡', name: '先发优势',   desc: '每轮开始 +¥1000', mods: { turnCash: 1000 } },
+  landmark:    { tier: 'prism', icon: '🏙️', name: '地标经济',   desc: '每轮开始按名下建筑数 ×¥60 收益', mods: { landmark: 60 } },
+  rerollmaster:{ tier: 'prism', icon: '🔁', name: '重投大师',   desc: '每回合首次重投免费', mods: { freeReroll: 1 } },
+  safety:      { tier: 'prism', icon: '💯', name: '风险兜底',   desc: '每轮开始若现金 <¥2000，直接补到 ¥2000', mods: { floor: 2000 } },
+};
+const PROJECT_KEYS = { silver: [], gold: [], prism: [] };
+for (const k in PROJECTS) PROJECT_KEYS[PROJECTS[k].tier].push(k);
+
 const CELLXY = i => { const [c, r] = CELLGRID[i]; return [GX(c), GY(r)]; };
 const cellCenter = i => {
   if (BRANCH_POS[i]) return BRANCH_POS[i];   // 岔路格用中央小地图坐标
@@ -384,6 +452,16 @@ const SFX = {
     tone({ f: 110, slide: 55, t: 'sawtooth', d: 0.7, v: 0.19 });
     [523, 784].forEach((f, i) => tone({ f, t: 'sine', d: 0.5, v: 0.09, when: 0.18 + i * 0.12 }));
   },
+  // v5.7：研究项目（海克斯）立项演出音效
+  hexRise: () => {
+    noiseFx({ d: 0.14, v: 0.18, hp: 320 });
+    [196, 262, 330, 392].forEach((f, i) => tone({ f, t: 'sine', d: 0.42, v: 0.12, when: i * 0.1 }));
+    tone({ f: 988, t: 'sine', d: 0.5, v: 0.07, when: 0.45 });
+  },
+  hexFlip: n => tone({ f: 740 + Math.max(0, Math.min(3, n || 0)) * 130, t: 'triangle', d: 0.11, v: 0.14 }),
+  hexPick: () => { noiseFx({ d: 0.05, v: 0.16, hp: 800 }); [660, 990].forEach((f, i) => tone({ f, t: 'sine', d: 0.14, v: 0.16, when: i * 0.08 })); },
+  hexHit: () => [523, 784].forEach((f, i) => tone({ f, t: 'triangle', d: 0.16, v: 0.16, when: i * 0.09 })),
+  hexPrism: () => [523, 659, 784, 1047, 1319, 1568].forEach((f, i) => tone({ f, t: 'sine', d: 0.2, v: 0.18, when: i * 0.07 })),
   // 卡片翻入：清脆三连（第二幕）
   facFlip: n => tone({ f: 660 + Math.max(0, Math.min(3, n || 0)) * 120, t: 'triangle', d: 0.12, v: 0.14 }),
   // 投票落槌：一记定音（玩家投票）
@@ -1098,6 +1176,10 @@ function onState(state) {
     const hasChosen = (state.events || []).some(e => e.t === 'faculty_chosen');
     if (state.phase === 'faculty' && (state.facultyOptions || []).length) facOpenVote({ options: state.facultyOptions, ms: 12000 });
     else if (!hasChosen && !facCeremonyBusy) facCloseUI();
+    // v5.7：断线重连 / 中途加入时，按快照把「研究项目三选一」浮层补回来；阶段已过则关闭
+    if (state.phase === 'project' && state.project && state.project.offers) {
+      projectOpenPick({ round: state.project.round, tier: state.project.tier, offers: state.project.offers, picks: state.project.picks, ms: state.project.ms });
+    } else if (state.phase !== 'project' && hexPickEl) closeHexUI();
   }
 }
 function renderLobby() {
@@ -1147,7 +1229,9 @@ const ANIMATED = new Set(['roll', 'move', 'card', 'buy', 'build', 'charge', 'mon
   // v5.2：校园风貌
   'faculty_offer', 'faculty_vote', 'faculty_chosen', 'faculty_round', 'faculty_wave', 'facfx', 'stay_free', 'stay_free_gain', 'free_rent',
   // v5.6：双数再掷提示 + 免费轮/免租轮大屏抽签
-  'doubles', 'faculty_draw']);
+  'doubles', 'faculty_draw',
+  // v5.7：研究项目（海克斯）
+  'project_offer', 'project_pick', 'project_grant', 'hexfx']);
 let animPending = 0;   // 排队中的动画数；>0 时 renderTokens 冻结，防止棋子瞬移
 let visLog = [];       // 已"播放"的日志：按事件流逐步出现，与地图动画严格同节奏（不超前、不滞后）
 let logRendered = 0;   // visLog 中已渲染的下标数（增量渲染，避免每次重排 200+ 行）
@@ -1372,6 +1456,11 @@ async function handleAnim(e) {
     // ---------- v5.2：校园风貌 ----------
     case 'faculty_offer': { facOpenVote(e); break; }        // 15 秒投票期：浮层自带倒计时，不占用动画队列
     case 'faculty_vote': { facMarkVote(e); break; }
+    // v5.7：研究项目（海克斯）
+    case 'project_offer': { projectOpenPick(e); break; }    // 三选一浮层自带倒计时，不占用动画队列
+    case 'project_pick': { projectMarkPick(e); break; }
+    case 'project_grant': { await projectGrantFx(e); break; }
+    case 'hexfx': { await hexFxBanner(e); break; }
     case 'faculty_chosen': { await facultyCeremony(e); break; }
     case 'faculty_round': { await facultyRoundBanner(e); break; }
     case 'faculty_wave': {
@@ -1834,6 +1923,140 @@ function facultyDrawAnim(e) {
     setTimeout(() => d.remove(), 620);
     res();
   });
+}
+
+// ---------- v5.7：海克斯 · 研究项目（三选一大屏演出 + 发动特效 + 他人资产查看） ----------
+let hexPickEl = null, hexPickClock = null, hexPickSig = '', hexMyPick = null;
+
+function hexCardHtml(key, i, tier) {
+  const pr = PROJECTS[key] || {};
+  const T = HEX_TIERS[tier] || {};
+  return `<div class="hx-card t-${tier}" data-key="${key}" style="--hc:${T.color || '#999'};animation-delay:${(0.65 + i * 0.45).toFixed(2)}s">
+      <div class="hx-ico">${pr.icon || '🧪'}</div>
+      <div class="hx-name">${esc(pr.name || key)}</div>
+      <div class="hx-desc">${esc(pr.desc || '')}</div>
+      <div class="hx-tier">${T.icon || ''} ${esc(T.short || '')}</div>
+      <div class="hx-voters"></div>
+      <div class="hx-picked">✔ 已立项</div>
+    </div>`;
+}
+
+// 三选一浮层：档位横幅揭晓 → 三张牌按档位配光翻入 → 倒计时 → 点击立项
+function projectOpenPick(e) {
+  const tier = e.tier || 'silver';
+  const offers = e.offers || {};
+  const mine = offers[myPid] || [];
+  const sig = e.round + '|' + tier + '|' + mine.join(',');
+  if (hexPickEl && hexPickSig === sig) return;
+  if (hexPickEl) closeHexUI();
+  hexPickSig = sig;
+  hexMyPick = null;
+  const ms = (e && e.ms) || HEX_PICK_MS || 32000;
+  const T = HEX_TIERS[tier] || {};
+  const d = document.createElement('div');
+  d.className = 'hx-layer';
+  d.innerHTML = `<div class="hx-panel t-${tier}">
+      <div class="hx-glow"></div><div class="hx-beam"></div><i class="hx-mote m1"></i><i class="hx-mote m2"></i><i class="hx-mote m3"></i><i class="hx-mote m4"></i><i class="hx-mote m5"></i><i class="hx-mote m6"></i>
+      <div class="hx-plaque"><div class="hx-plaque-in">
+        <div class="hx-kicker">第 ${e.round} 轮 · 研 究 项 目 立 项</div>
+        <div class="hx-big hx-tier-txt t-${tier}">${T.icon || ''} ${esc(T.name || '研究项目')}</div>
+        <div class="hx-hint">每 位 玩 家 三 选 一 · 全 场 同 档 · 各 自 抽 卡<br>立 项 即 生 效 · 贯 穿 整 局</div>
+      </div></div>
+      <div class="hx-row">${mine.map((k, i) => hexCardHtml(k, i, tier)).join('')}</div>
+      <div class="hx-timer"><i class="hx-bar"><b id="hxBarFill"></b></i><span>剩余 <em id="hxClock">${Math.max(1, Math.round(ms / 1000))}</em> 秒 · 点击卡片立项</span></div>
+    </div>`;
+  $('fxLayer').appendChild(d);
+  requestAnimationFrame(() => requestAnimationFrame(() => d.classList.add('show')));
+  hexPickEl = d;
+  SFX.hexRise();
+  setTimeout(() => { try { SFX.glint(); SFX.sparkle(); } catch (err) {} }, sp(400));
+  mine.forEach((k, i) => setTimeout(() => { if (hexPickEl) SFX.hexFlip(i); }, sp(600 + i * 430)));
+  if (tier === 'prism') setTimeout(() => { if (hexPickEl) { SFX.hexPrism(); confettiBurst(70); } }, sp(1500));
+  // 倒计时（真实时间，不随播放倍速缩放）
+  let left = Math.max(1, Math.round(ms / 1000));
+  const total = left;
+  const fill = d.querySelector('#hxBarFill'), clock = d.querySelector('#hxClock');
+  if (fill) fill.style.width = '100%';
+  hexPickClock = setInterval(() => {
+    left--;
+    const pct = Math.max(0, Math.min(100, (left / total) * 100));
+    if (clock) clock.textContent = String(Math.max(0, left));
+    if (fill) {
+      fill.style.width = pct.toFixed(1) + '%';
+      fill.classList.toggle('warn', pct <= 55 && pct > 26);
+      fill.classList.toggle('danger', pct <= 26);
+      const timerEl = fill.closest('.hx-timer');
+      if (timerEl) timerEl.classList.toggle('urgent', left > 0 && left <= 5);
+    }
+    if (left > 0 && left <= 5) SFX.tick();
+    if (left <= 0) clearInterval(hexPickClock);
+  }, 1000);
+  // 点击立项（只有轮到自己给的那三张才能点；已选定 / 非本人则忽略）
+  d.querySelectorAll('.hx-card').forEach(card => {
+    card.addEventListener('mouseenter', () => { if (!hexMyPick && mine.includes(card.dataset.key) && mine.length) SFX.click(); });
+    card.onclick = () => {
+      const key = card.dataset.key;
+      if (hexMyPick) { SFX.click(); return; }
+      if (!mine.includes(key)) return;
+      hexMyPick = key;
+      card.classList.add('picked');
+      SFX.hexPick();
+      fxBurst(cellCenter(0), { kind: 'spark', n: 10, speed: 2.2, size: 2.8, life: 28, color: [(HEX_TIERS[tier] || {}).color || '#B76CE8', '#ffffff'] });
+      send({ action: { type: 'pickProject', key } });
+      d.classList.add('waiting');
+    };
+  });
+  // 断线重连：把已选定的补画上
+  if (S && e.picks) for (const pid in e.picks) projectMarkPick({ pid, key: e.picks[pid] }, true);
+}
+function closeHexUI() {
+  clearInterval(hexPickClock);
+  if (hexPickEl) { hexPickEl.remove(); hexPickEl = null; }
+  hexPickSig = ''; hexMyPick = null;
+}
+window.closeHexUI = closeHexUI;
+
+// 有人选定：在他那张卡上贴名牌（自己的卡若被服务端确认也补画）
+function projectMarkPick(e, silent) {
+  const d = hexPickEl;
+  if (!d) return;
+  if (e.pid === myPid) hexMyPick = e.key;
+  const card = d.querySelector(`.hx-card[data-key="${e.key}"]`);
+  if (!card) return;
+  const box = card.querySelector('.hx-voters');
+  if (box && !box.querySelector(`[data-pid="${e.pid}"]`)) {
+    const chip = document.createElement('i');
+    chip.className = 'hx-chip' + (e.pid === myPid ? ' me' : '');
+    chip.dataset.pid = e.pid;
+    chip.textContent = e.pid === myPid ? '我' : ownerName(e.pid);
+    box.appendChild(chip);
+  }
+  card.classList.add('hasvote');
+  if (e.pid === myPid) card.classList.add('picked');
+  if (!silent && e.pid !== myPid) SFX.hexFlip(1);
+}
+
+// 结算：关闭选择浮层 → 每人一条立项横幅（按档位配色，国家级加彩带）
+async function projectGrantFx(e) {
+  const pr = PROJECTS[e.key] || {};
+  const T = HEX_TIERS[e.tier] || {};
+  if (hexPickEl) closeHexUI();
+  const color = T.color || '#B76CE8';
+  if (e.tier === 'prism') { SFX.hexPrism(); confettiBurst(80); fxCoinRain(20); flashScreen('radial-gradient(circle at 50% 45%, rgba(183,108,232,.38), rgba(90,40,160,0) 68%)', 780); }
+  else SFX.hexHit();
+  skillBeam(color);
+  fxBurst(playerCell(e.pid), { kind: 'star', n: 18, speed: 3.6, size: 4.6, life: 48, color: [color, '#ffffff', '#f5e1ff'], wave: { r: 78, color, life: 44 } });
+  await announce(`${T.icon || '🧪'} <span class="who">${esc(ownerName(e.pid))}</span> 立项 <b style="color:${color}">【${esc(pr.name || e.key)}】</b><br><span style="font-size:13.5px;opacity:.9">${esc(e.detail || pr.desc || '')}</span>`, e.tier === 'prism' ? 2600 : 2100);
+}
+
+// 发动特效（小横幅 + 玩家位置星光）——被动效果每次触发时播
+async function hexFxBanner(e) {
+  const pr = PROJECTS[e.key] || {};
+  const T = HEX_TIERS[(pr.tier)] || {};
+  const color = T.color || '#B76CE8';
+  SFX.glint();
+  fxBurst(playerCell(e.pid), { kind: 'spark', n: 10, speed: 2.6, size: 3, life: 32, color: [color, '#ffffff'] });
+  await announce(`<span style="color:${color}">🧪</span> <span class="who">${esc(ownerName(e.pid))}</span> 的【${esc(pr.name || e.name || e.key)}】生效${e.detail ? `<br><span style="font-size:13px;opacity:.9">${esc(e.detail)}</span>` : ''}`, 1500);
 }
 
 // 地图中央常驻徽章（每帧 renderPanel 调用；landing=true 时播放落位特效）
@@ -2822,7 +3045,7 @@ function renderPanel(s) {
     tb.textContent = newBanner;
     tb.classList.remove('flash'); void tb.offsetWidth; tb.classList.add('flash');
   }
-  const pSig = s.phase + '|' + s.cur + '|' + s.players.map(p => p.id + ',' + dcash(p) + ',' + (p.alive ? 1 : 0) + ',' + (p.combo || 0) + ',' + (p.skillLeft || 0) + ',' + (p.skipNext ? 1 : 0) + ',' + p.major + ',' + (p.voice ? 1 : 0) + ',' + (p.medal || 0) + ',' + (p.buffSteps || 0) + ',' + ((p.stepBuffs || []).length) + ',' + (p.stayFree || 0) + ',' + (p.invest ? p.invest.due : 0)).join(';');
+  const pSig = s.phase + '|' + s.cur + '|' + s.players.map(p => p.id + ',' + dcash(p) + ',' + (p.alive ? 1 : 0) + ',' + (p.combo || 0) + ',' + (p.skillLeft || 0) + ',' + (p.skipNext ? 1 : 0) + ',' + p.major + ',' + (p.voice ? 1 : 0) + ',' + (p.medal || 0) + ',' + (p.buffSteps || 0) + ',' + ((p.stepBuffs || []).length) + ',' + (p.stayFree || 0) + ',' + (p.invest ? p.invest.due : 0) + ',' + ((p.hexList || []).length)).join(';');
   if (pSig !== playersSig) {
     playersSig = pSig;
     $('players').innerHTML = s.players.map(p => {
@@ -2836,11 +3059,14 @@ function renderPanel(s) {
       const bq = (p.stepBuffs && p.stepBuffs.length) ? `<span class="tag" style="background:#e9f6ec;color:#1d6b40">👟×${p.stepBuffs.length}</span>` : '';
       const iv = p.invest ? `<span class="tag" style="background:#e8eaf6;color:#3949ab" title="科研投资：第 ${p.invest.due} 轮返还 ¥${p.invest.back}">🔬${p.invest.due}</span>` : '';
       const sf = p.stayFree > 0 ? `<span class="tag" style="background:#d8f7ec;color:#12795c" title="免停留卡：可免除一次纯惩罚性停留">🎯 免停留×${p.stayFree}</span>` : '';
+      // v5.7：研究项目数量标签 + 整卡可点击查看该玩家的项目 / 技能卡 / 资产
+      const hxN = (p.hexList || []).length;
+      const hx = hxN > 0 ? `<span class="tag hx-tag" title="研究项目：点击名字查看">🧪×${hxN}</span>` : '';
       return `
-    <div class="pcard ${p.id === s.players[s.cur].id && s.phase !== 'over' ? 'active' : ''} ${!p.alive ? 'dead' : ''}" data-pid="${p.id}">
+    <div class="pcard ${p.id === s.players[s.cur].id && s.phase !== 'over' ? 'active' : ''} ${!p.alive ? 'dead' : ''}" data-pid="${p.id}" onclick="openPlayerViewer('${p.id}')" title="点击查看 TA 的研究项目 / 技能卡 / 资产">
       <span class="dot" style="background:${p.color}"></span>
       ${mc}
-      <span class="pname">${esc(p.name)}${p.id === myPid ? ' <span class="tag">你</span>' : ''}${p.isAI ? '<span class="tag">AI</span>' : ''}${p.skipNext ? '<span class="tag">停留</span>' : ''}${mj.id ? `<span class="tag">${mj.icon}${esc(mj.name)}</span>` : ''}${sk}${cb}${md}${sf}${bf}${bq}${iv}</span>
+      <span class="pname">${esc(p.name)}${p.id === myPid ? ' <span class="tag">你</span>' : ''}${p.isAI ? '<span class="tag">AI</span>' : ''}${p.skipNext ? '<span class="tag">停留</span>' : ''}${mj.id ? `<span class="tag">${mj.icon}${esc(mj.name)}</span>` : ''}${sk}${cb}${md}${sf}${bf}${bq}${iv}${hx}</span>
       <span class="cash">¥${dcash(p)}</span>
     </div>`;
     }).join('');
@@ -3219,6 +3445,65 @@ function netWorth(s, p) {
   return v;
 }
 function closeModal() { $('modal').style.display = 'none'; $('askModal').style.display = 'none'; }
+
+// ---------- v5.7：点击右侧玩家名 → 查看TA的研究项目 / 技能卡 / 资产 ----------
+let hexViewerEl = null;
+function openPlayerViewer(pid) {
+  if (!S) return;
+  const p = S.players.find(q => q.id === pid);
+  if (!p) return;
+  closePlayerViewer();
+  const mj = MAJORS[p.major] || {};
+  const hexes = (p.hexList || []).map(k => {
+    const pr = PROJECTS[k] || {};
+    const T = HEX_TIERS[pr.tier] || {};
+    return `<span class="hxp-chip t-${pr.tier || 'silver'}" title="${esc(pr.desc || '')}">${T.icon || ''} ${pr.icon || ''} ${esc(pr.name || k)}</span>`;
+  }).join('');
+  const items = [];
+  if (p.medal > 0) items.push(`🎫 免租金卡 ×${p.medal}`);
+  if (p.voucher > 0) items.push(`🎟️ 免租券 ×${p.voucher}`);
+  if (p.stayFree > 0) items.push(`🎯 免停留卡 ×${p.stayFree}`);
+  if (p.skillLeft > 0) items.push(`✨ 技能次数 ×${p.skillLeft}`);
+  const owned = [];
+  for (let i = 0; i < BOARD.length; i++) {
+    const cs = dcell(i);
+    if (cs.own !== pid) continue;
+    const c = BOARD[i];
+    const col = c.type === 'prop' ? GROUPS[c.g] : '#B0BEC5';
+    const lvl = cs.mortgaged ? '<span class="mortgaged">🔒 抵押中</span>'
+      : (c.type === 'prop' && cs.level > 0 ? `<span class="lvl">${cs.level === 4 ? '🏨 旅馆' : '🏠'.repeat(cs.level)}</span>` : '');
+    owned.push(`<div class="hxp-asset"><span class="swatch" style="background:${col}"></span><span class="aname">${esc(c.name)}</span>${lvl}</div>`);
+  }
+  const d = document.createElement('div');
+  d.className = 'hxp-layer';
+  d.innerHTML = `<div class="hxp-card">
+      <div class="hxp-head"><span class="dot" style="background:${p.color}"></span>
+        <b>${esc(p.name)}</b>${p.isAI ? '<span class="tag">AI</span>' : ''}${!p.alive ? '<span class="tag dead">出局</span>' : ''}
+        <span class="hxp-cash">现金 ¥${dcash(p)} · 总资产 ¥${netWorth(S, p)}</span>
+        <button class="btn small" id="hxpClose">关闭 ✕</button></div>
+      <div class="hxp-sec"><div class="hxp-sec-t">🧪 研究项目（${(p.hexList || []).length}）</div>
+        <div class="hxp-hexes">${hexes || '<span class="hxp-empty">还没有立项</span>'}</div></div>
+      <div class="hxp-sec"><div class="hxp-sec-t">🎓 专业与技能卡</div>
+        <div class="hxp-hexes"><span class="hxp-chip t-major">${mj.icon || '🎓'} ${esc(mj.name || '—')} · ${esc(mj.skill || '')}</span>${items.map(x => `<span class="hxp-chip t-item">${x}</span>`).join('') || ''}${!items.length && !(p.skillLeft > 0) ? '<span class="hxp-empty">暂无道具</span>' : ''}</div></div>
+      <div class="hxp-sec"><div class="hxp-sec-t">🏠 资产（${owned.length} 块地皮）</div>
+        <div class="hxp-assets">${owned.join('') || '<span class="hxp-empty">名下没有地产</span>'}</div></div>
+    </div>`;
+  $('fxLayer').appendChild(d);
+  requestAnimationFrame(() => requestAnimationFrame(() => d.classList.add('show')));
+  hexViewerEl = d;
+  d.addEventListener('click', ev => { if (ev.target === d) closePlayerViewer(); });
+  d.querySelector('#hxpClose').onclick = closePlayerViewer;
+  SFX.click();
+}
+function closePlayerViewer() {
+  if (hexViewerEl) {
+    const d = hexViewerEl; hexViewerEl = null;
+    d.classList.remove('show');
+    setTimeout(() => d.remove(), 240);
+  }
+}
+window.openPlayerViewer = openPlayerViewer;
+window.closePlayerViewer = closePlayerViewer;
 
 // ---------- 棋盘构建 ----------
 const TYPE_ICON = { start: '🚩', jail: '🎫', parking: '💰', gojail: '📉', tax: '🧾', chance: '❓', fate: '🌟', duel: '⚔️', junction: '🎓', junction2: '🚀' };

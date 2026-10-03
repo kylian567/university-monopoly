@@ -544,6 +544,83 @@ const FACULTY_KEYS = Object.keys(FACULTY);
 const FACULTY_VOTE_MS = 24000;   // 开局风貌投票时长（v5.5 由 15s 拉长到 24s：看清楚再投，超时未投者随机补票）
 const FACULTY_MAX_RARE = 0;      // 本版无稀有风貌（原「变数校区」已按要求删去）
 
+// ---------- v5.7：海克斯 · 研究项目（校级=银 / 省级=金 / 国家级=棱彩） ----------
+// 设计约束（对齐《设计提案_城邦与海克斯.md》）：
+//  · 全部为被动或「到手即结算」，不做主动技；
+//  · 不新增租金乘数——改基准量（工资/补贴/折扣/返现）或一次性效果；
+//  · 校级/省级对局势影响刻意做小，国家级允许中等偏大；
+//  · 与专业的分工：专业=身份（开局选定），项目=每局随机构筑（中后期获得）。
+const HEX_TIERS = {
+  silver: { name: '校级项目', short: '校级', icon: '🥈', color: '#8FA6BF' },
+  gold:   { name: '省级项目', short: '省级', icon: '🥇', color: '#E8B04B' },
+  prism:  { name: '国家级项目', short: '国家级', icon: '💎', color: '#B76CE8' },
+};
+const PROJECTS = {
+  // ===== 校级（银）× 20 =====
+  stipend:   { tier: 'silver', icon: '🚶', name: '勤工俭学',  desc: '每次经过起点额外 +¥400', mods: { goCash: 400 } },
+  thrift:    { tier: 'silver', icon: '🧾', name: '精打细算',  desc: '盖房费用 −10%', mods: { buildCut: 0.10 } },
+  agent:     { tier: 'silver', icon: '🏠', name: '房产中介',  desc: '买入无主地 9 折', mods: { buyCut: 0.10 } },
+  openbook:  { tier: 'silver', icon: '📖', name: '开卷有益',  desc: '每抽一张机会/命运卡 +¥200', mods: { cardGain: 200 } },
+  allowance: { tier: 'silver', icon: '🤝', name: '助学金',    desc: '每轮开始 +¥300', mods: { turnCash: 300 } },
+  microlend: { tier: 'silver', icon: '🏦', name: '小额贷',    desc: '抵押地产时多拿 15%', mods: { mortgageUp: 0.15 } },
+  timemgmt:  { tier: 'silver', icon: '⏰', name: '时间管理',  desc: '被罚停留的回合数 −1（多于 1 回合时）', mods: { stayCut: 1 } },
+  earlybird: { tier: 'silver', icon: '🐦', name: '早起鸟',    desc: '立即 +¥1500', once: 'cash', amt: 1500 },
+  bookmark:  { tier: 'silver', icon: '🎫', name: '祖传票券',  desc: '立即获得 1 张免租券', once: 'pack', voucher: 1 },
+  milk:      { tier: 'silver', icon: '🍼', name: '营养快线',  desc: '每轮开始若现金 <¥4000，+¥500', mods: { poorCash: 500, poorCashUnder: 4000 } },
+  cashback:  { tier: 'silver', icon: '💳', name: '积分返现',  desc: '每次付款返还 5%（单笔封顶 ¥150）', mods: { cashbackPct: 0.05, cashbackCap: 150 } },
+  talisman:  { tier: 'silver', icon: '🧿', name: '平安符',    desc: '每回合开始自动获得免罚符（当轮有效）', mods: { shieldEach: 1 } },
+  sprint:    { tier: 'silver', icon: '🏃', name: '低点冲刺',  desc: '掷出 ≤5 点时 +¥250', mods: { lowRollCash: 250 } },
+  twins:     { tier: 'silver', icon: '🎲', name: '双倍喜悦',  desc: '掷出双数时 +¥200', mods: { doubleCash: 200 } },
+  usedbook:  { tier: 'silver', icon: '📚', name: '二手书摊',  desc: '立即 +¥800', once: 'cash', amt: 800 },
+  firstaid:  { tier: 'silver', icon: '💊', name: '应急药箱',  desc: '被收租 ≥¥1000 时减免 15%（3 次）', mods: { tollShield: 3, tollShieldPct: 0.15, tollShieldMin: 1000 } },
+  freelance: { tier: 'silver', icon: '💻', name: '技术接单',  desc: '每轮开始若名下没有地产，+¥600', mods: { noLandCash: 600 } },
+  umbrella:  { tier: 'silver', icon: '☔', name: '雨具出租',  desc: '雨 / 雾 / 雪 / 台风天，每轮开始 +¥400', mods: { weatherCash: 400 } },
+  network:   { tier: 'silver', icon: '📶', name: '情报网',    desc: '重掷骰费用 −25%', mods: { rerollCut: 0.25 } },
+  sponsor:   { tier: 'silver', icon: '🏅', name: '赛事赞助',  desc: '立即 +¥1200', once: 'cash', amt: 1200 },
+  // ===== 省级（金）× 20 =====
+  raise:      { tier: 'gold', icon: '💼', name: '涨薪合同',   desc: '每次经过起点额外 +¥800', mods: { goCash: 800 } },
+  overseer:   { tier: 'gold', icon: '🏗️', name: '工程监理',  desc: '盖房费用 −20%', mods: { buildCut: 0.20 } },
+  landrush:   { tier: 'gold', icon: '🗺️', name: '圈地许可',  desc: '买入无主地 85 折', mods: { buyCut: 0.15 } },
+  fortune:    { tier: 'gold', icon: '🎴', name: '卡运亨通',   desc: '每抽一张卡 +¥500', mods: { cardGain: 500 } },
+  scholarship:{ tier: 'gold', icon: '🎖️', name: '一等奖学金', desc: '每轮开始 +¥700', mods: { turnCash: 700 } },
+  leverage:   { tier: 'gold', icon: '🏦', name: '杠杆大师',   desc: '抵押地产时多拿 25%', mods: { mortgageUp: 0.25 } },
+  tollpass:   { tier: 'gold', icon: '🎫', name: '通行优惠',   desc: '被收租时一律减免 15%', mods: { tollCut: 0.15 } },
+  rentboost:  { tier: 'gold', icon: '📈', name: '收租培训',   desc: '单笔收租 ≥¥1200 时 +25%', mods: { rentGainPct: 0.25, rentGainMin: 1200 } },
+  medkit:     { tier: 'gold', icon: '⛑️', name: '急救包',     desc: '被收租 ≥¥800 时减免 25%（5 次）', mods: { tollShield: 5, tollShieldPct: 0.25, tollShieldMin: 800 } },
+  giftbag:    { tier: 'gold', icon: '🎁', name: '票券大礼包', desc: '立即获得 2 张免租券 + 1 张免租金卡', once: 'pack', voucher: 2, medal: 1 },
+  deposit:    { tier: 'gold', icon: '🏛️', name: '定期存款',  desc: '每轮开始现金 ≥¥15000 时生息 5%（封顶 ¥1200）', mods: { interestPct: 0.05, interestMin: 15000, interestCap: 1200 } },
+  safetynet:  { tier: 'gold', icon: '🛏️', name: '最低保障',  desc: '每轮开始若名下没有地产，+¥1200', mods: { noLandCash: 1200 } },
+  luckydice:  { tier: 'gold', icon: '🍀', name: '幸运双骰',   desc: '掷出双数时 +¥600', mods: { doubleCash: 600 } },
+  burst:      { tier: 'gold', icon: '⚡', name: '爆发体质',   desc: '掷出 ≤5 点时 +¥600', mods: { lowRollCash: 600 } },
+  rebate:     { tier: 'gold', icon: '💰', name: '消费返现',   desc: '每次付款返还 8%（单笔封顶 ¥300）', mods: { cashbackPct: 0.08, cashbackCap: 300 } },
+  buildcash:  { tier: 'gold', icon: '🔨', name: '盖房返现',   desc: '每次盖房返还 ¥200', mods: { buildCash: 200 } },
+  buycash:    { tier: 'gold', icon: '🏷️', name: '拿地返现',   desc: '每次买地返还 ¥150', mods: { buyCash: 150 } },
+  patron:     { tier: 'gold', icon: '🛡️', name: '学术保护',   desc: '额外获得 2 次免疫负面判定的机会', mods: { immuneBonus: 2 } },
+  startup:    { tier: 'gold', icon: '🚀', name: '创业启动金', desc: '立即 +¥3500', once: 'cash', amt: 3500 },
+  intuition:  { tier: 'gold', icon: '🧠', name: '考场直觉',   desc: '掷出 ≥9 点时 +¥650', mods: { highRollCash: 650 } },
+  // ===== 国家级（棱彩）× 14 =====
+  salaryx2:    { tier: 'prism', icon: '💵', name: '双倍工资',   desc: '经过起点工资 ×2（整局）', mods: { salaryX2: 1 } },
+  monopoly:    { tier: 'prism', icon: '🏆', name: '垄断宣言',   desc: '立即随机占有一块无主地，并 +¥2000', once: 'land', amt: 2000 },
+  seize:       { tier: 'prism', icon: '💎', name: '强取豪夺',   desc: '立即夺取现金最多者 20% 的现金（封顶 ¥5000）', once: 'seize', pct: 0.2, amt: 5000 },
+  nirvana:     { tier: 'prism', icon: '🔥', name: '涅槃',       desc: '首次破产时以 ¥6000 复活并免除该笔债务（限 1 次）', mods: { nirvana: 1 } },
+  aegis:       { tier: 'prism', icon: '🛡️', name: '绝对防御',  desc: '免疫 3 次负面判定（挂科留级 / 拆地拆房等）', mods: { immuneCharges: 3 } },
+  tollbooth:   { tier: 'prism', icon: '🚧', name: '收费站',     desc: '对手经过你的地产时每次付 ¥300（单次移动封顶 ¥900）', mods: { tollBooth: 300 } },
+  fatewheel:   { tier: 'prism', icon: '🎲', name: '命运改写',   desc: '抽到负面卡自动重抽（3 次）', mods: { rerollBad: 3 } },
+  wallstreet:  { tier: 'prism', icon: '🐺', name: '华尔街之狼', desc: '抵押地产可获得地价 100%', mods: { mortgage100: 1 } },
+  legacy:      { tier: 'prism', icon: '🧧', name: '遗产继承',   desc: '每轮开始，当前总资产最低者向你支付 ¥800', mods: { legacy: 1 } },
+  dividends:   { tier: 'prism', icon: '🏛️', name: '基金抽成',  desc: '教育基金池每次进账，你抽成 10%（单笔封顶 ¥500）', mods: { fundKick: 0.10 } },
+  headstart:   { tier: 'prism', icon: '⚡', name: '先发优势',   desc: '每轮开始 +¥1000', mods: { turnCash: 1000 } },
+  landmark:    { tier: 'prism', icon: '🏙️', name: '地标经济',   desc: '每轮开始按名下建筑数 ×¥60 收益', mods: { landmark: 60 } },
+  rerollmaster:{ tier: 'prism', icon: '🔁', name: '重投大师',   desc: '每回合首次重投免费', mods: { freeReroll: 1 } },
+  safety:      { tier: 'prism', icon: '💯', name: '风险兜底',   desc: '每轮开始若现金 <¥2000，直接补到 ¥2000', mods: { floor: 2000 } },
+};
+const PROJECT_KEYS = { silver: [], gold: [], prism: [] };
+for (const k in PROJECTS) PROJECT_KEYS[PROJECTS[k].tier].push(k);
+// 三次立项的档位概率（银/金/彩）——完全随机，不是按顺序升档
+const HEX_TRIGGERS = [2, 10, 20];
+const HEX_TIER_P = [[0.70, 0.20, 0.10], [0.40, 0.40, 0.20], [0.30, 0.40, 0.30]];
+const HEX_PICK_MS = 32000;       // 三选一决策时长（超时自动随机补选）
+
 const SALARY = 2000, START_CASH = 30000, TURN_MS = 30000, AUCTION_MS = 15000;
 const rnd = (a, b) => a + Math.random() * (b - a);
 const pick = arr => arr[Math.floor(Math.random() * arr.length)];
@@ -590,6 +667,12 @@ class Room {
     this.facultyLucky = null;     // 被抽中的玩家 id（他的选择成为本局风貌）
     this.freeRound = 0;           // 「免费轮」抽中的轮次（该轮全场买地、盖楼免费）
     this.freeRentRounds = [];     // 「免租轮」抽中的 4 个轮次（这些轮次全场免交租金）
+    // ---------- v5.7：海克斯 · 研究项目 ----------
+    // 由服务端显式开启（new Room(code, {hex:true})）；未开启时整套机制不触发，
+    // 既有测试 / simulate 行为与 v5.6 完全一致。
+    this.hexOn = !!(opts && opts.hex);
+    this.project = null;          // {round, tier, offers:{pid:[key×3]}, picks:{pid:key}}
+    this.hexDoneRounds = [];      // 已触发过立项的轮次（防重复触发）
   }
   ev(e) {
     // v5.1：为每个事件附带「发出时刻的增量状态」（现金 / 地皮 / 基金池）。
@@ -616,9 +699,21 @@ class Room {
   // v4.0：教育基金池统一入口 —— 上限 ¥30000，超出部分直接均分给全体在场玩家
   addToFund(amount) {
     if (!(amount > 0)) return;
+    // v5.7 基金抽成：持有「基金抽成」项目的玩家从每次进账中抽 10%（单笔封顶 ¥500）
+    let kick = 0;
+    const kicker = this.alive().find(q => q.hex && q.hex.fundKick);
+    if (kicker && amount >= 200) {
+      kick = Math.min(500, Math.round(amount * kicker.hex.fundKick));
+      if (kick > 0) {
+        kicker.cash += kick;
+        this.ev({ t: 'money', pid: kicker.id, amount: kick, reason: '项目·基金抽成' });
+        this.hexFx(kicker, 'dividends', `基金进账抽成 +¥${kick}`);
+      }
+    }
+    const net = amount - kick;
     const cap = this.fundCap();   // v5.2：金融校区把上限抬到 ¥25000
-    const overflow = this.fundPool + amount - cap;
-    this.fundPool = Math.min(cap, this.fundPool + amount);
+    const overflow = this.fundPool + net - cap;
+    this.fundPool = Math.min(cap, this.fundPool + net);
     if (overflow > 0) {
       const alive = this.alive();
       if (alive.length) {
@@ -684,6 +779,9 @@ class Room {
       buildCutTurn: 0,          // v5.1 主动技：本回合盖房额外折扣（如机械 0.5）
       skillUsedThisTurn: false, // v5.1 主动技：本回合是否已询问/发动过
       stayFree: 0,              // v5.2：免停留卡（师范校区发放，可免除一次纯惩罚性停留）
+      hex: {},                  // v5.7：研究项目的聚合修正（goCash/turnCash/buildCut/...）
+      hexList: [],              // v5.7：已立项的项目 key（一局内同一项目不会重复出现）
+      hexFreeUsed: false,       // v5.7：重投大师——本回合的免费重投是否已用
     };
     this.players.push(p);
     this.addLog(`${name} 加入了房间`);
@@ -783,6 +881,175 @@ class Room {
   facIs(k) { return this.faculty === k; }
   isFreeRound() { return this.facIs('freeRound') && this.round === this.freeRound; }
   isFreeRentRound() { return this.facIs('freeRent') && this.freeRentRounds.includes(this.round); }
+
+  // ---------- v5.7：海克斯 · 研究项目（第 2 / 10 / 20 轮全体三选一） ----------
+  hexFx(p, key, detail) { this.ev({ t: 'hexfx', pid: p.id, key, detail }); }
+
+  // 回合推进到触发轮时开启立项阶段；返回 true 表示游戏暂停等待三选一
+  maybeProject() {
+    if (!this.hexOn) return false;
+    if (!HEX_TRIGGERS.includes(this.round) || this.hexDoneRounds.includes(this.round)) return false;
+    if (this.alive().length <= 1) return false;
+    this.hexDoneRounds.push(this.round);
+    // ① 抽档位：按第几次立项取概率（银/金/彩），完全随机
+    const nth = HEX_TRIGGERS.indexOf(this.round);
+    const [ps, pg] = HEX_TIER_P[Math.min(nth, HEX_TIER_P.length - 1)];
+    const r = Math.random();
+    const tier = r < ps ? 'silver' : (r < ps + pg ? 'gold' : 'prism');
+    // ② 发牌：同一玩家不会见到自己已立项的项目；同一轮内尽量人手不同
+    const used = new Set();
+    const offers = {};
+    for (const p of this.alive()) {
+      const owned = new Set(p.hexList);
+      let pool = PROJECT_KEYS[tier].filter(k => !owned.has(k) && !used.has(k));
+      if (pool.length < 3) pool = pool.concat(PROJECT_KEYS[tier].filter(k => !owned.has(k) && !pool.includes(k)));
+      if (pool.length < 3) pool = PROJECT_KEYS[tier].filter(k => !owned.has(k));
+      const cards = [];
+      while (cards.length < 3 && pool.length) cards.push(pool.splice(Math.floor(Math.random() * pool.length), 1)[0]);
+      offers[p.id] = cards;
+      cards.forEach(k => used.add(k));
+    }
+    this.phase = 'project';
+    this.project = { round: this.round, tier, offers, picks: {} };
+    this.addLog(`🧪 第 ${this.round} 轮 · 「${HEX_TIERS[tier].name}」立项：每位玩家三选一（${HEX_PICK_MS / 1000} 秒）`);
+    this.ev({ t: 'project_offer', round: this.round, tier, offers, ms: HEX_PICK_MS });
+    this.setTimer(HEX_PICK_MS, () => this.settleProject());
+    for (const p of this.alive()) if (p.isAI) this.aiTimers.push(setTimeout(() => this.aiProject(p), rnd(3600, 9500)));
+    return true;
+  }
+  pickProject(p, key) {
+    if (this.phase !== 'project' || !this.project || !p || !p.alive) return;
+    const off = this.project.offers[p.id] || [];
+    if (!off.includes(key)) return;
+    if (this.project.picks[p.id]) return;
+    this.project.picks[p.id] = key;
+    this.addLog(`🧪 ${p.name} 选定了「${(PROJECTS[key] || {}).name || key}」`);
+    this.ev({ t: 'project_pick', pid: p.id, key, tier: this.project.tier });
+    if (this.alive().every(q => this.project.picks[q.id])) this.settleProject();
+  }
+  aiProject(p) {
+    if (this.phase !== 'project' || !this.project || this.project.picks[p.id]) return;
+    // AI 简单评分：缺钱偏现金流，地多偏建设，其余按修正条目数量 + 随机扰动
+    const hxWant = {};
+    if (p.cash < 8000) Object.assign(hxWant, { turnCash: 3, poorCash: 2, noLandCash: 2, cashbackPct: 1 });
+    if (this.buildSum(p) > 0) Object.assign(hxWant, { buildCut: 3, buildCash: 2, landmark: 2 });
+    if (this.propCells(p).length >= 4) Object.assign(hxWant, { rentGainPct: 3, tollBooth: 2 });
+    let best = null, bs = -1;
+    for (const k of this.project.offers[p.id]) {
+      const pr = PROJECTS[k] || {};
+      let s = 1 + Object.keys(pr.mods || {}).length * 0.5 + Math.random() * 1.6;
+      for (const mk in hxWant) if (pr.mods && pr.mods[mk]) s += hxWant[mk];
+      if (s > bs) { bs = s; best = k; }
+    }
+    this.pickProject(p, best || pick(this.project.offers[p.id]));
+  }
+  settleProject() {
+    if (this.phase !== 'project' || !this.project) return;
+    this.clearTimer();
+    const tier = this.project.tier;
+    for (const p of this.alive()) {
+      const key = this.project.picks[p.id] || pick(this.project.offers[p.id]);
+      this.grantProject(p, key);
+    }
+    this.project = null;
+    this.phase = 'roll';
+    this.startTurn();
+  }
+  grantProject(p, key) {
+    const pr = PROJECTS[key];
+    if (!pr) return;
+    p.hexList.push(key);
+    for (const k in (pr.mods || {})) p.hex[k] = (p.hex[k] || 0) + pr.mods[k];
+    let detail = pr.desc;
+    switch (pr.once) {
+      case 'cash':
+        p.cash += pr.amt;
+        this.ev({ t: 'money', pid: p.id, amount: pr.amt, reason: `立项【${pr.name}】` });
+        detail = `立即 +¥${pr.amt}`;
+        break;
+      case 'pack': {
+        if (pr.voucher) p.voucher += pr.voucher;
+        if (pr.medal) p.medal += pr.medal;
+        const parts = [];
+        if (pr.voucher) parts.push(`${pr.voucher} 张免租券`);
+        if (pr.medal) parts.push(`${pr.medal} 张免租金卡`);
+        detail = `获得 ${parts.join(' + ')}`;
+        break;
+      }
+      case 'land': {
+        const empty = BOARD.map((c, i) => i).filter(i => c.type === 'prop' && !this.cells[i].own && !this.cells[i].mortgaged);
+        if (empty.length) {
+          const idx = pick(empty);
+          this.cells[idx].own = p.id;
+          if (pr.amt) p.cash += pr.amt;
+          this.ev({ t: 'buy', pid: p.id, cell: idx, price: 0, grant: true });
+          this.checkOwnership(p);
+          detail = `获得「${BOARD[idx].name}」${pr.amt ? ` +¥${pr.amt}` : ''}`;
+        } else {
+          const comp = (pr.amt || 0) + 2500;
+          p.cash += comp;
+          this.ev({ t: 'money', pid: p.id, amount: comp, reason: `立项【${pr.name}】补偿` });
+          detail = `已无无主地，改为补偿 +¥${comp}`;
+        }
+        break;
+      }
+      case 'seize': {
+        const others = this.alive().filter(q => q !== p);
+        if (others.length) {
+          let richest = others[0];
+          for (const q of others) if (q.cash > richest.cash) richest = q;
+          const amt = Math.min(pr.amt || 5000, Math.round(richest.cash * (pr.pct || 0.2)));
+          if (amt > 0) {
+            richest.cash -= amt; p.cash += amt;
+            this.ev({ t: 'money', pid: p.id, amount: amt, reason: `强取豪夺 ← ${richest.name}` });
+            detail = `夺取 ${richest.name} 的 ¥${amt}`;
+          } else detail = '对方现金见底，分文未得';
+        }
+        break;
+      }
+    }
+    const T = HEX_TIERS[pr.tier];
+    this.addLog(`🧪 ${p.name} 立项【${T.icon}${pr.name}】（${T.name}）：${detail}`);
+    this.ev({ t: 'project_grant', pid: p.id, key, tier: pr.tier, detail });
+  }
+
+  // v5.7：研究项目的「每轮开始」类修正（在 startTurn 里紧跟专业通用被动之后调用）
+  applyHexPassives(p) {
+    const hx = p.hex || {};
+    const give = (amt, reason) => { if (amt > 0) { p.cash += amt; this.ev({ t: 'money', pid: p.id, amount: amt, reason }); } };
+    if (hx.turnCash) { give(hx.turnCash, '项目·每轮补贴'); }
+    if (hx.poorCash && p.cash < (hx.poorCashUnder || 0)) { give(hx.poorCash, '项目·营养快线'); }
+    if (hx.noLandCash && this.propCells(p).length === 0) { give(hx.noLandCash, '项目·无地补助'); }
+    if (hx.interestPct && p.cash >= (hx.interestMin || 0)) {
+      const g = Math.min(hx.interestCap || 1e9, Math.round(p.cash * hx.interestPct));
+      if (g > 0) { give(g, '项目·定期利息'); this.addLog(`🏛️ ${p.name} 的【定期存款】生息 +¥${g}`); }
+    }
+    if (hx.weatherCash && ['rain', 'storm', 'snow', 'fog'].includes(this.weather)) { give(hx.weatherCash, '项目·雨天津贴'); }
+    if (hx.landmark) {
+      const g = this.buildSum(p) * hx.landmark;
+      if (g > 0) { give(g, '项目·地标经济'); this.addLog(`🏙️ ${p.name} 的【地标经济】按建筑收成 +¥${g}`); }
+    }
+    if (hx.legacy) {
+      const others = this.alive().filter(q => q !== p);
+      if (others.length) {
+        let poorest = others[0];
+        for (const q of others) if (this.netWorth(q) < this.netWorth(poorest)) poorest = q;
+        const pay = Math.min(800, poorest.cash);
+        if (pay > 0) {
+          poorest.cash -= pay; p.cash += pay;
+          this.addLog(`🧧 ${poorest.name} 向 ${p.name} 支付【遗产继承】¥${pay}`);
+          this.ev({ t: 'money', pid: p.id, amount: pay, reason: '遗产继承' });
+          this.hexFx(p, 'legacy', `${poorest.name} 支付 ¥${pay}`);
+        }
+      }
+    }
+    if (hx.floor && p.cash < hx.floor) {
+      const g = hx.floor - p.cash;
+      p.cash = hx.floor;
+      this.ev({ t: 'money', pid: p.id, amount: g, reason: '风险兜底' });
+      this.hexFx(p, 'safety', `兜底补足 ¥${g}`);
+    }
+  }
 
   // ---------- 每轮开局：季节 / 天气 / 校历事件 / 物业税 ----------
   beginRound() {
@@ -1065,17 +1332,23 @@ class Room {
   doReroll(p) {
     if (this.phase !== 'reroll' || !this.pendingReroll || this.pendingReroll.pid !== p.id) return;
     this.clearTimer(); this.pendingReroll = null;
-    const cost = this.rerollCostFor(p);
+    let cost = this.rerollCostFor(p);
+    // v5.7 重投大师：每回合首次重投免费
+    let hexFree = false;
+    if (p.hex && p.hex.freeReroll && !p.hexFreeUsed) { cost = 0; hexFree = true; p.hexFreeUsed = true; }
     if (p.cash < cost) { this.execRoll(p); return; }
-    const freeRoll = cost === 0 && (MAJORS[p.major] || {}).rerollFree && p.skillLeft > 0;
-    if (freeRoll) p.skillLeft--;
+    const freeRoll = hexFree || (cost === 0 && (MAJORS[p.major] || {}).rerollFree && p.skillLeft > 0);
+    if (freeRoll && !hexFree) p.skillLeft--;
     else { p.cash -= cost; this.addToFund(Math.round(cost * FUND_SHARE)); }   // v5.0：重掷花费的 1/3 进教育基金池
     p.rerollUsed = true;
     const onBr = this.onBranch(p.pos);   // v5.6：岔路内重投也是单骰
     const [d1, d2] = this.rollDice(p, onBr);
     this.dice = onBr ? [d1, 0] : [d1, d2];
     const rollTxt = onBr ? `${d1} 点（岔路单骰）` : `${d1} + ${d2} = ${d1 + d2}`;
-    if (freeRoll) {
+    if (hexFree) {
+      this.addLog(`🔁 ${p.name} 的【重投大师】生效，免费重投：${rollTxt}`);
+      this.ev({ t: 'hexfx', pid: p.id, key: 'rerollmaster', name: '重投大师', detail: `免费重投 ${onBr ? d1 + ' 点' : d1 + '+' + d2}` });
+    } else if (freeRoll) {
       const mj = MAJORS[p.major] || {};
       this.addLog(`${mj.icon} ${p.name} 发动【${mj.skill}】免费重投一次：${rollTxt}`);
       this.ev({ t: 'skill', pid: p.id, major: p.major, name: mj.skill, detail: `免费重投 ${onBr ? d1 + ' 点' : d1 + '+' + d2}`, active: false });
@@ -1359,6 +1632,8 @@ class Room {
     p.buildCutTurn = 0;                 // v5.1 主动技临时折扣到期
     p.buyCutTurn = 0;                   // v5.3 主动技「峰谷套利」临时买地折扣到期
     p.autoBonus = false;                // v5.1 自动化落点奖励到期
+    p.hexFreeUsed = false;              // v5.7 重投大师：每回合的免费重投重置
+    if (p.hex && p.hex.shieldEach) p.shield = true;   // v5.7 平安符：每回合自动挂免罚符
     // rentBuff / defBuff 是「本轮」持续：上一次自己回合发动后，一直保留到这一次自己回合才清零
     p.rentBuff = 0;                     // v5.1：收租加成到期
     p.defBuff = 0;                      // v5.1：被收租减免到期
@@ -1399,6 +1674,8 @@ class Room {
     }
     // v5.3：通用被动 —— 回合开始类收益（每轮补贴 / 现金流百分比 / 天气红利）
     this.applyTurnStartPassives(p);
+    // v5.7：研究项目的回合开始类收益（每轮补贴 / 利息 / 遗产继承 / 兜底……）
+    this.applyHexPassives(p);
     // 主动技：先问一句要不要发动，选完再掷骰
     if (this.openSkillPrompt(p)) return;
     this.schedule();
@@ -1427,6 +1704,7 @@ class Room {
       || (this.phase === 'invest' && this.pendingInvest && this.pendingInvest.pid === p.id)
       || (this.phase === 'skill' && this.pendingSkill && this.pendingSkill.pid === p.id)
       || (this.phase === 'faculty' && !this.facultyVotes[p.id])   // v5.2：开局风貌投票
+      || (this.phase === 'project' && this.project && !this.project.picks[p.id])   // v5.7：项目三选一
       || (this.phase === 'raise' && this.raise && this.raise.pid === p.id);
     if (busySelf) {
       this.clearTimer();   // 清掉人类超时兜底，AI 立刻接手
@@ -1438,6 +1716,7 @@ class Room {
       else if (this.phase === 'invest') this.aiTimers.push(setTimeout(() => this.aiInvest(p), rnd(2600, 5200)));
       else if (this.phase === 'skill') this.aiTimers.push(setTimeout(() => this.aiSkill(p), rnd(2000, 4000)));
       else if (this.phase === 'faculty') this.aiTimers.push(setTimeout(() => this.aiFacultyVote(p), rnd(1200, 2600)));
+      else if (this.phase === 'project') this.aiTimers.push(setTimeout(() => this.aiProject(p), rnd(1500, 3500)));
       else this.aiTimers.push(setTimeout(() => this.aiRaise(), 2600));
     } else if (this.phase === 'auction' && this.auction && this.auction.bidder !== p.id) {
       this.aiTimers.push(setTimeout(() => this.aiBid(p), rnd(2800, 7000)));
@@ -1456,6 +1735,7 @@ class Room {
       || (this.phase === 'invest' && this.pendingInvest && this.pendingInvest.pid === p.id)
       || (this.phase === 'skill' && this.pendingSkill && this.pendingSkill.pid === p.id)
       || (this.phase === 'faculty' && !this.facultyVotes[p.id])   // v5.2：开局风貌投票
+      || (this.phase === 'project' && this.project && !this.project.picks[p.id])   // v5.7：项目三选一
       || (this.phase === 'raise' && this.raise && this.raise.pid === p.id);
   }
   setTrustee(p, on) {
@@ -1504,6 +1784,7 @@ class Room {
   autoAct() {
     const p = this.curp();
     if (this.phase === 'faculty') { this.settleFaculty(); return; }   // v5.2：投票超时直接揭晓
+    if (this.phase === 'project') { this.settleProject(); return; }   // v5.7：立项超时自动补选
     if (this.phase === 'roll') { this.doRoll(p); }
     else if (this.phase === 'reroll') this.confirmRoll(p);
     else if (this.phase === 'auction') this.endAuction();
@@ -1521,6 +1802,7 @@ class Room {
     }
     this.cur = idx;
     if (idx === 0) { this.round++; this.beginRound(); }
+    if (this.maybeProject()) return;   // v5.7：第 2/10/20 轮 → 全体「研究项目」三选一，选完再回 startTurn
     this.startTurn();
   }
 
@@ -1546,6 +1828,13 @@ class Room {
     const [d1, d2] = this.rollDice(p, onBr);
     this.dice = onBr ? [d1, 0] : [d1, d2];   // 双数判定与公用事业租金按最终点数计算（单骰第二位记 0，永不成双）
     this.ev({ t: 'roll', pid: p.id, d1, d2: onBr ? 0 : d2, single: onBr });
+    // v5.7：研究项目的点数类奖励（低点冲刺 / 考场直觉 / 幸运双骰）——岔路单骰不参与
+    if (!onBr) {
+      const hx = p.hex || {}, raw = d1 + d2;
+      if (hx.lowRollCash && raw <= 5) { p.cash += hx.lowRollCash; this.ev({ t: 'money', pid: p.id, amount: hx.lowRollCash, reason: '项目·低点冲刺' }); }
+      if (hx.highRollCash && raw >= 9) { p.cash += hx.highRollCash; this.ev({ t: 'money', pid: p.id, amount: hx.highRollCash, reason: '项目·考场直觉' }); }
+      if (hx.doubleCash && d1 === d2) { p.cash += hx.doubleCash; this.ev({ t: 'money', pid: p.id, amount: hx.doubleCash, reason: '项目·幸运双骰' }); }
+    }
     const rollTxt = onBr ? `${d1} 点（岔路单骰）` : `${d1} + ${d2} = ${d1 + d2}`;
     const dblTxt = (!onBr && d1 === d2) ? '（双数，可再掷一次）' : '';
     // v4.1：掷骰后可花 ¥1200 重投一次（每回合每人限一次，现金够且未用过才提供选项）
@@ -1623,11 +1912,30 @@ class Room {
     let passedGo = false;
     for (const c of path) if (c === 0) passedGo = true;
     p.pos = pos;
+    // v5.7 收费站：对手「经过」（不含本次落点）收费站持有者的地产，每次付 ¥300（单次移动封顶 ¥900）
+    {
+      let toll = 0, boothOwner = null;
+      for (const ci of path.slice(0, -1)) {
+        const o = this.cells[ci].own;
+        if (!o || o === p.id || BOARD[ci].type !== 'prop') continue;
+        const ow = this.players.find(q => q.id === o);
+        if (ow && ow.alive && ow !== p && ow.hex && ow.hex.tollBooth && !this.cells[ci].mortgaged) { toll += ow.hex.tollBooth; boothOwner = ow; }
+      }
+      if (boothOwner && toll > 0) {
+        toll = Math.min(toll, 900);
+        const pay = Math.min(p.cash, toll);
+        if (pay > 0) {
+          p.cash -= pay; boothOwner.cash += pay;
+          this.addLog(`🚧 ${p.name} 经过 ${boothOwner.name} 的地产，被收费站收下 ¥${pay}`);
+          this.hexFx(boothOwner, 'tollbooth', `${p.name} 缴过路费 ¥${pay}`);
+          this.ev({ t: 'money', pid: boothOwner.id, amount: pay, reason: '收费站过路费' });
+        }
+      }
+    }
     if (passedGo) {
       // v4.0「经济寒冬」：第 ENDGAME_ROUND 轮起银行停发工资
       if (this.salaryOn()) {
-        const w = this.wageOf();
-        p.cash += w; this.ev({ t: 'money', pid: p.id, amount: w, reason: '工资' });
+        const w = this.payWage(p);
         this.addLog(`${p.name} 经过起点，领工资 ¥${w}`);
         this.applyGoSkills(p);
       } else {
@@ -1653,6 +1961,14 @@ class Room {
     if (this.facIs('boom'))   return SALARY + 200;
     if (this.facIs('agri'))   return SALARY + 300;
     return SALARY;
+  }
+  // v5.7：工资统一入口 ——「双倍工资」项目在这里翻倍，三个发放点共用
+  payWage(p) {
+    let w = this.wageOf();
+    if (p.hex && p.hex.salaryX2) { w *= 2; this.hexFx(p, 'salaryx2', '双倍工资：工资 ×2'); }
+    p.cash += w;
+    this.ev({ t: 'money', pid: p.id, amount: w, reason: '工资' });
+    return w;
   }
   // v5.2：风貌对地价 / 升级费 / 租金 / 基金池上限 / 罚款 / 岔路奖励 / 重投费用的影响，集中读表，避免散落 if
   facLandMul() {
@@ -1693,7 +2009,9 @@ class Room {
   rerollCostFor(p) {
     const mj = MAJORS[p.major] || {};
     if (mj.rerollFree && p.skillLeft > 0) return 0;
-    return (this.facIs('sports') && !p.rerollUsed) ? 900 : REROLL_COST;
+    let c = (this.facIs('sports') && !p.rerollUsed) ? 900 : REROLL_COST;
+    if (p.hex && p.hex.rerollCut) c = Math.round(c * (1 - p.hex.rerollCut));   // v5.7 情报网：重投打折
+    return c;
   }
   // v5.2：统一的「停留」入口 —— 师范校区发的「免停留卡」在这里生效（只对纯惩罚性停留有效）
   applyStay(p, turns, why) {
@@ -1702,6 +2020,11 @@ class Room {
       this.addLog(`🎯 ${p.name} 使用「免停留卡」，免除「${why}」的停留（还剩 ${p.stayFree} 张）`);
       this.ev({ t: 'stay_free', pid: p.id, why, left: p.stayFree });
       return false;   // 没被停留
+    }
+    // v5.7 时间管理：被罚停留的回合数 −1（只在多于 1 回合时生效）
+    if (p.hex && p.hex.stayCut && turns > 1) {
+      turns--;
+      this.hexFx(p, 'timemgmt', `时间管理：停留缩短为 ${turns} 回合`);
     }
     p.skipTurns = Math.max(p.skipTurns || 0, turns);
     return true;
@@ -1777,7 +2100,9 @@ class Room {
             return;
           }
           const base = this.landCost(cell.price);
-          const price = p.discount ? Math.floor(base * 0.8) : base;
+          // v5.7：研究项目的买地折扣（房产中介/圈地许可），再叠折扣卡
+          let price = (p.hex && p.hex.buyCut) ? Math.max(1, Math.round(base * (1 - p.hex.buyCut))) : base;
+          if (p.discount) price = Math.floor(price * 0.8);
           this.phase = 'buy';
           this.pendingBuy = { pid: p.id, cell: idx, price, base };
           this.addLog(`${p.name} 踩到无主地产「${cell.name}」（¥${price}${this.season !== 'mid' ? ' · ' + SEASON[this.season].name + '价' : ''}）`);
@@ -1796,7 +2121,9 @@ class Room {
           if (cell.type !== 'prop') { this.afterResolve(p, false); return; }
           if (cs.mortgaged) { this.addLog(`${p.name} 回到自己的抵押地「${cell.name}」，可随时在资产面板赎回`); this.afterResolve(p, false); return; }
           if (cs.level < 4) {
-            const cost = this.seasonCost(GROUPS[cell.g].build);
+            // v5.7：研究项目的盖房折扣（精打细算/工程监理）
+            const cost0 = this.seasonCost(GROUPS[cell.g].build);
+            const cost = (p.hex && p.hex.buildCut) ? Math.max(1, Math.round(cost0 * (1 - p.hex.buildCut))) : cost0;
             this.phase = 'build';
             this.pendingBuild = { pid: p.id, cell: idx, cost };
             this.addLog(`${p.name} 踩到自己的「${cell.name}」，可升级（Lv${cs.level}→Lv${cs.level + 1}，¥${cost}）`);
@@ -1873,6 +2200,11 @@ class Room {
             this.ev({ t: 'skill', pid: owner.id, major: owner.major, name: omj.skill, detail: `+¥${bonus}` });
           }
         }
+        // v5.7：研究项目的收租加成（收租培训）—— 不消耗技能次数，无次数限制
+        if (owner.hex && owner.hex.rentGainPct && rent >= (owner.hex.rentGainMin || 0)) {
+          const bonus = Math.round(rent * owner.hex.rentGainPct);
+          if (bonus > 0) { rent += bonus; this.hexFx(owner, 'rentboost', `收租加成 +¥${bonus}`); }
+        }
         // ===== 付租方减免 =====
         // 被动：物理·守恒定律（≥¥1200 时 −35%）
         if (p.major === 'phys' && p.skillLeft > 0 && rent >= 1200) {
@@ -1912,6 +2244,20 @@ class Room {
           const saved = Math.round(rent * 0.1); rent -= saved;
           this.addLog(`🩺 【医学校区】大额住院费兜底，减免 ¥${saved}`);
           this.ev({ t: 'facfx', pid: p.id, kind: 'med', name: '医学校区', detail: `大额租金减免 ¥${saved}` });
+        }
+        // v5.7：研究项目的付租减免（通行优惠 = 无门槛常驻；应急药箱 = 限次）
+        {
+          const hx = p.hex || {};
+          if (hx.tollCut && rent > 0) {
+            const saved = Math.round(rent * hx.tollCut);
+            if (saved > 0) { rent -= saved; this.hexFx(p, 'tollpass', `通行优惠 −¥${saved}`); }
+          }
+          if ((hx.tollShield || 0) > 0 && rent >= (hx.tollShieldMin || 0)) {
+            hx.tollShield--;
+            const saved = Math.round(rent * (hx.tollShieldPct || 0));
+            if (saved > 0) rent -= saved;
+            this.hexFx(p, 'firstaid', `应急减免 ¥${saved}（剩 ${hx.tollShield} 次）`);
+          }
         }
         if (rent < 1) rent = 1;
         if (rent >= 10000) this.giveAch(owner, 'rent10k');
@@ -2335,6 +2681,11 @@ class Room {
     p.cash -= price;
     cs.own = p.id; cs.mortgaged = false; cs.mortgageAt = 0;
     if (p.discount) p.discount = false;
+    // v5.7：研究项目的买地返现（拿地返现）
+    if (p.hex && p.hex.buyCash && !mortgageBuy && price > 0) {
+      p.cash += p.hex.buyCash;
+      this.ev({ t: 'money', pid: p.id, amount: p.hex.buyCash, reason: '项目·拿地返现' });
+    }
     this.addLog(`${p.name} 以 ¥${price} 买下「${c.name}」${usedDiscount ? '（8折卡生效）' : ''}${mathCut ? '（精算砍价）' : ''}${geolCut ? '（勘探评估）' : ''}${genCut > 0 ? `（${bmj.skill}）` : ''}`);
     this.ev({ t: 'buy', pid: p.id, cell, price, mortgageBuy: !!mortgageBuy });
     this.pendingBuy = null;
@@ -2444,6 +2795,11 @@ class Room {
         for (const [, , actv] of usedCuts) if (!actv) p.skillLeft--;
       }
       p.cash -= price; cs.level++;
+      // v5.7：研究项目的盖房返现（盖房返现）
+      if (p.hex && p.hex.buildCash && price > 0) {
+        p.cash += p.hex.buildCash;
+        this.ev({ t: 'money', pid: p.id, amount: p.hex.buildCash, reason: '项目·盖房返现' });
+      }
       // v5.3：通用 —— 升级成功后的现金返利（buildCash，如智能制造·柔性产线）
       const bmj2 = MAJORS[p.major] || {};
       if (bmj2.buildCash && usedCuts.some(x => x[1] === p.major)) {
@@ -2536,6 +2892,11 @@ class Room {
   tryPay(p, amount, creditor, toPool = false) {
     if (p.cash >= amount) {
       p.cash -= amount;
+      // v5.7：研究项目的付款返现（积分返现 / 消费返现）
+      if (p.hex && p.hex.cashbackPct && amount > 0) {
+        const back = Math.min(p.hex.cashbackCap || 1e9, Math.round(amount * p.hex.cashbackPct));
+        if (back > 0) { p.cash += back; this.ev({ t: 'money', pid: p.id, amount: back, reason: '项目·付款返现' }); }
+      }
       if (creditor) {
         creditor.cash += amount;
         if (creditor.combo >= 2) { this.addLog(`🔥 ${creditor.name} 连击 ×${creditor.combo + 1} 收租`); this.ev({ t: 'combo', pid: creditor.id, n: creditor.combo + 1 }); }
@@ -2592,6 +2953,17 @@ class Room {
         mp += bonus; p.skillLeft--;
         this.addLog(`${mmj.icon} ${p.name} 发动【${mmj.skill}】，抵押多拿 ¥${bonus}`);
         this.ev({ t: 'skill', pid: p.id, major: p.major, name: mmj.skill, detail: `+¥${bonus}` });
+      }
+    }
+    // v5.7：研究项目的抵押加成（小额贷/杠杆大师 = 百分比加成；华尔街之狼 = 直接拿足地价 100%）
+    {
+      const hx = p.hex || {};
+      if (hx.mortgage100) {
+        const tgt = Math.round(c.price);
+        if (tgt > mp) { mp = tgt; this.hexFx(p, 'wallstreet', '抵押拿足地价 100%'); }
+      } else if (hx.mortgageUp) {
+        const bonus = Math.round(mp * hx.mortgageUp);
+        if (bonus > 0) mp += bonus;
       }
     }
     cs.mortgaged = true;
@@ -2670,6 +3042,16 @@ class Room {
   }
 
   bankrupt(p, creditor) {
+    // v5.7 涅槃：首次破产时免除该笔债务，带 ¥6000 复活（限 1 次）
+    if (p.alive && p.hex && (p.hex.nirvana || 0) > 0) {
+      p.hex.nirvana = 0;
+      p.cash = 6000;
+      this.raise = null;
+      this.addLog(`🔥 ${p.name} 触发【涅槃】，免除该笔债务并带着 ¥6000 从灰烬中站了起来！`);
+      this.hexFx(p, 'nirvana', '涅槃：免债复活 +¥6000');
+      this.finishPay(p);
+      return;
+    }
     p.alive = false;
     this.clearTimer(); this.clearAiTimers();
     let total = 0;
@@ -2733,6 +3115,20 @@ class Room {
     }
     this.addLog(`${p.name} 抽到${type === 'chance' ? '机会' : '命运'}卡「${card.name}」：${card.desc}`);
     this.ev({ t: 'card', pid: p.id, type, card });
+    // v5.7：研究项目 —— 命运改写（负面卡自动重抽，限次）
+    if (p.hex && (p.hex.rerollBad || 0) > 0 && this.isBadCard(card)) {
+      const c2 = pick(deck);
+      if (!this.isBadCard(c2)) {
+        p.hex.rerollBad--;
+        this.hexFx(p, 'fatewheel', `命运改写：负面卡已重抽（剩 ${p.hex.rerollBad} 次）`);
+        card = c2;
+      }
+    }
+    // v5.7：研究项目 —— 卡牌津贴（开卷有益 / 卡运亨通）
+    if (p.hex && p.hex.cardGain) {
+      p.cash += p.hex.cardGain;
+      this.ev({ t: 'money', pid: p.id, amount: p.hex.cardGain, reason: '项目·卡牌津贴' });
+    }
     // 专业：艺术 · 灵感迸发（抽到正面机会卡额外 +¥800）
     if (type === 'chance' && p.major === 'lang' && p.skillLeft > 0 && !this.isBadCard(card) && card.kind !== 'each') {
       p.skillLeft--; p.cash += 900;
@@ -2792,6 +3188,18 @@ class Room {
   // v5.1：法学 · 法律援助 / 哲学 · 批判思维：抵消一次不利判定
   // v5.3：通用化 —— 任何带 immuneN 的专业都走这里
   immune(p, why) {
+    // v5.7：研究项目的免疫（绝对防御 = 限次；学术保护 = 限次加成）优先于专业技能次数
+    const hx = p ? (p.hex || {}) : {};
+    if ((hx.immuneCharges || 0) > 0) {
+      hx.immuneCharges--;
+      this.hexFx(p, 'aegis', `绝对防御：免除「${why}」（剩 ${hx.immuneCharges} 次）`);
+      return true;
+    }
+    if ((hx.immuneBonus || 0) > 0) {
+      hx.immuneBonus--;
+      this.hexFx(p, 'patron', `学术保护：免除「${why}」`);
+      return true;
+    }
     if (!p || p.skillLeft <= 0) return false;
     const mj = MAJORS[p.major] || {};
     const ok = (p.major === 'law' || p.major === 'phil') || (mj.immuneN > 0);
@@ -2833,7 +3241,7 @@ class Room {
       case 'moveTo': {
         p.pos = card.cell;
         if (card.salary) {
-          if (this.salaryOn()) { const w = this.wageOf(); p.cash += w; this.ev({ t: 'money', pid: p.id, amount: w, reason: '工资' }); }
+          if (this.salaryOn()) { this.payWage(p); }
           else this.addLog(`❄️ 经济寒冬：银行停发工资，${p.name} 没领到钱`);
         }
         this.ev({ t: 'teleport', pid: p.id, cell: card.cell });
@@ -3135,8 +3543,7 @@ class Room {
     }
     p.pos = pos;
     if (passedGo && this.salaryOn()) {
-      const w = this.wageOf();
-      p.cash += w; this.ev({ t: 'money', pid: p.id, amount: w, reason: '工资' });
+      this.payWage(p);
       this.applyGoSkills(p);
     }
     this.ev({ t: 'move', pid: p.id, path, final: pos });
@@ -3183,6 +3590,11 @@ class Room {
         this.ev({ t: 'skill', pid: p.id, major: p.major, name: mj.skill, detail: `+¥${mj.salary.amt}` });
         this.ev({ t: 'money', pid: p.id, amount: mj.salary.amt, reason: mj.skill });
       }
+    }
+    // v5.7：研究项目 —— 过起点加成（勤工俭学 / 涨薪合同），常驻不耗次数
+    if (p.hex && p.hex.goCash) {
+      p.cash += p.hex.goCash;
+      this.ev({ t: 'money', pid: p.id, amount: p.hex.goCash, reason: '项目·过起点津贴' });
     }
   }
 
@@ -3330,4 +3742,4 @@ class Room {
   }
 }
 
-module.exports = { Room, BOARD, GROUPS, CHANCE, FATE, SALARY, START_CASH, SEASON, SEASON_ORDER, WEATHER, CALEVENTS, MAJORS, MAJOR_KEYS, ACHS, ITEMS, EFFECT_CARDS, FUND_CAP, ENDGAME_ROUND, REROLL_COST, BRANCH, BRANCH2, FACULTY, FACULTY_KEYS, FACULTY_VOTE_MS, PCOLOR };
+module.exports = { Room, BOARD, GROUPS, CHANCE, FATE, SALARY, START_CASH, SEASON, SEASON_ORDER, WEATHER, CALEVENTS, MAJORS, MAJOR_KEYS, ACHS, ITEMS, EFFECT_CARDS, FUND_CAP, ENDGAME_ROUND, REROLL_COST, BRANCH, BRANCH2, FACULTY, FACULTY_KEYS, FACULTY_VOTE_MS, PCOLOR, PROJECTS, HEX_TIERS, PROJECT_KEYS, HEX_TRIGGERS, HEX_TIER_P, HEX_PICK_MS };

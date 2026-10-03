@@ -82,7 +82,7 @@ function sliceFn(src, name) {
 
   const sfxBlock = sliceObject(cliJs, 'const SFX = {');
   const sfxKeys = (sfxBlock.match(/^\s{2}[A-Za-z_$][\w$]*\s*:/gm) || []).length;
-  ok(sfxKeys === 94, `音效表共 ${sfxKeys} 种（v5.4 新增 3 种后预期 94）`);
+  ok(sfxKeys === 99, `音效表共 ${sfxKeys} 种（v5.7 新增 5 种后预期 99）`);
   const newSfx = ['skillCast', 'beam', 'chip', 'upgrade', 'coinFly', 'gavel', 'pulse', 'glint', 'whooshLow', 'crown', 'revive', 'roundBell', 'diceSettle'];
   const missSfx = newSfx.filter(k => !new RegExp('\\b' + k + '\\s*:').test(sfxBlock));
   ok(missSfx.length === 0, `13 个新音效都已定义${missSfx.length ? '（缺 ' + missSfx.join(',') + '）' : ''}`);
@@ -195,7 +195,7 @@ function sliceFn(src, name) {
     }));
     ok(rt.majors === 60, `运行时 MAJORS ${rt.majors} 项`);
     ok(rt.elec === '电气工程' && rt.elecMode === 'active', `电气工程 = ${rt.elec}（${rt.elecMode} 主动技）`);
-    ok(rt.sfx === 94, `运行时音效表 ${rt.sfx} 种`);
+    ok(rt.sfx === 99, `运行时音效表 ${rt.sfx} 种`);
     ok(rt.fns.every(t => t === 'function'), `5 个新特效函数均已挂载：${rt.fns.join('/')}`);
     ok(rt.fac === 23, `v5.2 校园风貌镜像未受影响（${rt.fac} 项）`);
 

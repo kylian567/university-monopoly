@@ -4,7 +4,7 @@ const http = require('http');
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
-const { Room, FUND_CAP, ENDGAME_ROUND, PCOLOR } = require('./game');
+const { Room, FUND_CAP, ENDGAME_ROUND, PCOLOR, HEX_PICK_MS } = require('./game');
 // v5.5：AI 名字按棋子颜色取叠字名 —— 紫色棋子的 AI 就叫「紫紫」，全场一眼对上号
 const AI_NAME_BY_COLOR = { '#E53935': '红红', '#1E88E5': '蓝蓝', '#FDD835': '黄黄', '#43A047': '绿绿', '#8E24AA': '紫紫' };
 
@@ -43,6 +43,8 @@ function snapshot(room) {
     facultyLucky: room.facultyLucky || null,
     freeRound: room.freeRound || 0,
     freeRentRounds: (room.freeRentRounds || []).slice(),
+    // v5.7：研究项目三选一进行中（断线重连按快照把选择浮层补回来）
+    project: room.project ? { round: room.project.round, tier: room.project.tier, offers: room.project.offers, picks: { ...(room.project.picks) }, ms: HEX_PICK_MS } : null,
     calEvent: room.calEvent ? { id: room.calEvent.id, name: room.calEvent.name, icon: room.calEvent.icon, desc: room.calEvent.desc, kind: room.calEvent.kind, fx: room.calEvent.fx || null } : null,
     players: room.players.map(p => ({
       id: p.id, name: p.name, isAI: p.isAI, trustee: !!p.trustee, cash: p.cash, pos: p.pos, alive: p.alive, color: p.color,
@@ -51,6 +53,7 @@ function snapshot(room) {
       shield: !!p.shield, sabotage: p.sabotage || 0,
       medal: p.medal || 0, stayFree: p.stayFree || 0,
       buffSteps: p.buffSteps || 0, stepBuffs: (p.stepBuffs || []).slice(),
+      hexList: (p.hexList || []).slice(),   // v5.7：已立项的研究项目（供他人查看 / 玩家卡片标签）
       invest: p.invest ? { due: p.invest.due, back: p.invest.back } : null,
       rentBuff: p.rentBuff || 0, defBuff: p.defBuff || 0, buildCutTurn: p.buildCutTurn || 0,
       voice: !!p.voice,   // 是否开着麦（语音房状态，仅用于同步 UI 与建连时机）
@@ -248,7 +251,7 @@ function onMessage(ws, str) {
     let code = m.code;
     if (m.type === 'create') {
       code = newCode();
-      const room = new Room(code, { faculty: true });   // v5.2：线上房局开启校园风貌
+      const room = new Room(code, { faculty: true, hex: true });   // v5.2：线上房局开启校园风貌
       const p = room.join(name);
       if (!p) return;
       const obj = { room, clients: new Map(), createdAt: Date.now(), lastActive: Date.now() };
@@ -330,13 +333,14 @@ function onMessage(ws, str) {
     case 'useSkill': room.useSkill(p); break;                   // v5.1 主动技：发动
     case 'skipSkill': room.skipSkill(p); break;                 // v5.1 主动技：放弃
     case 'voteFaculty': room.voteFaculty(p, String(a.key || '')); break;   // v5.2 校园风貌：投票
+    case 'pickProject': room.pickProject(p, String(a.key || '')); break;   // v5.7 研究项目：三选一
     case 'trustee': room.setTrustee(p, !!a.on); break;   // v5.4 AI 托管：开/关
     case 'major': room.setMajor(p, a.major); break;
     case 'again': // 再来一局
       if (room.phase === 'over') {
         const obj = rooms.get(room.code);
         const { Room: R } = require('./game');
-        const nr = new R(room.code, { faculty: true });
+        const nr = new R(room.code, { faculty: true, hex: true });
         for (const q of room.players) { const np = nr.join(q.name, q.isAI); if (np && q.major) np.major = q.major; }
         obj.room = nr;
         roomObj.room = nr;
