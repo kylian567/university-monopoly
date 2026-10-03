@@ -110,16 +110,16 @@ console.log('\n[4] 创业大道（36号入口 → 55~61 → 出口回39号校园
   p0.cash = 20000; p0.pos = 61; p0.skipTurns = 0;
   r.phase = 'resolving';
   r.resolveCell(p0);
-  ok(p0.pos === 61 && p0.cash === 22500, `61 号校企合作中心出口 +¥2500（现金 ${p0.cash}）`);
-  ok(p0.skipTurns === 2, `61 号需停留 2 回合（skipTurns=${p0.skipTurns}）`);
+  ok(p0.pos === 61 && p0.cash === 22000, `61 号校企合作中心出口 +¥2000（现金 ${p0.cash}）`);
+  ok(p0.skipTurns === 1, `61 号需停留 1 回合（skipTurns=${p0.skipTurns}）`);
   ok(BOARD[39].name === '校园商城', '39 号格是「校园商城」（61 的下一格）');
-  // 学术长廊出口 54：领 2 张免租金卡 + 停留 2 回合，下一格是 28 教育基金会
+  // 学术长廊出口 54：领 1 张免租金卡 + 停留 1 回合，下一格是 28 教育基金会
   const p1 = r.players[1];
   p1.pos = 54; p1.medal = 0; p1.skipTurns = 0; r.phase = 'resolving';
   const c1 = p1.cash;
   r.resolveCell(p1);
-  ok(p1.pos === 54 && p1.cash === c1 && p1.medal === 2, `54 号校史馆领 2 张免租金卡（medal=${p1.medal}，现金不变）`);
-  ok(p1.skipTurns === 2, `54 号需停留 2 回合（skipTurns=${p1.skipTurns}）`);
+  ok(p1.pos === 54 && p1.cash === c1 && p1.medal === 1, `54 号校史馆领 1 张免租金卡（medal=${p1.medal}，现金不变）`);
+  ok(p1.skipTurns === 1, `54 号需停留 1 回合（skipTurns=${p1.skipTurns}）`);
   ok(r.nextOf(54) === 28 && BOARD[28].name === '教育基金会', '54 的下一格是 28「教育基金会」');
   // 学术长廊门槛 2 块地皮（入口在 20 号）
   ok(BRANCH.NEED === 2, `学术长廊门槛 ≥${BRANCH.NEED} 块地皮`);
@@ -169,11 +169,11 @@ console.log('\n[5] 经济寒冬：第 15 轮起停发工资');
       console.log('\n[6] v4.1：重投每回合一次 · 交通 2000 · 免罚符涨价 · 特权商店免租金卡');
       ok(BOARD.filter(c => c.type === 'transport').every(c => c.price === 2000), '全部交通格价格 2000');
       const r3 = mkRoom();
-      // v5.0 续·二：免罚符改分段涨价（1~8 轮 / 9~20 轮 / 21 轮起）
-      const shieldAt = r => { const n = Math.max(1, r); return n <= 8 ? 280 + 60 * n : (n <= 20 ? 760 + 120 * (n - 8) : 2200 + 160 * (n - 20)); };
+      // v5.1：免罚符分段价整体再降一档（1~8 轮 / 9~20 轮 / 21 轮起）
+      const shieldAt = r => { const n = Math.max(1, r); return n <= 8 ? 260 + 55 * n : (n <= 20 ? 700 + 110 * (n - 8) : 2020 + 150 * (n - 20)); };
       ok(r3.shieldCost() === shieldAt(r3.round), `免罚符价格 = 分段价 = ¥${r3.shieldCost()}`);
       const _r8 = mkRoom(); _r8.round = 8; const _r9 = mkRoom(); _r9.round = 9; const _r25 = mkRoom(); _r25.round = 25;
-      ok(_r8.shieldCost() === 760 && _r9.shieldCost() === 880 && _r25.shieldCost() === 3000,
+      ok(_r8.shieldCost() === 700 && _r9.shieldCost() === 810 && _r25.shieldCost() === 2770,
         `免罚符分段连续：第8轮¥${_r8.shieldCost()} → 第9轮¥${_r9.shieldCost()} → 第25轮¥${_r25.shieldCost()}`);
       ok(_r8.shieldCost() < 350 + 130 * 8 && _r25.shieldCost() < 350 + 130 * 25, '分段价整体低于原线性价');
       const s0 = cur(r3);
@@ -196,13 +196,12 @@ console.log('\n[5] 经济寒冬：第 15 轮起停发工资');
       // 校园商城（39 号）免费领卡，不可叠加
       const r5 = mkRoom();
       const w = cur(r5);
-      w.medal = 0; w.pos = 39; r5.phase = 'resolving';
-      const wc = w.cash;
+      w.medal = 0; w.voucher = 0; w.pos = 39; w.stepBuffs = []; r5.phase = 'resolving';
+      const wc = w.cash, ws = w.skillLeft;
       r5.resolveCell(w);
-      ok(w.medal === 1 && w.cash === wc, `踩校园商城免费领「免租金卡」（medal=${w.medal}，现金不变）`);
-      r5.phase = 'resolving'; w.pos = 39;
-      r5.resolveCell(w);
-      ok(w.medal === 1, '已有卡时再踩不会叠加');
+      // v5.1：校园商城改为随机抽 1~2 张效果卡（免租金卡 / 免租券 / 技能次数 +1 …）
+      const gained = w.medal > 0 || w.voucher > 0 || w.skillLeft > ws || w.stepBuffs.length > 0 || w.cash > wc;
+      ok(gained, `踩校园商城抽到效果卡（medal=${w.medal} voucher=${w.voucher} 技能+${w.skillLeft - ws} 加速×${w.stepBuffs.length} 现金${w.cash - wc >= 0 ? '+' : ''}${w.cash - wc}）`);
       console.log(`\n结果：${pass} 通过 / ${fail} 失败`);
       process.exit(fail ? 1 : 0);
     }, 30);

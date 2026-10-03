@@ -26,15 +26,15 @@ const BOARD = [
   {name:'命运',type:'fate'},{name:'缴学费',type:'tax',amount:900},{name:'浦东机场',type:'transport',price:2000},
   {name:'浙江大学',type:'prop',g:'g9',price:3450},{name:'厦门大学',type:'prop',g:'g4',price:1800},{name:'机会',type:'chance'},
   {name:'北航',type:'prop',g:'g2',price:1300},{name:'北京理工',type:'prop',g:'g6',price:2400},{name:'中山大学',type:'prop',g:'g6',price:2300},
-  {name:'文印店',type:'util',price:1500},{name:'香港大学',type:'prop',g:'g10',price:3900},{name:'四川大学',type:'prop',g:'g5',price:2000},
+  {name:'文印店',type:'util',price:1700},{name:'香港大学',type:'prop',g:'g10',price:3900},{name:'四川大学',type:'prop',g:'g5',price:2000},
   {name:'白云机场',type:'transport',price:2000},{name:'西北农林',type:'prop',g:'g1',price:900},{name:'命运',type:'fate'},
   {name:'南京大学',type:'prop',g:'g8',price:3300},{name:'南开大学',type:'prop',g:'g3',price:1600},{name:'长廊入口',type:'junction'},
   {name:'东南大学',type:'prop',g:'g2',price:1200},{name:'机会',type:'chance'},{name:'北京大学',type:'prop',g:'g10',price:4050},
-  {name:'中科大',type:'prop',g:'g8',price:3150},{name:'宝安机场',type:'transport',price:2000},{name:'天津大学',type:'prop',g:'g6',price:2500},
+  {name:'宝安机场',type:'transport',price:2000},{name:'中科大',type:'prop',g:'g8',price:3150},{name:'天津大学',type:'prop',g:'g6',price:2500},
   {name:'华东师大',type:'prop',g:'g2',price:1100},{name:'教育基金会',type:'parking'},{name:'华南理工',type:'prop',g:'g3',price:1400},
   {name:'挂科留级',type:'gojail'},{name:'深圳大学',type:'prop',g:'g1',price:1000},{name:'北师大',type:'prop',g:'g7',price:2700},
   {name:'同济大学',type:'prop',g:'g8',price:3000},{name:'武汉大学',type:'prop',g:'g7',price:2850},{name:'大兴机场',type:'transport',price:2000},
-  {name:'大道入口',type:'junction2'},{name:'南科大',type:'prop',g:'g4',price:1700},{name:'快递驿站',type:'util',price:1500},
+  {name:'大道入口',type:'junction2'},{name:'南科大',type:'prop',g:'g4',price:1700},{name:'快递驿站',type:'util',price:1600},
   {name:'校园商城',type:'jail'},{name:'清华大学',type:'prop',g:'g10',price:4200},{name:'国科大',type:'prop',g:'g3',price:1500},
   {name:'上海交大',type:'prop',g:'g9',price:3600},{name:'长安大学',type:'prop',g:'g1',price:800},{name:'辩论擂台',type:'duel'},
   {name:'西安交大',type:'prop',g:'g5',price:2200},{name:'复旦大学',type:'prop',g:'g9',price:3750},{name:'哈工大',type:'prop',g:'g7',price:2600},
@@ -42,8 +42,8 @@ const BOARD = [
   {name:'科研基金处',type:'invest'},{name:'教授工作室',type:'advisor'},{name:'校庆礼品屋',type:'shop'},
   {name:'奖学金长廊',type:'ginkgo'},{name:'杰出校友厅',type:'hall'},{name:'通宵自习室',type:'study'},{name:'校史馆',type:'exit'},
   // ---- 创业大道 55~61（右侧下层小地图） ----
-  {name:'创业孵化器',type:'startup'},{name:'跳蚤市场',type:'market'},{name:'校园运动会',type:'arena'},
-  {name:'国际交流站',type:'exchange'},{name:'创业基金厅',type:'hall'},{name:'实习直通车',type:'study'},{name:'校企合作中心',type:'exit2'},
+  {name:'创业孵化器',type:'startup'},{name:'毕业跳蚤市场',type:'market'},{name:'校园运动会',type:'arena'},
+  {name:'国际交流站',type:'exchange'},{name:'创业基金厅',type:'hall'},{name:'实习直通车',type:'intern'},{name:'校企合作中心',type:'exit2'},
 ];
 // 岔路格位置（1500 × 940 坐标空间）：两条支线横排在棋盘正中央的上、下两排
 const BR_W = 132, BR_H = 108, BR_GAP = 8;
@@ -62,14 +62,14 @@ const GROUPS = { g1:'#A1887F', g2:'#90CAF9', g3:'#F48FB1', g4:'#FFB74D', g5:'#E5
 // ---------- 与服务端同步的机制常量 ----------
 const REROLL_COST = 1200;      // 重掷骰：掷骰后花 ¥1200 重投一次
 const ENDGAME_ROUND = 15;      // 第 15 轮起「经济寒冬」：银行停发工资
-const FUND_CAP = 30000;        // 教育基金上限，溢出均分
-// 免罚符价格（必须与服务端 Room.shieldCost() 保持一致）：v5.0 续·二分三段涨价
-//   1~8 轮 280+60×轮 ｜ 9~20 轮 760+120×(轮−8) ｜ 21 轮起 2200+160×(轮−20)
+const FUND_CAP = 20000;        // 教育基金上限（v5.1：30000 → 20000），溢出均分
+// 免罚符价格（必须与服务端 Room.shieldCost() 保持一致）：v5.1 起分段价整体再下调约 8%
+//   1~8 轮 260+55×轮 ｜ 9~20 轮 700+110×(轮−8) ｜ 21 轮起 2020+150×(轮−20)
 function shieldCostAt(round) {
   const r = Math.max(1, round || 1);
-  if (r <= 8) return 280 + 60 * r;
-  if (r <= 20) return 760 + 120 * (r - 8);
-  return 2200 + 160 * (r - 20);
+  if (r <= 8) return 260 + 55 * r;
+  if (r <= 20) return 700 + 110 * (r - 8);
+  return 2020 + 150 * (r - 20);
 }
 const ITEMS = {
   shield: { id:'shield', name:'免罚符', icon:'🛡️', desc:'本回合踩到他人地产免租，仅当轮有效，价格分段随轮数上涨' },
@@ -79,33 +79,51 @@ const SEASON = {
   mid:  { key:'mid',  name:'平季', icon:'🌤️', rentMul:1.0, buildMul:1.0, color:'#888780' },
   high: { key:'high', name:'旺季', icon:'🔥', rentMul:1.15, buildMul:1.1, color:'#BA7517' },
 };
+// v5.1：与服务端 WEATHER 保持一致（8 种天气，各有独立修正与独立视觉特效）
 const WEATHER = {
-  sun:{ name:'晴天', icon:'☀️' }, cloud:{ name:'阴天', icon:'☁️' }, rain:{ name:'雨天', icon:'🌧️' }, storm:{ name:'台风', icon:'🌪️' },
+  sun:   { key:'sun',   name:'晴天', icon:'☀️', diceMod: 1,  desc:'掷骰 +1 步' },
+  cloud: { key:'cloud', name:'阴天', icon:'☁️', diceMod: 0,  desc:'无特殊影响' },
+  rain:  { key:'rain',  name:'雨天', icon:'🌧️', diceMod: -1, desc:'掷骰 −1 步' },
+  storm: { key:'storm', name:'台风', icon:'🌪️', diceMod: 0,  rentMul: 0.7,  desc:'全场租金 ×0.7' },
+  fog:   { key:'fog',   name:'雾霾', icon:'🌫️', diceMod: 0,  rentMul: 0.9,  desc:'能见度低，全场租金 ×0.9' },
+  snow:  { key:'snow',  name:'暴雪', icon:'❄️', diceMod: -1, buildMul: 1.15, desc:'掷骰 −1 步，盖房 ×1.15' },
+  heat:  { key:'heat',  name:'烈日', icon:'🔥', diceMod: 0,  rentMul: 1.1,  desc:'消费旺盛，全场租金 ×1.1' },
+  wind:  { key:'wind',  name:'大风', icon:'💨', diceMod: 1,  rentMul: 0.95, buildMul: 1.1, desc:'顺风 +1 步，租金 ×0.95，盖房 ×1.1' },
 };
 const MAJORS = {
-  cs:   { id:'cs',   name:'计算机', icon:'💻', skill:'算法优化', desc:'掷骰不足 7 点时自动重掷取更优', uses:3 },
-  med:  { id:'med',  name:'医学',   icon:'🩺', skill:'妙手回春', desc:'被收租 ≥¥1000 时自动减免 40%', uses:3 },
-  news: { id:'news', name:'新闻',   icon:'📰', skill:'独家爆料', desc:'抽到负面卡时自动重抽一次', uses:3 },
-  econ: { id:'econ', name:'经管',   icon:'📈', skill:'资本运作', desc:'单笔收租 ≥¥1500 时自动 +50%', uses:3 },
-  arch: { id:'arch', name:'建筑',   icon:'🏗️', skill:'造价管理', desc:'升级房产时费用自动 -35%', uses:3 },
-  law:  { id:'law',  name:'法学',   icon:'⚖️', skill:'法律援助', desc:'免疫 3 次不利判定（拆地/拆房/损失地皮/留级/陷害）', uses:3 },
-  ee:   { id:'ee',   name:'微电子', icon:'🔌', skill:'信号增益', desc:'每次经过起点额外 +¥1000', uses:3 },
-  math: { id:'math', name:'数学',   icon:'📐', skill:'精算砍价', desc:'买入地产时自动 8 折', uses:3 },
-  art:  { id:'art',  name:'艺术',   icon:'🎨', skill:'灵感迸发', desc:'抽到正面机会卡时额外 +¥700', uses:3 },
-  bio:  { id:'bio',  name:'生命科学', icon:'🧬', skill:'细胞增殖', desc:'回合开始时现金 +3%', uses:3 },
-  lang: { id:'lang', name:'外国语', icon:'🌍', skill:'多语种优势', desc:'抽到正面机会卡时额外 +¥900', uses:3 },
-  pe:   { id:'pe',   name:'体育',   icon:'🏀', skill:'体能优势', desc:'掷骰点数 ≤4 时自动多走 2 步', uses:3 },
-  phys: { id:'phys', name:'物理',   icon:'⚛️', skill:'守恒定律', desc:'被收租 ≥¥1200 时自动减免 30%', uses:3 },
-  chem: { id:'chem', name:'化学',   icon:'🧪', skill:'催化加成', desc:'单笔收租 ≥¥1000 时自动 +40%', uses:3 },
-  phil: { id:'phil', name:'哲学',   icon:'🏛️', skill:'批判思维', desc:'免疫 2 次不利判定', uses:2 },
-  agri:  { id:'agri',  name:'农学', icon:'🌾', skill:'春华秋实', desc:'每次经过起点额外 +¥1500', uses:3 },
-  drama: { id:'drama', name:'戏剧', icon:'🎭', skill:'全场入戏', desc:'抽到任意机会/命运卡时额外 +¥500', uses:3 },
-  mech:  { id:'mech',  name:'机械', icon:'⚙️', skill:'精益制造', desc:'升级房产时费用自动 -20%', uses:3 },
-  stat:  { id:'stat',  name:'统计', icon:'📊', skill:'数据洞察', desc:'掷骰点数 ≤5 时额外 +¥600', uses:3 },
-  aero:  { id:'aero',  name:'航天', icon:'🛰️', skill:'一飞冲天', desc:'进入岔路时额外 +¥1000', uses:3 },
-  fin:   { id:'fin',   name:'金融', icon:'💰', skill:'杠杆操作', desc:'抵押地产时多拿 30% 现金', uses:3 },
-  geol:  { id:'geol',  name:'地质', icon:'🗺️', skill:'勘探评估', desc:'买入无主地产时自动 9 折', uses:3 },
-  mil:   { id:'mil',   name:'军事', icon:'🎖️', skill:'战术压制', desc:'擂台对决时自己的点数 +1', uses:3 },
+  mech: { id:'mech', name:'机械', icon:'⚙️', skill:'精益制造', mode:'active', uses:4, fx:'#e8734a', tier:1, desc:'发动后本回合盖房 −50% 并立刻 +¥1500；常驻盖房 −10%' },
+  newe: { id:'newe', name:'新能源材料与器件', icon:'🔋', skill:'储能放大', mode:'active', uses:3, fx:'#2fb87a', tier:1, desc:'发动后 +现金 12%（≤¥4000），本轮收租 +40%；常驻过起点 +¥1000' },
+  fin:  { id:'fin',  name:'金融', icon:'💰', skill:'杠杆操作', mode:'passive', uses:4, fx:'#d8a531', tier:1, desc:'抵押地产时多拿 50% 现金' },
+  cs:   { id:'cs',   name:'计算机', icon:'💻', skill:'算法优化', mode:'passive', uses:3, fx:'#4a90d9', tier:1, desc:'掷骰不足 7 点时自动重掷取更优' },
+  econ: { id:'econ', name:'经管', icon:'📈', skill:'资本运作', mode:'passive', uses:3, fx:'#c9a227', tier:2, desc:'单笔收租 ≥¥1500 时 +50%' },
+  med:  { id:'med',  name:'医学', icon:'🩺', skill:'妙手回春', mode:'passive', uses:3, fx:'#e05a71', tier:2, desc:'被收租 ≥¥1000 时减免 40%' },
+  pharm:{ id:'pharm',name:'药学', icon:'💊', skill:'对症下药', mode:'active', uses:3, fx:'#57c1a0', tier:2, desc:'发动后 +¥600，本轮内被收租减免 60%' },
+  law:  { id:'law',  name:'法学', icon:'⚖️', skill:'法律援助', mode:'passive', uses:3, fx:'#8a6fd1', tier:2, desc:'免疫 3 次不利判定' },
+  arch: { id:'arch', name:'建筑', icon:'🏗️', skill:'造价管理', mode:'passive', uses:3, fx:'#d08531', tier:2, desc:'升级房产时费用 −35%' },
+  chem: { id:'chem', name:'化学', icon:'🧪', skill:'催化加成', mode:'passive', uses:3, fx:'#7bbf3f', tier:2, desc:'单笔收租 ≥¥1000 时 +40%' },
+  auto: { id:'auto', name:'自动化', icon:'🤖', skill:'流水线', mode:'active', uses:3, fx:'#5a7fd6', tier:2, desc:'发动后本回合移动 +2 步；落在自己地产再 +¥900' },
+  ee:   { id:'ee',   name:'微电子', icon:'🔌', skill:'信号增益', mode:'passive', uses:4, fx:'#00a8b5', tier:2, desc:'每次经过起点 +¥1400' },
+  math: { id:'math', name:'数学', icon:'📐', skill:'精算砍价', mode:'passive', uses:3, fx:'#5f9ea0', tier:2, desc:'买入地产时 8 折' },
+  agri: { id:'agri', name:'农学', icon:'🌾', skill:'春华秋实', mode:'passive', uses:3, fx:'#8fbf4a', tier:2, desc:'每次经过起点 +¥1500' },
+  stat: { id:'stat', name:'统计', icon:'📊', skill:'数据洞察', mode:'passive', uses:4, fx:'#4f9ad1', tier:2, desc:'掷骰点数 ≤5 时 +¥800' },
+  pe:   { id:'pe',   name:'体育', icon:'🏀', skill:'体能优势', mode:'passive', uses:4, fx:'#e0803f', tier:2, desc:'掷骰点数 ≤5 时多走 2 步并 +¥400' },
+  phil: { id:'phil', name:'哲学', icon:'🏛️', skill:'批判思维', mode:'passive', uses:3, fx:'#8a7f9a', tier:2, desc:'免疫 3 次不利判定' },
+  mil:  { id:'mil',  name:'军事', icon:'🎖️', skill:'战术压制', mode:'passive', uses:3, fx:'#7d8a3a', tier:2, desc:'擂台点数 +1；获胜再 +¥500' },
+  phys: { id:'phys', name:'物理', icon:'⚛️', skill:'守恒定律', mode:'passive', uses:3, fx:'#3f7fd6', tier:2, desc:'被收租 ≥¥1200 时减免 35%' },
+  lang: { id:'lang', name:'外国语', icon:'🌍', skill:'多语种优势', mode:'passive', uses:3, fx:'#c86a3f', tier:2, desc:'抽到正面机会卡时 +¥900' },
+  art:  { id:'art',  name:'艺术', icon:'🎨', skill:'灵感迸发', mode:'passive', uses:3, fx:'#d1568f', tier:2, desc:'抽到正面机会卡时 +¥800' },
+  mse:  { id:'mse',  name:'材料科学', icon:'🧱', skill:'相变强化', mode:'active', uses:3, fx:'#9a7b5a', tier:2, desc:'发动后本轮自己地产收租 +60%' },
+  env:  { id:'env',  name:'环境科学', icon:'♻️', skill:'循环利用', mode:'passive', uses:4, fx:'#3fa76a', tier:2, desc:'每次被收租都减免 15%（无门槛）' },
+  civil:{ id:'civil',name:'土木工程', icon:'🏗️', skill:'基建加固', mode:'passive', uses:3, fx:'#a8823f', tier:2, desc:'自己的地产免于被拆除；盖房 −20%' },
+  geol: { id:'geol', name:'地质', icon:'🗺️', skill:'勘探评估', mode:'passive', uses:3, fx:'#8a7b52', tier:3, desc:'买入无主地产时 9 折' },
+  aero: { id:'aero', name:'航天', icon:'🛰️', skill:'一飞冲天', mode:'passive', uses:3, fx:'#5468a8', tier:3, desc:'进入岔路时 +¥1000' },
+  bio:  { id:'bio',  name:'生命科学', icon:'🧬', skill:'细胞增殖', mode:'passive', uses:4, fx:'#5aa9d6', tier:3, desc:'回合开始时现金 +4%' },
+  drama:{ id:'drama',name:'戏剧', icon:'🎭', skill:'全场入戏', mode:'passive', uses:3, fx:'#b04a9a', tier:3, desc:'抽到任意机会/命运卡时 +¥500' },
+  music:{ id:'music',name:'音乐', icon:'🎵', skill:'共鸣演出', mode:'active', uses:3, fx:'#d1619a', tier:3, desc:'发动后 +¥1000，其他玩家各付你 ¥300' },
+  psych:{ id:'psych',name:'心理学', icon:'🧠', skill:'读心术', mode:'active', uses:3, fx:'#7a5fc1', tier:3, desc:'发动后从总资产最高者处抽走 ¥1200' },
+  news: { id:'news', name:'新闻', icon:'📰', skill:'独家爆料', mode:'passive', uses:3, fx:'#8a8f96', tier:3, desc:'抽到负面卡时自动重抽一次' },
+  food: { id:'food', name:'食品科学', icon:'🍜', skill:'能量补给', mode:'passive', uses:4, fx:'#d1873f', tier:3, desc:'每次被罚停留休整时 +¥700' },
+  marine:{id:'marine',name:'海洋科学', icon:'🌊', skill:'深海资源', mode:'passive', uses:3, fx:'#2f8fbf', tier:3, desc:'每次经过起点 +¥1200' },
 };
 const CELLXY = i => { const [c, r] = CELLGRID[i]; return [GX(c), GY(r)]; };
 const cellCenter = i => {
@@ -122,6 +140,29 @@ let boardBuilt = false, tokenEls = {}, buildEls = {};
 // 绝不直接读服务端最新快照 —— 否则本轮四个玩家还没走完，地图就提前显示下一轮的季节/天气/节日。
 let dispSeason = 'mid', dispWeather = 'cloud', dispCal = null, dispReady = false;
 let curWeather = null;   // 已应用的天气（避免重复重建效果）
+// v5.1：显示态（现金 / 地皮 / 基金池）—— 服务端会给每个事件附带增量 d，
+// 客户端在「播完该事件动画」之后才套用，所以资金/资产的变化永远晚于动画，
+// 并且评论区、资产面板、玩家现金条在同一时刻一起刷新（不再提前剧透）。
+let dispCash = null, dispCells = null, dispFund = null;
+function syncDisp(state) {
+  if (!state) return;
+  dispCash = {}; dispFund = state.fundPool;
+  for (const p of state.players) dispCash[p.id] = p.cash;
+  dispCells = {};
+  (state.cells || []).forEach((cs, i) => { dispCells[i] = { own: cs.own, level: cs.level || 0, mortgaged: !!cs.mortgaged, mortgageAt: cs.mortgageAt || 0 }; });
+}
+function applyDispDiff(d) {
+  if (!d) return;
+  if (d.cash && dispCash) for (const k in d.cash) dispCash[k] = d.cash[k];
+  if (d.fund != null) dispFund = d.fund;
+  if (d.cells && dispCells) for (const k in d.cells) dispCells[k] = d.cells[k];
+}
+// 取"当前应该显示"的现金 / 地皮（尚未播到就沿用旧值）
+function dcash(p) { return (dispCash && dispCash[p.id] != null) ? dispCash[p.id] : (p ? p.cash : 0); }
+function dcell(i) {
+  if (dispCells && dispCells[i]) return dispCells[i];
+  return (S && S.cells) ? S.cells[i] : { own: null, level: 0, mortgaged: false, mortgageAt: 0 };
+}
 
 // ---------- 音效引擎（WebAudio 合成，零素材） ----------
 let audioCtx = null, soundOn = true;
@@ -227,6 +268,50 @@ const SFX = {
   tick: () => tone({ f: 1320, t: 'square', d: 0.03, v: 0.05 }),
   // 金币雨：垄断 / 领基金池
   coinRain: () => { for (let i = 0; i < 11; i++) tone({ f: rnd(1000, 1900), t: 'triangle', d: 0.06, v: 0.075, when: i * 0.055 }); },
+  // ---------- v5.1 新增音效（天气 / 场景专用） ----------
+  // 风声：宽频噪声 + 缓慢下滑，像风从远处扫过
+  wind: () => { for (let i = 0; i < 5; i++) noiseFx({ d: 0.5, v: 0.055 + i * 0.008, when: i * 0.13, hp: 700 + i * 320 }); },
+  // 雷声：低频轰鸣 + 长尾噪声（台风）
+  thunder: () => { noiseFx({ d: 0.9, v: 0.1, hp: 90 }); tone({ f: 70, slide: -28, t: 'sawtooth', d: 1.0, v: 0.16, when: 0.05 }); },
+  // 雪落：极轻的高频颗粒，安静
+  snow: () => { for (let i = 0; i < 7; i++) tone({ f: rnd(1900, 2700), t: 'sine', d: 0.12, v: 0.035, when: i * 0.11 }); },
+  // 雾：低沉持续的嗡鸣，闷
+  fog: () => { tone({ f: 116, t: 'sine', d: 0.9, v: 0.07 }); tone({ f: 174, t: 'sine', d: 0.8, v: 0.045, when: 0.05 }); },
+  // 蝉鸣：烈日下的高频颤音
+  heat: () => { for (let i = 0; i < 10; i++) tone({ f: 2600 + (i % 3) * 180, t: 'sawtooth', d: 0.06, v: 0.026, when: i * 0.06 }); },
+  // 光晕：晴天转场的明亮泛音
+  sunshine: () => { [784, 1047, 1319].forEach((f, i) => tone({ f, t: 'sine', d: 0.5, v: 0.07, when: i * 0.1 })); },
+  // ---------- v5.1 新增音效（校历节日 / 全局事件专用） ----------
+  // 跨年烟火：一串升空爆裂
+  fireworks: () => { for (let i = 0; i < 7; i++) { noiseFx({ d: 0.18, v: 0.1, when: i * 0.2, hp: 1300 }); tone({ f: 640 + (i % 3) * 220, t: 'sine', d: 0.42, v: 0.07, when: i * 0.2 + 0.02 }); } },
+  // 红包：喜庆上行
+  redpacket: () => [784, 988, 1175, 1568].forEach((f, i) => tone({ f, t: 'triangle', d: 0.2, v: 0.18, when: i * 0.09 })),
+  // 歌手赛：开麦报幕
+  stage: () => { noiseFx({ d: 0.1, v: 0.18, hp: 900 }); [523, 659, 880, 1047, 1319].forEach((f, i) => tone({ f, t: 'square', d: 0.16, v: 0.13, when: 0.06 + i * 0.08 })); },
+  // 银行分红：点钞串
+  bank: () => { tone({ f: 220, t: 'sine', d: 0.3, v: 0.16 }); for (let i = 0; i < 9; i++) tone({ f: 1200 + i * 120, t: 'triangle', d: 0.05, v: 0.07, when: i * 0.05 }); },
+  // 帮扶转移：温暖双音
+  aid: () => { tone({ f: 620, slide: 260, t: 'sine', d: 0.3, v: 0.14 }); tone({ f: 930, t: 'sine', d: 0.24, v: 0.1, when: 0.16 }); },
+  // 火箭：发射嘶鸣
+  rocket: () => { noiseFx({ d: 0.6, v: 0.13, hp: 400 }); tone({ f: 160, slide: 900, t: 'sawtooth', d: 0.7, v: 0.14 }); },
+  // 画展：竖琴琶音
+  gallery: () => [659, 831, 988, 1319].forEach((f, i) => tone({ f, t: 'sine', d: 0.24, v: 0.13, when: i * 0.11 })),
+  // 嘉年华：欢快跳音
+  carnival: () => { for (let i = 0; i < 8; i++) tone({ f: 700 + (i % 4) * 180, t: 'square', d: 0.1, v: 0.11, when: i * 0.09 }); },
+  // 万圣节：阴森下滑
+  pumpkin: () => { tone({ f: 300, slide: -140, t: 'sawtooth', d: 0.5, v: 0.12 }); noiseFx({ d: 0.2, v: 0.1, hp: 500 }); },
+  // offer 雨：轻快提示
+  offer: () => { noiseFx({ d: 0.14, v: 0.1, hp: 1500 }); [880, 1047].forEach((f, i) => tone({ f, t: 'triangle', d: 0.14, v: 0.14, when: i * 0.1 })); },
+  // 牛市：连续上行
+  bull: () => [523, 659, 784, 988, 1175].forEach((f, i) => tone({ f, t: 'triangle', d: 0.14, v: 0.16, when: i * 0.07 })),
+  // 气球：轻盈飘散
+  balloon: () => [1047, 1319, 1568].forEach((f, i) => tone({ f, t: 'sine', d: 0.26, v: 0.09, when: i * 0.12 })),
+  // 大促：降价叮咚
+  sale: () => { noiseFx({ d: 0.12, v: 0.14, hp: 1600 }); [1319, 988].forEach((f, i) => tone({ f, t: 'square', d: 0.12, v: 0.13, when: i * 0.1 })); },
+  // 翻书：纸页沙沙
+  book: () => { noiseFx({ d: 0.22, v: 0.07, hp: 2600 }); tone({ f: 660, t: 'sine', d: 0.3, v: 0.08 }); },
+  // 暴雨停课：闷雷
+  storm: () => { noiseFx({ d: 0.7, v: 0.1, hp: 120 }); tone({ f: 90, slide: -40, t: 'sawtooth', d: 0.8, v: 0.14, when: 0.04 }); },
 };
 
 
@@ -432,7 +517,7 @@ qTabs.forEach(t => {
   };
 });
 document.querySelectorAll('#quickRow .quick').forEach(b => {
-  b.onclick = () => { sendChat(b.dataset.q); speak(b.dataset.q, null, b.dataset.tone); };
+  b.onclick = () => { sendChat(b.dataset.q); speak(b.dataset.q, null, b.dataset.tone, myPid); };
 });
 $('btnChat').onclick = () => { const v = $('chatInput').value; if (v && v.trim()) { sendChat(v); $('chatInput').value = ''; } };
 $('chatInput').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); $('btnChat').click(); } });
@@ -483,20 +568,34 @@ function pickVoice() {
   return voiceCache;
 }
 try { if (window.speechSynthesis) window.speechSynthesis.onvoiceschanged = () => { voiceCache = null; pickVoice(); }; } catch (e) {}
-function speak(text, who, tone) {
+// v5.1：同一句语音的「防重播」窗口 —— 自己点一次、别人那边也只应响一次。
+// WS/SSE 双通道、状态重推都可能让同一条 chat 事件到场两次，这里按「谁+内容」在 1.6s 内只念一遍。
+const ttsSeen = new Map();
+function ttsOnce(key) {
+  const now = Date.now();
+  const last = ttsSeen.get(key);
+  ttsSeen.set(key, now);
+  if (ttsSeen.size > 40) { for (const [k, t] of ttsSeen) if (now - t > 4000) ttsSeen.delete(k); }
+  return last === undefined || (now - last) > 1600;
+}
+function speak(text, who, tone, pid) {
   if (!soundOn || !text) return;
+  if (!ttsOnce(`${pid == null ? 'me' : pid}|${text}`)) return;   // 已念过 → 直接跳过，避免回音/叠音
   const key = tone || QUICK_TONE[text] || 'normal';
   const t = Object.assign({ name: key }, TONE[key] || TONE.normal);
+  // v5.1：不再有「某某说：」前缀 —— 所有人听到的就是语音内容本身（谁发的看气泡/日志就行）
   // 标点会让朗读更"有语气"：给不带标点的短句补一个句末语气标点
-  const line = (who ? `${who}说：` : '') + (/[。！？!?…~～]$/.test(text) ? text : text + (t.name === 'up' ? '！' : (t.name === 'sad' || t.name === 'soft' ? '……' : '。')));
+  const line = /[。！？!?…~～]$/.test(text) ? text : text + (t.name === 'up' ? '！' : (t.name === 'sad' || t.name === 'soft' ? '……' : '。'));
   if (speakRemote(line, t)) return;
   try {
     const synth = window.speechSynthesis; if (!synth) return;
     const u = new SpeechSynthesisUtterance(line);
     const v = pickVoice(); if (v) u.voice = v;
     u.lang = 'zh-CN'; u.rate = t.rate; u.pitch = t.pitch; u.volume = t.vol;
-    synth.cancel();   // 同一时间只留一句，避免叠音
-    synth.speak(u);
+    // 先取消上一句（同一时间只留一句），再在下一个事件循环里开口 ——
+    // 立刻 cancel()+speak() 在部分浏览器上会把同一句念两遍（就是用户听到的"回音"）。
+    synth.cancel();
+    setTimeout(() => { try { synth.speak(u); } catch (e) {} }, 60);
   } catch (e) {}
 }
 
@@ -814,7 +913,8 @@ function onState(state) {
   if (firstFrame && Array.isArray(state.log)) { visLog = state.log.map(l => l.msg); logRendered = 0; logForce = true; }   // 首次进入：先用完整历史打底
   if (firstFrame) {
     dispSeason = state.season || 'mid'; dispWeather = state.weather || 'cloud'; dispCal = state.calEvent || null; dispReady = true;
-    tokSig = ''; actionsSig = null; assetsSig = null; buildSig = '';
+    tokSig = ''; actionsSig = null; assetsSig = null; buildSig = ''; ghostSig = '';
+    syncDisp(state);
   }
   const wasLobby = state.phase === 'lobby';
   if (wasLobby) overShown = false;   // 新一局允许再次触发结算页
@@ -823,7 +923,9 @@ function onState(state) {
   if (wasLobby) { $('lobby-home').style.display = 'none'; $('lobby-room').style.display = 'block'; $('roomCode').textContent = roomCode; renderLobby(); }
   else {
     for (const e of state.events) {
-      if (e.t === 'chat') {   // 聊天即时显示，不排队（否则自己发的消息要等动画播完才出现）
+      // v5.1：只有「自己发的」聊天即时显示（否则要等动画播完才看到自己的话）；
+      // 其他人（含 AI）的聊天/表情必须排队顺播，避免抢在移动与结算动画之前剧透结果。
+      if (e.t === 'chat' && e.pid === myPid) {
         chatFx(e);
         visLog.push(`💬 ${e.name}：${e.text}`);
         renderLog();
@@ -853,12 +955,13 @@ function renderLobby() {
   const mh = $('majorHint');
   if (mh && me) {
     const m = MAJORS[me.major] || {};
-    mh.textContent = `你的专业：${m.name || '—'} · 技能「${m.skill || ''}」由系统在满足条件时自动发动`;
+    const how = m.mode === 'active' ? '轮到你时会弹窗询问是否发动' : '满足条件时自动发动';
+    mh.textContent = `你的专业：${m.name || '—'} · 技能「${m.skill || ''}」${how}（每局 ${m.uses} 次）`;
   }
 }
 
 // ---------- 动画队列 ----------
-const ANIMATED = new Set(['roll', 'move', 'card', 'buy', 'build', 'charge', 'money', 'mortgage', 'redeem', 'gojail', 'stay', 'jackpot', 'bankrupt', 'turn', 'quit', 'season', 'weather', 'calevent', 'tax', 'ach', 'skill', 'duel', 'item', 'shield', 'medal', 'voucher', 'medalBuy', 'medalGain', 'combo', 'demolish', 'cardBuild', 'calwave', 'gift', 'buff', 'invest', 'endgame', 'mono']);
+const ANIMATED = new Set(['roll', 'move', 'card', 'buy', 'build', 'charge', 'money', 'mortgage', 'redeem', 'gojail', 'stay', 'jackpot', 'bankrupt', 'turn', 'quit', 'season', 'weather', 'calevent', 'caleventHit', 'tax', 'ach', 'skill', 'duel', 'item', 'shield', 'medal', 'voucher', 'medalBuy', 'medalGain', 'combo', 'demolish', 'cardBuild', 'calwave', 'gift', 'buff', 'invest', 'rollpay', 'draw', 'major_switch', 'endgame', 'mono']);
 let animPending = 0;   // 排队中的动画数；>0 时 renderTokens 冻结，防止棋子瞬移
 let visLog = [];       // 已"播放"的日志：按事件流逐步出现，与地图动画严格同节奏（不超前、不滞后）
 let logRendered = 0;   // visLog 中已渲染的下标数（增量渲染，避免每次重排 200+ 行）
@@ -871,6 +974,7 @@ function queueAnim(e) {
   qDepth++;
   animQ = animQ.then(() => handleAnim(e)).catch(err => { try { console.error('anim err', err); } catch (e2) {} }).then(() => {
     qDepth--;
+    applyDispDiff(e && e.d);   // v5.1：动画播完才套用这次的现金/地皮/基金池增量
     if (!S) return;
     if (isAnim) animPending--;
     renderTokens(S);
@@ -954,8 +1058,14 @@ async function handleAnim(e) {
       break;
     }
     case 'money': { SFX.gain(); SFX.pop(); fxAt(playerCell(e.pid), `<div class="floaty plus">+¥${e.amount}</div>`); flyCoin(POOL_PT(), cellCenter(playerCell(e.pid)), 3); fxBurst(playerCell(e.pid), { kind: 'coin', n: 6, speed: 2.2, size: 3.8, life: 34, color: ['#e8b04b', '#f5d071', '#8ee6b3'], gravity: 0.22 }); await sleep(560); break; }
-    case 'mortgage': { SFX.mortgage(); SFX.stamp(); pulseCell(e.cell, '#888'); fxBurst(e.cell, { kind: 'spark', n: 10, speed: 2.2, size: 2.8, life: 30, color: ['#9a938a', '#c7c1b6'], wave: { r: 44, color: '#888' } }); await announce(`🔒 ${esc(ownerName(e.pid))} 抵押「${esc(BOARD[e.cell].name)}」`, 1250); break; }
-    case 'redeem': { SFX.redeem(); pulseCell(e.cell, '#e8b04b'); await announce(`🔓 ${esc(ownerName(e.pid))} 赎回「${esc(BOARD[e.cell].name)}」`, 1250); break; }
+    case 'mortgage': {
+      SFX.mortgage(); SFX.stamp(); pulseCell(e.cell, '#888');
+      fxAt(e.cell, '<div class="floaty lockfloat">🔒</div>');
+      fxBurst(e.cell, { kind: 'spark', n: 10, speed: 2.2, size: 2.8, life: 30, color: ['#9a938a', '#c7c1b6'], wave: { r: 44, color: '#888' } });
+      await announce(`🔒 ${esc(ownerName(e.pid))} 抵押「${esc(BOARD[e.cell].name)}」${e.unlockRound ? `<br><span style="font-size:13px;opacity:.85">抵押锁定期：第 ${e.unlockRound} 轮起才能赎回</span>` : ''}`, 1650);
+      break;
+    }
+    case 'redeem': { SFX.redeem(); SFX.bell(); pulseCell(e.cell, '#e8b04b'); fxBurst(e.cell, { kind: 'star', n: 12, speed: 2.6, size: 3.6, life: 36, color: ['#f5d071', '#fff3c4'], wave: { r: 52, color: '#e8b04b' } }); await announce(`🔓 ${esc(ownerName(e.pid))} 赎回「${esc(BOARD[e.cell].name)}」`, 1350); break; }
     case 'gojail': { SFX.jail(); SFX.sweepDown(); fxBurst(playerCell(e.pid), { kind: 'shard', n: 12, speed: 3, size: 3.6, life: 44, color: ['#8d8d8d', '#b23b3b', '#6d6d6d'], gravity: 0.3 }); await announce(`📉 <span class="who">${esc(ownerName(e.pid))}</span> 挂科留级，休整一回合！`, 1550); break; }
     case 'stay': { SFX.stay(); await announce(`💤 ${esc(ownerName(e.pid))} 停留一回合${e.left > 0 ? `（还要停留 ${e.left} 回合）` : ''}`, 1250); break; }
     case 'jackpot': { SFX.jackpot(); SFX.fanfare(); SFX.coinRain(); confettiBurst(); fxCoinRain(30); flashScreen('radial-gradient(circle at 50% 46%, rgba(255,232,160,.45), rgba(255,214,90,0) 64%)', 600); flyCoin(POOL_PT(), cellCenter(playerCell(e.pid)), 8); await announce(`🎓 <span class="who">${esc(ownerName(e.pid))}</span> 领取教育基金 <span class="amt">¥${e.amount}</span>！`, 1950); break; }
@@ -970,13 +1080,60 @@ async function handleAnim(e) {
     case 'quit': { await announce(`🤖 <span class="who">${esc(ownerName(e.pid))}</span> 退出对局，AI 已接管`, 1600); break; }
     // 市场状态只在这里（真正轮到播这条事件时）才写进地图显示，保证"一轮全部走完才更新"
     case 'season': { dispCal = null; dispSeason = e.season; SFX.whoosh(); await seasonAnim(e); break; }
-    case 'weather': { dispWeather = e.w; SFX.whoosh(); applyWeather(e.w); if (e.w === 'rain' || e.w === 'storm') noiseFx({ d: 0.5, v: 0.05, hp: 2600 }); else tone({ f: 880, t: 'sine', d: 0.2, v: 0.05 }); break; }
+    case 'weather': {
+      dispWeather = e.w;
+      const WX = WEATHER[e.w] || {};
+      const snd = { sun: SFX.sunshine, cloud: SFX.whoosh, rain: SFX.wind, fog: SFX.fog, snow: SFX.snow, heat: SFX.heat, wind: SFX.wind }[e.w];
+      if (snd) snd();
+      if (e.w === 'storm') { SFX.wind(); SFX.thunder(); }
+      applyWeather(e.w);
+      const tint = { sun: 'rgba(255,206,86,.30)', cloud: 'rgba(150,150,160,.20)', rain: 'rgba(120,165,220,.30)', storm: 'rgba(70,66,120,.45)', fog: 'rgba(210,216,218,.34)', snow: 'rgba(200,225,250,.36)', heat: 'rgba(255,150,70,.30)', wind: 'rgba(160,205,190,.24)' }[e.w] || 'rgba(255,255,255,.16)';
+      flashScreen(`linear-gradient(180deg, ${tint}, rgba(255,255,255,0) 72%)`, 620);
+      await weatherBanner(e.w);
+      break;
+    }
     case 'calevent': {
       dispCal = { icon: e.icon, name: e.name, desc: e.desc };
-      const bad = ['payAll', 'richTax', 'slow', 'rainy'].includes(e.kind);
-      const good = ['moneyAll', 'poorBonus', 'bailout'].includes(e.kind);
-      if (bad) SFX.seasonDown(); else if (good) { SFX.calevent(); confettiBurst(46); } else SFX.seasonMid();
+      const bad = ['payAll', 'richTax', 'slow', 'rainy', 'buildBoom'].includes(e.kind);
+      const good = ['moneyAll', 'poorBonus', 'bailout', 'lottery', 'fundShare', 'stealPoor', 'cardsLottery', 'poorMore', 'study'].includes(e.kind);
+      // v5.1：为不同校历事件配不同的入场特效（不再全部共用一套礼花）
+      const FXMAP = {
+        fireworks: () => { SFX.fireworks(); confettiBurst(96); fxCoinRain(26); flashScreen('radial-gradient(circle at 50% 40%, rgba(255,220,140,.42), rgba(255,180,90,0) 68%)', 840); },
+        redpacket: () => { SFX.redpacket(); confettiBurst(72); fxCoinRain(32); flashScreen('radial-gradient(circle at 50% 46%, rgba(255,96,96,.34), rgba(200,30,30,0) 70%)', 740); },
+        pumpkin:   () => { SFX.pumpkin(); flashScreen('radial-gradient(circle at 50% 50%, rgba(200,120,20,.34), rgba(120,60,0,0) 68%)', 720); },
+        stage:     () => { SFX.stage(); confettiBurst(62); flashScreen('radial-gradient(circle at 50% 40%, rgba(220,120,220,.36), rgba(160,60,200,0) 70%)', 780); },
+        offer:     () => { SFX.offer(); confettiBurst(52); },
+        bank:      () => { SFX.bank(); SFX.coinRain(); fxCoinRain(34); flashScreen('radial-gradient(circle at 50% 50%, rgba(120,200,255,.34), rgba(60,120,200,0) 70%)', 780); },
+        aid:       () => { SFX.aid(); flashScreen('radial-gradient(circle at 50% 50%, rgba(120,220,160,.32), rgba(40,150,90,0) 70%)', 720); },
+        rocket:    () => { SFX.rocket(); flashScreen('linear-gradient(0deg, rgba(255,180,90,.28), rgba(120,90,255,0) 72%)', 820); },
+        balloon:   () => { SFX.balloon(); confettiBurst(44); },
+        bull:      () => { SFX.bull(); fxCoinRain(30); flashScreen('radial-gradient(circle at 50% 46%, rgba(255,96,96,.3), rgba(160,20,20,0) 68%)', 720); },
+        sale:      () => { SFX.sale(); },
+        storm:     () => { SFX.storm(); SFX.thunder(); flashScreen('linear-gradient(180deg, rgba(70,66,120,.42), rgba(40,40,80,0) 72%)', 840); },
+        carnival:  () => { SFX.carnival(); confettiBurst(84); flashScreen('radial-gradient(circle at 50% 42%, rgba(255,200,80,.36), rgba(255,120,40,0) 70%)', 780); },
+        gallery:   () => { SFX.gallery(); confettiBurst(48); },
+        book:      () => { SFX.book(); },
+      };
+      const fn = e.fx && FXMAP[e.fx];
+      if (fn) fn();
+      if (bad) SFX.buzzer();
+      else if (!fn) { if (good) { SFX.calevent(); confettiBurst(46); } else SFX.seasonMid(); }
       await announce(`${e.icon} 校历事件【${esc(e.name)}】<br>${esc(e.desc)}`, 2100);
+      break;
+    }
+    // v5.1：校历事件「一人独得 / 一人特殊」的揭晓演出（歌手赛冠军、嘉年华大奖、作品展最高价…）
+    case 'caleventHit': {
+      SFX.jackpot(); SFX.fanfare(); SFX.coinRain();
+      confettiBurst(96); fxCoinRain(36);
+      flashScreen('radial-gradient(circle at 50% 46%, rgba(255,232,160,.46), rgba(255,190,60,0) 68%)', 800);
+      if (e.winner != null) {
+        pulseCell(playerCell(e.winner), '#e8b04b');
+        setTimeout(() => fxBurst(playerCell(e.winner), { kind: 'star', n: 22, speed: 3.8, size: 5, life: 52, color: ['#ffd76a', '#fff1c2', '#ffffff'], wave: { r: 84, color: '#e8b04b' } }), 120);
+      }
+      const others = (e.items || []).filter(it => it.pid !== e.winner);
+      for (const it of others) if (it.amount > 0) fxAt(playerCell(it.pid), `<div class="floaty plus">+¥${it.amount}</div>`);
+      const list = others.length ? `<br>${others.map(it => `<span class="who">${esc(ownerName(it.pid))}</span> +¥${it.amount}`).join(' · ')}` : '';
+      await announce(`${e.icon || '🎊'} <b>${esc(e.name)}</b><br>🏆 <span class="who">${e.winner != null ? esc(ownerName(e.winner)) : '—'}</span> 独得 <span class="amt">¥${e.amount}</span>${list}`, 2350);
       break;
     }
     case 'tax': {
@@ -1010,9 +1167,17 @@ async function handleAnim(e) {
       await announce(`🏆 <b>垄断达成！</b><br><span class="who">${esc(ownerName(e.pid))}</span> 集齐 ${esc((e.g || '').toUpperCase())} 色组：${(e.names || []).map(n => esc(n)).join(' · ')}<br>裸地租金 <span class="amt">×3</span>`, 2500);
       break;
     }
-    case 'skill': { SFX.skill(); skillFx(e); break; }
+    case 'skill': { await skillFx(e); break; }
     case 'combo': { SFX.combo(e.n); comboPop(e.pid, e.n); break; }
-    case 'chat': { chatFx(e); break; }
+    case 'chat': {
+      // v5.1：他人的聊天/表情排队顺播 —— 播到这一条才出现气泡与日志，不会提前剧透
+      if (e.pid === myPid) break;
+      chatFx(e);
+      visLog.push(`💬 ${e.name}：${e.text}`);
+      renderLog();
+      await sleep(420);
+      break;
+    }
     case 'duel': { await duelAnim(e); break; }
     case 'demolish': {
       SFX.demolish(); SFX.sweepDown(); shakeBoard();
@@ -1022,8 +1187,8 @@ async function handleAnim(e) {
       fxBurst(e.cell, { kind: 'shard', n: e.kind === 'land' ? 30 : 22, speed: e.kind === 'land' ? 4.6 : 3.8, size: 4.6, life: 62, color: ['#a9764a', '#8d6e63', '#c8a97e', '#6d5a4a'], gravity: 0.34, wave: { r: 70, color: '#b07a52' } });
       fxBurst(e.cell, { kind: 'petal', n: 12, speed: 2.4, size: 4, life: 46, color: ['#cbbda6', '#ded4c2'], gravity: 0.09 });
       flashScreen('radial-gradient(circle at 50% 50%, rgba(180,120,70,.3), rgba(150,100,60,0) 60%)', 520);
-      if (e.kind === 'land') { pulseCell(e.cell, '#b23b3b'); dustAt(e.cell); confettiBurst(26); }
-      else { pulseCell(e.cell, '#c0392b'); dustAt(e.cell); }
+      if (e.kind === 'land') { pulseCell(e.cell, '#b23b3b'); dustAt(e.cell); confettiBurst(26); collapseAt(e.cell, true); }
+      else { pulseCell(e.cell, '#c0392b'); dustAt(e.cell); collapseAt(e.cell, false); }
       await announce(`${e.kind === 'land' ? '🏗️🏚️' : '🚧'} ${e.self ? '' : '<span class="who">' + esc(ownerName(e.pid)) + '</span> 的'}「${esc(nm)}」被<b>拆除${e.kind === 'land' ? '地皮' : '一栋房'}</b>${e.kind === 'house' ? ` <span class="amt">→Lv${e.level}</span>` : ''}`, 2150);
       break;
     }
@@ -1035,18 +1200,85 @@ async function handleAnim(e) {
       break;
     }
     case 'item': { SFX.item(); SFX.sparkle(); await announce(`🎒 <span class="who">${esc(ownerName(e.pid))}</span> 使用道具「${esc(e.name)}」${e.detail ? `（${esc(e.detail)}）` : ''}`, 1400); break; }
-    case 'shield': { SFX.item(); await announce(`🛡️ <span class="who">${esc(ownerName(e.pid))}</span> 的免罚符生效，免租！`, 1400); break; }
-    case 'medal': { SFX.item(); await announce(`🎫 <span class="who">${esc(ownerName(e.pid))}</span> 的免租金卡生效，免租！`, 1400); break; }
-    case 'voucher': { SFX.item(); await announce(`🎫 <span class="who">${esc(ownerName(e.pid))}</span> 的免租券生效，免租！`, 1400); break; }
+    case 'shield': { SFX.item(); await announce(e.lost ? `🛡️ <span class="who">${esc(ownerName(e.pid))}</span> 的免罚符失效了` : `🛡️ <span class="who">${esc(ownerName(e.pid))}</span> 的免罚符生效，免租！`, 1400); break; }
+    case 'medal': { SFX.item(); await announce(e.lost ? `🎫 <span class="who">${esc(ownerName(e.pid))}</span> 的免租金卡被回收` : `🎫 <span class="who">${esc(ownerName(e.pid))}</span> 的免租金卡生效，免租！`, 1400); break; }
+    case 'voucher': { SFX.item(); await announce(e.lost ? `🎟️ <span class="who">${esc(ownerName(e.pid))}</span> 的免租券被回收` : `🎫 <span class="who">${esc(ownerName(e.pid))}</span> 的免租券生效，免租！`, 1400); break; }
+    case 'major_switch': {
+      const mj = MAJORS[e.to] || {};
+      SFX.card(); SFX.sparkle();
+      fxBurst(playerCell(e.pid), { kind: 'star', n: 18, speed: 3.4, size: 4.2, life: 46, color: e.good ? ['#8ee6b3', '#ffffff', '#ffd76a'] : ['#b0a0d0', '#dcd2f0', '#8a7f9a'], wave: { r: 68, color: e.good ? '#37a86a' : '#8a6fd1' } });
+      flashScreen(e.good ? 'radial-gradient(circle at 50% 45%, rgba(110,220,160,.34), rgba(110,220,160,0) 70%)' : 'radial-gradient(circle at 50% 45%, rgba(150,120,200,.34), rgba(150,120,200,0) 70%)', 620);
+      await announce(`${e.good ? '🎉' : '🌀'} <span class="who">${esc(ownerName(e.pid))}</span> ${e.good ? '转专业成功' : '被强制转专业'}：${(MAJORS[e.from] || {}).name || '?'} → <b>${mj.icon || ''}${esc(mj.name || '')}</b>`, 1900);
+      break;
+    }
     case 'medalBuy': { SFX.item(); await announce(e.price > 0 ? `🏅 <span class="who">${esc(ownerName(e.pid))}</span> 购入免租金牌（¥${e.price}）` : `🎫 <span class="who">${esc(ownerName(e.pid))}</span> 在校园商城免费领到一张「免租金卡」`, 1300); break; }
     case 'gift': { SFX.item(); await announce(`🎁 <span class="who">${esc(ownerName(e.pid))}</span> 在神秘商店获得「${e.item === 'shield' ? '免罚符 🛡️' : '免租券 🎫'}」`, 1400); break; }
     case 'medalGain': { SFX.bell(); SFX.coin(); SFX.sparkle(); confettiBurst(46); fxBurst(playerCell(e.pid), { kind: 'star', n: 16, speed: 3.2, size: 4.4, life: 46, color: ['#ffd76a', '#fff1c2', '#8ee6b3'], lift: 0.7, wave: { r: 66, color: '#e8b04b' } }); await announce(`🎫 <span class="who">${esc(ownerName(e.pid))}</span> 领取 ${e.count} 张「免租金卡」（可保留）`, 1500); break; }
-    case 'buff': { await announce(`🎓 <span class="who">${esc(ownerName(e.pid))}</span> 逛了奖学金长廊：下回合移动 +${e.steps}`, 1400); break; }
+    case 'buff': { const sd = e.steps >= 0 ? `+${e.steps}` : `${e.steps}`; await announce(`👟 <span class="who">${esc(ownerName(e.pid))}</span> 的移动加成生效：${sd} 步${e.left ? `（还剩 ${e.left} 次）` : ''}`, 1400); break; }
     case 'invest': { SFX.item(); await announce(`🔬 <span class="who">${esc(ownerName(e.pid))}</span> 投入科研经费 ¥${e.cost}，到期返还 ¥${e.back}`, 1500); break; }
+    case 'rollpay': { await rollPayAnim(e); break; }
+    case 'draw': { await drawCardsAnim(e); break; }
     case 'turn': { SFX.turn(); render(); await sleep(520); break; }
     case 'land': await sleep(320); break;
     default: await sleep(90);   // 纯信息型事件（paid/log 等）不占用节拍
   }
+}
+// v5.1：岔路格子「抽取过程」全场演出 —— 选项转盘快速轮换 → 减速 → 定格结果
+function rollPayAnim(e) {
+  return new Promise(res => {
+    const list = e.options || [];
+    const d = document.createElement('div');
+    d.className = 'rollpay';
+    d.innerHTML = `<div class="rp-title">🎲 ${esc(e.title || '随机结果')}</div>
+      <div class="rp-opts">${list.map(s => `<div class="rp-opt">${esc(s)}</div>`).join('')}</div>
+      <div class="rp-who">${esc(ownerName(e.pid))}</div>`;
+    $('fxLayer').appendChild(d);
+    const nodes = [...d.querySelectorAll('.rp-opt')];
+    requestAnimationFrame(() => requestAnimationFrame(() => d.classList.add('show')));
+    let i = 0, ticks = 0;
+    const total = 13 + Math.max(0, e.idx || 0) * 2;
+    const finish = () => {
+      nodes.forEach(n => n.classList.remove('on'));
+      const win = nodes[e.idx] || nodes[0];
+      if (win) win.classList.add('on', e.tone === 'bad' ? 'bad' : 'good');
+      if (e.tone === 'bad') {
+        SFX.buzzer();
+        flashScreen('radial-gradient(circle at 50% 42%, rgba(226,87,76,.36), rgba(226,87,76,0) 70%)', 560);
+      } else {
+        SFX.sweepUp(); SFX.sparkle();
+        flashScreen('radial-gradient(circle at 50% 42%, rgba(110,220,160,.34), rgba(110,220,160,0) 70%)', 560);
+      }
+      st(() => d.classList.remove('show'), 1150);
+      setTimeout(() => { d.remove(); res(); }, sp(1150) + 420);
+    };
+    const step = () => {
+      nodes.forEach(n => n.classList.remove('on'));
+      if (nodes[i]) { nodes[i].classList.add('on'); if (nodes.length > 1) SFX.tick(); }
+      i = (i + 1) % Math.max(1, nodes.length);
+      ticks++;
+      if (ticks < total) setTimeout(step, sp(ticks > total - 7 ? 88 + (ticks - (total - 7)) * 40 : 60));
+      else finish();
+    };
+    setTimeout(step, sp(110));
+  });
+}
+// v5.1：效果卡抽取演出 —— 卡片依次翻入
+function drawCardsAnim(e) {
+  return new Promise(res => {
+    SFX.gift(); SFX.card();
+    const n = e.n || 1;
+    const wrap = document.createElement('div');
+    wrap.className = 'drawcards';
+    wrap.innerHTML = `<div class="dc-title">🎁 ${esc(ownerName(e.pid))} 在${esc(e.label || '校园商城')}抽到 ${n} 张效果卡</div>
+      <div class="dc-row">${(e.cards || []).map((c, i) => `<div class="dc" style="animation-delay:${(i * 0.22).toFixed(2)}s"><div class="dc-ico">${c.icon || '🎁'}</div><div class="dc-name">${esc(c.name)}</div><div class="dc-desc">${esc(c.desc || '')}</div></div>`).join('')}</div>`;
+    $('fxLayer').appendChild(wrap);
+    requestAnimationFrame(() => requestAnimationFrame(() => wrap.classList.add('show')));
+    for (let i = 0; i < n; i++) setTimeout(() => SFX.sparkle(), sp(220 + i * 280));
+    const hold = 1150 + n * 320;
+    fxBurst(playerCell(e.pid), { kind: 'star', n: 14, speed: 3.0, size: 4.0, life: 42, color: ['#ffd76a', '#fff1c2', '#8ee6b3'], lift: 0.6 });
+    st(() => wrap.classList.remove('show'), hold);
+    setTimeout(() => { wrap.remove(); res(); }, sp(hold) + 420);
+  });
 }
 const ownerName = pid => (S.players.find(p => p.id === pid) || {}).name || '?';
 const playerCell = pid => (S.players.find(p => p.id === pid) || {}).pos ?? 0;
@@ -1074,6 +1306,25 @@ async function seasonAnim(e) {
   setTimeout(() => d.remove(), 420);
   await sleep(300);
 }
+// v5.1：天气专属横幅 —— 每种天气一套配色 + 大图标 + 效果说明，切入动画与色调闪光配套
+const WX_TINT = {
+  sun:   { a: '#FFD86B', b: '#E8A93A' }, cloud: { a: '#B9BEC6', b: '#8A9099' },
+  rain:  { a: '#8FB6E0', b: '#4C7DBE' }, storm: { a: '#7A78A8', b: '#3A3766' },
+  fog:   { a: '#CFD5D8', b: '#9AA3A8' }, snow:  { a: '#CFE4FA', b: '#8FB6E0' },
+  heat:  { a: '#FFB26B', b: '#E8813A' }, wind:  { a: '#A9D8C8', b: '#5FA890' },
+};
+function weatherBanner(w) {
+  return new Promise(res => {
+    const W = WEATHER[w] || {}, c = WX_TINT[w] || { a: '#C7C7C7', b: '#8A9099' };
+    const d = document.createElement('div');
+    d.className = 'weather-card';
+    d.style.background = `linear-gradient(155deg, ${c.a}, ${c.b})`;
+    d.innerHTML = `<div class="wc-ico">${W.icon || '🌤️'}</div><div class="wc-name">${esc(W.name || '')}</div><div class="wc-sub">${esc(W.desc || '无特殊影响')}</div>`;
+    $('fxLayer').appendChild(d);
+    requestAnimationFrame(() => requestAnimationFrame(() => d.classList.add('show')));
+    st(() => { d.classList.remove('show'); setTimeout(() => d.remove(), 420); res(); }, 1700);
+  });
+}
 function achBanner(e) {
   return new Promise(res => {
     const d = document.createElement('div');
@@ -1084,16 +1335,42 @@ function achBanner(e) {
     st(() => { d.classList.remove('show'); setTimeout(() => d.remove(), 400); res(); }, 2350);
   });
 }
-function skillFx(e) {
+// v5.1：专业技能大特效 —— 全屏染色 + 冲击波 + 中央大横幅，所有玩家都能看见
+function hexA(hex, a) {
+  const h = (hex || '#4a90d9').replace('#', '');
+  const n = h.length === 3 ? h.split('').map(c => c + c).join('') : h;
+  const r = parseInt(n.slice(0, 2), 16), g = parseInt(n.slice(2, 4), 16), b = parseInt(n.slice(4, 6), 16);
+  return `rgba(${r},${g},${b},${a})`;
+}
+async function skillFx(e) {
   const mj = MAJORS[e.major] || {};
-  const [x, y] = cellCenter(playerCell(e.pid));
+  const color = mj.fx || '#4a90d9';
+  SFX.skill(); SFX.sparkle();
+  const cell = playerCell(e.pid);
+  const [x, y] = cellCenter(cell);
   const pt = svgToScreen(x, y);
+
+  // 1) 全屏染色闪光：所有人屏幕同步
+  flashScreen(`radial-gradient(circle at 50% 50%, ${hexA(color, .40)}, ${hexA(color, .06)} 55%, ${hexA(color, 0)} 72%)`, 820);
+  // 2) 棋子处：脉冲 + 冲击波 + 星屑
+  pulseCell(cell, color);
+  fxBurst(cell, { kind: 'star', n: 22, speed: 3.8, size: 4.6, life: 48, color: [color, '#ffffff', '#ffe9a8'], wave: { r: 78, color, life: 44 } });
+  fxBurst(cell, { kind: 'spark', n: 12, speed: 2.6, size: 3.2, life: 34, color: ['#ffffff', color] });
+
+  // 3) 中央大横幅（图标 + 技能名 + 谁发的 + 效果）
   const d = document.createElement('div');
-  d.className = 'skill-flash';
-  d.style.left = pt[0] + 'px'; d.style.top = pt[1] + 'px';
-  d.innerHTML = `${mj.icon || '✨'} ${esc(e.name)}${e.detail ? ' · ' + esc(e.detail) : ''}`;
+  d.className = 'skill-cast';
+  d.style.setProperty('--sk', color);
+  d.innerHTML = `<div class="sc-ico">${mj.icon || '✨'}</div>
+    <div class="sc-body"><div class="sc-name">${esc(mj.skill || e.name || '专业技能')}</div>
+    <div class="sc-who">${esc(ownerName(e.pid))}${e.detail ? ' · ' + esc(e.detail) : ''}</div></div>`;
   $('fxLayer').appendChild(d);
-  setTimeout(() => d.remove(), 2400);
+  requestAnimationFrame(() => requestAnimationFrame(() => d.classList.add('show')));
+  await sleep(1250);
+  d.classList.remove('show');
+  setTimeout(() => d.remove(), 420);
+  await sleep(300);
+  void pt;
 }
 function comboPop(pid, n) {
   const [x, y] = cellCenter(playerCell(pid));
@@ -1126,106 +1403,374 @@ function chatFx(e) {
   setTimeout(() => d.remove(), 2600);
   const s = EMO_SOUND[e.text] || 'mid';
   if (s === 'hi') SFX.chatHi(); else if (s === 'lo') SFX.chatLo(); else SFX.chatMid();
-  // 快捷语言：不论是自己发的还是别人发的，都配上中文配音（自己点按钮时已经即时朗读过）
-  if (QUICK_SET.has(e.text) && e.pid !== myPid) speak(e.text, e.name, tone);
+  // v5.1：快捷语音不再加「某某说」前缀，且同一条只念一次（自己点按钮时已即时念过，服务端回显不再重复）
+  if (QUICK_SET.has(e.text) && e.pid !== myPid) speak(e.text, e.name, tone, e.pid);
 }
-function duelAnim(e) {
-  return new Promise(res => {
+// ---------- v5.1 对决演出（辩论擂台 / 校园运动会共用） ----------
+// 分步：①抽签（双方名字飞转后定格）②两人登上大屏幕（左右滑入 + 专业亮相）
+//       ③两人依次掷骰（骰子 3D 翻滚，落定后揭晓点数）④比大小 → 高亮胜者 → 结算
+async function duelAnim(e) {
+  const isArena = e.label === '校园运动会';
+  const A = ownerName(e.pid), B = ownerName(e.opp);
+  const pa = playerPt(e.pid), pb = playerPt(e.opp);
+  const cont = (S && S.players) ? S.players : [];
+  const PA = cont.find(p => p.id === e.pid) || {};
+  const PB = cont.find(p => p.id === e.opp) || {};
+  const tie = (e.winner == null) || (e.a === e.b);
+  const pool = cont.filter(p => p.alive).map(p => p.name);
+  const rp = () => pool.length ? pool[Math.floor(Math.random() * pool.length)] : '?';
+
+  const stage = document.createElement('div');
+  stage.className = 'duel-stage' + (isArena ? ' arena' : '');
+  stage.innerHTML =
+    `<div class="ds-title">${isArena ? '🏟️ 校园运动会 · 对手抽签' : '⚔️ 辩论擂台 · 抽签对决'}</div>`
+    + `<div class="ds-body">`
+    +   `<div class="ds-side ds-l">`
+    +     `<div class="ds-name" data-slot="a">？？？</div><div class="ds-mj" data-mj="a">抽签中…</div>`
+    +     `<div class="die ds-die" data-die="a">${dieDots(1)}</div><div class="ds-score" data-score="a">?</div>`
+    +   `</div>`
+    +   `<div class="ds-mid"><span class="ds-vs">VS</span></div>`
+    +   `<div class="ds-side ds-r">`
+    +     `<div class="ds-name" data-slot="b">？？？</div><div class="ds-mj" data-mj="b">抽签中…</div>`
+    +     `<div class="die ds-die" data-die="b">${dieDots(1)}</div><div class="ds-score" data-score="b">?</div>`
+    +   `</div>`
+    + `</div><div class="ds-foot" data-foot>转盘抽取中…</div>`;
+  $('fxLayer').appendChild(stage);
+  requestAnimationFrame(() => requestAnimationFrame(() => stage.classList.add('show')));
+  const q = sel => stage.querySelector(sel);
+  const nameA = q('[data-slot="a"]'), nameB = q('[data-slot="b"]');
+  const mjA = q('[data-mj="a"]'), mjB = q('[data-mj="b"]');
+  const dieA = q('[data-die="a"]'), dieB = q('[data-die="b"]');
+  const scA = q('[data-score="a"]'), scB = q('[data-score="b"]');
+  const sideA = q('.ds-l'), sideB = q('.ds-r');
+  const foot = q('[data-foot]');
+
+  try {
     SFX.duel(); SFX.drumroll();
-    const tie = e.a === e.b;
-    const pa = playerPt(e.pid), pb = playerPt(e.opp);
-    const mk = Math.abs(e.a - e.b);
-    // 两边棋子各炸一圈火花，能量对撞到中点爆开 —— 一眼看出"谁和谁打、谁赢"
-    fxBurst(pa, { kind: 'spark', n: 14, speed: 3.2, size: 3.2, life: 36, dir: Math.atan2(pb[1] - pa[1], pb[0] - pa[0]), color: ['#e2574c', '#ff9a8f', '#ffd76a'] });
-    fxBurst(pb, { kind: 'spark', n: 14, speed: 3.2, size: 3.2, life: 36, dir: Math.atan2(pa[1] - pb[1], pa[0] - pb[0]), color: ['#4a90d9', '#8fc2ff', '#ffd76a'] });
-    const d = document.createElement('div');
-    d.className = 'duel-card' + (tie ? ' tie' : '');
-    d.innerHTML = `⚔️ 辩论擂台对决<div class="duel-vs">${esc(ownerName(e.pid))} <span class="duel-num">${e.a}</span> <span class="duel-vsmark">VS</span> <span class="duel-num">${e.b}</span> ${esc(ownerName(e.opp))}</div>`
-      + (tie ? `<div class="duel-vs">平手，各回各家</div>` : `<div class="duel-win">${esc(ownerName(e.winner))} 胜 · 赌注 ¥${e.amount}${mk >= 4 ? ' · 大比分碾压' : ''}</div>`);
-    $('fxLayer').appendChild(d);
-    requestAnimationFrame(() => requestAnimationFrame(() => d.classList.add('show')));
-    setTimeout(() => { SFX.clash(); shakeBoard(); flashScreen('radial-gradient(circle at 50% 50%, rgba(255,214,140,.4), rgba(180,60,40,0) 62%)', 460); }, 400);
-    setTimeout(() => { shockwave(playerCell(e.pid)); fxBurst(pa, { kind: 'ring', n: 0, wave: { r: 84, color: '#e2574c', life: 44 } }); }, 430);
-    setTimeout(() => { shockwave(playerCell(e.opp)); fxBurst(pb, { kind: 'ring', n: 0, wave: { r: 84, color: '#4a90d9', life: 44 } }); }, 650);
-    // 中点撞击爆点
-    setTimeout(() => fxBurst([(pa[0] + pb[0]) / 2, (pa[1] + pb[1]) / 2], { kind: 'star', n: 18, speed: 4.6, size: 5.4, life: 44, color: ['#ffffff', '#ffd76a', '#ff9a8f'], wave: { r: 92, color: '#ffd76a', life: 40 } }), 760);
-    st(() => { d.classList.remove('show'); setTimeout(() => d.remove(), 400); res(); }, 2200);
-  });
+    // ① 抽签：名字在两侧槽位里飞快跳动，最后定格
+    dieA.style.visibility = 'hidden'; dieB.style.visibility = 'hidden';
+    scA.style.visibility = 'hidden'; scB.style.visibility = 'hidden';
+    for (let i = 0; i < 14; i++) {
+      nameA.textContent = rp(); nameB.textContent = rp();
+      SFX.tick();
+      await sleep(76);
+    }
+    nameA.textContent = A; nameB.textContent = B;
+    nameA.classList.add('lock'); nameB.classList.add('lock');
+    SFX.clash();
+
+    // ② 两人登上大屏幕
+    sideA.style.setProperty('--duel-c', PA.color || '#e2574c');
+    sideB.style.setProperty('--duel-c', PB.color || '#4a90d9');
+    mjA.textContent = (MAJORS[PA.major] || {}).name ? `${(MAJORS[PA.major] || {}).icon || ''} ${(MAJORS[PA.major] || {}).name}` : '挑战者';
+    mjB.textContent = (MAJORS[PB.major] || {}).name ? `${(MAJORS[PB.major] || {}).icon || ''} ${(MAJORS[PB.major] || {}).name}` : '挑战者';
+    sideA.classList.add('in'); 
+    await sleep(150);
+    sideB.classList.add('in');
+    fxBurst(pa, { kind: 'spark', n: 14, speed: 3.2, size: 3.2, life: 36, color: ['#e2574c', '#ff9a8f', '#ffd76a'] });
+    fxBurst(pb, { kind: 'spark', n: 14, speed: 3.2, size: 3.2, life: 36, color: ['#4a90d9', '#8fc2ff', '#ffd76a'] });
+    shockwave(playerCell(e.pid)); shockwave(playerCell(e.opp));
+    flashScreen(`radial-gradient(circle at 50% 42%, ${isArena ? 'rgba(120,200,255,.34)' : 'rgba(255,214,140,.34)'}, rgba(60,40,20,0) 66%)`, 520);
+    foot.textContent = `${A}　VS　${B}`;
+    await sleep(760);
+
+    // ③ 双方依次掷骰（骰子 3D 翻滚，落定才揭晓点数）
+    const rollOne = async (die, val, side) => {
+      die.style.visibility = 'visible';
+      die.classList.add('rolling'); die.classList.remove('land');
+      side.classList.add('rolling');
+      SFX.dice();
+      for (let i = 0; i < 12; i++) { die.innerHTML = dieDots(1 + Math.floor(Math.random() * 6)); SFX.tick(); await sleep(84); }
+      die.classList.remove('rolling'); die.classList.add('land');
+      die.innerHTML = dieDots(val);
+      side.classList.remove('rolling'); side.classList.add('rolled');
+      SFX.diceLand();
+      const sc = (side === sideA) ? scA : scB;
+      sc.style.visibility = 'visible';
+      sc.textContent = String(val);
+      sc.classList.add('pop');
+      await sleep(300);
+    };
+    foot.textContent = `${A} 掷骰…`;
+    await rollOne(dieA, e.a, sideA);
+    foot.textContent = `${B} 掷骰…`;
+    await rollOne(dieB, e.b, sideB);
+    foot.textContent = `${A} ${e.a}　:　${e.b} ${B}`;
+    await sleep(520);
+
+    // ④ 比大小 → 高亮胜者
+    if (tie) {
+      stage.classList.add('tie');
+      foot.textContent = '势均力敌 —— 平手，各回各家';
+      SFX.buzzer();
+    } else {
+      const wLeft = e.winner === e.pid;
+      const ws = wLeft ? sideA : sideB, ls = wLeft ? sideB : sideA;
+      ws.classList.add('win'); ls.classList.add('lose');
+      const wp = wLeft ? pa : pb;
+      setTimeout(() => { SFX.clash(); shakeBoard(); flashScreen('radial-gradient(circle at 50% 50%, rgba(255,214,140,.42), rgba(180,60,40,0) 62%)', 460); }, 60);
+      setTimeout(() => { fxBurst(wp, { kind: 'star', n: 20, speed: 4.6, size: 5.4, life: 48, color: ['#ffffff', '#ffd76a', '#ffb347'], wave: { r: 92, color: '#ffd76a', life: 40 } }); confettiBurst(70); }, 160);
+      SFX.fanfare();
+      const pct = e.pct ? `（输者现金的 ${Math.round(e.pct * 100)}%）` : '';
+      foot.textContent = `${wLeft ? A : B} 胜 · 赌注 ¥${e.amount}${pct}`;
+    }
+    await sleep(1400);
+  } catch (err) { /* 演出出错不能卡住队列 */ }
+
+  stage.classList.remove('show');
+  await sleep(320);
+  stage.remove();
 }
-// 天气：全屏色调 + 雨滴粒子（canvas 绘制，避免几十个 DOM 粒子常驻合成层带来的开销）
+// ---------- 天气视觉引擎（v5.1 重写） ----------
+// 旧版把「台风」和「雨天」共用同一套雨幕，只是加大雨量——观感完全一样。
+// 现在八种天气各有独立的绘制例程与色调：晴天光柱、阴天压暗、雨天斜雨、台风旋转风眼、
+// 雾霾漂移雾团、暴雪飘雪、烈日热浪、大风横扫风线。全部画在 boardWrap 内的单张 canvas
+// （#wxCv）上，零常驻 DOM 粒子，切天气只是换绘制例程。
+const WX_VEIL = {
+  sun:   'rgba(255,206,86,.16)',
+  cloud: 'rgba(130,130,140,.10)',
+  rain:  'rgba(84,124,176,.20)',
+  storm: 'rgba(38,36,64,.36)',
+  fog:   'rgba(206,212,214,.30)',
+  snow:  'rgba(196,220,246,.24)',
+  heat:  'rgba(255,138,52,.18)',
+  wind:  'rgba(150,190,180,.12)',
+};
 function applyWeather(w) {
   if (w === curWeather) return;
   curWeather = w;
   const wrap = $('boardWrap'); if (!wrap) return;
   let veil = document.getElementById('weatherVeil');
   if (!veil) { veil = document.createElement('div'); veil.id = 'weatherVeil'; veil.className = 'weather-veil'; wrap.appendChild(veil); }
-  const map = { sun: 'rgba(255,206,86,.16)', cloud: 'rgba(130,130,140,.08)', rain: 'rgba(84,124,176,.18)', storm: 'rgba(56,56,86,.28)' };
-  veil.style.background = map[w] || 'transparent';
-  veil.classList.toggle('on', w === 'rain' || w === 'storm' || w === 'sun');
-  startRain(w === 'storm' ? 70 : (w === 'rain' ? 44 : 0), w === 'storm');
+  veil.style.background = WX_VEIL[w] || 'transparent';
+  veil.classList.toggle('on', !!WX_VEIL[w] && w !== 'cloud');
+  startWeatherFx(w);
 }
-// 雨：单张 canvas 绘制，替代几十个常驻 DOM 粒子（同样的观感，几乎没有渲染开销）
-let rainCv = null, rainCtx = null, rainRAF = 0, rainDrops = [], rainSlant = 0;
-function startRain(n, heavy) {
-  const wrap = $('boardWrap'); if (!wrap) return;
-  if (rainRAF) { cancelAnimationFrame(rainRAF); rainRAF = 0; }
-  if (!rainCv) {
-    rainCv = document.createElement('canvas');
-    rainCv.id = 'rainCv';
-    rainCv.style.cssText = 'position:absolute;inset:0;z-index:11;pointer-events:none;';
-    wrap.appendChild(rainCv);
+// 天气粒子引擎：所有天气共用一张 canvas，按 kind 分发到各自的绘制例程
+let wxCv = null, wxCtx = null, wxRAF = 0, wxKind = null, wxSeed = null, wxFrame = 0, wxFlash = 0;
+const WR = (a, b) => a + Math.random() * (b - a);
+function wxCanvas() {
+  const wrap = $('boardWrap'); if (!wrap) return null;
+  if (!wxCv) {
+    wxCv = document.createElement('canvas');
+    wxCv.id = 'wxCv';
+    wxCv.style.cssText = 'position:absolute;inset:0;z-index:11;pointer-events:none;';
+    wrap.appendChild(wxCv);
   }
-  if (!n) { rainCv.style.display = 'none'; rainDrops = []; return; }
-  rainCv.style.display = 'block';
-  rainCtx = rainCv.getContext('2d');
-  rainSlant = heavy ? 0.55 : 0.35;
-  const W = rainCv.width = wrap.clientWidth, H = rainCv.height = wrap.clientHeight;
-  rainDrops = Array.from({ length: n }, () => ({
-    x: Math.random() * W * 1.3 - W * 0.3, y: Math.random() * H,
-    len: heavy ? rnd(16, 30) : rnd(11, 21),
-    v: (heavy ? rnd(13, 20) : rnd(9, 14)), a: rnd(0.35, 0.75),
-  }));
-  const loop = () => {
-    if (rainCv.style.display === 'none') { rainRAF = 0; return; }
-    const w = rainCv.width, h = rainCv.height;
-    rainCtx.clearRect(0, 0, w, h);
-    rainCtx.lineWidth = heavy ? 1.5 : 1.1;
-    for (const d of rainDrops) {
-      rainCtx.strokeStyle = `rgba(150,190,230,${d.a})`;
-      rainCtx.beginPath();
-      rainCtx.moveTo(d.x, d.y);
-      rainCtx.lineTo(d.x + d.len * rainSlant, d.y + d.len);
-      rainCtx.stroke();
-      d.y += d.v; d.x += d.v * rainSlant * 0.5;
-      if (d.y > h) { d.y = -20; d.x = Math.random() * w * 1.2 - w * 0.2; }
-    }
-    rainRAF = requestAnimationFrame(loop);
-  };
-  rainRAF = requestAnimationFrame(loop);
+  return wrap;
 }
-window.addEventListener('resize', () => {
-  if (curWeather === 'rain' || curWeather === 'storm') startRain(curWeather === 'storm' ? 70 : 44, curWeather === 'storm');
-});
+function startWeatherFx(kind) {
+  const wrap = wxCanvas(); if (!wrap) return;
+  if (wxRAF) { cancelAnimationFrame(wxRAF); wxRAF = 0; }
+  wxKind = kind; wxFrame = 0; wxFlash = 0;
+  const W = wxCv.width = wrap.clientWidth, H = wxCv.height = wrap.clientHeight;
+  wxCtx = wxCv.getContext('2d');
+  wxSeed = seedWeather(kind, W, H);
+  if (kind === 'cloud') { wxCv.style.display = 'none'; return; }   // 阴天只有整体压暗，不铺粒子
+  wxCv.style.display = 'block';
+  const loop = () => { if (!wxKind) { wxRAF = 0; return; } drawWeather(); wxRAF = requestAnimationFrame(loop); };
+  wxRAF = requestAnimationFrame(loop);
+}
+function seedWeather(kind, W, H) {
+  switch (kind) {
+    case 'rain':
+      return { drops: Array.from({ length: 46 }, () => ({ x: WR(-W * .3, W), y: WR(0, H), len: WR(11, 21), v: WR(9, 14), a: WR(.35, .75) })) };
+    case 'storm':
+      // 旋转风眼 + 横扫阵风 + 飞舞碎片（与雨天完全不同的观感）
+      return {
+        eye: { x: W * .5, y: H * .5 }, spin: 0, next: Math.round(WR(300, 780)),
+        arms: Array.from({ length: 6 }, (_, i) => ({ ph: i * Math.PI / 3, off: WR(0, .6) })),
+        debris: Array.from({ length: 38 }, () => ({
+          x: WR(0, W), y: WR(0, H), r: WR(1.6, 4.8), vx: WR(3.2, 7.4), vy: WR(-1.4, 1.4),
+          rot: WR(0, 6.28), vr: WR(-.2, .2), a: WR(.22, .58), c: pick(['#c9cfd8', '#9aa4b2', '#e7c98d', '#8f9bb3']),
+        })),
+        gusts: Array.from({ length: 14 }, () => ({ y: WR(0, H), x: WR(-W, W), w: WR(60, 210), v: WR(9, 18), a: WR(.05, .14) })),
+      };
+    case 'snow':
+      return { flakes: Array.from({ length: 62 }, () => ({ x: WR(0, W), y: WR(0, H), r: WR(1.6, 4.2), v: WR(1.1, 2.6), sway: WR(.4, 1.5), ph: WR(0, 6.28), a: WR(.4, .9) })) };
+    case 'fog':
+      return { banks: Array.from({ length: 9 }, () => ({ x: WR(-W * .2, W * 1.1), y: WR(0, H), r: WR(120, 320), v: WR(.18, .6), a: WR(.05, .13) })) };
+    case 'heat':
+      return {
+        motes: Array.from({ length: 34 }, () => ({ x: WR(0, W), y: WR(0, H), r: WR(1.2, 3.2), v: WR(.5, 1.6), a: WR(.15, .4), ph: WR(0, 6.28) })),
+        waves: Array.from({ length: 7 }, (_, i) => ({ y: H * (i + .5) / 7, ph: WR(0, 6.28), a: WR(.04, .09) })),
+      };
+    case 'wind':
+      return {
+        lines: Array.from({ length: 26 }, () => ({ y: WR(0, H), x: WR(-W, W), len: WR(40, 190), v: WR(8, 19), a: WR(.06, .2) })),
+        leaves: Array.from({ length: 16 }, () => ({ x: WR(0, W), y: WR(0, H), r: WR(3, 7), vx: WR(3.4, 8), vy: WR(-1.2, 1.6), rot: WR(0, 6.28), vr: WR(-.13, .13), a: WR(.3, .7), c: pick(['#c8a24a', '#b5763a', '#8fae5d', '#d8c07a']) })),
+      };
+    case 'sun':
+      return {
+        rays: Array.from({ length: 12 }, (_, i) => ({ ph: i * Math.PI / 6 })),
+        motes: Array.from({ length: 26 }, () => ({ x: WR(0, W), y: WR(0, H), r: WR(1, 2.6), v: WR(-.35, -.12), a: WR(.12, .38), ph: WR(0, 6.28) })),
+      };
+    default: return {};
+  }
+}
+function drawWeather() {
+  const W = wxCv.width, H = wxCv.height;
+  wxCtx.clearRect(0, 0, W, H);
+  wxFrame++;
+  switch (wxKind) {
+    case 'rain': {
+      wxCtx.lineWidth = 1.1;
+      for (const d of wxSeed.drops) {
+        wxCtx.strokeStyle = `rgba(150,190,230,${d.a})`;
+        wxCtx.beginPath(); wxCtx.moveTo(d.x, d.y); wxCtx.lineTo(d.x + d.len * .35, d.y + d.len); wxCtx.stroke();
+        d.y += d.v; d.x += d.v * .175;
+        if (d.y > H) { d.y = -20; d.x = WR(-W * .2, W); }
+      }
+      break;
+    }
+    case 'storm': {
+      const s = wxSeed, c = s.eye; s.spin += 0.012;
+      // 螺旋气流臂
+      wxCtx.lineWidth = 2.2;
+      for (const a of s.arms) {
+        wxCtx.beginPath();
+        for (let t = 0; t <= 1; t += 0.035) {
+          const ang = a.ph + s.spin + t * 4.1 + a.off;
+          const rad = 60 + t * Math.max(W, H) * 0.62;
+          const x = c.x + Math.cos(ang) * rad, y = c.y + Math.sin(ang) * rad * 0.62;
+          if (t === 0) wxCtx.moveTo(x, y); else wxCtx.lineTo(x, y);
+        }
+        wxCtx.strokeStyle = 'rgba(198,208,228,.14)'; wxCtx.stroke();
+      }
+      // 风眼
+      const g = wxCtx.createRadialGradient(c.x, c.y, 6, c.x, c.y, 94);
+      g.addColorStop(0, 'rgba(16,14,32,.58)'); g.addColorStop(.62, 'rgba(52,50,86,.28)'); g.addColorStop(1, 'rgba(52,50,86,0)');
+      wxCtx.fillStyle = g; wxCtx.beginPath(); wxCtx.arc(c.x, c.y, 94, 0, 6.284); wxCtx.fill();
+      // 横扫阵风条
+      for (const gu of s.gusts) {
+        wxCtx.fillStyle = `rgba(214,222,238,${gu.a})`;
+        wxCtx.fillRect(gu.x, gu.y, gu.w, 2.4);
+        gu.x += gu.v; if (gu.x > W) { gu.x = -gu.w - WR(0, W * .4); gu.y = WR(0, H); }
+      }
+      // 飞舞碎片
+      for (const d of s.debris) {
+        wxCtx.save(); wxCtx.translate(d.x, d.y); wxCtx.rotate(d.rot);
+        wxCtx.globalAlpha = d.a; wxCtx.fillStyle = d.c;
+        wxCtx.fillRect(-d.r, -d.r * .6, d.r * 2, d.r * 1.2);
+        wxCtx.restore();
+        d.x += d.vx; d.y += d.vy + Math.sin(wxFrame * .05 + d.rot) * .5; d.rot += d.vr;
+        if (d.x > W + 12) { d.x = -12; d.y = WR(0, H); }
+        if (d.y < -12) d.y = H + 12; else if (d.y > H + 12) d.y = -12;
+      }
+      wxCtx.globalAlpha = 1;
+      // 阵雷闪
+      s.next--;
+      if (s.next <= 0) { s.next = Math.round(WR(300, 780)); wxFlash = 9; SFX.thunder(); }
+      if (wxFlash > 0) { wxCtx.fillStyle = `rgba(232,240,255,${wxFlash / 20})`; wxCtx.fillRect(0, 0, W, H); wxFlash--; }
+      break;
+    }
+    case 'snow': {
+      for (const f of wxSeed.flakes) {
+        wxCtx.globalAlpha = f.a; wxCtx.fillStyle = '#ffffff';
+        wxCtx.beginPath(); wxCtx.arc(f.x, f.y, f.r, 0, 6.284); wxCtx.fill();
+        f.y += f.v; f.ph += .03; f.x += Math.sin(f.ph) * f.sway * .5;
+        if (f.y > H + 6) { f.y = -6; f.x = WR(0, W); }
+        if (f.x < -8) f.x = W + 8; else if (f.x > W + 8) f.x = -8;
+      }
+      wxCtx.globalAlpha = 1;
+      break;
+    }
+    case 'fog': {
+      for (const b of wxSeed.banks) {
+        const g = wxCtx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r);
+        g.addColorStop(0, `rgba(232,236,238,${b.a})`); g.addColorStop(1, 'rgba(232,236,238,0)');
+        wxCtx.fillStyle = g; wxCtx.beginPath(); wxCtx.arc(b.x, b.y, b.r, 0, 6.284); wxCtx.fill();
+        b.x += b.v; if (b.x - b.r > W) { b.x = -b.r; b.y = WR(0, H); }
+      }
+      break;
+    }
+    case 'heat': {
+      for (const wv of wxSeed.waves) {
+        wxCtx.beginPath();
+        for (let x = 0; x <= W; x += 18) {
+          const y = wv.y + Math.sin(x * .021 + wxFrame * .05 + wv.ph) * 7;
+          if (x === 0) wxCtx.moveTo(x, y); else wxCtx.lineTo(x, y);
+        }
+        wxCtx.strokeStyle = `rgba(255,196,120,${wv.a})`; wxCtx.lineWidth = 2.6; wxCtx.stroke();
+      }
+      for (const m of wxSeed.motes) {
+        wxCtx.globalAlpha = m.a; wxCtx.fillStyle = '#ffb765';
+        wxCtx.beginPath(); wxCtx.arc(m.x + Math.sin(wxFrame * .04 + m.ph) * 9, m.y, m.r, 0, 6.284); wxCtx.fill();
+        m.y -= m.v; if (m.y < -6) { m.y = H + 6; m.x = WR(0, W); }
+      }
+      wxCtx.globalAlpha = 1;
+      break;
+    }
+    case 'wind': {
+      for (const l of wxSeed.lines) {
+        const g = wxCtx.createLinearGradient(l.x, l.y, l.x + l.len, l.y);
+        g.addColorStop(0, 'rgba(224,240,236,0)'); g.addColorStop(.5, `rgba(224,240,236,${l.a})`); g.addColorStop(1, 'rgba(224,240,236,0)');
+        wxCtx.strokeStyle = g; wxCtx.lineWidth = 2;
+        wxCtx.beginPath(); wxCtx.moveTo(l.x, l.y); wxCtx.lineTo(l.x + l.len, l.y); wxCtx.stroke();
+        l.x += l.v; if (l.x > W) { l.x = -l.len - WR(0, W * .5); l.y = WR(0, H); }
+      }
+      for (const f of wxSeed.leaves) {
+        wxCtx.save(); wxCtx.translate(f.x, f.y); wxCtx.rotate(f.rot);
+        wxCtx.globalAlpha = f.a; wxCtx.fillStyle = f.c;
+        wxCtx.beginPath(); wxCtx.ellipse(0, 0, f.r, f.r * .45, 0, 0, 6.284); wxCtx.fill();
+        wxCtx.restore();
+        f.x += f.vx; f.y += f.vy + Math.sin(wxFrame * .06 + f.rot) * .7; f.rot += f.vr;
+        if (f.x > W + 14) { f.x = -14; f.y = WR(0, H); }
+        if (f.y < -14) f.y = H + 14; else if (f.y > H + 14) f.y = -14;
+      }
+      wxCtx.globalAlpha = 1;
+      break;
+    }
+    case 'sun': {
+      const cx = W * .5, cy = H * .34;
+      wxCtx.save(); wxCtx.translate(cx, cy); wxCtx.rotate(wxFrame * .0022);
+      wxCtx.lineWidth = 38;
+      for (const r of wxSeed.rays) {
+        const g = wxCtx.createLinearGradient(0, 0, Math.cos(r.ph) * 620, Math.sin(r.ph) * 620);
+        g.addColorStop(0, 'rgba(255,228,150,.24)'); g.addColorStop(1, 'rgba(255,228,150,0)');
+        wxCtx.strokeStyle = g;
+        wxCtx.beginPath(); wxCtx.moveTo(0, 0); wxCtx.lineTo(Math.cos(r.ph) * 620, Math.sin(r.ph) * 620); wxCtx.stroke();
+      }
+      wxCtx.restore();
+      for (const m of wxSeed.motes) {
+        wxCtx.globalAlpha = m.a; wxCtx.fillStyle = '#fff3c4';
+        wxCtx.beginPath(); wxCtx.arc(m.x + Math.sin(wxFrame * .02 + m.ph) * 12, m.y, m.r, 0, 6.284); wxCtx.fill();
+        m.y += m.v; if (m.y < -6) { m.y = H + 6; m.x = WR(0, W); }
+      }
+      wxCtx.globalAlpha = 1;
+      break;
+    }
+    default: wxCv.style.display = 'none'; break;
+  }
+}
+window.addEventListener('resize', () => { if (curWeather) startWeatherFx(curWeather); });
 
 // ---------- 特效实现 ----------
 function diceAnim(d1, d2) {
   return new Promise(res => {
     const box = document.createElement('div');
-    box.className = 'dice-wrap'; box.style.cssText = 'position:absolute;left:50%;top:64%;transform:translate(-50%,-50%);z-index:28;';
-    box.innerHTML = `<div class="die">${dieDots(1)}</div><div class="die">${dieDots(1)}</div>`;
+    box.className = 'dice-wrap'; box.style.cssText = 'position:absolute;left:50%;top:63%;transform:translate(-50%,-50%);z-index:28;';
+    // v5.1：骰子放进有透视的容器里，滚动时做真正的 3D 翻滚（rotateX + rotateY + 位移弹跳），
+    // 而不是原地晃两下就出点数；落地时补一圈冲击波与灰尘。
+    box.innerHTML = `<div class="die-wrap"><div class="die">${dieDots(1)}</div><i class="die-shadow"></i></div>`
+      + `<div class="die-wrap"><div class="die">${dieDots(1)}</div><i class="die-shadow"></i></div>`;
     $('fxLayer').appendChild(box);
     SFX.dice();
     const dice = box.querySelectorAll('.die');
+    box.querySelectorAll('.die-wrap')[1].style.animationDelay = '.07s';
     dice.forEach(d => d.classList.add('rolling'));
-    let n = 0;
-    const iv = setInterval(() => { dice.forEach(d => d.innerHTML = dieDots(1 + Math.floor(Math.random() * 6))); }, sp(130));
+    const iv = setInterval(() => { dice.forEach(d => d.innerHTML = dieDots(1 + Math.floor(Math.random() * 6))); }, sp(105));
     setTimeout(() => {
       clearInterval(iv);
       SFX.diceLand();
+      setTimeout(() => { try { SFX.thud(); shakeBoard(); } catch (e) {} }, sp(70));
       dice[0].innerHTML = dieDots(d1); dice[1].innerHTML = dieDots(d2);
       dice.forEach(d => { d.classList.remove('rolling'); d.classList.add('land'); });
-      st(() => { box.remove(); res(); }, 1000);
-    }, sp(1300));
+      const im = document.createElement('div'); im.className = 'dice-impact';
+      box.appendChild(im); setTimeout(() => im.remove(), 900);
+      st(() => { try { SFX.coinRain(); } catch (e) {} }, 220);
+      st(() => { box.remove(); res(); }, 1150);
+    }, sp(1780));
   });
 }
 function dieDots(n) {
@@ -1298,16 +1843,36 @@ function pulseCell(cell, color) {
   $('board').appendChild(rect);
   setTimeout(() => rect.remove(), 2100);
 }
+// v5.1：盖房演出升级 —— 先搭脚手架 → 砖料落下 → 房子弹起 → 尘土/光环收尾
 function buildAnim(e) {
   const [x, y] = cellCenter(e.cell);
   const pt = svgToScreen(x, y);
+  const gid = BOARD[e.cell] && BOARD[e.cell].g;
+  const grp = (gid && GROUPS[gid]) ? GROUPS[gid] : '#e8b04b';
   const el = document.createElement('div');
-  el.className = 'house3d'; el.style.left = pt[0] + 'px'; el.style.top = pt[1] + 'px';
-  el.style.fontSize = e.hotel ? '46px' : '34px';
-  el.textContent = e.hotel ? '🏨' : '🏠';
+  el.className = 'house3d ' + (e.hotel ? 'hotel' : 'lv' + (e.level || 1));
+  el.style.left = pt[0] + 'px'; el.style.top = pt[1] + 'px';
+  el.style.setProperty('--bc', grp);
+  el.style.fontSize = e.hotel ? '54px' : '42px';
+  el.innerHTML = `<span class="h3-bar b1"></span><span class="h3-bar b2"></span>`
+    + `<span class="h3-ico">${e.hotel ? '🏨' : '🏠'}</span><span class="h3-dust"></span>`;
   $('fxLayer').appendChild(el);
-  if (e.hotel) { shockwave(e.cell); shakeBoard(); setTimeout(() => el.remove(), 1700); }
-  else setTimeout(() => el.remove(), 1500);
+  // ① 脚手架先立起来（条形动画）
+  setTimeout(() => el.classList.add('scaffold'), 0);
+  // ② 砖块木料落下
+  fxBurst(e.cell, { kind: 'shard', n: e.hotel ? 18 : 12, speed: 2.2, size: 3.4, life: 44, color: ['#c9a97e', '#a9764a', '#ded4c2'], gravity: 0.32 });
+  // ③ 房子从地面弹起 + 尘土环
+  setTimeout(() => {
+    el.classList.add('up');
+    fxBurst(e.cell, { kind: 'ring', n: 0, wave: { r: e.hotel ? 74 : 52, color: grp, life: 36 } });
+  }, 150);
+  // ④ 收尾：旅馆震屏 + 礼花；普通房一圈上浮星光
+  if (e.hotel) {
+    setTimeout(() => { shockwave(e.cell); shakeBoard(); confettiBurst(64); fxCoinRain(16); }, 460);
+  } else {
+    setTimeout(() => fxBurst(e.cell, { kind: 'star', n: 10, speed: 2.4, size: 3.6, life: 36, lift: 0.9, color: [grp, '#ffd76a', '#ffffff'] }), 460);
+  }
+  setTimeout(() => el.remove(), e.hotel ? 2150 : 1800);
 }
 function shockwave(cell) {
   const [cx, cy] = cellCenter(cell);
@@ -1319,6 +1884,23 @@ function shockwave(cell) {
   setTimeout(() => c.remove(), 900);
 }
 function shakeBoard() { const b = $('boardWrap'); b.style.animation = 'shake .5s'; setTimeout(() => b.style.animation = '', 520); }
+// v5.1：拆除时的烟尘 + 坠落碎块（DOM 层，比纯 canvas 粒子更有"塌"的重量感）
+function collapseAt(cell, big) {
+  const [x, y] = cellCenter(cell);
+  const pt = svgToScreen(x, y);
+  const wrap = document.createElement('div');
+  wrap.className = 'collapse';
+  wrap.style.left = pt[0] + 'px'; wrap.style.top = pt[1] + 'px';
+  const n = big ? 5 : 3;
+  let inner = '<span class="cf-dust"></span>';
+  for (let i = 0; i < n; i++) {
+    const ang = (-140 + i * (280 / Math.max(1, n - 1))) * Math.PI / 180;
+    inner += `<i class="cf-bit" style="--dx:${(Math.cos(ang) * rnd(28, 62)).toFixed(0)}px;--dy:${(Math.sin(ang) * rnd(18, 40)).toFixed(0)}px;--rot:${rnd(-260, 260).toFixed(0)}deg;animation-delay:${(i * 0.05).toFixed(2)}s"></i>`;
+  }
+  wrap.innerHTML = inner;
+  $('fxLayer').appendChild(wrap);
+  setTimeout(() => wrap.remove(), 1500);
+}
 // 3D 金币飞行：fromCell（格子索引或棋盘坐标 [x,y]）→ target（棋盘坐标 [x,y]）
 function flyCoin(fromArg, target, n = 4) {
   const from = Array.isArray(fromArg) ? fromArg : cellCenter(fromArg);
@@ -1516,6 +2098,8 @@ function render(state) {
   const s = state || S; if (!s) return;
   if (!boardBuilt) buildBoard();
   applyWeather(dispReady ? dispWeather : s.weather);
+  // 动画队列排空时把显示态与服务端对齐（重连 / 兜底，防止增量丢失造成长偏差）
+  if (animPending === 0 && qDepth === 0) syncDisp(s);
   // 空闲时与服务端日志对齐（重连/首帧兜底）；动画播放中保持本地进度，避免剧透后面的动画
   if (animPending === 0 && Array.isArray(s.log) && s.log.length) {
     if (s.log[s.log.length - 1].msg !== visLog[visLog.length - 1]) { visLog = s.log.map(l => l.msg); logRendered = 0; logForce = true; }
@@ -1534,7 +2118,7 @@ function renderPanel(s) {
     tb.textContent = newBanner;
     tb.classList.remove('flash'); void tb.offsetWidth; tb.classList.add('flash');
   }
-  const pSig = s.phase + '|' + s.cur + '|' + s.players.map(p => p.id + ',' + p.cash + ',' + (p.alive ? 1 : 0) + ',' + (p.combo || 0) + ',' + (p.skillLeft || 0) + ',' + (p.skipNext ? 1 : 0) + ',' + p.major + ',' + (p.voice ? 1 : 0) + ',' + (p.medal || 0) + ',' + (p.buffSteps || 0) + ',' + (p.invest ? p.invest.due : 0)).join(';');
+  const pSig = s.phase + '|' + s.cur + '|' + s.players.map(p => p.id + ',' + dcash(p) + ',' + (p.alive ? 1 : 0) + ',' + (p.combo || 0) + ',' + (p.skillLeft || 0) + ',' + (p.skipNext ? 1 : 0) + ',' + p.major + ',' + (p.voice ? 1 : 0) + ',' + (p.medal || 0) + ',' + (p.buffSteps || 0) + ',' + ((p.stepBuffs || []).length) + ',' + (p.invest ? p.invest.due : 0)).join(';');
   if (pSig !== playersSig) {
     playersSig = pSig;
     $('players').innerHTML = s.players.map(p => {
@@ -1545,13 +2129,14 @@ function renderPanel(s) {
       const mc = p.voice ? `<span class="vmic on" data-vmic="${p.id}">🎤</span>` : '';
       const md = p.medal > 0 ? `<span class="tag" style="background:#fff3c4;color:#8a6d1a">🎫 免租金卡</span>` : '';
       const bf = p.buffSteps > 0 ? `<span class="tag" style="background:#fff3d6;color:#a06800">🍂+${p.buffSteps}</span>` : '';
+      const bq = (p.stepBuffs && p.stepBuffs.length) ? `<span class="tag" style="background:#e9f6ec;color:#1d6b40">👟×${p.stepBuffs.length}</span>` : '';
       const iv = p.invest ? `<span class="tag" style="background:#e8eaf6;color:#3949ab" title="科研投资：第 ${p.invest.due} 轮返还 ¥${p.invest.back}">🔬${p.invest.due}</span>` : '';
       return `
     <div class="pcard ${p.id === s.players[s.cur].id && s.phase !== 'over' ? 'active' : ''} ${!p.alive ? 'dead' : ''}" data-pid="${p.id}">
       <span class="dot" style="background:${p.color}"></span>
       ${mc}
-      <span class="pname">${esc(p.name)}${p.id === myPid ? ' <span class="tag">你</span>' : ''}${p.isAI ? '<span class="tag">AI</span>' : ''}${p.skipNext ? '<span class="tag">停留</span>' : ''}${mj.id ? `<span class="tag">${mj.icon}${esc(mj.name)}</span>` : ''}${sk}${cb}${md}${bf}${iv}</span>
-      <span class="cash">¥${p.cash}</span>
+      <span class="pname">${esc(p.name)}${p.id === myPid ? ' <span class="tag">你</span>' : ''}${p.isAI ? '<span class="tag">AI</span>' : ''}${p.skipNext ? '<span class="tag">停留</span>' : ''}${mj.id ? `<span class="tag">${mj.icon}${esc(mj.name)}</span>` : ''}${sk}${cb}${md}${bf}${bq}${iv}</span>
+      <span class="cash">¥${dcash(p)}</span>
     </div>`;
     }).join('');
     paintSpeaking();
@@ -1560,6 +2145,7 @@ function renderPanel(s) {
   if (animPending > 0) { actionsSig = null; $('actionArea').innerHTML = '<div class="panel" style="text-align:center;color:#9a938a;font-size:13px">⏳ 稍等，正在结算…</div>'; }
   else renderActions(s);
   renderAssets(s);
+  renderGhost(s);   // v5.1：重投阶段的落点虚影（跟着动画队列一起出现/消失）
   renderLog();
   const pool = $('poolText'); if (pool) pool.textContent = `💰 教育基金池 ¥${s.fundPool}`;
   const rt = $('roundText');
@@ -1573,8 +2159,7 @@ function renderPanel(s) {
   const wEl = $('weatherText');
   if (wEl) {
     const W = WEATHER[dispWeather] || {};
-    const EX = { sun: '今日移动 +1 步', cloud: '今日无特殊影响', rain: '今日移动 -1 步', storm: '今日全场租金 ×0.7' };
-    wEl.textContent = `${W.icon || ''} ${W.name || ''}　${EX[dispWeather] || ''}`;
+    wEl.textContent = `${W.icon || ''} ${W.name || ''}　${W.desc ? '今日' + W.desc : ''}`;
   }
   const ct = $('calText');
   if (ct) ct.textContent = dispCal ? `${dispCal.icon} 校历【${dispCal.name}】${dispCal.desc}` : '';
@@ -1616,9 +2201,40 @@ function turnText(s) {  if (s.phase === 'lobby') return '等待开始…';
   if (s.phase === 'raise') return isMe ? `现金不足！快抵押筹钱` : `${cur.name} 正在筹钱…`;
   if (s.phase === 'branch') return isMe ? (s.pendingBranch && s.pendingBranch.line === 'B' ? `要闯创业大道吗？` : `要进学术长廊吗？`) : `${cur.name} 站在岔路口犹豫…`;
   if (s.phase === 'invest') return isMe ? `要投一笔科研经费吗？` : `${cur.name} 正在考虑科研投资…`;
+  if (s.phase === 'skill') {
+    const key = (s.pendingSkill && s.pendingSkill.key) || cur.major;
+    const mj = MAJORS[key] || {};
+    return isMe ? `是否发动【${mj.skill || '专业技能'}】？` : `${cur.name} 正在考虑发动【${mj.skill || '技能'}】…`;
+  }
   return `第 ${s.round} 轮`;
 }
 let tokSig = '';
+// v5.1：重投询问阶段的「落点虚影」——在地图上把"这一走会落到哪一格"标出来，全场可见
+let ghostSig = '';
+function renderGhost(s) {
+  const board = $('board'); if (!board || !s) return;
+  const pr = s.pendingReroll;
+  const on = (animPending === 0) && s.phase === 'reroll' && !!pr && pr.target != null;
+  const sig = on ? (pr.pid + '|' + pr.target + '|' + pr.steps) : 'off';
+  if (sig === ghostSig) return;
+  ghostSig = sig;
+  board.querySelectorAll('.ghost').forEach(el => el.remove());
+  if (!on) return;
+  const i = pr.target;
+  const isBr = !!BRANCH_POS[i];
+  const [x, y] = isBr ? [BRANCH_POS[i][0] - BR_W / 2, BRANCH_POS[i][1] - BR_H / 2] : CELLXY(i);
+  const w = isBr ? BR_W : CW, h = isBr ? BR_H : CH;
+  const ly = (y < 32) ? y + h + 20 : y - 11;
+  const who = (s.players.find(q => q.id === pr.pid) || {}).name || '';
+  const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  g.setAttribute('class', 'ghost');
+  g.innerHTML =
+    `<rect x="${x + 2}" y="${y + 2}" width="${w - 4}" height="${h - 4}" rx="12" fill="rgba(232,176,75,.22)" stroke="#e8b04b" stroke-width="3.5" stroke-dasharray="11 7">`
+    + `<animate attributeName="opacity" values="0.35;1;0.35" dur="1.15s" repeatCount="indefinite"/></rect>`
+    + `<text x="${x + w / 2}" y="${ly}" text-anchor="middle" font-size="15" font-weight="800" fill="#a8761a" style="paint-order:stroke;stroke:rgba(255,255,255,.9);stroke-width:3.5px">`
+    + `👻 ${esc(who)} 预计落点 · ${pr.steps} 步</text>`;
+  board.appendChild(g);
+}
 function renderTokens(s) {
   const layer = $('tokenLayer');
   if (animPending > 0) return;   // 动画播放中冻结棋子重建，防止瞬移
@@ -1671,13 +2287,14 @@ let buildSig = '';
 function renderBuildings(s) {
   // 归属/建筑没变就跳过：避免每次事件都重建 40 个 SVG 分组（主要卡顿来源）
   let sig = '';
-  for (let i = 0; i < 48; i++) { const c = s.cells[i]; sig += (c.own || '-') + ',' + (c.level || 0) + ',' + (c.mortgaged ? 1 : 0) + ';'; }
+  for (let i = 0; i < 48; i++) { const c = dcell(i); sig += (c.own || '-') + ',' + (c.level || 0) + ',' + (c.mortgaged ? 1 : 0) + ';'; }
   if (sig === buildSig) return;
   buildSig = sig;
   Object.values(buildEls).forEach(t => t.remove()); buildEls = {};
-  s.cells.forEach((cs, i) => {
+  for (let i = 0; i < BOARD.length; i++) {
+    const cs = dcell(i);
     const tp = BOARD[i].type;
-    if (tp !== 'prop' && tp !== 'transport' && tp !== 'util') return;
+    if (tp !== 'prop' && tp !== 'transport' && tp !== 'util') continue;
     const [x, y] = CELLXY(i);
     const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     let inner = '';
@@ -1687,16 +2304,16 @@ function renderBuildings(s) {
       const e = innerEdge(i);
       // 地皮归属色条（地主颜色，加白描边更醒目）
       inner += `<rect x="${e.x}" y="${e.y}" width="${e.w}" height="${e.h}" rx="2.5" fill="${oc}" stroke="rgba(255,255,255,.9)" stroke-width="1"/>`;
-      // 房屋 / 旅馆：按建造级数可视化，用地主颜色（正方形格 → 铺在格子底部一行）
+      // 房屋 / 旅馆：v5.1 放大更醒目，并挪到「色带与校名之间」的空档，不再压住价格
       if (!cs.mortgaged && tp === 'prop' && cs.level > 0) {
         if (cs.level < 4) {
-          const s2 = 14, gap = 4, n = cs.level;
+          const s2 = 17, gap = 3, n = cs.level;   // 4 栋时 4×17+3×3 = 77 < 85
           const total = n * s2 + (n - 1) * gap;
           let hx = x + CW / 2 - total / 2;
-          for (let k = 0; k < n; k++) { inner += houseSvg(hx, y + CH - 17, s2, oc); hx += s2 + gap; }
+          for (let k = 0; k < n; k++) { inner += houseSvg(hx, y + 21, s2, oc); hx += s2 + gap; }
         } else {
-          const w = 50, h = 20;
-          inner += hotelSvg(x + CW / 2 - w / 2, y + CH - 21, w, h, oc);
+          const w = 60, h = 19;
+          inner += hotelSvg(x + CW / 2 - w / 2, y + 20, w, h, oc);
         }
       }
     }
@@ -1705,10 +2322,10 @@ function renderBuildings(s) {
       const [cx, cy] = cellCenter(i);
       inner += `<text x="${cx}" y="${cy + 6}" text-anchor="middle" font-size="16">🔒</text>`;
     }
-    if (!inner) return;   // 无归属也无建筑：不生成空节点
+    if (!inner) continue;   // 无归属也无建筑：不生成空节点
     g.innerHTML = inner;
     $('ownLayer').appendChild(g); buildEls['g' + i] = g;
-  });
+  }
 }
 function innerEdge(i) {
   const [x, y] = CELLXY(i);
@@ -1719,14 +2336,15 @@ let actionsSig = null;
 function renderActions(s) {
   const area = $('actionArea');
   const me = s.players.find(p => p.id === myPid);
-  const pb0 = s.pendingBuy, pbd0 = s.pendingBuild, au0 = s.auction, rs0 = s.raise, pm0 = s.pendingMedal, pr0 = s.pendingReroll, pbr0 = s.pendingBranch, pin0 = s.pendingInvest;
+  const pb0 = s.pendingBuy, pbd0 = s.pendingBuild, au0 = s.auction, rs0 = s.raise, pm0 = s.pendingMedal, pr0 = s.pendingReroll, pbr0 = s.pendingBranch, pin0 = s.pendingInvest, psk0 = s.pendingSkill;
   // 按钮内容只由这些字段决定：没变就不重建 DOM（避免每个事件都重排一次带 onclick 的按钮）
-  const key = [s.phase, s.cur, s.season, myPid, me ? me.cash : '-', me && me.alive ? 1 : 0,
+  const key = [s.phase, s.cur, s.season, myPid, me ? dcash(me) : '-', me && me.alive ? 1 : 0,
     me && me.discount ? 1 : 0, me && me.shield ? 1 : 0,
     pb0 ? pb0.cell + ':' + pb0.price + ':' + (pb0.base || 0) + ':' + (pb0.mortgageBuy ? 1 : 0) : '-',
     pbd0 ? pbd0.cell + ':' + (pbd0.cost || 0) : '-',
-    pm0 ? pm0.price : '-', pr0 ? pr0.pid : '-',
+    pm0 ? pm0.price : '-', pr0 ? pr0.pid + ':' + (pr0.target == null ? '-' : pr0.target) : '-',
     pbr0 ? pbr0.pid + (pbr0.line || 'A') : '-', pin0 ? pin0.pid : '-',
+    psk0 ? psk0.pid + ':' + psk0.key : '-',
     au0 ? au0.cell + ':' + au0.highest + ':' + au0.bidder : '-',
     rs0 ? rs0.need : '-', s.vote ? JSON.stringify(s.vote.votes) : '-'].join('|');
   const myVoteKnown = s.vote && s.vote.votes[myPid] !== undefined;
@@ -1734,7 +2352,7 @@ function renderActions(s) {
   const key2 = key + '|v' + (showVote ? 1 : 0);
   if (key2 === actionsSig) return;
   actionsSig = key2;
-  if (!me || !me.alive) { area.innerHTML = s.phase === 'over' ? '' : '<div class="panel">你已出局，观战中…</div>'; return; }
+  if (!me || !me.alive) { area.innerHTML = s.phase === 'over' ? '' : '<div class="panel" style="text-align:center"><b>👀 你已出局，观战中…</b><br><span style="font-size:12.5px;color:#8a847a">仍可用下方表情/快捷语音/聊天框和麦克风与大家互动</span></div>'; return; }
   const isMe = s.players[s.cur].id === myPid;
   let html = '';
   if (s.phase === 'roll' && isMe) {
@@ -1750,17 +2368,27 @@ function renderActions(s) {
   }
   else if (s.phase === 'reroll' && s.pendingReroll && s.pendingReroll.pid === myPid) {
     const d = s.dice || [0, 0];
-    html = `<div class="panel"><b>🎲 重掷机会</b><br><span style="font-size:13px;color:#8a847a">本回合掷出 ${d[0]} + ${d[1]} = ${d[0] + d[1]}。花 ¥${s.pendingReroll.cost} 重投一次，换个点数？（每回合限用一次）</span></div>
+    const tgt = s.pendingReroll.target;
+    const tname = (tgt != null && BOARD[tgt]) ? BOARD[tgt].name : '';
+    html = `<div class="panel"><b>🎲 重掷机会</b><br><span style="font-size:13px;color:#8a847a">本回合掷出 ${d[0]} + ${d[1]} = ${d[0] + d[1]}。花 ¥${s.pendingReroll.cost} 重投一次，换个点数？（每回合限用一次）</span>${tgt != null ? `<br><span style="font-size:13px;color:#a8761a">👻 按现在的点数会落到「${esc(tname)}」（地图上已用虚影标出，所有人都能看到）</span>` : ''}</div>
       <div class="btn-row" style="margin-top:8px"><button class="btn primary" onclick="act({type:'confirmRoll'})">就这样走</button><button class="btn small subtle" ${me.cash >= s.pendingReroll.cost ? '' : 'disabled'} onclick="act({type:'reroll'})">🎲 重投一次 ¥${s.pendingReroll.cost}</button></div>`;
   }
   else if (s.phase === 'branch' && s.pendingBranch && s.pendingBranch.pid === myPid) {
     if (s.pendingBranch.line === 'B') {
-      html = `<div class="panel"><b>🚀 创业大道</b><br><span style="font-size:13px;color:#8a847a">创业孵化器、跳蚤市场、国际交流站……全是高风险高回报的格子，走到出口「校企合作中心」能领 ¥2500 现金，但要在里面学习 2 回合，之后沿主路线继续。</span></div>
+      html = `<div class="panel"><b>🚀 创业大道</b><br><span style="font-size:13px;color:#8a847a">创业孵化器、毕业跳蚤市场、国际交流站……全是高风险高回报的格子。走到出口「校企合作中心」能领 ¥2000 现金，但要在里面学习 1 回合，之后沿主路线继续。</span></div>
         <div class="btn-row" style="margin-top:8px"><button class="btn primary" onclick="act({type:'enterBranch'})">🏫 进支线</button><button class="btn" onclick="act({type:'declineBranch'})">走大路</button></div>`;
     } else {
-      html = `<div class="panel"><b>🎓 学术长廊</b><br><span style="font-size:13px;color:#8a847a">长廊里有科研基金处、教授工作室、奖学金长廊等外圈没有的特殊格，走到出口「校史馆」能领 2 张免租金卡（可保留），但要在校史馆学习 2 回合，之后沿主路线继续。</span></div>
+      html = `<div class="panel"><b>🎓 学术长廊</b><br><span style="font-size:13px;color:#8a847a">长廊里有科研基金处、教授工作室、奖学金长廊等外圈没有的特殊格。走到出口「校史馆」能领 1 张免租金卡，但要在校史馆学习 1 回合，之后沿主路线继续。</span></div>
         <div class="btn-row" style="margin-top:8px"><button class="btn primary" onclick="act({type:'enterBranch'})">🌿 进岔路</button><button class="btn" onclick="act({type:'declineBranch'})">走大路</button></div>`;
     }
+  }
+  else if (s.phase === 'skill' && s.pendingSkill && s.pendingSkill.pid === myPid) {
+    const psk = s.pendingSkill;
+    const mj = MAJORS[psk.key] || {};
+    html = `<div class="panel skill-ask" style="border-color:${mj.fx || '#4a90d9'}">
+        <b>${mj.icon || '✨'} 是否发动【${esc(mj.skill || '专业技能')}】？</b><br>
+        <span style="font-size:13px;color:#8a847a">${esc(mj.desc || '')}<br>剩余次数：${me.skillLeft} 次</span></div>
+      <div class="btn-row" style="margin-top:8px"><button class="btn primary" onclick="act({type:'useSkill'})">✨ 发动</button><button class="btn" onclick="act({type:'skipSkill'})">先留着</button></div>`;
   }
   else if (s.phase === 'invest' && s.pendingInvest && s.pendingInvest.pid === myPid) {
     const pi = s.pendingInvest;
@@ -1797,26 +2425,38 @@ function renderActions(s) {
   }
   area.innerHTML = html;
 }
-function buildCost(g) { return { g1: 1000, g2: 1400, g3: 1800, g4: 2200, g5: 2600, g6: 3000, g7: 3400, g8: 3800, g9: 4200, g10: 4800 }[g]; }
+function buildCost(g) { return { g1: 850, g2: 1200, g3: 1550, g4: 1850, g5: 2200, g6: 2550, g7: 2900, g8: 3200, g9: 3550, g10: 4100 }[g]; }
 let assetsSig = null;
 function renderAssets(s) {
   const me = s.players.find(p => p.id === myPid);
   if (!me) { if (assetsSig !== 'none') { assetsSig = 'none'; $('assets').innerHTML = ''; } return; }
-  // 我的地产（归属/等级/抵押）没变就不重建这堆带按钮的行
-  let sig = myPid + '#';
-  for (let i = 0; i < s.cells.length; i++) { const cs = s.cells[i]; if (cs.own === myPid) sig += i + ':' + (cs.level || 0) + (cs.mortgaged ? 'm' : '') + ';'; }
+  // 我的地产（归属/等级/抵押/解锁轮次）或当前轮次/阶段变了就重建这堆带按钮的行
+  let sig = myPid + '@' + (s.round || 1) + '@' + (s.phase || '') + '#';
+  for (let i = 0; i < s.cells.length; i++) { const cs = dcell(i); if (cs.own === myPid) sig += i + ':' + (cs.level || 0) + (cs.mortgaged ? 'm' + (cs.mortgageAt || 0) : '') + ';'; }
   if (sig === assetsSig) return;
   assetsSig = sig;
-  const mine = s.cells.map((cs, i) => ({ cs, i })).filter(({ cs }) => cs.own === myPid);
+  const mine = [];
+  for (let i = 0; i < s.cells.length; i++) { const cs = dcell(i); if (cs.own === myPid) mine.push({ cs, i }); }
   if (!mine.length) { $('assets').innerHTML = '<div class="panel"><b>🏠 我的资产</b><span class="empty-tip">还没有地产，抓紧买地盖楼吧！</span></div>'; return; }
+  // v5.1：抵押只剩两种时机 —— 筹钱（phase=raise）与盖房凑钱（phase=build），掷骰前不再能抵押
+  const canMortgageNow = (s.phase === 'raise' && s.raise && s.raise.pid === myPid)
+    || (s.phase === 'build' && s.pendingBuild && s.pendingBuild.pid === myPid);
+  const rnd = s.round || 1;
   $('assets').innerHTML = '<div class="panel"><b>🏠 我的资产</b>' + mine.map(({ cs, i }) => {
     const c = BOARD[i];
     const col = c.type === 'prop' ? GROUPS[c.g] : '#B0BEC5';
-    const lvl = cs.mortgaged ? '<span class="mortgaged">抵押中</span>' : (c.type === 'prop' && cs.level > 0 ? `<span class="lvl">${cs.level === 4 ? '🏨 旅馆' : '🏠'.repeat(cs.level)}</span>` : '');
-    const canM = !cs.mortgaged, canR = cs.mortgaged, canSell = cs.level > 0;
+    const lvl = cs.mortgaged ? '<span class="mortgaged">🔒 抵押中</span>' : (c.type === 'prop' && cs.level > 0 ? `<span class="lvl">${cs.level === 4 ? '🏨 旅馆' : '🏠'.repeat(cs.level)}</span>` : '');
+    const canM = !cs.mortgaged && canMortgageNow;
+    const canSell = cs.level > 0 && canMortgageNow;
+    const unlock = (cs.mortgageAt || 0) + 2;
+    const locked = cs.mortgaged && rnd < unlock;
+    // 抵押地产加入锁定期，未解锁时显示带锁按钮并提示解锁轮次
+    const rBtn = !cs.mortgaged ? '' : (locked
+      ? `<button class="btn small locked" disabled title="抵押锁定期：第 ${unlock} 轮起才能赎回">🔒 第 ${unlock} 轮解锁</button>`
+      : `<button class="btn small" onclick="act({type:'redeem',cell:${i}})">🔓 赎回-¥${Math.floor(c.price / 2)}</button>`);
     return `<div class="asset"><span class="swatch" style="background:${col}"></span><span class="aname">${esc(c.name)}</span>${lvl}
       ${canM ? `<button class="btn small" onclick="act({type:'mortgage',cell:${i}})">抵押+¥${Math.floor(c.price / 2)}</button>` : ''}
-      ${canR ? `<button class="btn small" onclick="act({type:'redeem',cell:${i}})">赎回-¥${Math.floor(c.price / 2)}</button>` : ''}
+      ${rBtn}
       ${canSell ? `<button class="btn small" onclick="act({type:'sellBuilding',cell:${i}})">卖楼</button>` : ''}</div>`;
   }).join('') + '</div>';
 }
@@ -1836,13 +2476,14 @@ function showGameOver(s) {
   }, 1200);
 }
 function netWorth(s, p) {
-  let v = p.cash;
-  s.cells.forEach((cs, i) => {
-    if (cs.own !== p.id) return;
+  let v = dcash(p);
+  for (let i = 0; i < BOARD.length; i++) {
+    const cs = dcell(i);
+    if (cs.own !== p.id) continue;
     const c = BOARD[i];
     if (cs.mortgaged) v += Math.floor(c.price / 2);
     else v += c.price + (c.type === 'prop' ? cs.level * buildCost(c.g) : 0);
-  });
+  }
   return v;
 }
 function closeModal() { $('modal').style.display = 'none'; $('askModal').style.display = 'none'; }
@@ -1913,21 +2554,33 @@ function buildBoard() {
   });
 
   // ---------- 岔路虚线指示（画在地图下层，让中央看板自然盖住中段） ----------
+  // v5.1：改成「按矩形真实边界求交点」—— 虚线两端精确落在格子边上，不再歪斜、不再压进格子里。
   const cellC = i => { const [x, y] = CELLXY(i); return [x + CW / 2, y + CH / 2]; };
-  const dashLink = (a, b, color, offA, offB) => {
-    const [ax, ay] = a, [bx, by] = b;
-    const ang = Math.atan2(by - ay, bx - ax), ux = Math.cos(ang), uy = Math.sin(ang);
-    const x1 = ax + ux * offA, y1 = ay + uy * offA;
-    const x2 = bx - ux * offB, y2 = by - uy * offB;
-    let g = `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="2.6" stroke-dasharray="9 8" stroke-linecap="round" opacity=".6"/>`;
-    const p = 9;
-    g += `<polygon points="${x2},${y2} ${x2 - ux * 16 - uy * p},${y2 - uy * 16 + ux * p} ${x2 - ux * 16 + uy * p},${y2 - uy * 16 - ux * p}" fill="${color}" opacity=".85"/>`;
+  const edgeHit = (cx0, cy0, hw, hh, ux, uy) => {
+    const tx = ux === 0 ? Infinity : hw / Math.abs(ux);
+    const ty = uy === 0 ? Infinity : hh / Math.abs(uy);
+    const t = Math.min(tx, ty);
+    return [cx0 + ux * t, cy0 + uy * t];
+  };
+  const dashLink = (a, hwA, hhA, b, hwB, hhB, color) => {
+    const dx = b[0] - a[0], dy = b[1] - a[1];
+    const len = Math.hypot(dx, dy) || 1, ux = dx / len, uy = dy / len;
+    const p1 = edgeHit(a[0], a[1], hwA, hhA, ux, uy);
+    const p2 = edgeHit(b[0], b[1], hwB, hhB, -ux, -uy);
+    const gap = 7;   // 两端各留一点缝，虚线贴着格子但不压边
+    const x1 = p1[0] + ux * gap, y1 = p1[1] + uy * gap;
+    const x2 = p2[0] - ux * gap, y2 = p2[1] - uy * gap;
+    let g = `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="${color}" stroke-width="2.6" stroke-dasharray="9 8" stroke-linecap="round" opacity=".6"/>`;
+    const p = 9;   // 箭头：尖端落在 x2,y2，指向目标格
+    g += `<polygon points="${x2.toFixed(1)},${y2.toFixed(1)} ${(x2 - ux * 16 - uy * p).toFixed(1)},${(y2 - uy * 16 + ux * p).toFixed(1)} ${(x2 - ux * 16 + uy * p).toFixed(1)},${(y2 - uy * 16 - ux * p).toFixed(1)}" fill="${color}" opacity=".85"/>`;
     return g;
   };
-  html += dashLink(cellC(20), BRANCH_POS[48], '#5c8f52', 52, 86);   // 长廊入口 → 科研基金处
-  html += dashLink(BRANCH_POS[54], cellC(28), '#5c8f52', 86, 54);   // 校史馆 → 教育基金会
-  html += dashLink(cellC(36), BRANCH_POS[55], '#4f5fae', 52, 86);   // 大道入口 → 创业孵化器
-  html += dashLink(BRANCH_POS[61], cellC(39), '#4f5fae', 86, 54);   // 校企合作中心 → 校园商城
+  const MHW = CW / 2 - 4, MHH = CH / 2 - 4;          // 主环路格子半宽/半高
+  const BHW = BR_W / 2 - 4, BHH = BR_H / 2 - 4;      // 岔路格子半宽/半高
+  html += dashLink(cellC(20), MHW, MHH, BRANCH_POS[48], BHW, BHH, '#5c8f52');   // 长廊入口 → 科研基金处
+  html += dashLink(BRANCH_POS[54], BHW, BHH, cellC(28), MHW, MHH, '#5c8f52');   // 校史馆 → 教育基金会
+  html += dashLink(cellC(36), MHW, MHH, BRANCH_POS[55], BHW, BHH, '#4f5fae');   // 大道入口 → 创业孵化器
+  html += dashLink(BRANCH_POS[61], BHW, BHH, cellC(39), MHW, MHH, '#4f5fae');   // 校企合作中心 → 校园商城
 
   // ---------- 中央看板底板 ----------
   const C = CTR_CARD;
@@ -1993,9 +2646,10 @@ function buildBoard() {
     }
     // 大学格：校名 + 价格（价格加一枚淡色胶囊托底，更醒目）
     if (c.type === 'prop') {
-      html += `<rect x="${cx - 40}" y="${y + 60.5}" width="80" height="21" rx="10.5" fill="${strip}" opacity=".18"/>`;
-      html += `<text class="cellname" x="${cx}" y="${y + 52}" text-anchor="middle" font-size="${nm.length <= 4 ? 20 : 17}" font-weight="800">${esc(nm)}</text>`;
-      html += `<text class="cellprice" x="${cx}" y="${y + 76}" text-anchor="middle" font-size="16.5" font-weight="800">¥${c.price}</text>`;
+      // v5.1：房屋挪到上方色带与校名之间，这里把校名/价格整体下移一点，留出房屋展示区
+      html += `<rect x="${cx - 40}" y="${y + 63}" width="80" height="21" rx="10.5" fill="${strip}" opacity=".18"/>`;
+      html += `<text class="cellname" x="${cx}" y="${y + 54.5}" text-anchor="middle" font-size="${nm.length <= 4 ? 20 : 17}" font-weight="800">${esc(nm)}</text>`;
+      html += `<text class="cellprice" x="${cx}" y="${y + 78.5}" text-anchor="middle" font-size="16.5" font-weight="800">¥${c.price}</text>`;
     } else {
       if (ic) html += `<text x="${cx}" y="${y + 50}" text-anchor="middle" font-size="26">${ic}</text>`;
       html += `<text class="cellname" x="${cx}" y="${y + 74}" text-anchor="middle" font-size="${nm.length <= 4 ? 16.5 : 14.5}" font-weight="700">${esc(nm)}</text>`;

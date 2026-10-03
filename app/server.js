@@ -34,20 +34,23 @@ function snapshot(room) {
     phase: room.phase, round: room.round, cur: room.cur, dice: room.dice,
     fundPool: room.fundPool, fundCap: FUND_CAP, endgame: room.round >= ENDGAME_ROUND, log: room.log.slice(-60),
     season: room.season, weather: room.weather,
-    calEvent: room.calEvent ? { id: room.calEvent.id, name: room.calEvent.name, icon: room.calEvent.icon, desc: room.calEvent.desc, kind: room.calEvent.kind } : null,
+    calEvent: room.calEvent ? { id: room.calEvent.id, name: room.calEvent.name, icon: room.calEvent.icon, desc: room.calEvent.desc, kind: room.calEvent.kind, fx: room.calEvent.fx || null } : null,
     players: room.players.map(p => ({
       id: p.id, name: p.name, isAI: p.isAI, cash: p.cash, pos: p.pos, alive: p.alive, color: p.color,
       voucher: p.voucher, discount: p.discount, skipNext: p.skipNext,
       major: p.major, skillLeft: p.skillLeft, combo: p.combo || 0, ach: p.ach || {},
       shield: !!p.shield, sabotage: p.sabotage || 0,
       medal: p.medal || 0,
-      buffSteps: p.buffSteps || 0, invest: p.invest ? { due: p.invest.due, back: p.invest.back } : null,
+      buffSteps: p.buffSteps || 0, stepBuffs: (p.stepBuffs || []).slice(),
+      invest: p.invest ? { due: p.invest.due, back: p.invest.back } : null,
+      rentBuff: p.rentBuff || 0, defBuff: p.defBuff || 0, buildCutTurn: p.buildCutTurn || 0,
       voice: !!p.voice,   // 是否开着麦（语音房状态，仅用于同步 UI 与建连时机）
     })),
     cells: room.cells.map((cs) => ({ ...cs })),
     pendingBuy: room.pendingBuy, pendingBuild: room.pendingBuild,
     pendingReroll: room.pendingReroll || null,
     pendingBranch: room.pendingBranch || null, pendingInvest: room.pendingInvest || null,
+    pendingSkill: room.pendingSkill || null,
     auction: room.auction ? { cell: room.auction.cell, highest: room.auction.highest, bidder: room.auction.bidder } : null,
     raise: room.raise, vote: room.vote,
     events: room.events,
@@ -314,6 +317,8 @@ function onMessage(ws, str) {
     case 'declineBranch': room.declineBranch(p); break;
     case 'buyInvest': room.buyInvest(p); break;                 // 科研投资：投/不投
     case 'declineInvest': room.declineInvest(p); break;
+    case 'useSkill': room.useSkill(p); break;                   // v5.1 主动技：发动
+    case 'skipSkill': room.skipSkill(p); break;                 // v5.1 主动技：放弃
     case 'major': room.setMajor(p, a.major); break;
     case 'again': // 再来一局
       if (room.phase === 'over') {

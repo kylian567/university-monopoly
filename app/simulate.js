@@ -20,6 +20,7 @@ function pump(room, maxSteps = 200000) {
       case 'build': p.isAI ? room.aiBuild() : room.skipBuild(p); break;
       case 'branch': p.isAI ? room.aiBranch(p) : room.declineBranch(p); break;
       case 'invest': p.isAI ? room.aiInvest(p) : room.declineInvest(p); break;
+      case 'skill': p.isAI ? room.aiSkill(p) : room.skipSkill(p); break;
       case 'auction': room.endAuction(); break;
       case 'raise': room.forceSettleRaise(); break;
       case 'resolving': /* doRoll 中 setTimeout(resolveCell) —— 同步替代 */ break;

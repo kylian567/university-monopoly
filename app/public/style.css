@@ -33,6 +33,9 @@ body {
 .btn.big { width:100%; padding:14px; font-size:17px; margin-top:12px; }
 .btn.small { padding:6px 12px; font-size:13px; box-shadow:0 2px 0 #c6bb9f; }
 .btn:disabled { opacity:.45; cursor:default; transform:none; }
+/* v5.1：抵押锁定期的赎回键 —— 灰底带锁，明确"还没到能赎的轮次" */
+.btn.locked { background:linear-gradient(180deg,#e6e2d8,#d0cbbe); color:#8b8578; box-shadow:0 2px 0 #b9b3a5; font-weight:700; letter-spacing:.2px; }
+.btn.locked:disabled { opacity:.92; }
 .join-row { display:flex; gap:10px; margin-top:12px; align-items:stretch; }
 .join-row .inp { flex:1 1 auto; min-width:0; width:auto; }
 .join-row .btn { flex:0 0 auto; width:auto; margin-top:0; padding:14px 20px; }
@@ -108,16 +111,25 @@ body {
 .floaty { position:absolute; font-weight:800; font-size:20px; pointer-events:none; animation:floatUp 1.3s forwards;
   text-shadow:0 1px 0 #fff, 0 3px 6px rgba(0,0,0,.15); z-index:25; font-family:Menlo,monospace; }
 .floaty.plus { color:#2e7d32; } .floaty.minus { color:#c0392b; }
-.dice-wrap { display:flex; gap:12px; justify-content:center; align-items:center; padding:16px 22px;
+.floaty.lockfloat { font-size:30px; filter:drop-shadow(0 2px 4px rgba(90,70,40,.4)); }
+.dice-wrap { display:flex; gap:26px; justify-content:center; align-items:center; padding:18px 26px 26px;
   background:linear-gradient(180deg,rgba(255,253,247,.97),rgba(250,244,230,.94)); border-radius:20px;
   box-shadow:0 14px 40px rgba(60,45,20,.3), 0 3px 8px rgba(60,45,20,.15); border:1.5px solid #e5d9b8; }
+.die-wrap { position:relative; perspective:520px; padding-bottom:14px; animation:dieHop .62s ease-in-out infinite; }
 .die { width:54px; height:54px; background:linear-gradient(145deg,#ffffff,#f0ead9); border-radius:12px; border:2px solid #d8d0c2;
   display:grid; grid-template:repeat(3,1fr)/repeat(3,1fr); padding:8px; gap:2px;
-  box-shadow:inset 0 -3px 6px rgba(90,70,40,.15), inset 0 2px 3px #fff, 0 5px 10px rgba(0,0,0,.18); }
+  box-shadow:inset 0 -3px 6px rgba(90,70,40,.15), inset 0 2px 3px #fff, 0 5px 10px rgba(0,0,0,.18);
+  transform-style:preserve-3d; will-change:transform; }
 .die i { border-radius:50%; background:transparent; }
 .die i.on { background:radial-gradient(circle at 35% 30%, #56504a, #2e2a26); }
-.die.rolling { animation:diceRoll .5s linear infinite; }
-.die.land { animation:dieLand .45s; }
+/* v5.1：真正的 3D 翻滚（透视容器 + rotateX/rotateY/rotateZ），不再是原地左右晃 */
+.die.rolling { animation:diceTumble .58s linear infinite; }
+.die.land { animation:dieLand .5s cubic-bezier(.2,1.6,.4,1); }
+.die-shadow { position:absolute; left:50%; bottom:0; width:50px; height:9px; margin-left:-25px; border-radius:50%;
+  background:radial-gradient(ellipse at center, rgba(60,45,20,.38), rgba(60,45,20,0) 72%);
+  animation:dieShadow .62s ease-in-out infinite; }
+.dice-impact { position:absolute; left:50%; top:50%; width:20px; height:20px; margin:-10px 0 0 -10px; border-radius:50%;
+  border:3px solid rgba(232,176,75,.85); animation:dieImpact .8s ease-out forwards; pointer-events:none; }
 
 /* ---------- 弹窗 ---------- */
 .modal-bg { position:fixed; inset:0; background:rgba(40,34,26,.5); backdrop-filter:blur(3px); display:flex; align-items:center; justify-content:center; z-index:100; }
@@ -146,8 +158,17 @@ body {
 @keyframes floatUp { 0%{opacity:0; transform:translateY(6px) scale(.7);} 15%{opacity:1; transform:translateY(0) scale(1.15);} 100%{opacity:0; transform:translateY(-46px) scale(1);} }
 @keyframes popfade { 0%{opacity:0; transform:translate(-50%,-50%) scale(.6);} 12%{opacity:1; transform:translate(-50%,-50%) scale(1);} 80%{opacity:1;} 100%{opacity:0; transform:translate(-50%,-64%) scale(.95);} }
 @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-5px)} 40%{transform:translateX(5px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
-@keyframes diceRoll { 0%{transform:rotate(0) translateY(0)} 25%{transform:rotate(14deg) translateY(-8px)} 50%{transform:rotate(-10deg) translateY(0)} 75%{transform:rotate(8deg) translateY(-5px)} 100%{transform:rotate(0)} }
-@keyframes dieLand { 0%{transform:scale(1.35)} 60%{transform:scale(.92)} 100%{transform:scale(1)} }
+@keyframes diceTumble {
+  0%   { transform: rotateX(0deg)   rotateY(0deg)   rotateZ(0deg)   translateY(0)      scale(1); }
+  25%  { transform: rotateX(180deg) rotateY(90deg)  rotateZ(-14deg) translateY(-16px) scale(1.06); }
+  50%  { transform: rotateX(360deg) rotateY(180deg) rotateZ(0deg)   translateY(0)      scale(.97); }
+  75%  { transform: rotateX(540deg) rotateY(270deg) rotateZ(12deg)  translateY(-11px)  scale(1.04); }
+  100% { transform: rotateX(720deg) rotateY(360deg) rotateZ(0deg)   translateY(0)      scale(1); }
+}
+@keyframes dieHop   { 0%,100%{ transform:translateY(0) } 50%{ transform:translateY(-9px) } }
+@keyframes dieShadow{ 0%,100%{ transform:scale(1); opacity:.85 } 50%{ transform:scale(.72); opacity:.5 } }
+@keyframes dieImpact{ 0%{ transform:scale(.4); opacity:.95 } 100%{ transform:scale(6.5); opacity:0 } }
+@keyframes dieLand { 0%{transform:scale(1.38) rotate(-5deg)} 60%{transform:scale(.9) rotate(2deg)} 100%{transform:scale(1) rotate(0)} }
 @keyframes popIn { 0%{transform:scale(.7); opacity:0} 100%{transform:scale(1); opacity:1} }
 @keyframes flipIn {
   0%   { transform: perspective(900px) rotateY(-180deg) scale(.5); opacity: 0; }
@@ -228,9 +249,31 @@ body {
 .house3d {
   position:absolute; z-index:42; pointer-events:none;
   transform: translate(-50%,-110%);
-  animation: housePop 1.15s cubic-bezier(.2,1.5,.4,1) forwards;
   filter: drop-shadow(0 8px 10px rgba(60,40,10,.4));
 }
+/* v5.1：分步施工 —— 脚手架 → 砖料落下 → 房子从地面升起 → 尘土/光环 */
+.house3d .h3-ico { display:block; opacity:0; transform-origin:50% 100%; }
+.house3d.up .h3-ico { animation: houseRise 1.15s cubic-bezier(.2,1.5,.4,1) forwards; }
+.house3d .h3-bar { position:absolute; left:50%; width:64px; height:5px; margin-left:-32px; border-radius:3px;
+  background:linear-gradient(90deg, rgba(201,169,126,.2), #c9a97e 22%, #a9764a 78%, rgba(169,118,74,.2));
+  opacity:0; transform:scaleX(.2); }
+.house3d .h3-bar.b1 { bottom:3px; }
+.house3d .h3-bar.b2 { bottom:22px; }
+.house3d.scaffold .h3-bar { animation: scafIn .34s ease-out forwards; }
+.house3d.scaffold .h3-bar.b2 { animation-delay:.11s; }
+.house3d.up .h3-bar { animation: scafOut .34s ease-in forwards; }
+.house3d .h3-dust { position:absolute; left:50%; bottom:-5px; width:22px; height:9px; margin-left:-11px; border-radius:50%;
+  background:radial-gradient(ellipse at center, rgba(150,120,80,.62), rgba(150,120,80,0) 72%); opacity:0; }
+.house3d.up .h3-dust { animation: h3Dust .85s ease-out forwards; }
+@keyframes houseRise {
+  0%   { transform: perspective(520px) rotateX(78deg) scale(.15) translateY(24px); opacity:0; }
+  55%  { transform: perspective(520px) rotateX(-10deg) scale(1.3) translateY(-6px); opacity:1; }
+  75%  { transform: perspective(520px) rotateX(6deg) scale(.95); }
+  100% { transform: perspective(520px) rotateX(0) scale(1); opacity:1; }
+}
+@keyframes scafIn  { 0%{opacity:0; transform:scaleX(.2)} 100%{opacity:.95; transform:scaleX(1)} }
+@keyframes scafOut { 0%{opacity:.95; transform:scaleX(1)} 100%{opacity:0; transform:scaleX(.3)} }
+@keyframes h3Dust  { 0%{opacity:.85; transform:scale(.4)} 100%{opacity:0; transform:scale(3.6)} }
 @keyframes housePop {
   0%   { transform: translate(-50%,-60%) perspective(520px) rotateX(78deg) scale(.15); opacity:0; }
   55%  { transform: translate(-50%,-135%) perspective(520px) rotateX(-10deg) scale(1.3); opacity:1; }
@@ -307,6 +350,22 @@ body {
 .season-card.show { opacity:1; transform:translate(-50%,-50%) perspective(700px) rotateX(0) scale(1); }
 .season-card .sc-sub { font-size:14px; font-weight:600; opacity:.95; }
 
+/* v5.1 天气大卡：从上方斜插而入 + 落定后轻微摇摆（与季节卡的俯仰切入明显区分） */
+.weather-card { position:absolute; left:50%; top:30%; transform:translate(-50%,-170%) rotate(-9deg) scale(.8); opacity:0;
+  z-index:47; pointer-events:none; padding:15px 40px 17px; border-radius:22px; text-align:center;
+  border:2.5px solid rgba(255,255,255,.76); color:#fff; text-shadow:0 2px 5px rgba(0,0,0,.34);
+  box-shadow:0 16px 38px rgba(30,25,50,.42), inset 0 2px 0 rgba(255,255,255,.34);
+  transition:transform .62s cubic-bezier(.18,1.35,.36,1), opacity .4s ease; }
+.weather-card.show { opacity:1; transform:translate(-50%,-50%) rotate(0) scale(1); animation:wxSway 1.7s ease-in-out .58s; }
+@keyframes wxSway {
+  0%, 100% { transform:translate(-50%,-50%) rotate(0) scale(1); }
+  30% { transform:translate(-50%,-50%) rotate(-2.4deg) scale(1.035); }
+  62% { transform:translate(-50%,-50%) rotate(1.9deg) scale(1.012); }
+}
+.weather-card .wc-ico { font-size:40px; line-height:1.06; }
+.weather-card .wc-name { font-size:25px; font-weight:900; letter-spacing:2px; }
+.weather-card .wc-sub { font-size:13.5px; font-weight:600; opacity:.96; margin-top:2px; }
+
 /* 聊天气泡（棋盘上方飘出） */
 .chat-bubble { position:absolute; z-index:43; pointer-events:none; background:#fff; color:#3a3630; font-size:15px; font-weight:700;
   padding:6px 13px; border-radius:14px; border:1.5px solid #e5d9b8; white-space:nowrap;
@@ -321,6 +380,57 @@ body {
   box-shadow:0 6px 18px rgba(30,80,160,.4); animation:skillPop 2.2s ease-out forwards; }
 @keyframes skillPop { 0%{opacity:0; transform:translate(-50%,-50%) scale(.5);} 15%{opacity:1; transform:translate(-50%,-140%) scale(1.12);}
   80%{opacity:1; transform:translate(-50%,-170%) scale(1);} 100%{opacity:0; transform:translate(-50%,-230%) scale(.9);} }
+
+/* ---------- v5.1：专业技能大横幅（全场可见，主题色随专业） ---------- */
+.skill-cast { position:absolute; left:50%; top:34%; z-index:52; pointer-events:none;
+  display:flex; align-items:center; gap:15px; padding:14px 30px 15px 24px; border-radius:22px;
+  transform:translate(-50%,-50%) scale(.55) rotate(-3deg); opacity:0;
+  background:#fffdf7; border:3px solid var(--sk,#4a90d9);
+  box-shadow:0 18px 46px rgba(40,30,10,.32), 0 0 0 7px rgba(255,255,255,.4), 0 0 40px var(--sk,#4a90d9);
+  transition:transform .52s cubic-bezier(.2,1.5,.4,1), opacity .3s ease; overflow:hidden; }
+.skill-cast.show { opacity:1; transform:translate(-50%,-50%) scale(1) rotate(0deg); }
+.skill-cast::after { content:""; position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(105deg,transparent 38%,rgba(255,255,255,.55) 50%,transparent 62%);
+  transform:translateX(-140%); animation:scShine 1.05s .1s ease-out forwards; }
+@keyframes scShine { to { transform:translateX(140%); } }
+.skill-cast .sc-ico { font-size:42px; line-height:1; filter:drop-shadow(0 4px 8px rgba(0,0,0,.2)); animation:scIcoPulse 1s ease-out; }
+@keyframes scIcoPulse { 0%{transform:scale(.4) rotate(-14deg);} 55%{transform:scale(1.22) rotate(6deg);} 100%{transform:scale(1);} }
+.skill-cast .sc-name { font-size:23px; font-weight:900; color:var(--sk,#4a90d9); letter-spacing:.6px; line-height:1.15; }
+.skill-cast .sc-who { font-size:13px; color:#6b6459; margin-top:3px; }
+.panel.skill-ask { border-width:2.5px; box-shadow:0 4px 16px rgba(40,30,10,.14); }
+
+/* ---------- v5.1：岔路随机结果「转盘」抽取演出 ---------- */
+.rollpay { position:absolute; left:50%; top:32%; z-index:53; pointer-events:none;
+  min-width:290px; padding:15px 22px 13px; border-radius:20px; text-align:center;
+  transform:translate(-50%,-50%) scale(.62); opacity:0;
+  background:#fffdf7; border:3px solid #e8b04b;
+  box-shadow:0 18px 44px rgba(40,30,10,.34), 0 0 0 6px rgba(255,255,255,.4);
+  transition:transform .42s cubic-bezier(.2,1.5,.4,1), opacity .28s ease; }
+.rollpay.show { opacity:1; transform:translate(-50%,-50%) scale(1); }
+.rollpay .rp-title { font-size:16px; font-weight:900; color:#7a1522; margin-bottom:9px; }
+.rollpay .rp-opts { display:flex; flex-direction:column; gap:7px; }
+.rollpay .rp-opt { font-size:14px; font-weight:700; color:#6b6459; padding:7px 12px; border-radius:11px;
+  background:#f5f0e4; border:2px solid transparent; transition:.12s; }
+.rollpay .rp-opt.on { color:#3a3630; background:#fff3d6; border-color:#e8b04b; transform:scale(1.05); }
+.rollpay .rp-opt.on.good { background:#e7f8ee; border-color:#37a86a; color:#1d6b40; box-shadow:0 0 16px rgba(55,168,106,.55); }
+.rollpay .rp-opt.on.bad { background:#fdeaea; border-color:#d9534f; color:#8c221e; box-shadow:0 0 16px rgba(217,83,79,.55); }
+.rollpay .rp-who { font-size:11.5px; color:#9a938a; margin-top:8px; }
+
+/* ---------- v5.1：效果卡抽取演出 ---------- */
+.drawcards { position:absolute; left:50%; top:42%; z-index:53; pointer-events:none;
+  transform:translate(-50%,-50%) scale(.7); opacity:0;
+  transition:transform .45s cubic-bezier(.2,1.5,.4,1), opacity .3s ease; }
+.drawcards.show { opacity:1; transform:translate(-50%,-50%) scale(1); }
+.drawcards .dc-title { text-align:center; font-size:15px; font-weight:900; color:#7a1522; margin-bottom:10px;
+  text-shadow:0 2px 6px rgba(255,255,255,.9); }
+.drawcards .dc-row { display:flex; gap:12px; justify-content:center; }
+.drawcards .dc { width:124px; padding:13px 10px; border-radius:16px; text-align:center; background:#fffdf7;
+  border:3px solid #e8b04b; box-shadow:0 12px 30px rgba(40,30,10,.3), inset 0 2px 0 rgba(255,255,255,.9);
+  opacity:0; transform:translateY(22px) rotateY(70deg) scale(.7); animation:dcIn .5s cubic-bezier(.2,1.4,.4,1) forwards; }
+@keyframes dcIn { to { opacity:1; transform:translateY(0) rotateY(0deg) scale(1); } }
+.drawcards .dc-ico { font-size:32px; line-height:1; margin-bottom:5px; }
+.drawcards .dc-name { font-size:13.5px; font-weight:900; color:#7a1522; }
+.drawcards .dc-desc { font-size:10.5px; color:#8a847a; margin-top:4px; line-height:1.3; }
 
 /* 决斗：两个棋子对撞 + 冲击波 */
 .duel-card { position:absolute; left:50%; top:33%; transform:translate(-50%,-50%) scale(.6); opacity:0; z-index:47; pointer-events:none;
@@ -435,6 +545,61 @@ body {
 .duel-card .duel-vsmark { display:inline-block; font-size:13px; color:#e8b04b; letter-spacing:2px; padding:0 4px; }
 .duel-card.tie { border-color:#9aa; }
 .duel-card.tie .duel-win { color:#cfd6dd; }
+
+/* ================================================================
+   v5.1：辩论擂台 / 校园运动会「大屏幕」分步演出
+   ① 抽签（名字飞转后定格）→ ② 双方登台 → ③ 依次掷骰（3D 翻滚）
+   → ④ 比大小、高亮胜者、结算
+   ================================================================ */
+.duel-stage { position:absolute; left:50%; top:46%; transform:translate(-50%,-50%) scale(.72); opacity:0; z-index:48;
+  width:min(680px,92%); pointer-events:none; padding:20px 26px 18px; border-radius:22px;
+  background:linear-gradient(165deg,#2c2c3c,#12121c 65%); color:#ffe9b3;
+  border:2.5px solid #e8b04b; box-shadow:0 26px 70px rgba(0,0,0,.62), 0 0 0 6px rgba(232,176,75,.12) inset;
+  transition:transform .48s cubic-bezier(.2,1.5,.4,1), opacity .34s ease; font-family:'PingFang SC','Noto Sans SC',sans-serif; }
+.duel-stage.show { opacity:1; transform:translate(-50%,-50%) scale(1); }
+.duel-stage.arena { background:linear-gradient(165deg,#173040,#0a1a26 65%); border-color:#6cc0e8; box-shadow:0 26px 70px rgba(0,0,0,.62), 0 0 0 6px rgba(108,192,232,.12) inset; }
+.duel-stage.arena .ds-title { color:#bde3ff; }
+.duel-stage.arena .ds-vs { color:#6cc0e8; text-shadow:0 0 14px rgba(108,192,232,.7); }
+.ds-title { text-align:center; font-size:19px; font-weight:800; letter-spacing:2px; color:#ffd76a; margin-bottom:14px; }
+.ds-body { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.ds-side { flex:1; display:flex; flex-direction:column; align-items:center; gap:7px; perspective:560px;
+  padding:14px 8px 12px; border-radius:16px; background:rgba(255,255,255,.045); border:1.5px dashed rgba(255,255,255,.16);
+  opacity:0; transition:opacity .3s ease, transform .42s cubic-bezier(.2,1.5,.4,1), box-shadow .3s, border-color .3s; }
+.ds-l { transform:translateX(-46px) scale(.9); }
+.ds-r { transform:translateX(46px) scale(.9); }
+.ds-side.in { opacity:1; transform:translateX(0) scale(1); border-style:solid; border-color:var(--duel-c,#e8b04b);
+  box-shadow:0 0 22px -6px var(--duel-c,#e8b04b); }
+.ds-name { font-size:19px; font-weight:800; min-height:24px; letter-spacing:1px; }
+.ds-name.lock { animation:dsLock .5s cubic-bezier(.2,1.7,.4,1); }
+@keyframes dsLock { 0%{transform:scale(1.5); filter:brightness(1.9);} 100%{transform:scale(1);} }
+.ds-mj { font-size:12.5px; color:#9fb0c0; min-height:17px; }
+.ds-die { width:66px !important; height:66px !important; padding:10px !important; margin-top:2px; }
+.ds-score { font-size:30px; font-weight:900; line-height:1; color:#ffd76a; min-height:34px; }
+.ds-score.pop { animation:dsScorePop .5s cubic-bezier(.2,1.8,.4,1); }
+@keyframes dsScorePop { 0%{transform:scale(.35); opacity:0;} 60%{transform:scale(1.28);} 100%{transform:scale(1); opacity:1;} }
+.ds-mid { flex:0 0 auto; padding:0 4px; }
+.ds-vs { font-size:24px; font-weight:900; color:#e8b04b; letter-spacing:2px; text-shadow:0 0 14px rgba(232,176,75,.7); }
+.ds-side.win  { box-shadow:0 0 34px -2px #ffd76a, 0 0 0 2px #ffd76a inset; border-color:#ffd76a !important; animation:dsWinPulse 1s ease-in-out infinite; }
+.ds-side.lose { opacity:.42; filter:grayscale(.6); transform:scale(.94); }
+@keyframes dsWinPulse { 0%,100%{ transform:scale(1);} 50%{ transform:scale(1.045);} }
+.duel-stage.tie .ds-side { opacity:.78; }
+.ds-foot { text-align:center; margin-top:14px; font-size:15.5px; font-weight:700; color:#ffe9b3; min-height:22px; letter-spacing:.5px; }
+.duel-stage.tie .ds-foot { color:#cfd6dd; }
+
+/* ---------- v5.1 拆除：烟尘 + 坠落碎块 ---------- */
+.collapse { position:absolute; z-index:43; pointer-events:none; transform:translate(-50%,-50%); }
+.collapse .cf-dust { position:absolute; left:50%; top:50%; width:26px; height:14px; margin:-7px 0 0 -13px; border-radius:50%;
+  background:radial-gradient(ellipse at center, rgba(160,140,110,.72), rgba(160,140,110,0) 72%);
+  animation:cfDust 1.1s ease-out forwards; }
+@keyframes cfDust { 0%{opacity:.9; transform:scale(.5)} 100%{opacity:0; transform:scale(4.2)} }
+.collapse .cf-bit { position:absolute; left:50%; top:50%; width:12px; height:9px; margin:-4px 0 0 -6px; border-radius:2px;
+  background:linear-gradient(140deg,#b98b5c,#8d6a45); box-shadow:0 2px 4px rgba(60,40,20,.35);
+  animation:cfFall 1.15s cubic-bezier(.35,.7,.6,1) forwards; }
+@keyframes cfFall {
+  0%   { opacity:1; transform:translate(0,0) rotate(0deg) scale(1); }
+  45%  { opacity:1; transform:translate(calc(var(--dx) * .6), calc(var(--dy) - 26px)) rotate(calc(var(--rot) * .5)) scale(1); }
+  100% { opacity:0; transform:translate(var(--dx), calc(var(--dy) + 34px)) rotate(var(--rot)) scale(.7); }
+}
 
 /* ---------- 聊天气泡：按语气配色 / 抖动 ---------- */
 .chat-bubble.t-up    { background:linear-gradient(180deg,#fff7dc,#ffe9a8); border-color:#e8c46a; color:#7a5a00;
