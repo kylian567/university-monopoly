@@ -91,7 +91,7 @@ function sliceFn(src, name) {
   const missFn = fns.filter(f => !new RegExp('function\\s+' + f + '\\s*\\(').test(cliJs));
   ok(missFn.length === 0, `5 个新视觉函数都已定义${missFn.length ? '（缺 ' + missFn.join(',') + '）' : ''}`);
 
-  ok(/v5\.4 大更新/.test(html), '开局公告标题已升到 v5.4');
+  ok(/v5\.\d+ 大更新/.test(html), '开局公告大版本标题存在');
   ok(/majorSearch/.test(html) && /filterMajors/.test(html), '选专业搜索框已就位');
 
   // ---------------- 浏览器 ----------------
@@ -108,7 +108,7 @@ function sliceFn(src, name) {
 
     console.log('\n[2] 开局公告与规则弹窗');
     const ann = await page.evaluate(() => (document.querySelector('#intro .announce-logo') || {}).textContent || '');
-    ok(/v5\.4/.test(ann), `开局公告标题：${ann}`);
+    ok(/v5\.\d+/.test(ann), `开局公告标题：${ann}`);
     const body = await page.evaluate(() => (document.querySelector('#intro .intro-body') || {}).textContent || '');
     ok(/60 种/.test(body) && /电气/.test(body), '公告正文写明"专业 33 → 60 种"并点名电气');
     ok(/不再整个屏幕晃/.test(body) || /不再.*晃/.test(body), '公告写明"骰子掷完不再晃屏"');

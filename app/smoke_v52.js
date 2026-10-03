@@ -61,7 +61,7 @@ const ok = (cond, msg) => { if (cond) { pass++; console.log('  ✓', msg); } els
     ok(voted.chips >= 1, `票数名牌已出现（${voted.chips} 枚）`);
 
     console.log('\n[3] 第三幕：抽签滚筒（随机抽一位玩家）');
-    await page.waitForSelector('.fac-layer.lottery', { timeout: 20000 });
+    await page.waitForSelector('.fac-layer.lottery', { timeout: 34000 });   // v5.5：投票时长 24s，等待随之加长
     await page.waitForSelector('.fv-draw.show', { timeout: 8000 });
     await page.waitForTimeout(900);
     const rollTxt = await page.evaluate(() => (document.querySelector('#fvRoll') || {}).textContent || '');

@@ -4,7 +4,9 @@ const http = require('http');
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
-const { Room, FUND_CAP, ENDGAME_ROUND } = require('./game');
+const { Room, FUND_CAP, ENDGAME_ROUND, PCOLOR } = require('./game');
+// v5.5：AI 名字按棋子颜色取叠字名 —— 紫色棋子的 AI 就叫「紫紫」，全场一眼对上号
+const AI_NAME_BY_COLOR = { '#E53935': '红红', '#1E88E5': '蓝蓝', '#FDD835': '黄黄', '#43A047': '绿绿', '#8E24AA': '紫紫' };
 
 const PORT = process.env.PORT || 3000;
 const PUB = path.join(__dirname, 'public');
@@ -289,7 +291,7 @@ function onMessage(ws, str) {
   const a = m.action || {};
   let changed = true;
   switch (a.type) {
-    case 'addAI': if (room.phase === 'lobby') { const q = room.join('小福' + (room.players.length + 1), true); if (q) room.addLog(`AI「${q.name}」就位`); } break;
+    case 'addAI': if (room.phase === 'lobby') { const nm = AI_NAME_BY_COLOR[PCOLOR[room.players.length]] || ('小福' + (room.players.length + 1)); const q = room.join(nm, true); if (q) room.addLog(`AI「${q.name}」就位`); } break;
     case 'start': room.start(); break;
     case 'roll': room.doRoll(p); break;
     case 'buy': room.buy(p); break;

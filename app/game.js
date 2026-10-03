@@ -541,7 +541,7 @@ const FACULTY = {
   freeRent: { name: '免租轮校区', icon: '🕊️', color: '#3FBF9E', lead: '随机 4 轮全场所有人免交租金',           cost: '其余轮次全场租金 ×1.05',            tag: '这四轮，谁也别想收租' },
 };
 const FACULTY_KEYS = Object.keys(FACULTY);
-const FACULTY_VOTE_MS = 15000;   // 开局风貌投票时长（超时未投者随机补票）
+const FACULTY_VOTE_MS = 24000;   // 开局风貌投票时长（v5.5 由 15s 拉长到 24s：看清楚再投，超时未投者随机补票）
 const FACULTY_MAX_RARE = 0;      // 本版无稀有风貌（原「变数校区」已按要求删去）
 
 const SALARY = 2000, START_CASH = 30000, TURN_MS = 30000, AUCTION_MS = 15000;
@@ -3313,4 +3313,4 @@ class Room {
   }
 }
 
-module.exports = { Room, BOARD, GROUPS, CHANCE, FATE, SALARY, START_CASH, SEASON, SEASON_ORDER, WEATHER, CALEVENTS, MAJORS, MAJOR_KEYS, ACHS, ITEMS, EFFECT_CARDS, FUND_CAP, ENDGAME_ROUND, REROLL_COST, BRANCH, BRANCH2, FACULTY, FACULTY_KEYS, FACULTY_VOTE_MS };
+module.exports = { Room, BOARD, GROUPS, CHANCE, FATE, SALARY, START_CASH, SEASON, SEASON_ORDER, WEATHER, CALEVENTS, MAJORS, MAJOR_KEYS, ACHS, ITEMS, EFFECT_CARDS, FUND_CAP, ENDGAME_ROUND, REROLL_COST, BRANCH, BRANCH2, FACULTY, FACULTY_KEYS, FACULTY_VOTE_MS, PCOLOR };

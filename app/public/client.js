@@ -55,7 +55,7 @@ for (let k = 0; k < 7; k++) BRANCH_POS[48 + k] = [BR_CX(k), BR_ROW_A];   // 学�
 for (let k = 0; k < 7; k++) BRANCH_POS[55 + k] = [BR_CX(k), BR_ROW_B];   // 创业大道 55~61
 // 中央看板（季节 / 天气 / 基金池 / 轮次 / 校历）
 const CTR_CARD = { x: 430, y: 288, w: 640, h: 356 };
-const POOL_PT = () => [CTR_CARD.x + CTR_CARD.w / 2, CTR_CARD.y + 214];
+const POOL_PT = () => [CTR_CARD.x + CTR_CARD.w / 2, CTR_CARD.y + 279];   // v5.5：基金池胶囊中心（金币飞入目标点）
 const BANK_PT = () => [PAD + CW / 2, -20];
 
 const GROUPS = { g1:'#A1887F', g2:'#90CAF9', g3:'#F48FB1', g4:'#FFB74D', g5:'#E57373', g6:'#E8D06F', g7:'#A5D6A7', g8:'#4DB6AC', g9:'#9FA8DA', g10:'#B39DDB' };
@@ -182,7 +182,7 @@ const FACULTY = {
   freeRent: { name: '免租轮校区', icon: '🕊️', color: '#3FBF9E', lead: '随机 4 轮全场所有人免交租金',           cost: '其余轮次全场租金 ×1.05',            tag: '这四轮，谁也别想收租' },
 };
 const FACULTY_KEYS = Object.keys(FACULTY);
-const FACULTY_VOTE_MS = 15000;
+const FACULTY_VOTE_MS = 24000;   // v5.5：与服务端同步拉长（原 15s），看清楚再投
 
 const CELLXY = i => { const [c, r] = CELLGRID[i]; return [GX(c), GY(r)]; };
 const cellCenter = i => {
@@ -1616,19 +1616,21 @@ function facOpenVote(e) {
   const d = document.createElement('div');
   d.className = 'fac-layer';
   d.innerHTML = `<div class="fv-panel">
+      <div class="fv-glow"></div><div class="fv-beam"></div><i class="fv-mote m1"></i><i class="fv-mote m2"></i><i class="fv-mote m3"></i><i class="fv-mote m4"></i><i class="fv-mote m5"></i><i class="fv-mote m6"></i>
       <div class="fv-plaque"><div class="fv-plaque-in">
         <div class="fv-kicker">本 局 · 校 园 风 貌 推 选</div>
         <div class="fv-big">🏫 校园风貌</div>
         <div class="fv-hint">三 位 候 选 · 全 场 各 投 一 票 · <b>随 机 抽 一 位 玩 家</b>，他投的那一个即本局风貌<br>全场共享 · 贯穿整局 15 轮</div>
       </div></div>
       <div class="fv-row">${opts.map(facCardHtml).join('')}</div>
-      <div class="fv-timer"><i class="fv-bar"><b id="fvBarFill"></b></i><span>剩余 <em id="fvClock">15</em> 秒 · 点击卡片投票</span></div>
+      <div class="fv-timer"><i class="fv-bar"><b id="fvBarFill"></b></i><span>剩余 <em id="fvClock">${Math.max(1, Math.round(ms / 1000))}</em> 秒 · 点击卡片投票</span></div>
     </div>`;
   $('fxLayer').appendChild(d);
   requestAnimationFrame(() => requestAnimationFrame(() => d.classList.add('show')));
   facVoteEl = d;
   facMyVote = null;
   SFX.facRise();
+  setTimeout(() => { try { SFX.glint(); SFX.sparkle(); } catch (e) {} }, sp(360));   // v5.5：牌匾定场后的星光点缀
   opts.forEach((k, i) => setTimeout(() => { if (facVoteEl) SFX.facFlip(i); }, sp(520 + i * 400)));
   // 倒计时（真实时间，不随播放倍速缩放）
   let left = Math.max(1, Math.round(ms / 1000));
@@ -1637,13 +1639,23 @@ function facOpenVote(e) {
   if (fill) fill.style.width = '100%';
   facVoteClock = setInterval(() => {
     left--;
+    const pct = Math.max(0, Math.min(100, (left / total) * 100));
     if (clock) clock.textContent = String(Math.max(0, left));
-    if (fill) fill.style.width = Math.max(0, Math.min(100, (left / total) * 100)).toFixed(1) + '%';
-    if (left > 0 && left <= 3) SFX.tick();
+    if (fill) {
+      fill.style.width = pct.toFixed(1) + '%';
+      // v5.5：倒计时分三段变色 —— 金 → 橙 → 红，最后 5 秒进入"紧迫"心跳模式
+      fill.classList.toggle('warn', pct <= 55 && pct > 26);
+      fill.classList.toggle('danger', pct <= 26);
+      const timerEl = fill.closest('.fv-timer');
+      if (timerEl) timerEl.classList.toggle('urgent', left > 0 && left <= 5);
+    }
+    if (left > 0 && left <= 5) SFX.tick();
     if (left <= 0) clearInterval(facVoteClock);
   }, 1000);
   // 点击投票
   d.querySelectorAll('.fv-card').forEach(card => {
+    // v5.5：悬停轻响 + 微光提示，让"选卡"这件事更有手感
+    card.addEventListener('mouseenter', () => { if (!facMyVote && !d.classList.contains('lottery')) SFX.click(); });
     card.onclick = () => {
       if (facMyVote) { SFX.click(); return; }
       facMyVote = card.dataset.key;
@@ -1699,7 +1711,7 @@ function facultyCeremony(e) {
     const panel = d.querySelector('.fv-panel');
     if (panel) panel.appendChild(box);
     requestAnimationFrame(() => requestAnimationFrame(() => box.classList.add('show')));
-    SFX.drumroll();
+    SFX.whooshLow(); SFX.drumroll();
     const roll = box.querySelector('#fvRoll');
     const names = ((S && S.players) || []).filter(p => p.alive).map(p => p.name);
     if (!names.length) names.push(luckyName);
@@ -1731,9 +1743,9 @@ function facultyCeremony(e) {
       <div class="fc-by">由 <b>${esc(luckyName)}</b> 的选票决定</div>`;
     if (panel) panel.appendChild(crown);
     confettiBurst(120); fxCoinRain(26);
-    SFX.facCrown(); SFX.sparkle();
+    SFX.facCrown(); SFX.sparkle(); SFX.glint();
     requestAnimationFrame(() => requestAnimationFrame(() => crown.classList.add('show')));
-    await sleep(2500);
+    await sleep(2900);
     // 落位：写入地图中央的常驻徽章
     if (S) S.faculty = e.key;
     renderFacultyBadge(true);
@@ -3392,12 +3404,38 @@ function buildBoard() {
   html += `<line x1="${C.x + 60}" y1="${C.y + 100}" x2="${C.x + C.w - 60}" y2="${C.y + 100}" stroke="#e0d3b4" stroke-width="1.4" stroke-dasharray="5 5"/>`;
   // v5.2：校园风貌常驻徽章（内容由 renderFacultyBadge() 动态填充）——永久挂在地图正中央
   html += `<g id="facBadge"></g>`;
-  html += `<text id="seasonText" x="${ccx}" y="${C.y + 204}" text-anchor="middle" font-size="24" font-weight="800" fill="#8a6d1a"></text>`;
-  html += `<text id="weatherText" x="${ccx}" y="${C.y + 228}" text-anchor="middle" font-size="15.5" fill="#7d8a6a"></text>`;
-  html += `<text id="poolText" x="${ccx}" y="${C.y + 260}" text-anchor="middle" font-size="24" font-weight="800" fill="#b8860b">💰 教育基金池 ¥0</text>`;
-  html += `<text id="roundText" x="${ccx}" y="${C.y + 286}" text-anchor="middle" font-size="15" fill="#9a938a"></text>`;
-  html += `<text id="calText" x="${ccx}" y="${C.y + 312}" text-anchor="middle" font-size="16.5" font-weight="700" fill="#3a7bd5"></text>`;
-  html += `<text x="${ccx}" y="${C.y + 338}" text-anchor="middle" font-size="11.5" fill="#b3a894" letter-spacing="1">2~5 人 · 掷骰前进 · 买校盖楼收租 · 抢光对手现金者胜</text>`;
+  // ---------- v5.5 中央信息区（胶囊化美化） ----------
+  // 四行"玻璃胶囊"：季节 / 天气 / 基金池 / 轮次+校历 —— 每行带左侧色标、高光、呼吸辉光，
+  // 信息仍在原 ID 的 <text> 上（renderPanel 只改 textContent，不用动）。
+  const chipRow = (yy, hh, accent, x0, ww) => {
+    let s = `<rect x="${x0 + 3}" y="${yy + 3.5}" width="${ww}" height="${hh}" rx="${hh / 2}" fill="rgba(96,76,46,.16)"/>`;
+    s += `<rect x="${x0}" y="${yy}" width="${ww}" height="${hh}" rx="${hh / 2}" fill="rgba(255,253,243,.78)" stroke="#e3d5b2" stroke-width="1.2"/>`;
+    s += `<rect x="${x0}" y="${yy}" width="${ww}" height="${hh}" rx="${hh / 2}" fill="url(#sheen)" opacity=".33"/>`;
+    s += `<rect x="${x0 + 9}" y="${yy + hh / 2 - 9}" width="4.6" height="18" rx="2.3" fill="${accent}"/>`;
+    return s;
+  };
+  const gx0 = C.x + 24, gw = C.w - 48;
+  // 第 1 行：季节（学院四季）
+  html += chipRow(C.y + 188, 31, '#c98a1e', gx0, gw);
+  html += `<text id="seasonText" x="${ccx + 6}" y="${C.y + 209}" text-anchor="middle" font-size="16.5" font-weight="800" fill="#8a6d1a"></text>`;
+  // 第 2 行：天气（今日天气 + 效果）
+  html += chipRow(C.y + 225, 31, '#4f9ad1', gx0, gw);
+  html += `<text id="weatherText" x="${ccx + 6}" y="${C.y + 246}" text-anchor="middle" font-size="14.5" font-weight="700" fill="#587a4e"></text>`;
+  // 第 3 行：教育基金池（金灿灿的一行，带两枚呼吸闪光的小金币）
+  html += chipRow(C.y + 262, 34, '#d9a418', gx0, gw);
+  html += `<circle cx="${gx0 + 26}" cy="${C.y + 279}" r="7.5" fill="url(#goldBar)" opacity=".9"><animate attributeName="opacity" values=".45;1;.45" dur="2.6s" repeatCount="indefinite"/></circle>`;
+  html += `<text x="${gx0 + 26}" y="${C.y + 284}" text-anchor="middle" font-size="10">✦</text>`;
+  html += `<circle cx="${gx0 + gw - 26}" cy="${C.y + 279}" r="6.5" fill="url(#goldBar)" opacity=".8"><animate attributeName="opacity" values="1;.4;1" dur="3.1s" repeatCount="indefinite"/></circle>`;
+  html += `<text x="${gx0 + gw - 26}" y="${C.y + 283}" text-anchor="middle" font-size="9">✦</text>`;
+  html += `<text id="poolText" x="${ccx + 6}" y="${C.y + 285}" text-anchor="middle" font-size="18.5" font-weight="800" fill="#a5720e">💰 教育基金池 ¥0</text>`;
+  // 第 4 行：左轮次 + 右校历（对半双胶囊）
+  const hw = (gw - 12) / 2;
+  html += chipRow(C.y + 302, 30, '#7a6a52', gx0, hw);
+  html += chipRow(C.y + 302, 30, '#3a7bd5', gx0 + hw + 12, hw);
+  html += `<text id="roundText" x="${gx0 + hw / 2 + 6}" y="${C.y + 322}" text-anchor="middle" font-size="12.5" font-weight="700" fill="#6a6252"></text>`;
+  html += `<text id="calText" x="${gx0 + hw + 12 + hw / 2 + 6}" y="${C.y + 322}" text-anchor="middle" font-size="12.5" font-weight="700" fill="#3a7bd5"></text>`;
+  // 底部一行小星标装饰（替换原静态说明文字，留白更干净）
+  html += `<text x="${ccx}" y="${C.y + 348}" text-anchor="middle" font-size="10.5" fill="#c3b89f" letter-spacing="8">✦ ✦ ✦</text>`;
 
   html += `<g id="ownLayer"></g><g id="tokenLayer"></g>`;
   svg.innerHTML = html;
