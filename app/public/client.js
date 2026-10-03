@@ -125,6 +125,36 @@ const MAJORS = {
   food: { id:'food', name:'食品科学', icon:'🍜', skill:'能量补给', mode:'passive', uses:4, fx:'#d1873f', tier:3, desc:'每次被罚停留休整时 +¥700' },
   marine:{id:'marine',name:'海洋科学', icon:'🌊', skill:'深海资源', mode:'passive', uses:3, fx:'#2f8fbf', tier:3, desc:'每次经过起点 +¥1200' },
 };
+// ---------- v5.2：校园风貌（与服务端 game.js 的 FACULTY 表逐字同步，改一边必须改另一边） ----------
+// 开场随机 3 候选 → 全体投票 → 随机抽一名玩家，他的那一票成为本局风貌，全场共享、贯穿整局。
+const FACULTY = {
+  urban:    { name: '都市校区',   icon: '🏙️', color: '#4A90D9', lead: '经过起点工资 ¥2250（+250）',           cost: '所有地皮买入价 +3%',              tag: '钱来得快，地也贵' },
+  garden:   { name: '园林校区',   icon: '🌳', color: '#6FAE3F', lead: '所有地皮买入价 −4%',                  cost: '经过起点工资 ¥1800（−200）',       tag: '便宜是便宜，就是远' },
+  ancient:  { name: '百年学府',   icon: '🏛️', color: '#C8941F', lead: '每 3 轮全场各领 ¥300 校友捐款',         cost: '第 1~3 轮全场租金 ×0.93',          tag: '底蕴要慢慢显' },
+  tech:     { name: '理工校区',   icon: '🔬', color: '#2E7BC4', lead: '全场建筑升级费 −8%',                  cost: '机会 / 命运卡的金钱收益 −7%',       tag: '自己动手，丰衣足食' },
+  general:  { name: '综合校区',   icon: '🎓', color: '#9A968C', lead: '正面卡 +¥200、负面卡少损失 ¥200',       cost: '无——但也没有爆发点',              tag: '什么都有点，什么都不极致' },
+  biz:      { name: '商科校区',   icon: '💼', color: '#A9682B', lead: '抵押可拿地价 58%（基准 50%）',          cost: '赎回时多付 8% 手续费',             tag: '银行永远在你身边，也永远在收你的钱' },
+  intl:     { name: '国际校区',   icon: '🌏', color: '#1FA37A', lead: '岔路奖励 ×1.12、长廊入口门槛降到 1 块地', cost: '主路机会卡的收益 −15%',            tag: '世界那么大，出去看看' },
+  sports:   { name: '文体校区',   icon: '🎪', color: '#E2564F', lead: '擂台/运动会赌注 ×1.2、每轮首次重投 ¥900', cost: '全场租金 ×0.96',                  tag: '打球要花钱，打架要命' },
+  finance:  { name: '金融校区',   icon: '🏦', color: '#D9A32B', lead: '基金池上限 ¥25000、每轮注入 ¥500',      cost: '物业税起征门槛降低 1',              tag: '池子大了，谁都想跳进去' },
+  reform:   { name: '改革校区',   icon: '⚡', color: '#E07A45', lead: '全场每轮开局 +¥300',                  cost: '全场租金 ×1.06',                    tag: '速战速决，谁都别想慢慢发育' },
+  med:      { name: '医学校区',   icon: '🩺', color: '#D9648F', lead: '单笔被收租 ≥¥1500 时减免 10%',         cost: '罚款类支出 +20%',                   tag: '治得了大病，治不了穷' },
+  agri:     { name: '农业校区',   icon: '🌾', color: '#8FC24F', lead: '经过起点额外领 ¥300',                 cost: '建筑升级费 +3%',                    tag: '春种秋收，急不来' },
+  art:      { name: '艺术校区',   icon: '🎨', color: '#8E86E0', lead: '效果卡盲盒每次多抽 1 张',               cost: '地皮买入价 +4%',                    tag: '灵感多，钱少' },
+  park:     { name: '科技园区',   icon: '🚀', color: '#6B60C9', lead: '科研基金会返还 +20%（净赚 ¥1200）',     cost: '机会卡的收益 −10%',                 tag: '立项要靠硬实力' },
+  normal:   { name: '师范校区',   icon: '🎯', color: '#2BB88C', lead: '每过 10 轮全场各得 1 张「免停留卡」',    cost: '全场租金 ×0.97',                    tag: '老师总是手下留情' },
+  book:     { name: '书香校区',   icon: '📚', color: '#B04B2C', lead: '每抽到一张机会卡 +¥250',               cost: '命运卡的负面金额 +10%',             tag: '书中自有黄金屋，也有催款单' },
+  life:     { name: '生活区校区', icon: '🍜', color: '#E88A6F', lead: '文印店/快递租金、机场路费 ×0.92',       cost: '地皮买入价 +3%',                    tag: '生活便利，就是有点挤' },
+  austerity:{ name: '紧缩校区',   icon: '⏰', color: '#6E6C66', lead: '本局免征物业税',                       cost: '银行提前 5 轮停发工资（第 10 轮起）', tag: '勒紧腰带过日子' },
+  boom:     { name: '繁荣校区',   icon: '🌇', color: '#C99A3F', lead: '停发工资推迟 5 轮、过起点额外 +¥200',   cost: '所有地皮买入价 +6%',                tag: '日子还长，先涨个价' },
+  nofund:   { name: '限薪校区',   icon: '🏚️', color: '#9B3A3A', lead: '全场地价 −12%、升级费 −10%',           cost: '银行全程停发起点工资',              tag: '没有工资，全凭本事' },
+  retrain:  { name: '进修校区',   icon: '📖', color: '#5548B0', lead: '开局所有人技能次数 +1',                 cost: '所有地皮买入价 +3%',                tag: '多学一门手艺' },
+  freeRound:{ name: '免费轮校区', icon: '🎟️', color: '#4E9B2A', lead: '随机 1 轮全场买地、盖楼完全免费',       cost: '全场租金 ×1.08',                    tag: '那一轮，随便花' },
+  freeRent: { name: '免租轮校区', icon: '🕊️', color: '#3FBF9E', lead: '随机 4 轮全场所有人免交租金',           cost: '其余轮次全场租金 ×1.05',            tag: '这四轮，谁也别想收租' },
+};
+const FACULTY_KEYS = Object.keys(FACULTY);
+const FACULTY_VOTE_MS = 15000;
+
 const CELLXY = i => { const [c, r] = CELLGRID[i]; return [GX(c), GY(r)]; };
 const cellCenter = i => {
   if (BRANCH_POS[i]) return BRANCH_POS[i];   // 岔路格用中央小地图坐标
@@ -312,6 +342,31 @@ const SFX = {
   book: () => { noiseFx({ d: 0.22, v: 0.07, hp: 2600 }); tone({ f: 660, t: 'sine', d: 0.3, v: 0.08 }); },
   // 暴雨停课：闷雷
   storm: () => { noiseFx({ d: 0.7, v: 0.1, hp: 120 }); tone({ f: 90, slide: -40, t: 'sawtooth', d: 0.8, v: 0.14, when: 0.04 }); },
+  // ---------- v5.2 新增音效（校园风貌专用） ----------
+  // 牌匾升起：低频冲击 + 金属余韵（第一幕开场）
+  facRise: () => {
+    noiseFx({ d: 0.16, v: 0.2, hp: 260 });
+    tone({ f: 110, slide: 55, t: 'sawtooth', d: 0.7, v: 0.19 });
+    [523, 784].forEach((f, i) => tone({ f, t: 'sine', d: 0.5, v: 0.09, when: 0.18 + i * 0.12 }));
+  },
+  // 卡片翻入：清脆三连（第二幕）
+  facFlip: n => tone({ f: 660 + Math.max(0, Math.min(3, n || 0)) * 120, t: 'triangle', d: 0.12, v: 0.14 }),
+  // 投票落槌：一记定音（玩家投票）
+  facVote: () => { noiseFx({ d: 0.05, v: 0.18, hp: 700 }); tone({ f: 420, slide: 180, t: 'triangle', d: 0.16, v: 0.18 }); },
+  // 抽签滚动：密集棘轮声（第三幕）
+  facRoll: () => tone({ f: 1500, t: 'square', d: 0.028, v: 0.05 }),
+  // 加冕：宏大号角 + 长尾（第四幕）
+  facCrown: () => {
+    [[392, 0], [523, 0.12], [659, 0.24], [784, 0.36], [1047, 0.5]].forEach(([f, w]) => tone({ f, t: 'triangle', d: 0.42, v: 0.19, when: w }));
+    tone({ f: 1568, t: 'sine', d: 1.1, v: 0.09, when: 0.62 });
+    noiseFx({ d: 0.4, v: 0.08, hp: 1800, when: 0.5 });
+  },
+  // 徽章落位：清亮钟声
+  facBadge: () => { tone({ f: 1175, t: 'sine', d: 0.55, v: 0.13 }); tone({ f: 1760, t: 'sine', d: 0.45, v: 0.085, when: 0.03 }); },
+  // 全场提醒（免费轮 / 免租轮）：三声警铃
+  facAlarm: () => { for (let i = 0; i < 3; i++) { tone({ f: 880, t: 'square', d: 0.16, v: 0.13, when: i * 0.22 }); tone({ f: 1320, t: 'sine', d: 0.14, v: 0.09, when: i * 0.22 + 0.05 }); } },
+  // 免停留卡：轻快双音
+  stayFree: () => { [740, 988].forEach((f, i) => tone({ f, t: 'triangle', d: 0.16, v: 0.15, when: i * 0.1 })); noiseFx({ d: 0.1, v: 0.09, hp: 2000 }); },
 };
 
 
@@ -462,6 +517,7 @@ $('btnQuit').onclick = () => {
   quitFlag = true;
   S = null; roomCode = null; myToken = null; visLog = []; logRendered = 0; logForce = true;
   dispReady = false; dispSeason = 'mid'; dispWeather = 'cloud'; dispCal = null; curWeather = null;
+  facCloseUI(); facBadgeKey = null; facCeremonyBusy = false;   // v5.2：收掉风貌浮层、清掉中央徽章
   tokSig = ''; actionsSig = null; assetsSig = null; buildSig = '';
   $('game').style.display = 'none';
   $('lobby').style.display = 'flex';
@@ -934,6 +990,10 @@ function onState(state) {
       queueAnim(e);
     }
     render(state);
+    // v5.2：断线重连 / 中途加入时，服务端不会再补发 faculty_offer —— 按快照把投票浮层补回来
+    const hasChosen = (state.events || []).some(e => e.t === 'faculty_chosen');
+    if (state.phase === 'faculty' && (state.facultyOptions || []).length) facOpenVote({ options: state.facultyOptions, ms: 12000 });
+    else if (!hasChosen && !facCeremonyBusy) facCloseUI();
   }
 }
 function renderLobby() {
@@ -961,7 +1021,9 @@ function renderLobby() {
 }
 
 // ---------- 动画队列 ----------
-const ANIMATED = new Set(['roll', 'move', 'card', 'buy', 'build', 'charge', 'money', 'mortgage', 'redeem', 'gojail', 'stay', 'jackpot', 'bankrupt', 'turn', 'quit', 'season', 'weather', 'calevent', 'caleventHit', 'tax', 'ach', 'skill', 'duel', 'item', 'shield', 'medal', 'voucher', 'medalBuy', 'medalGain', 'combo', 'demolish', 'cardBuild', 'calwave', 'gift', 'buff', 'invest', 'rollpay', 'draw', 'major_switch', 'endgame', 'mono']);
+const ANIMATED = new Set(['roll', 'move', 'card', 'buy', 'build', 'charge', 'money', 'mortgage', 'redeem', 'gojail', 'stay', 'jackpot', 'bankrupt', 'turn', 'quit', 'season', 'weather', 'calevent', 'caleventHit', 'tax', 'ach', 'skill', 'duel', 'item', 'shield', 'medal', 'voucher', 'medalBuy', 'medalGain', 'combo', 'demolish', 'cardBuild', 'calwave', 'gift', 'buff', 'invest', 'rollpay', 'draw', 'major_switch', 'endgame', 'mono',
+  // v5.2：校园风貌
+  'faculty_offer', 'faculty_vote', 'faculty_chosen', 'faculty_round', 'faculty_wave', 'facfx', 'stay_free', 'stay_free_gain', 'free_rent']);
 let animPending = 0;   // 排队中的动画数；>0 时 renderTokens 冻结，防止棋子瞬移
 let visLog = [];       // 已"播放"的日志：按事件流逐步出现，与地图动画严格同节奏（不超前、不滞后）
 let logRendered = 0;   // visLog 中已渲染的下标数（增量渲染，避免每次重排 200+ 行）
@@ -1167,6 +1229,47 @@ async function handleAnim(e) {
       await announce(`🏆 <b>垄断达成！</b><br><span class="who">${esc(ownerName(e.pid))}</span> 集齐 ${esc((e.g || '').toUpperCase())} 色组：${(e.names || []).map(n => esc(n)).join(' · ')}<br>裸地租金 <span class="amt">×3</span>`, 2500);
       break;
     }
+    // ---------- v5.2：校园风貌 ----------
+    case 'faculty_offer': { facOpenVote(e); break; }        // 15 秒投票期：浮层自带倒计时，不占用动画队列
+    case 'faculty_vote': { facMarkVote(e); break; }
+    case 'faculty_chosen': { await facultyCeremony(e); break; }
+    case 'faculty_round': { await facultyRoundBanner(e); break; }
+    case 'faculty_wave': {
+      SFX.gain(); SFX.coin();
+      for (const it of (e.items || [])) { fxAt(playerCell(it.pid), `<div class="floaty plus">+¥${it.amount}</div>`); flyCoin(POOL_PT(), cellCenter(playerCell(it.pid)), 2); }
+      const list = (e.items || []).map(it => `<span class="who">${esc(ownerName(it.pid))}</span> +¥${it.amount}`).join(' · ');
+      await announce(`${e.icon || '🏫'} <b>${esc(e.name)}</b>（校园风貌）<br>${list}`, 1950);
+      break;
+    }
+    case 'stay_free_gain': {
+      SFX.stayFree(); SFX.sparkle();
+      fxBurst(playerCell(e.pid), { kind: 'star', n: 14, speed: 3, size: 4, life: 42, color: ['#2BB88C', '#8ee6b3', '#fff1c2'], lift: 0.7, wave: { r: 58, color: '#2BB88C' } });
+      await announce(`🎯 <span class="who">${esc(ownerName(e.pid))}</span> 领到一张「免停留卡」（现有 ${e.count} 张）`, 1450);
+      break;
+    }
+    case 'stay_free': {
+      SFX.stayFree(); SFX.bell();
+      fxAt(playerCell(e.pid), '<div class="floaty stayfree">🎯 免停留</div>');
+      fxBurst(playerCell(e.pid), { kind: 'star', n: 13, speed: 2.8, size: 3.8, life: 40, color: ['#8ee6b3', '#ffffff', '#e8b04b'], lift: 0.6, wave: { r: 54, color: '#2BB88C' } });
+      await announce(`🎯 <span class="who">${esc(ownerName(e.pid))}</span> 用掉一张「免停留卡」<br>免去「${esc(e.why || '停留')}」（还剩 ${e.left || 0} 张）`, 1700);
+      break;
+    }
+    case 'free_rent': {
+      SFX.facBadge(); SFX.sparkle();
+      pulseCell(e.cell, '#3FBF9E');
+      fxBurst(e.cell, { kind: 'petal', n: 16, speed: 2.6, size: 4.4, life: 48, color: ['#8ee6b3', '#d8fff0', '#3FBF9E'], lift: 0.9, wave: { r: 62, color: '#3FBF9E' } });
+      await announce(`🕊️ <b>免租轮</b>：<span class="who">${esc(ownerName(e.pid))}</span> 踩到 <span class="who">${esc(ownerName(e.owner))}</span> 的「${esc(BOARD[e.cell] ? BOARD[e.cell].name : '')}」<br>本轮全场免租，<span class="amt">一分不用付</span>`, 1950);
+      break;
+    }
+    case 'facfx': {
+      SFX.facBadge();
+      const fcol = (FACULTY[(S && S.faculty)] || {}).color || '#e8b04b';
+      pulseCell(playerCell(e.pid), fcol);
+      fxAt(playerCell(e.pid), `<div class="floaty facfloat">${esc(e.name || '校园风貌')}</div>`);
+      fxBurst(playerCell(e.pid), { kind: 'spark', n: 10, speed: 2.4, size: 2.8, life: 32, color: [fcol, '#ffffff'], wave: { r: 46, color: fcol } });
+      await announce(`${(FACULTY[(S && S.faculty)] || {}).icon || '🏫'} <b>${esc(e.name || '校园风貌')}</b><br>${esc(e.detail || '')}`, 1550);
+      break;
+    }
     case 'skill': { await skillFx(e); break; }
     case 'combo': { SFX.combo(e.n); comboPop(e.pid, e.n); break; }
     case 'chat': {
@@ -1335,6 +1438,287 @@ function achBanner(e) {
     st(() => { d.classList.remove('show'); setTimeout(() => d.remove(), 400); res(); }, 2350);
   });
 }
+// ============================================================================
+// v5.2：校园风貌 —— ① 开局投票浮层 ② 四幕抽取演出 ③ 地图中央常驻徽章
+// 与服务端事件一一对应：faculty_offer / faculty_vote / faculty_chosen / faculty_round
+// ============================================================================
+let facVoteEl = null, facVoteClock = null, facMyVote = null, facVoteSig = '';
+let facBadgeKey = null;      // 中央徽章当前渲染的风貌 key（避免重复重建导致动画闪断）
+let facCeremonyBusy = false; // 抽取演出播放中：禁止 onState 把浮层收掉
+
+function facCloseUI() {
+  clearInterval(facVoteClock);
+  if (facVoteEl) { facVoteEl.remove(); facVoteEl = null; }
+  facVoteSig = ''; facMyVote = null;
+}
+
+// 单个候选卡（含主效果 / 代价 / 标语 / 投票人槽位）
+function facCardHtml(k, i) {
+  const f = FACULTY[k] || {};
+  return `<div class="fv-card" data-key="${k}" style="--fc:${f.color || '#9A968C'};animation-delay:${(0.5 + i * 0.42).toFixed(2)}s">
+      <div class="fv-ico">${f.icon || '🏫'}</div>
+      <div class="fv-name">${esc(f.name || k)}</div>
+      <div class="fv-line"><span class="fv-tag">主效果</span>${esc(f.lead || '')}</div>
+      <div class="fv-line cost"><span class="fv-tag bad">代价</span>${esc(f.cost || '')}</div>
+      <div class="fv-tagline">「${esc(f.tag || '')}」</div>
+      <div class="fv-voters"></div>
+      <div class="fv-picked">✔ 你投了它</div>
+    </div>`;
+}
+
+// 第一幕 + 第二幕：牌匾升起 → 三张候选卡 3D 翻入 → 开始 15 秒投票倒计时
+function facOpenVote(e) {
+  const opts = (e && e.options) || [];
+  const sig = opts.join(',');
+  if (facVoteEl && facVoteSig === sig) return;   // 同一批候选已在展示，不重复弹
+  if (facVoteEl) { facVoteEl.remove(); facVoteEl = null; }
+  clearInterval(facVoteClock);
+  facVoteSig = sig;
+  const ms = (e && e.ms) || FACULTY_VOTE_MS;
+  const d = document.createElement('div');
+  d.className = 'fac-layer';
+  d.innerHTML = `<div class="fv-panel">
+      <div class="fv-plaque"><div class="fv-plaque-in">
+        <div class="fv-kicker">本 局 · 校 园 风 貌 推 选</div>
+        <div class="fv-big">🏫 校园风貌</div>
+        <div class="fv-hint">三 位 候 选 · 全 场 各 投 一 票 · <b>随 机 抽 一 位 玩 家</b>，他投的那一个即本局风貌<br>全场共享 · 贯穿整局 15 轮</div>
+      </div></div>
+      <div class="fv-row">${opts.map(facCardHtml).join('')}</div>
+      <div class="fv-timer"><i class="fv-bar"><b id="fvBarFill"></b></i><span>剩余 <em id="fvClock">15</em> 秒 · 点击卡片投票</span></div>
+    </div>`;
+  $('fxLayer').appendChild(d);
+  requestAnimationFrame(() => requestAnimationFrame(() => d.classList.add('show')));
+  facVoteEl = d;
+  facMyVote = null;
+  SFX.facRise();
+  opts.forEach((k, i) => setTimeout(() => { if (facVoteEl) SFX.facFlip(i); }, sp(520 + i * 400)));
+  // 倒计时（真实时间，不随播放倍速缩放）
+  let left = Math.max(1, Math.round(ms / 1000));
+  const total = left;
+  const fill = d.querySelector('#fvBarFill'), clock = d.querySelector('#fvClock');
+  if (fill) fill.style.width = '100%';
+  facVoteClock = setInterval(() => {
+    left--;
+    if (clock) clock.textContent = String(Math.max(0, left));
+    if (fill) fill.style.width = Math.max(0, Math.min(100, (left / total) * 100)).toFixed(1) + '%';
+    if (left > 0 && left <= 3) SFX.tick();
+    if (left <= 0) clearInterval(facVoteClock);
+  }, 1000);
+  // 点击投票
+  d.querySelectorAll('.fv-card').forEach(card => {
+    card.onclick = () => {
+      if (facMyVote) { SFX.click(); return; }
+      facMyVote = card.dataset.key;
+      card.classList.add('picked');
+      SFX.facVote();
+      fxBurst(cellCenter(0), { kind: 'spark', n: 8, speed: 2, size: 2.6, life: 26, color: [(FACULTY[facMyVote] || {}).color || '#e8b04b', '#ffffff'] });
+      send({ action: { type: 'voteFaculty', key: facMyVote } });
+    };
+  });
+  // 断线重连：把已有票补画上去
+  if (S && S.facultyVotes) for (const pid in S.facultyVotes) facMarkVote({ pid, key: S.facultyVotes[pid] }, true);
+}
+
+// 有人投票：在他投的那张卡上贴一枚名牌
+function facMarkVote(e, silent) {
+  const d = facVoteEl;
+  if (!d) return;
+  if (e.pid === myPid) { facMyVote = e.key; }
+  const card = d.querySelector(`.fv-card[data-key="${e.key}"]`);
+  if (!card) return;
+  const box = card.querySelector('.fv-voters');
+  if (box && !box.querySelector(`[data-pid="${e.pid}"]`)) {
+    const chip = document.createElement('i');
+    chip.className = 'fv-chip' + (e.pid === myPid ? ' me' : '');
+    chip.dataset.pid = e.pid;
+    chip.textContent = e.pid === myPid ? '我' : ownerName(e.pid);
+    box.appendChild(chip);
+  }
+  card.classList.add('hasvote');
+  if (e.pid === myPid) card.classList.add('picked');
+  if (!silent && e.pid !== myPid) SFX.facFlip(1);
+}
+
+// 第三幕 + 第四幕：抽签滚筒 → 抽中玩家 → 加冕 → 徽章落到地图中央
+function facultyCeremony(e) {
+  return new Promise(async res => {
+    facCeremonyBusy = true;
+    clearInterval(facVoteClock);
+    const f = FACULTY[e.key] || {};
+    const col = f.color || '#9A968C';
+    if (!facVoteEl) facOpenVote({ options: [e.key], ms: 1 });
+    const d = facVoteEl;
+    const luckyName = e.lucky != null ? ownerName(e.lucky) : '？';
+    d.classList.add('lottery');
+    d.querySelectorAll('.fv-card').forEach(c => c.classList.add('frozen'));
+    const luckyCard = d.querySelector(`.fv-card[data-key="${e.key}"]`);
+    // 第三幕：抽签滚筒（把「谁来定」这件事慢放给所有人看）
+    const box = document.createElement('div');
+    box.className = 'fv-draw';
+    box.innerHTML = `<div class="fv-draw-t">🎲 随 机 抽 签</div>
+      <div class="fv-draw-roll" id="fvRoll">—</div>
+      <div class="fv-draw-s">抽中谁的选票，就用谁的选择</div>`;
+    const panel = d.querySelector('.fv-panel');
+    if (panel) panel.appendChild(box);
+    requestAnimationFrame(() => requestAnimationFrame(() => box.classList.add('show')));
+    SFX.drumroll();
+    const roll = box.querySelector('#fvRoll');
+    const names = ((S && S.players) || []).filter(p => p.alive).map(p => p.name);
+    if (!names.length) names.push(luckyName);
+    const total = 17;
+    for (let i = 0; i < total; i++) {
+      if (roll) roll.textContent = names[i % names.length];
+      SFX.facRoll();
+      await sleep(i >= total - 6 ? 96 + (i - (total - 6)) * 40 : 64);
+    }
+    if (roll) { roll.textContent = luckyName; roll.classList.add('hit'); }
+    SFX.facCrown();
+    flashScreen(`radial-gradient(circle at 50% 46%, ${hexA(col, .34)}, ${hexA(col, 0)} 68%)`, 900);
+    await sleep(1000);
+    // 高亮他投的那张卡，其余压暗
+    if (luckyCard) { luckyCard.classList.add('lucky'); SFX.sparkle(); }
+    d.querySelectorAll('.fv-card').forEach(c => { if (c !== luckyCard) c.classList.add('dim'); });
+    await sleep(820);
+    // 第四幕：加冕大徽章
+    const crown = document.createElement('div');
+    crown.className = 'fv-crown';
+    crown.style.setProperty('--fc', col);
+    crown.innerHTML = `<div class="fc-ring"></div>
+      <div class="fc-ico">${f.icon || '🏫'}</div>
+      <div class="fc-name">${esc(f.name || e.key)}</div>
+      <div class="fc-tag">本 局 校 园 风 貌 · 全 场 共 享</div>
+      <div class="fc-line"><b>主效果</b>${esc(f.lead || '')}</div>
+      <div class="fc-line bad"><b>代价</b>${esc(f.cost || '')}</div>
+      <div class="fc-quote">「${esc(f.tag || '')}」</div>
+      <div class="fc-by">由 <b>${esc(luckyName)}</b> 的选票决定</div>`;
+    if (panel) panel.appendChild(crown);
+    confettiBurst(120); fxCoinRain(26);
+    SFX.facCrown(); SFX.sparkle();
+    requestAnimationFrame(() => requestAnimationFrame(() => crown.classList.add('show')));
+    await sleep(2500);
+    // 落位：写入地图中央的常驻徽章
+    if (S) S.faculty = e.key;
+    renderFacultyBadge(true);
+    d.classList.remove('show');
+    setTimeout(() => { if (facVoteEl === d) { d.remove(); facVoteEl = null; facVoteSig = ''; } }, 700);
+    await sleep(620);
+    if (e.lucky != null) {
+      pulseCell(playerCell(e.lucky), col);
+      fxBurst(playerCell(e.lucky), { kind: 'star', n: 18, speed: 3.4, size: 4.6, life: 48, color: [col, '#ffffff', '#ffd76a'], lift: 0.8, wave: { r: 74, color: col } });
+    }
+    await sleep(420);
+    facCeremonyBusy = false;
+    res();
+  });
+}
+
+// 每轮开场提醒：免费轮 / 免租轮 —— 全屏大字，所有人一眼看见
+function facultyRoundBanner(e) {
+  return new Promise(res => {
+    const free = e.kind === 'freeRound';
+    const col = free ? '#4E9B2A' : '#3FBF9E';
+    const d = document.createElement('div');
+    d.className = 'fac-round';
+    d.style.setProperty('--fc', col);
+    d.innerHTML = `<div class="fr-in">
+        <div class="fr-hot">${free ? '🎟️' : '🕊️'}</div>
+        <div class="fr-title">${esc(e.title || '')}</div>
+        <div class="fr-sub">${esc(e.sub || '')}</div>
+        <div class="fr-note">第 ${e.round} 轮${e.left ? ` · 本局还剩 ${e.left} 个免租轮` : ''}</div>
+      </div>`;
+    $('fxLayer').appendChild(d);
+    requestAnimationFrame(() => requestAnimationFrame(() => d.classList.add('show')));
+    SFX.facAlarm();
+    if (free) { SFX.fanfare(); confettiBurst(96); fxCoinRain(28); }
+    else { SFX.facBadge(); confettiBurst(64); }
+    flashScreen(`radial-gradient(circle at 50% 50%, ${hexA(col, .34)}, ${hexA(col, 0)} 68%)`, 900);
+    st(() => { d.classList.remove('show'); setTimeout(() => d.remove(), 560); res(); }, 2650);
+  });
+}
+
+// 地图中央常驻徽章（每帧 renderPanel 调用；landing=true 时播放落位特效）
+function renderFacultyBadge(landing) {
+  const g = $('facBadge'); if (!g) return;
+  const C = CTR_CARD;
+  const bx = C.x + 20, by = C.y + 102, bw = C.w - 40, bh = 74;
+  const key = S ? S.faculty : null;
+  if (!key || !FACULTY[key]) {
+    if (facBadgeKey === '__none__') return;
+    facBadgeKey = '__none__';
+    g.innerHTML = `<rect x="${bx}" y="${by}" width="${bw}" height="${bh}" rx="16" fill="rgba(255,255,255,.45)" stroke="rgba(180,170,150,.6)" stroke-width="1.3" stroke-dasharray="7 6"/>
+      <text x="${bx + bw / 2}" y="${by + bh / 2 + 7}" text-anchor="middle" font-size="17" font-weight="700" fill="#a3946f" letter-spacing="3">🏫 校园风貌 · 推选中…</text>`;
+    return;
+  }
+  if (facBadgeKey === key && !landing) return;
+  facBadgeKey = key;
+  const f = FACULTY[key];
+  const col = f.color || '#9A968C';
+  const cy = by + bh / 2;
+  g.innerHTML = `
+    <rect x="${bx}" y="${by}" width="${bw}" height="${bh}" rx="16" fill="${hexA(col, .12)}" stroke="${hexA(col, .5)}" stroke-width="1.6"/>
+    <rect x="${bx}" y="${by}" width="5.5" height="${bh}" rx="3" fill="${col}"/>
+    <circle cx="${bx + 46}" cy="${cy}" r="25" fill="${hexA(col, .18)}" stroke="${col}" stroke-width="1.8"/>
+    <circle cx="${bx + 46}" cy="${cy}" r="30.5" fill="none" stroke="${col}" stroke-width="1.2" stroke-dasharray="4 7" opacity=".55">
+      <animateTransform attributeName="transform" type="rotate" from="0 ${bx + 46} ${cy}" to="360 ${bx + 46} ${cy}" dur="16s" repeatCount="indefinite"/>
+    </circle>
+    <text x="${bx + 46}" y="${cy + 10}" text-anchor="middle" font-size="26">${f.icon || '🏫'}</text>
+    <text x="${bx + 86}" y="${by + 25}" font-size="11" fill="#a3946f" letter-spacing="2">本局校园风貌 · 全场共享</text>
+    <text x="${bx + 86}" y="${by + 50}" font-size="21" font-weight="800" fill="${shade(col, -58)}">${esc(f.name)}</text>
+    <text x="${bx + 86}" y="${by + 68}" font-size="12.5" fill="#7a6a52">▸ ${esc(f.lead)}　｜　代价：${esc(f.cost)}</text>
+    <rect x="${bx + bw - 62}" y="${by + 7}" width="52" height="19" rx="9.5" fill="${hexA(col, .18)}" stroke="${hexA(col, .45)}" stroke-width="1"/>
+    <text x="${bx + bw - 36}" y="${by + 21}" text-anchor="middle" font-size="10.5" font-weight="700" fill="${shade(col, -58)}">详情</text>`;
+  g.style.cursor = 'pointer';
+  if (!g.dataset.bound) { g.dataset.bound = '1'; g.addEventListener('click', openFacDetail); }
+  if (landing) {
+    g.style.transformBox = 'fill-box';
+    g.style.transformOrigin = 'center';
+    g.classList.remove('fac-land');
+    void g.getBoundingClientRect();
+    g.classList.add('fac-land');
+    setTimeout(() => g.classList.remove('fac-land'), 1100);
+    SFX.facBadge(); SFX.bell();
+  }
+}
+
+// 点击徽章：展开浮层 —— 本局风貌详情 + 全部 23 个风貌一览
+function openFacDetail() {
+  if (!S || !S.faculty || !FACULTY[S.faculty]) return;
+  SFX.click();
+  const cur = S.faculty, f = FACULTY[cur];
+  const d = document.createElement('div');
+  d.className = 'fac-layer fac-detail';
+  d.innerHTML = `<div class="fd-panel">
+      <div class="fd-head" style="--fc:${f.color}">
+        <span class="fd-ico">${f.icon}</span>
+        <span class="fd-name">${esc(f.name)}</span>
+        <span class="fd-badge">本局风貌</span>
+      </div>
+      <div class="fd-cur" style="--fc:${f.color}">
+        <div class="fd-row"><b>主效果</b>${esc(f.lead)}</div>
+        <div class="fd-row bad"><b>代价</b>${esc(f.cost)}</div>
+        <div class="fd-quote">「${esc(f.tag)}」</div>
+      </div>
+      ${S.freeRound ? `<div class="fd-note">🎟️ 已抽定免费轮：<b>第 ${S.freeRound} 轮</b>（买地皮、盖楼完全免费）</div>` : ''}
+      ${(S.freeRentRounds && S.freeRentRounds.length) ? `<div class="fd-note">🕊️ 已抽定免租轮：<b>第 ${S.freeRentRounds.join(' / ')} 轮</b>（踩到谁的地都不用付租金）</div>` : ''}
+      <div class="fd-sub">本局共有 23 种校园风貌，开局随机抽 3 个候选、随机抽一位玩家定夺</div>
+      <div class="fd-grid">${FACULTY_KEYS.map(k => {
+        const q = FACULTY[k];
+        return `<div class="fd-cell${k === cur ? ' on' : ''}" style="--fc:${q.color}">
+            <span class="fd-ci">${q.icon}</span><span class="fd-cn">${esc(q.name)}</span>
+            <span class="fd-cl">${esc(q.lead)}</span><span class="fd-cc">代价：${esc(q.cost)}</span>
+          </div>`;
+      }).join('')}</div>
+      <div class="fd-close">关闭</div>
+    </div>`;
+  $('fxLayer').appendChild(d);
+  requestAnimationFrame(() => requestAnimationFrame(() => d.classList.add('show')));
+  const close = () => { d.classList.remove('show'); setTimeout(() => d.remove(), 380); };
+  d.onclick = ev => { if (ev.target === d || ev.target.classList.contains('fd-close')) close(); };
+  document.addEventListener('keydown', function esc2(ev) {
+    if (ev.key === 'Escape') { close(); document.removeEventListener('keydown', esc2); }
+  });
+}
+
 // v5.1：专业技能大特效 —— 全屏染色 + 冲击波 + 中央大横幅，所有玩家都能看见
 function hexA(hex, a) {
   const h = (hex || '#4a90d9').replace('#', '');
@@ -2118,7 +2502,7 @@ function renderPanel(s) {
     tb.textContent = newBanner;
     tb.classList.remove('flash'); void tb.offsetWidth; tb.classList.add('flash');
   }
-  const pSig = s.phase + '|' + s.cur + '|' + s.players.map(p => p.id + ',' + dcash(p) + ',' + (p.alive ? 1 : 0) + ',' + (p.combo || 0) + ',' + (p.skillLeft || 0) + ',' + (p.skipNext ? 1 : 0) + ',' + p.major + ',' + (p.voice ? 1 : 0) + ',' + (p.medal || 0) + ',' + (p.buffSteps || 0) + ',' + ((p.stepBuffs || []).length) + ',' + (p.invest ? p.invest.due : 0)).join(';');
+  const pSig = s.phase + '|' + s.cur + '|' + s.players.map(p => p.id + ',' + dcash(p) + ',' + (p.alive ? 1 : 0) + ',' + (p.combo || 0) + ',' + (p.skillLeft || 0) + ',' + (p.skipNext ? 1 : 0) + ',' + p.major + ',' + (p.voice ? 1 : 0) + ',' + (p.medal || 0) + ',' + (p.buffSteps || 0) + ',' + ((p.stepBuffs || []).length) + ',' + (p.stayFree || 0) + ',' + (p.invest ? p.invest.due : 0)).join(';');
   if (pSig !== playersSig) {
     playersSig = pSig;
     $('players').innerHTML = s.players.map(p => {
@@ -2131,11 +2515,12 @@ function renderPanel(s) {
       const bf = p.buffSteps > 0 ? `<span class="tag" style="background:#fff3d6;color:#a06800">🍂+${p.buffSteps}</span>` : '';
       const bq = (p.stepBuffs && p.stepBuffs.length) ? `<span class="tag" style="background:#e9f6ec;color:#1d6b40">👟×${p.stepBuffs.length}</span>` : '';
       const iv = p.invest ? `<span class="tag" style="background:#e8eaf6;color:#3949ab" title="科研投资：第 ${p.invest.due} 轮返还 ¥${p.invest.back}">🔬${p.invest.due}</span>` : '';
+      const sf = p.stayFree > 0 ? `<span class="tag" style="background:#d8f7ec;color:#12795c" title="免停留卡：可免除一次纯惩罚性停留">🎯 免停留×${p.stayFree}</span>` : '';
       return `
     <div class="pcard ${p.id === s.players[s.cur].id && s.phase !== 'over' ? 'active' : ''} ${!p.alive ? 'dead' : ''}" data-pid="${p.id}">
       <span class="dot" style="background:${p.color}"></span>
       ${mc}
-      <span class="pname">${esc(p.name)}${p.id === myPid ? ' <span class="tag">你</span>' : ''}${p.isAI ? '<span class="tag">AI</span>' : ''}${p.skipNext ? '<span class="tag">停留</span>' : ''}${mj.id ? `<span class="tag">${mj.icon}${esc(mj.name)}</span>` : ''}${sk}${cb}${md}${bf}${bq}${iv}</span>
+      <span class="pname">${esc(p.name)}${p.id === myPid ? ' <span class="tag">你</span>' : ''}${p.isAI ? '<span class="tag">AI</span>' : ''}${p.skipNext ? '<span class="tag">停留</span>' : ''}${mj.id ? `<span class="tag">${mj.icon}${esc(mj.name)}</span>` : ''}${sk}${cb}${md}${sf}${bf}${bq}${iv}</span>
       <span class="cash">¥${dcash(p)}</span>
     </div>`;
     }).join('');
@@ -2163,6 +2548,7 @@ function renderPanel(s) {
   }
   const ct = $('calText');
   if (ct) ct.textContent = dispCal ? `${dispCal.icon} 校历【${dispCal.name}】${dispCal.desc}` : '';
+  if ($('facBadge')) renderFacultyBadge(false);   // v5.2：地图中央的常驻校园风貌徽章
   if (s.phase === 'over') showGameOver(s);
 }
 // 日志区单独渲染（聊天行高亮）——增量追加，滚动到底，DOM 上限 240 行
@@ -2723,17 +3109,19 @@ function buildBoard() {
   html += `<text x="${ccx}" y="${C.y + 58}" text-anchor="middle" font-size="30" font-weight="800" fill="#7a1522" letter-spacing="6" font-family="STKaiti,KaiTi,'PingFang SC',serif">没事就玩大富翁</text>`;
   html += `<text x="${ccx}" y="${C.y + 82}" text-anchor="middle" font-size="12" fill="#a89c88" letter-spacing="5">UNIVERSITY MONOPOLY</text>`;
   html += `<line x1="${C.x + 60}" y1="${C.y + 100}" x2="${C.x + C.w - 60}" y2="${C.y + 100}" stroke="#e0d3b4" stroke-width="1.4" stroke-dasharray="5 5"/>`;
-  html += `<text id="seasonText" x="${ccx}" y="${C.y + 136}" text-anchor="middle" font-size="25" font-weight="800" fill="#8a6d1a"></text>`;
-  html += `<text id="weatherText" x="${ccx}" y="${C.y + 164}" text-anchor="middle" font-size="16" fill="#7d8a6a"></text>`;
-  html += `<text id="poolText" x="${ccx}" y="${C.y + 202}" text-anchor="middle" font-size="26" font-weight="800" fill="#b8860b">💰 教育基金池 ¥0</text>`;
-  html += `<text id="roundText" x="${ccx}" y="${C.y + 230}" text-anchor="middle" font-size="15.5" fill="#9a938a"></text>`;
-  html += `<text id="calText" x="${ccx}" y="${C.y + 268}" text-anchor="middle" font-size="17" font-weight="700" fill="#3a7bd5"></text>`;
-  html += `<text x="${ccx}" y="${C.y + 322}" text-anchor="middle" font-size="12" fill="#b3a894" letter-spacing="1">2~5 人 · 掷骰前进 · 买校盖楼收租 · 抢光对手现金者胜</text>`;
+  // v5.2：校园风貌常驻徽章（内容由 renderFacultyBadge() 动态填充）——永久挂在地图正中央
+  html += `<g id="facBadge"></g>`;
+  html += `<text id="seasonText" x="${ccx}" y="${C.y + 204}" text-anchor="middle" font-size="24" font-weight="800" fill="#8a6d1a"></text>`;
+  html += `<text id="weatherText" x="${ccx}" y="${C.y + 228}" text-anchor="middle" font-size="15.5" fill="#7d8a6a"></text>`;
+  html += `<text id="poolText" x="${ccx}" y="${C.y + 260}" text-anchor="middle" font-size="24" font-weight="800" fill="#b8860b">💰 教育基金池 ¥0</text>`;
+  html += `<text id="roundText" x="${ccx}" y="${C.y + 286}" text-anchor="middle" font-size="15" fill="#9a938a"></text>`;
+  html += `<text id="calText" x="${ccx}" y="${C.y + 312}" text-anchor="middle" font-size="16.5" font-weight="700" fill="#3a7bd5"></text>`;
+  html += `<text x="${ccx}" y="${C.y + 338}" text-anchor="middle" font-size="11.5" fill="#b3a894" letter-spacing="1">2~5 人 · 掷骰前进 · 买校盖楼收租 · 抢光对手现金者胜</text>`;
 
   html += `<g id="ownLayer"></g><g id="tokenLayer"></g>`;
   svg.innerHTML = html;
   boardBuilt = true;
-  buildSig = ''; buildEls = {}; tokenEls = {};
+  buildSig = ''; buildEls = {}; tokenEls = {}; facBadgeKey = null;
 }
 
 // 开局流程：作者公告 → v5.0 更新简介 → 正常创房（每次打开都走一遍）

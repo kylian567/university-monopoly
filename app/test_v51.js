@@ -251,7 +251,8 @@ console.log('\n[8] 挂科留级加重');
   const p = cur(r); p.cash = 10000;
   const idx = BOARD.findIndex(c => c.type === 'gojail');
   r.dice = [1, 1]; r.phase = 'resolving'; p.pos = idx; r.resolveCell(p);
-  ok(p.skipNext === true && p.cash === 8800, `挂科留级：停留 1 回合 + 补考费 ¥1200（余额 ¥${p.cash}）`);
+  // v5.2 起"停留"统一走 applyStay（写 skipTurns），故两种表示都接受
+  ok((p.skipNext === true || (p.skipTurns || 0) >= 1) && p.cash === 8800, `挂科留级：停留 1 回合 + 补考费 ¥1200（余额 ¥${p.cash}）`);
   cleanup(r);
 }
 

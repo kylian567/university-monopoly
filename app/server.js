@@ -32,15 +32,22 @@ function broadcast(roomObj) {
 function snapshot(room) {
   return {
     phase: room.phase, round: room.round, cur: room.cur, dice: room.dice,
-    fundPool: room.fundPool, fundCap: FUND_CAP, endgame: room.round >= ENDGAME_ROUND, log: room.log.slice(-60),
+    fundPool: room.fundPool, fundCap: room.fundCap(), endgame: room.round >= room.salaryStop(), log: room.log.slice(-60),
     season: room.season, weather: room.weather,
+    // v5.2：校园风貌（本局风貌 / 候选 / 投票明细 / 抽中的幸运儿 / 免费轮与免租轮）
+    faculty: room.faculty || null,
+    facultyOptions: (room.facultyOptions || []).slice(),
+    facultyVotes: { ...(room.facultyVotes || {}) },
+    facultyLucky: room.facultyLucky || null,
+    freeRound: room.freeRound || 0,
+    freeRentRounds: (room.freeRentRounds || []).slice(),
     calEvent: room.calEvent ? { id: room.calEvent.id, name: room.calEvent.name, icon: room.calEvent.icon, desc: room.calEvent.desc, kind: room.calEvent.kind, fx: room.calEvent.fx || null } : null,
     players: room.players.map(p => ({
       id: p.id, name: p.name, isAI: p.isAI, cash: p.cash, pos: p.pos, alive: p.alive, color: p.color,
       voucher: p.voucher, discount: p.discount, skipNext: p.skipNext,
       major: p.major, skillLeft: p.skillLeft, combo: p.combo || 0, ach: p.ach || {},
       shield: !!p.shield, sabotage: p.sabotage || 0,
-      medal: p.medal || 0,
+      medal: p.medal || 0, stayFree: p.stayFree || 0,
       buffSteps: p.buffSteps || 0, stepBuffs: (p.stepBuffs || []).slice(),
       invest: p.invest ? { due: p.invest.due, back: p.invest.back } : null,
       rentBuff: p.rentBuff || 0, defBuff: p.defBuff || 0, buildCutTurn: p.buildCutTurn || 0,
@@ -239,7 +246,7 @@ function onMessage(ws, str) {
     let code = m.code;
     if (m.type === 'create') {
       code = newCode();
-      const room = new Room(code);
+      const room = new Room(code, { faculty: true });   // v5.2：线上房局开启校园风貌
       const p = room.join(name);
       if (!p) return;
       const obj = { room, clients: new Map(), createdAt: Date.now(), lastActive: Date.now() };
@@ -319,12 +326,13 @@ function onMessage(ws, str) {
     case 'declineInvest': room.declineInvest(p); break;
     case 'useSkill': room.useSkill(p); break;                   // v5.1 主动技：发动
     case 'skipSkill': room.skipSkill(p); break;                 // v5.1 主动技：放弃
+    case 'voteFaculty': room.voteFaculty(p, String(a.key || '')); break;   // v5.2 校园风貌：投票
     case 'major': room.setMajor(p, a.major); break;
     case 'again': // 再来一局
       if (room.phase === 'over') {
         const obj = rooms.get(room.code);
         const { Room: R } = require('./game');
-        const nr = new R(room.code);
+        const nr = new R(room.code, { faculty: true });
         for (const q of room.players) { const np = nr.join(q.name, q.isAI); if (np && q.major) np.major = q.major; }
         obj.room = nr;
         roomObj.room = nr;

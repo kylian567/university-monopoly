@@ -657,3 +657,151 @@ body {
 .logo-mini::after { content:""; position:absolute; left:0; right:0; bottom:-4px; height:2px;
   background:linear-gradient(90deg,transparent,rgba(122,21,34,.55),transparent); }
 
+
+/* ============================================================================
+   v5.2：校园风貌 —— ① 开局投票浮层 ② 四幕抽取演出 ③ 中央常驻徽章 ④ 每轮全屏提醒
+   ============================================================================ */
+.fac-layer { position:fixed; inset:0; z-index:150; display:flex; align-items:center; justify-content:center;
+  padding:16px; pointer-events:auto; opacity:0; transition:opacity .42s ease;
+  background:radial-gradient(circle at 50% 42%, rgba(30,21,10,.70), rgba(16,11,5,.88)); backdrop-filter:blur(3px); }
+.fac-layer.show { opacity:1; }
+.fv-panel { position:relative; width:min(96vw,980px); max-height:96vh; overflow:auto; padding:20px 26px 18px; border-radius:24px;
+  background:linear-gradient(170deg,#fffdf6,#f6ecd6); border:3px solid #e8b04b;
+  box-shadow:0 30px 80px rgba(0,0,0,.5), inset 0 2px 0 rgba(255,255,255,.9);
+  opacity:0; transform:translateY(30px) scale(.93);
+  transition:transform .52s cubic-bezier(.2,1.35,.4,1), opacity .4s ease; }
+.fac-layer.show .fv-panel { opacity:1; transform:none; }
+.fv-kicker { text-align:center; font-size:11.5px; letter-spacing:7px; color:#b09a6e; }
+.fv-big { text-align:center; font-size:31px; font-weight:900; letter-spacing:9px; color:#7a1522; margin:4px 0 7px;
+  font-family:STKaiti,KaiTi,'PingFang SC',serif; text-shadow:0 2px 0 rgba(255,255,255,.95); }
+.fv-hint { text-align:center; font-size:12.5px; line-height:1.75; color:#8a7f6a; }
+.fv-hint b { color:#7a1522; }
+.fv-row { display:flex; gap:14px; justify-content:center; align-items:stretch; flex-wrap:wrap; margin-top:14px; }
+.fv-card { position:relative; width:min(282px,30vw); min-width:216px; padding:13px 13px 10px; border-radius:18px; cursor:pointer;
+  background:linear-gradient(180deg,#fffef9,#f7f1e2); border:3px solid var(--fc,#9A968C);
+  box-shadow:0 12px 28px rgba(60,42,18,.22), inset 0 2px 0 rgba(255,255,255,.95);
+  opacity:0; transform:translateY(30px) rotateY(58deg) scale(.82);
+  animation:fvIn .62s cubic-bezier(.2,1.35,.4,1) forwards;
+  transition:transform .24s ease, box-shadow .24s ease, filter .24s ease; }
+@keyframes fvIn { to { opacity:1; transform:translateY(0) rotateY(0) scale(1); } }
+.fv-card:hover { transform:translateY(-6px) scale(1.03); box-shadow:0 18px 40px rgba(60,42,18,.3); }
+.fv-card.picked { box-shadow:0 0 0 3px var(--fc), 0 18px 40px rgba(60,42,18,.32); }
+.fv-card.frozen { animation:none; opacity:1; transform:none; cursor:default; }
+.fv-card.frozen:hover { transform:none; }
+.fv-card.lucky { box-shadow:0 0 0 5px #ffd76a, 0 0 46px rgba(255,215,106,.85); transform:translateY(-10px) scale(1.05); }
+.fv-card.dim { filter:grayscale(.72) brightness(.92); opacity:.48; transform:scale(.93); }
+.fv-ico { font-size:44px; text-align:center; line-height:1; }
+.fv-name { text-align:center; font-size:20px; font-weight:900; color:#5a3a12; margin:6px 0 9px; letter-spacing:1px; }
+.fv-line { font-size:11.5px; line-height:1.45; color:#356b41; background:rgba(110,180,90,.14);
+  border-radius:9px; padding:5px 8px; margin-bottom:5px; }
+.fv-line.cost { color:#8c3a2e; background:rgba(200,90,70,.13); }
+.fv-tag { display:inline-block; font-size:10px; font-weight:800; letter-spacing:1px; padding:1px 6px; border-radius:7px;
+  background:#3f8f5a; color:#fff; margin-right:5px; }
+.fv-tag.bad { background:#c0564a; }
+.fv-tagline { font-size:11px; color:#a89c88; text-align:center; margin:6px 0 4px; font-style:italic; }
+.fv-voters { display:flex; flex-wrap:wrap; gap:4px; justify-content:center; min-height:18px; margin-top:4px; }
+.fv-chip { font-size:10.5px; font-style:normal; padding:2px 7px; border-radius:8px; background:#e9e2d2; color:#6a6252; }
+.fv-chip.me { background:#7a1522; color:#fff; }
+.fv-picked { display:none; text-align:center; font-size:11px; font-weight:800; color:#1d6b40; margin-top:5px; }
+.fv-card.picked .fv-picked { display:block; }
+.fv-timer { display:flex; align-items:center; gap:12px; justify-content:center; margin-top:16px; }
+.fv-bar { flex:1; max-width:520px; height:9px; border-radius:6px; background:#eadfc7; overflow:hidden; box-shadow:inset 0 1px 2px rgba(90,70,40,.24); }
+.fv-bar b { display:block; height:100%; width:100%; border-radius:6px; background:linear-gradient(90deg,#e8b04b,#c0392b); transition:width 1s linear; }
+.fv-timer span { font-size:12px; color:#8a7f6a; white-space:nowrap; }
+.fv-timer em { font-style:normal; font-weight:900; color:#7a1522; font-size:15px; }
+
+/* 第三幕：抽签滚筒 */
+.fv-draw { margin-top:14px; text-align:center; opacity:0; transform:translateY(14px); transition:opacity .36s, transform .36s; }
+.fv-draw.show { opacity:1; transform:none; }
+.fv-draw-t { font-size:12.5px; letter-spacing:7px; color:#b09a6e; }
+.fv-draw-roll { font-size:38px; font-weight:900; color:#7a1522; letter-spacing:3px; line-height:1.25; min-height:50px;
+  font-family:STKaiti,KaiTi,'PingFang SC',serif; }
+.fv-draw-roll.hit { color:#1d6b40; text-shadow:0 0 22px rgba(120,220,150,.9); animation:fvHit .5s cubic-bezier(.2,1.6,.4,1); }
+@keyframes fvHit { 0%{transform:scale(.6);} 60%{transform:scale(1.24);} 100%{transform:scale(1);} }
+.fv-draw-s { font-size:11.5px; color:#a89c88; }
+/* 抽签阶段把候选卡压成"哪一张被抽中"的窄条，给加冕徽章腾地方 */
+.fac-layer.lottery .fv-card { width:min(196px,22vw); min-width:150px; padding:9px 8px 7px; }
+.fac-layer.lottery .fv-ico { font-size:28px; }
+.fac-layer.lottery .fv-name { font-size:14.5px; margin:3px 0 5px; }
+.fac-layer.lottery .fv-line, .fac-layer.lottery .fv-tagline { display:none; }
+
+/* 第四幕：加冕大徽章 */
+.fv-crown { position:relative; margin:16px auto 0; width:min(560px,94%); text-align:center; padding:16px 20px 13px; border-radius:20px;
+  background:linear-gradient(170deg,#fffdf6,#f6ebd4); border:3px solid var(--fc,#e8b04b);
+  box-shadow:0 20px 50px rgba(60,42,18,.34), inset 0 2px 0 rgba(255,255,255,.9);
+  opacity:0; transform:scale(.5) translateY(30px);
+  transition:transform .62s cubic-bezier(.2,1.45,.4,1), opacity .45s ease; }
+.fv-crown.show { opacity:1; transform:none; }
+.fv-crown .fc-ring { position:absolute; left:50%; top:-26px; width:150px; height:150px; margin-left:-75px; border-radius:50%;
+  border:2px dashed var(--fc); opacity:.45; animation:fcSpin 9s linear infinite; pointer-events:none; }
+@keyframes fcSpin { to { transform:rotate(360deg); } }
+.fv-crown .fc-ico { font-size:52px; line-height:1; animation:fcBeat 1.9s ease-in-out infinite; }
+@keyframes fcBeat { 0%,100%{transform:scale(1);} 50%{transform:scale(1.12);} }
+.fv-crown .fc-name { font-size:27px; font-weight:900; color:#5a3a12; letter-spacing:4px; margin:4px 0 2px;
+  font-family:STKaiti,KaiTi,'PingFang SC',serif; }
+.fv-crown .fc-tag { font-size:10.5px; letter-spacing:4px; color:#b09a6e; margin-bottom:10px; }
+.fv-crown .fc-line { font-size:12.5px; color:#356b41; background:rgba(110,180,90,.14); border-radius:9px; padding:6px 10px; margin-top:5px; text-align:left; }
+.fv-crown .fc-line.bad { color:#8c3a2e; background:rgba(200,90,70,.13); }
+.fv-crown .fc-line b { display:inline-block; min-width:46px; }
+.fv-crown .fc-quote { font-size:11.5px; color:#a89c88; font-style:italic; margin-top:8px; }
+.fv-crown .fc-by { font-size:12px; color:#8a7f6a; margin-top:6px; }
+.fv-crown .fc-by b { color:#7a1522; }
+
+/* 每轮全屏提醒：免费轮 / 免租轮 */
+.fac-round { position:absolute; left:50%; top:38%; z-index:120; pointer-events:none;
+  opacity:0; transform:translate(-50%,-50%) scale(.55);
+  transition:transform .5s cubic-bezier(.2,1.5,.4,1), opacity .35s ease; }
+.fac-round.show { opacity:1; transform:translate(-50%,-50%) scale(1); }
+.fac-round .fr-in { padding:20px 44px; border-radius:22px; text-align:center;
+  background:linear-gradient(170deg,#fffdf6,#f7efdb); border:4px solid var(--fc,#4E9B2A);
+  box-shadow:0 24px 60px rgba(40,30,10,.42), 0 0 0 10px rgba(255,255,255,.32); }
+.fac-round .fr-hot { font-size:50px; line-height:1; animation:frBeat 1.15s ease-in-out infinite; }
+@keyframes frBeat { 0%,100%{transform:scale(1) rotate(-6deg);} 50%{transform:scale(1.2) rotate(6deg);} }
+.fac-round .fr-title { font-size:33px; font-weight:900; letter-spacing:10px; color:#2f6b1c; margin:4px 0 2px;
+  font-family:STKaiti,KaiTi,'PingFang SC',serif; }
+.fac-round .fr-sub { font-size:14.5px; font-weight:700; color:#5a5244; }
+.fac-round .fr-note { font-size:11.5px; color:#a89c88; margin-top:7px; letter-spacing:1px; }
+
+/* 中央徽章落位 */
+#facBadge { transform-box:fill-box; transform-origin:center; }
+#facBadge.fac-land { animation:facLand 1.08s cubic-bezier(.2,1.5,.35,1); }
+@keyframes facLand { 0%{ transform:scale(.3); opacity:0; } 45%{ transform:scale(1.14); opacity:1; } 72%{ transform:scale(.97); } 100%{ transform:scale(1); } }
+
+/* 徽章详情浮层 */
+.fac-detail .fd-panel { width:min(96vw,1020px); max-height:92vh; overflow:auto; padding:20px 24px 16px; border-radius:22px;
+  background:linear-gradient(170deg,#fffdf6,#f6ecd6); border:3px solid #e8b04b;
+  box-shadow:0 30px 80px rgba(0,0,0,.55); opacity:0; transform:translateY(24px) scale(.95);
+  transition:transform .46s cubic-bezier(.2,1.35,.4,1), opacity .36s ease; }
+.fac-layer.show .fd-panel { opacity:1; transform:none; }
+.fd-head { display:flex; align-items:center; gap:10px; padding-bottom:10px; border-bottom:1px dashed #e0d3b4; }
+.fd-ico { font-size:36px; }
+.fd-name { font-size:24px; font-weight:900; color:#5a3a12; letter-spacing:3px; }
+.fd-badge { font-size:11px; padding:3px 10px; border-radius:9px; background:#7a1522; color:#ffe9b3; letter-spacing:1px; }
+.fd-cur { margin-top:12px; padding:12px 14px; border-radius:14px; background:rgba(232,176,75,.12); border:2px solid var(--fc,#e8b04b); }
+.fd-row { font-size:13px; color:#356b41; margin-bottom:5px; }
+.fd-row.bad { color:#8c3a2e; }
+.fd-row b { display:inline-block; min-width:52px; }
+.fd-quote { font-size:12px; color:#a89c88; font-style:italic; }
+.fd-note { margin-top:9px; font-size:12.5px; color:#5a5244; background:rgba(110,180,90,.15); border-radius:10px; padding:7px 11px; }
+.fd-sub { margin:14px 0 8px; font-size:11.5px; color:#a89c88; letter-spacing:1px; }
+.fd-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(214px,1fr)); gap:8px; }
+.fd-cell { border-radius:12px; padding:8px 10px; background:#fffdf7; border:2px solid #eae0c8; display:flex; flex-direction:column; gap:2px; }
+.fd-cell.on { border-color:#7a1522; background:#fff6e6; box-shadow:0 0 0 3px rgba(122,21,34,.12); }
+.fd-ci { font-size:18px; }
+.fd-cn { font-size:12.5px; font-weight:900; color:#5a3a12; }
+.fd-cl { font-size:10.5px; color:#356b41; }
+.fd-cc { font-size:10.5px; color:#8c3a2e; }
+.fd-close { margin-top:14px; text-align:center; font-size:13.5px; font-weight:800; color:#7a1522;
+  padding:9px 0; border-radius:12px; background:#f7efdb; border:2px solid #e8b04b; cursor:pointer; }
+.fd-close:hover { background:#fff3d6; }
+
+/* 棋子飘字 */
+.floaty.stayfree { color:#12795c; }
+.floaty.facfloat { color:#8a6d1a; font-size:15px; }
+
+@media (max-width:760px) {
+  .fv-card { width:min(100%,300px); min-width:0; }
+  .fv-big { font-size:24px; letter-spacing:5px; }
+  .fac-layer.lottery .fv-card { width:calc(33.3% - 8px); min-width:0; }
+  .fac-round .fr-title { font-size:24px; letter-spacing:5px; }
+}

@@ -67,6 +67,15 @@ const ok = (cond, msg) => { if (cond) { pass++; console.log('  ✓', msg); } els
       });
     };
 
+    // v5.2：线上房局开局会先走「校园风貌推选」四幕演出。必须等它演完再跑后面的合成检查，
+    // 否则 render()/renderPanel() 会在测试中途并发改写 wxKind、actionsSig 等全局显示态，造成假失败。
+    await page.evaluate(async () => {
+      for (let i = 0; i < 240; i++) {
+        if (!(S && S.phase === 'faculty') && animPending === 0 && qDepth === 0) return;
+        await new Promise(r => setTimeout(r, 250));
+      }
+    });
+
     console.log('\n[3] 天气引擎：8 种各画各的');
     const wx = await page.evaluate(async () => {
       const seen = {};
