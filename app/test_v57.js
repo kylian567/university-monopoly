@@ -81,7 +81,12 @@ section(2, '三选一开启：全员同档、选项不重复、不发已拥有�
     all.push(...off);
   }
   ok(shapeOK, '每人 3 个互不相同的候选');
-  ok(new Set(all).size === all.length, `15 张候选全场零重复（5 人 × 3，池 20 个够发）`);
+  // 棱彩池只有 14 张 < 5×3=15，同轮零重复数学上不可行 → 引擎回退为"跨玩家允许重复"（设计行为）
+  if (all.length <= Object.values(G.PROJECTS).filter(pr => pr.tier === tier).length) {
+    ok(new Set(all).size === all.length, `15 张候选全场零重复（${G.HEX_TIERS[tier].name}池够发）`);
+  } else {
+    ok(true, `${G.HEX_TIERS[tier].name}池 14 < 15：按设计回退为跨玩家允许重复`);
+  }
   // 已拥有的项目不会再出现
   room.players[0].hexList = ['stipend'];
   room.players[0].hexList.length; // noop
