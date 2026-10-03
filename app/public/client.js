@@ -261,6 +261,10 @@ const SFX = {
   diceLand: () => { tone({ f: 200, t: 'triangle', d: 0.13, v: 0.22 }); tone({ f: 315, t: 'triangle', d: 0.12, v: 0.16, when: 0.06 }); },
   // v5.3：骰子落定「轻轻一磕」—— 替代原来的重物落地 thud（用户反馈落地那下太重太吵）
   diceSettle: () => { noiseFx({ d: 0.04, v: 0.1, hp: 2600 }); tone({ f: 520, slide: -150, t: 'triangle', d: 0.09, v: 0.11 }); },
+  // v5.4 新增：托管开关 + 买地插旗
+  trusteeOn: () => [392, 494, 587, 784].forEach((f, i) => tone({ f, t: 'sine', d: 0.18, v: 0.16, when: i * 0.09 })),
+  trusteeOff: () => [784, 587, 494].forEach((f, i) => tone({ f, t: 'sine', d: 0.14, v: 0.14, when: i * 0.08 })),
+  flagPop: () => { noiseFx({ d: 0.05, v: 0.2, hp: 700 }); tone({ f: 300, slide: 240, t: 'triangle', d: 0.12, v: 0.18 }); },
   step: () => tone({ f: 480 + Math.random() * 260, t: 'square', d: 0.045, v: 0.05 }),
   buy: () => [523, 659, 784].forEach((f, i) => tone({ f, t: 'triangle', d: 0.14, v: 0.2, when: i * 0.09 })),
   pay: () => tone({ f: 420, slide: -200, t: 'sawtooth', d: 0.28, v: 0.13 }),
@@ -605,6 +609,41 @@ $('btnSound').onclick = () => {
   try { localStorage.setItem('fdm_sound', soundOn ? '1' : '0'); } catch (e) {}
 };
 try { if (localStorage.getItem('fdm_sound') === '0') { soundOn = false; $('btnSound').textContent = '🔇'; } } catch (e) {}
+
+// ---------- v5.4：AI 托管 ----------
+function trusteeMe() {
+  const me = S && S.players && S.players.find(p => p.id === myPid);
+  return me ? !!me.trustee : false;
+}
+function paintTrustee() {
+  const b = $('btnTrustee'); if (!b) return;
+  const on = trusteeMe();
+  const inGame = S && S.phase !== 'lobby' && S.phase !== 'over';
+  b.style.display = inGame ? '' : 'none';
+  b.classList.toggle('on', on);
+  b.textContent = on ? '🤖 托管中' : '🤖 托管';
+  b.title = on ? '点一下取回操作权，恢复自己手动操作' : 'AI 托管：开启后你的回合由 AI 代打，随时可点一下取回操作权';
+}
+$('btnTrustee').onclick = () => {
+  if (!S || S.phase === 'lobby' || S.phase === 'over') return;
+  const me = S.players.find(p => p.id === myPid);
+  if (!me || !me.alive) return;
+  const on = !me.trustee;
+  if (on && !confirm('开启 AI 托管？\n\n开启后你的回合由 AI 代打（买地 / 盖房 / 技能等全自动），\n随时再点一下「取回操作权」即可恢复手动。')) return;
+  act({ type: 'trustee', on });
+};
+// 托管状态横幅提示（谁开了 / 谁取回了，全场可见）
+function trusteeToast(e) {
+  const who = ownerName(e.pid);
+  const layer = $('fxLayer'); if (!layer) return;
+  const d = document.createElement('div');
+  d.className = 'trustee-toast' + (e.on ? ' on' : '');
+  d.innerHTML = e.on ? `🤖 ${esc(who)} 开启了 AI 托管` : `🙋 ${esc(who)} 取回了操作权`;
+  layer.appendChild(d);
+  requestAnimationFrame(() => requestAnimationFrame(() => d.classList.add('show')));
+  setTimeout(() => { d.classList.remove('show'); setTimeout(() => d.remove(), 420); }, 2400);
+  if (e.on) { SFX.trusteeOn(); } else { SFX.trusteeOff(); }
+}
 document.addEventListener('click', e => {
   if (e.target.closest && e.target.closest('.btn') && e.target.id !== 'btnSound') SFX.click();
 });
@@ -1029,6 +1068,7 @@ function onState(state) {
   const firstFrame = (S === null);
   if (roomCode && S === null) { $('lobby').style.display = 'none'; $('game').style.display = 'flex'; $('roomCode').textContent = roomCode; }
   S = state;
+  paintTrustee();   // v5.4：托管按钮状态随快照刷新
   syncPeers(); paintVoice();   // 语音房随最新玩家名单增删连接
   if (firstFrame && Array.isArray(state.log)) { visLog = state.log.map(l => l.msg); logRendered = 0; logForce = true; }   // 首次进入：先用完整历史打底
   if (firstFrame) {
@@ -1103,7 +1143,7 @@ function filterMajors(q) {
 window.filterMajors = filterMajors;
 
 // ---------- 动画队列 ----------
-const ANIMATED = new Set(['roll', 'move', 'card', 'buy', 'build', 'charge', 'money', 'mortgage', 'redeem', 'gojail', 'stay', 'jackpot', 'bankrupt', 'turn', 'quit', 'season', 'weather', 'calevent', 'caleventHit', 'tax', 'ach', 'skill', 'duel', 'item', 'shield', 'medal', 'voucher', 'medalBuy', 'medalGain', 'combo', 'demolish', 'cardBuild', 'calwave', 'gift', 'buff', 'invest', 'rollpay', 'draw', 'major_switch', 'endgame', 'mono',
+const ANIMATED = new Set(['roll', 'move', 'card', 'buy', 'build', 'charge', 'money', 'mortgage', 'redeem', 'gojail', 'stay', 'jackpot', 'bankrupt', 'turn', 'quit', 'season', 'weather', 'calevent', 'caleventHit', 'tax', 'ach', 'skill', 'duel', 'item', 'shield', 'medal', 'voucher', 'medalBuy', 'medalGain', 'combo', 'demolish', 'cardBuild', 'calwave', 'gift', 'buff', 'invest', 'rollpay', 'draw', 'major_switch', 'endgame', 'mono', 'trustee',
   // v5.2：校园风貌
   'faculty_offer', 'faculty_vote', 'faculty_chosen', 'faculty_round', 'faculty_wave', 'facfx', 'stay_free', 'stay_free_gain', 'free_rent']);
 let animPending = 0;   // 排队中的动画数；>0 时 renderTokens 冻结，防止棋子瞬移
@@ -1166,7 +1206,8 @@ async function handleAnim(e) {
       break;
     }
     case 'buy': {
-      SFX.buy(); SFX.stamp(); fxAt(e.cell, `<div class="floaty minus">-¥${e.price}</div>`); pulseCell(e.cell, e.mortgageBuy ? '#b0aca4' : '#2e7d32');
+      SFX.buy(); SFX.stamp(); SFX.flagPop(); fxAt(e.cell, `<div class="floaty minus">-¥${e.price}</div>`); pulseCell(e.cell, e.mortgageBuy ? '#b0aca4' : '#2e7d32');
+      if (!e.mortgageBuy) flagPop(e.cell, (S.players.find(p => p.id === e.pid) || {}).color);   // v5.4：买地插旗（抵押买回不插旗）
       fxBurst(e.cell, { kind: 'spark', n: 12, speed: 2.6, size: 2.8, life: 34, color: '#5cc98a', wave: { r: 40, color: '#2e7d32' } });
       flyCoin(playerCell(e.pid), cellCenter(e.cell), 3);   // 付款金币从买家飞向地块
       await announce(`<span class="who">${esc(ownerName(e.pid))}</span> ${e.auction ? '🔨 拍得' : (e.mortgageBuy ? '💰 买走抵押地' : '买下')}「${esc(BOARD[e.cell].name)}」 <span class="amt">¥${e.price}</span>`, 1750);
@@ -1227,6 +1268,7 @@ async function handleAnim(e) {
       break;
     }
     case 'quit': { await announce(`🤖 <span class="who">${esc(ownerName(e.pid))}</span> 退出对局，AI 已接管`, 1600); break; }
+    case 'trustee': { trusteeToast(e); await announce(e.on ? `🤖 <span class="who">${esc(ownerName(e.pid))}</span> 开启了 AI 托管，回合由 AI 代打` : `🙋 <span class="who">${esc(ownerName(e.pid))}</span> 取回了操作权`, 1600); break; }
     // 市场状态只在这里（真正轮到播这条事件时）才写进地图显示，保证"一轮全部走完才更新"
     case 'season': { dispCal = null; dispSeason = e.season; SFX.whoosh(); await seasonAnim(e); break; }
     case 'weather': {
@@ -2059,22 +2101,24 @@ function startWeatherFx(kind) {
 function seedWeather(kind, W, H) {
   switch (kind) {
     case 'rain':
-      return { drops: Array.from({ length: 46 }, () => ({ x: WR(-W * .3, W), y: WR(0, H), len: WR(11, 21), v: WR(9, 14), a: WR(.35, .75) })) };
+      // v5.4：雨丝加密加长 + 落地水花圈（rings 运行时生成）
+      return { drops: Array.from({ length: 74 }, () => ({ x: WR(-W * .3, W), y: WR(0, H), len: WR(14, 27), v: WR(10, 16), a: WR(.35, .8) })), rings: [] };
     case 'storm':
-      // 旋转风眼 + 横扫阵风 + 飞舞碎片（与雨天完全不同的观感）
+      // 旋转风眼 + 横扫阵风 + 飞舞碎片（与雨天完全不同的观感）；v5.4 气流臂/阵风加密
       return {
         eye: { x: W * .5, y: H * .5 }, spin: 0, next: Math.round(WR(300, 780)),
-        arms: Array.from({ length: 6 }, (_, i) => ({ ph: i * Math.PI / 3, off: WR(0, .6) })),
-        debris: Array.from({ length: 38 }, () => ({
+        arms: Array.from({ length: 9 }, (_, i) => ({ ph: i * Math.PI / 4.5, off: WR(0, .6) })),
+        debris: Array.from({ length: 52 }, () => ({
           x: WR(0, W), y: WR(0, H), r: WR(1.6, 4.8), vx: WR(3.2, 7.4), vy: WR(-1.4, 1.4),
           rot: WR(0, 6.28), vr: WR(-.2, .2), a: WR(.22, .58), c: pick(['#c9cfd8', '#9aa4b2', '#e7c98d', '#8f9bb3']),
         })),
-        gusts: Array.from({ length: 14 }, () => ({ y: WR(0, H), x: WR(-W, W), w: WR(60, 210), v: WR(9, 18), a: WR(.05, .14) })),
+        gusts: Array.from({ length: 20 }, () => ({ y: WR(0, H), x: WR(-W, W), w: WR(60, 230), v: WR(9, 20), a: WR(.05, .16) })),
       };
     case 'snow':
-      return { flakes: Array.from({ length: 62 }, () => ({ x: WR(0, W), y: WR(0, H), r: WR(1.6, 4.2), v: WR(1.1, 2.6), sway: WR(.4, 1.5), ph: WR(0, 6.28), a: WR(.4, .9) })) };
+      // v5.4：雪量加大 + 远近两层（近景大而快、远景小而慢），配地面霜白
+      return { flakes: Array.from({ length: 96 }, () => ({ x: WR(0, W), y: WR(0, H), r: WR(1.4, 5.2), v: WR(1.1, 3.2), sway: WR(.4, 1.5), ph: WR(0, 6.28), a: WR(.4, .95) })) };
     case 'fog':
-      return { banks: Array.from({ length: 9 }, () => ({ x: WR(-W * .2, W * 1.1), y: WR(0, H), r: WR(120, 320), v: WR(.18, .6), a: WR(.05, .13) })) };
+      return { banks: Array.from({ length: 13 }, () => ({ x: WR(-W * .2, W * 1.1), y: WR(0, H), r: WR(120, 340), v: WR(.18, .62), a: WR(.05, .15) })) };
     case 'heat':
       return {
         motes: Array.from({ length: 34 }, () => ({ x: WR(0, W), y: WR(0, H), r: WR(1.2, 3.2), v: WR(.5, 1.6), a: WR(.15, .4), ph: WR(0, 6.28) })),
@@ -2082,8 +2126,8 @@ function seedWeather(kind, W, H) {
       };
     case 'wind':
       return {
-        lines: Array.from({ length: 26 }, () => ({ y: WR(0, H), x: WR(-W, W), len: WR(40, 190), v: WR(8, 19), a: WR(.06, .2) })),
-        leaves: Array.from({ length: 16 }, () => ({ x: WR(0, W), y: WR(0, H), r: WR(3, 7), vx: WR(3.4, 8), vy: WR(-1.2, 1.6), rot: WR(0, 6.28), vr: WR(-.13, .13), a: WR(.3, .7), c: pick(['#c8a24a', '#b5763a', '#8fae5d', '#d8c07a']) })),
+        lines: Array.from({ length: 32 }, () => ({ y: WR(0, H), x: WR(-W, W), len: WR(40, 200), v: WR(8, 21), a: WR(.06, .22) })),
+        leaves: Array.from({ length: 26 }, () => ({ x: WR(0, W), y: WR(0, H), r: WR(3, 7), vx: WR(3.4, 8), vy: WR(-1.2, 1.6), rot: WR(0, 6.28), vr: WR(-.13, .13), a: WR(.3, .7), c: pick(['#c8a24a', '#b5763a', '#8fae5d', '#d8c07a']) })),
       };
     case 'sun':
       return {
@@ -2104,28 +2148,45 @@ function drawWeather() {
         wxCtx.strokeStyle = `rgba(150,190,230,${d.a})`;
         wxCtx.beginPath(); wxCtx.moveTo(d.x, d.y); wxCtx.lineTo(d.x + d.len * .35, d.y + d.len); wxCtx.stroke();
         d.y += d.v; d.x += d.v * .175;
-        if (d.y > H) { d.y = -20; d.x = WR(-W * .2, W); }
+        // v5.4：雨滴到底部时溅起落地水花圈
+        if (d.y > H) {
+          if (Math.random() < .28 && wxSeed.rings.length < 22) wxSeed.rings.push({ x: d.x + d.len * .35, y: H - WR(0, 26), r: 1.5, a: .5 });
+          d.y = -20; d.x = WR(-W * .2, W);
+        }
+      }
+      // 水花圈扩散淡出
+      for (let i = wxSeed.rings.length - 1; i >= 0; i--) {
+        const rg = wxSeed.rings[i];
+        wxCtx.strokeStyle = `rgba(190,220,248,${rg.a})`; wxCtx.lineWidth = 1.4;
+        wxCtx.beginPath(); wxCtx.ellipse(rg.x, rg.y, rg.r * 1.7, rg.r * .55, 0, 0, 6.284); wxCtx.stroke();
+        rg.r += .55; rg.a -= .028;
+        if (rg.a <= 0) wxSeed.rings.splice(i, 1);
       }
       break;
     }
     case 'storm': {
       const s = wxSeed, c = s.eye; s.spin += 0.012;
-      // 螺旋气流臂
-      wxCtx.lineWidth = 2.2;
+      // 螺旋气流臂（v5.4：宽淡底 + 窄浓芯 双描边，旋转感更强）
       for (const a of s.arms) {
-        wxCtx.beginPath();
-        for (let t = 0; t <= 1; t += 0.035) {
-          const ang = a.ph + s.spin + t * 4.1 + a.off;
-          const rad = 60 + t * Math.max(W, H) * 0.62;
-          const x = c.x + Math.cos(ang) * rad, y = c.y + Math.sin(ang) * rad * 0.62;
-          if (t === 0) wxCtx.moveTo(x, y); else wxCtx.lineTo(x, y);
+        for (const [lw, col] of [[5.5, 'rgba(198,208,228,.08)'], [2.2, 'rgba(214,224,244,.16)']]) {
+          wxCtx.lineWidth = lw;
+          wxCtx.beginPath();
+          for (let t = 0; t <= 1; t += 0.035) {
+            const ang = a.ph + s.spin + t * 4.1 + a.off;
+            const rad = 60 + t * Math.max(W, H) * 0.62;
+            const x = c.x + Math.cos(ang) * rad, y = c.y + Math.sin(ang) * rad * 0.62;
+            if (t === 0) wxCtx.moveTo(x, y); else wxCtx.lineTo(x, y);
+          }
+          wxCtx.strokeStyle = col; wxCtx.stroke();
         }
-        wxCtx.strokeStyle = 'rgba(198,208,228,.14)'; wxCtx.stroke();
       }
-      // 风眼
-      const g = wxCtx.createRadialGradient(c.x, c.y, 6, c.x, c.y, 94);
+      // 风眼（v5.4：脉动呼吸 + 内圈旋涡亮线）
+      const eyeR = 94 + Math.sin(wxFrame * .035) * 9;
+      const g = wxCtx.createRadialGradient(c.x, c.y, 6, c.x, c.y, eyeR);
       g.addColorStop(0, 'rgba(16,14,32,.58)'); g.addColorStop(.62, 'rgba(52,50,86,.28)'); g.addColorStop(1, 'rgba(52,50,86,0)');
-      wxCtx.fillStyle = g; wxCtx.beginPath(); wxCtx.arc(c.x, c.y, 94, 0, 6.284); wxCtx.fill();
+      wxCtx.fillStyle = g; wxCtx.beginPath(); wxCtx.arc(c.x, c.y, eyeR, 0, 6.284); wxCtx.fill();
+      wxCtx.strokeStyle = `rgba(224,232,250,${.18 + Math.sin(wxFrame * .05) * .1})`; wxCtx.lineWidth = 1.6;
+      wxCtx.beginPath(); wxCtx.arc(c.x, c.y, eyeR * .38, wxFrame * .04, wxFrame * .04 + 4.6); wxCtx.stroke();
       // 横扫阵风条
       for (const gu of s.gusts) {
         wxCtx.fillStyle = `rgba(214,222,238,${gu.a})`;
@@ -2150,14 +2211,28 @@ function drawWeather() {
       break;
     }
     case 'snow': {
-      for (const f of wxSeed.flakes) {
-        wxCtx.globalAlpha = f.a; wxCtx.fillStyle = '#ffffff';
+      // v5.4：远近两层 —— 近景大而快（前 1/3），远景小而慢，底部铺一条地面霜白
+      const flakes = wxSeed.flakes;
+      const mid = Math.floor(flakes.length / 3);
+      flakes.forEach((f, idx) => {
+        const near = idx < mid;
+        wxCtx.globalAlpha = near ? Math.min(1, f.a + .12) : f.a * .8;
+        wxCtx.fillStyle = '#ffffff';
         wxCtx.beginPath(); wxCtx.arc(f.x, f.y, f.r, 0, 6.284); wxCtx.fill();
-        f.y += f.v; f.ph += .03; f.x += Math.sin(f.ph) * f.sway * .5;
+        if (near) {   // 近景雪花加一圈柔光
+          wxCtx.globalAlpha *= .3;
+          wxCtx.beginPath(); wxCtx.arc(f.x, f.y, f.r * 2.1, 0, 6.284); wxCtx.fill();
+        }
+        f.y += f.v * (near ? 1.25 : .8); f.ph += .03; f.x += Math.sin(f.ph) * f.sway * .5;
         if (f.y > H + 6) { f.y = -6; f.x = WR(0, W); }
         if (f.x < -8) f.x = W + 8; else if (f.x > W + 8) f.x = -8;
-      }
+      });
       wxCtx.globalAlpha = 1;
+      // 地面霜白：底部渐变，越到后期越明显（20s 饱和）
+      const frostA = Math.min(.2, .05 + wxFrame * .00015);
+      const fg = wxCtx.createLinearGradient(0, H * .86, 0, H);
+      fg.addColorStop(0, 'rgba(240,248,255,0)'); fg.addColorStop(1, `rgba(240,248,255,${frostA})`);
+      wxCtx.fillStyle = fg; wxCtx.fillRect(0, H * .86, W, H * .14);
       break;
     }
     case 'fog': {
@@ -2378,6 +2453,24 @@ function skillBeam(color) {
   d.style.setProperty('--sk', color || '#e8b04b');
   $('fxLayer').appendChild(d);
   setTimeout(() => d.remove(), 900);
+}
+// v5.4：买地插旗 —— 旗杆"噗"地立在地块上，旗面（买家主题色）升起后飘两下自动淡出
+function flagPop(cell, color) {
+  const [x, y] = cellCenter(cell);
+  const pt = svgToScreen(x, y);
+  const d = document.createElement('div');
+  d.className = 'flag-pop';
+  d.style.left = pt[0] + 'px';
+  d.style.top = pt[1] + 'px';
+  const c = color || '#e8b04b';
+  d.innerHTML = `<svg width="34" height="56" viewBox="0 0 34 56">
+    <line x1="4" y1="4" x2="4" y2="52" stroke="#8a6a3a" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="4" cy="4" r="2.6" fill="#e8b04b"/>
+    <g class="flag-face"><path d="M5.5 7 L31 12 L5.5 19 Z" fill="${c}" stroke="rgba(255,255,255,.85)" stroke-width="1.4"/></g>
+  </svg>`;
+  $('fxLayer').appendChild(d);
+  setTimeout(() => { d.style.transition = 'opacity .5s'; d.style.opacity = '0'; }, 1300);
+  setTimeout(() => d.remove(), 1900);
 }
 // v5.3：盖楼 / 升级光柱 —— 从格子底部升起的竖直光柱 + 顶上星芒
 function upgradePillar(cell, color) {
@@ -2774,12 +2867,29 @@ function renderGhost(s) {
   const w = isBr ? BR_W : CW, h = isBr ? BR_H : CH;
   const ly = (y < 32) ? y + h + 20 : y - 11;
   const who = (s.players.find(q => q.id === pr.pid) || {}).name || '';
+  const pc = (s.players.find(q => q.id === pr.pid) || {}).color || '#e8b04b';
+  // v5.4：虚影大幅加深——浓底 + 发光描边 + 四角瞄准框 + 玩家色脉冲圆点，全场都能看清
+  const corners = [[x + 3, y + 3, 1, 1], [x + w - 3, y + 3, -1, 1], [x + 3, y + h - 3, 1, -1], [x + w - 3, y + h - 3, -1, -1]]
+    .map(([cx, cy, dx, dy]) => `<path d="M ${cx} ${cy + dy * 22} L ${cx} ${cy} L ${cx + dx * 22} ${cy}" fill="none" stroke="#fff" stroke-width="4.5" stroke-linecap="round" opacity=".95"/>`).join('');
   const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
   g.setAttribute('class', 'ghost');
   g.innerHTML =
-    `<rect x="${x + 2}" y="${y + 2}" width="${w - 4}" height="${h - 4}" rx="12" fill="rgba(232,176,75,.22)" stroke="#e8b04b" stroke-width="3.5" stroke-dasharray="11 7">`
-    + `<animate attributeName="opacity" values="0.35;1;0.35" dur="1.15s" repeatCount="indefinite"/></rect>`
-    + `<text x="${x + w / 2}" y="${ly}" text-anchor="middle" font-size="15" font-weight="800" fill="#a8761a" style="paint-order:stroke;stroke:rgba(255,255,255,.9);stroke-width:3.5px">`
+    // 浓底色填充（比 v5.3 加深一倍）
+    `<rect x="${x + 2}" y="${y + 2}" width="${w - 4}" height="${h - 4}" rx="12" fill="rgba(255,158,44,.48)"/>`
+    // 内层暖光渐变，营造"高亮聚光"感
+    + `<rect x="${x + 2}" y="${y + 2}" width="${w - 4}" height="${h - 4}" rx="12" fill="rgba(255,220,120,.30)"/>`
+    // 主描边：加粗 + 流动虚线
+    + `<rect x="${x + 2}" y="${y + 2}" width="${w - 4}" height="${h - 4}" rx="12" fill="none" stroke="#ff8c1a" stroke-width="5" stroke-dasharray="14 8">`
+    + `<animate attributeName="opacity" values="0.65;1;0.65" dur="0.85s" repeatCount="indefinite"/></rect>`
+    + `<rect x="${x + 2}" y="${y + 2}" width="${w - 4}" height="${h - 4}" rx="12" fill="none" stroke="#fff3d6" stroke-width="1.6" opacity=".8"/>`
+    // 四角瞄准框
+    + corners
+    // 落点中心：玩家色脉冲圆点（是谁的落点一目了然）
+    + `<circle cx="${x + w / 2}" cy="${y + h / 2}" r="17" fill="${pc}" opacity=".55">`
+    + `<animate attributeName="r" values="11;21;11" dur="0.95s" repeatCount="indefinite"/></circle>`
+    + `<circle cx="${x + w / 2}" cy="${y + h / 2}" r="6.5" fill="#fff" opacity=".92"/>`
+    // 标签：加大加深
+    + `<text x="${x + w / 2}" y="${ly}" text-anchor="middle" font-size="19" font-weight="900" fill="#7c3f00" style="paint-order:stroke;stroke:rgba(255,255,255,.95);stroke-width:4.5px">`
     + `👻 ${esc(who)} 预计落点 · ${pr.steps} 步</text>`;
   board.appendChild(g);
 }

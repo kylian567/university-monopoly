@@ -879,3 +879,27 @@ body {
   66%  { filter:saturate(.22) brightness(.78); }
   100% { filter:none; }
 }
+
+/* ==================== v5.4：AI 托管 / 买地插旗 / 天气转场音效条 ==================== */
+/* 托管按钮：开启时高亮成紫色并呼吸，一眼能看出"现在是 AI 在打" */
+.ctrl-btn.trustee { color:#5a4a8a; }
+.ctrl-btn.trustee.on { color:#fff; background:linear-gradient(180deg,#8a6ee0,#5a3fb0); border-color:#c9b8ff; box-shadow:0 0 0 3px rgba(138,110,224,.22); animation:trusteePulse 1.6s ease-in-out infinite; }
+@keyframes trusteePulse {
+  0%, 100% { box-shadow:0 0 0 3px rgba(138,110,224,.18); }
+  50%      { box-shadow:0 0 0 7px rgba(138,110,224,.34); }
+}
+/* 托管状态横幅：从屏幕上方滑入，全场可见 */
+.trustee-toast { position:fixed; top:14px; left:50%; transform:translate(-50%,-70px); z-index:960;
+  padding:9px 22px; border-radius:999px; font-size:14.5px; font-weight:800; color:#fff;
+  background:linear-gradient(135deg,#8a6ee0,#5a3fb0); border:2px solid #c9b8ff;
+  box-shadow:0 8px 26px rgba(90,63,176,.4); opacity:0; transition:all .42s cubic-bezier(.2,.9,.3,1.2);
+  pointer-events:none; }
+.trustee-toast.show { opacity:1; transform:translate(-50%,0); }
+.trustee-toast.on { background:linear-gradient(135deg,#8a6ee0,#5a3fb0); }
+.trustee-toast:not(.on) { background:linear-gradient(135deg,#3f9e6a,#1f7a4a); border-color:#a8e8c4; }
+/* 买地插旗：旗杆立在地块上，旗面升起后飘两下淡出（用完即删） */
+.flag-pop { position:absolute; width:0; height:0; pointer-events:none; z-index:60; transform-origin:bottom center; animation:flagStick .4s cubic-bezier(.2,1.4,.4,1) both; }
+.flag-pop svg { overflow:visible; }
+.flag-pop .flag-face { animation:flagWave 1.1s ease-in-out .4s infinite; transform-origin:0 8px; }
+@keyframes flagStick { from { transform:scale(.2) translateY(16px); opacity:0; } to { transform:scale(1) translateY(0); opacity:1; } }
+@keyframes flagWave { 0%,100% { transform:skewY(0deg) scaleX(1); } 50% { transform:skewY(-6deg) scaleX(.94); } }

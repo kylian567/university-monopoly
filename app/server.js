@@ -43,7 +43,7 @@ function snapshot(room) {
     freeRentRounds: (room.freeRentRounds || []).slice(),
     calEvent: room.calEvent ? { id: room.calEvent.id, name: room.calEvent.name, icon: room.calEvent.icon, desc: room.calEvent.desc, kind: room.calEvent.kind, fx: room.calEvent.fx || null } : null,
     players: room.players.map(p => ({
-      id: p.id, name: p.name, isAI: p.isAI, cash: p.cash, pos: p.pos, alive: p.alive, color: p.color,
+      id: p.id, name: p.name, isAI: p.isAI, trustee: !!p.trustee, cash: p.cash, pos: p.pos, alive: p.alive, color: p.color,
       voucher: p.voucher, discount: p.discount, skipNext: p.skipNext,
       major: p.major, skillLeft: p.skillLeft, combo: p.combo || 0, ach: p.ach || {},
       shield: !!p.shield, sabotage: p.sabotage || 0,
@@ -262,7 +262,8 @@ function onMessage(ws, str) {
     const room = obj.room;
     let p = room.players.find(q => q.token === m.token);
     if (p) { // 重连
-      p.isAI = false; ws.roomObj = obj; ws.token = p.token;
+      p.isAI = !!p.trustee;   // v5.4：托管中的玩家重连后仍由 AI 代打（未托管则恢复真人）
+      ws.roomObj = obj; ws.token = p.token;
       obj.clients.set(p.token, ws);
       room.addLog(`${p.name} 重新连接`);
       send(ws, JSON.stringify({ type: 'joined', code, token: p.token, pid: p.id }));
@@ -327,6 +328,7 @@ function onMessage(ws, str) {
     case 'useSkill': room.useSkill(p); break;                   // v5.1 主动技：发动
     case 'skipSkill': room.skipSkill(p); break;                 // v5.1 主动技：放弃
     case 'voteFaculty': room.voteFaculty(p, String(a.key || '')); break;   // v5.2 校园风貌：投票
+    case 'trustee': room.setTrustee(p, !!a.on); break;   // v5.4 AI 托管：开/关
     case 'major': room.setMajor(p, a.major); break;
     case 'again': // 再来一局
       if (room.phase === 'over') {

@@ -1085,6 +1085,14 @@ class Room {
   aiReroll(p) {
     if (this.phase !== 'reroll' || !this.pendingReroll || this.pendingReroll.pid !== p.id) return;
     const sum = (this.dice ? this.dice[0] + this.dice[1] : 7);
+    // v5.4：AI 更精明 —— 先看看落点：落点是自己的地 / 无主地（能买）就不花冤枉钱重投
+    const tgt = this.pendingReroll.target;
+    if (tgt != null && sum <= 6) {
+      const cs = this.cells[tgt], c = BOARD[tgt] || {};
+      const mine = cs && cs.own === p.id;                       // 落自己家：安全
+      const buyable = c.type === 'prop' && cs && !cs.own && p.cash >= (c.price || 0) * 0.8;  // 落点是好地还想买
+      if (mine || buyable) { this.confirmRoll(p); return; }
+    }
     // 点数太差且现金宽裕才值得花钱重投
     if (sum <= 5 && p.cash >= this.rerollCostFor(p) + this.safety(p) * 0.5) this.doReroll(p);
     else this.confirmRoll(p);
@@ -1294,6 +1302,7 @@ class Room {
     const detail = this.applyActiveSkill(p, key);
     this.addLog(`✨ ${p.name} 发动【${mj.skill}】${detail ? '：' + detail : ''}`);
     this.ev({ t: 'skill', pid: p.id, major: key, name: mj.skill, detail, active: true });
+    this.aiChat(p, pick(['看我的绝招！', '技能，发动！', '⚡ 就是现在', '接招吧各位']));
     this.checkRichest(p);
     this.phase = 'roll';
     this.schedule();
@@ -1334,6 +1343,10 @@ class Room {
   startTurn() {
     if (this.checkWin()) return;
     const p = this.curp();
+    // v5.4：AI 拟人 —— 第一轮开局轮流打个招呼，让 AI 更像真人玩家
+    if (this.round === 1 && p.isAI && !p.trustee && Math.random() < 0.65) {
+      this.aiTimers.push(setTimeout(() => this.aiChat(p, pick(['大家好，请多关照！', '这局我来带节奏', '稳住，我们能赢', '友尽局开始了吗？', '闲庭信步，走起！🚶'])), rnd(800, 2600)));
+    }
     if (p.discount) p.discount = false; // 折扣卡仅当轮有效
     p.shield = false;                   // 道具仅当轮有效
     p.rerollUsed = false;               // 重掷骰每回合重置
@@ -1425,6 +1438,59 @@ class Room {
       this.aiTimers.push(setTimeout(() => this.aiBid(p), rnd(2800, 7000)));
     } else if (this.vote && this.vote.votes[p.id] === undefined) {
       this.aiTimers.push(setTimeout(() => this.aiVote(p), rnd(2200, 4800)));
+    }
+  }
+
+  // v5.4：AI 托管 —— 真人玩家可随时开启/关闭；开启后本回合起全部由 AI 代打，随时可取回操作权
+  busySelf(p) {
+    return (this.phase === 'roll' && this.curp() === p)
+      || (this.phase === 'buy' && this.pendingBuy && this.pendingBuy.pid === p.id)
+      || (this.phase === 'build' && this.pendingBuild && this.pendingBuild.pid === p.id)
+      || (this.phase === 'reroll' && this.pendingReroll && this.pendingReroll.pid === p.id)
+      || (this.phase === 'branch' && this.pendingBranch && this.pendingBranch.pid === p.id)
+      || (this.phase === 'invest' && this.pendingInvest && this.pendingInvest.pid === p.id)
+      || (this.phase === 'skill' && this.pendingSkill && this.pendingSkill.pid === p.id)
+      || (this.phase === 'faculty' && !this.facultyVotes[p.id])   // v5.2：开局风貌投票
+      || (this.phase === 'raise' && this.raise && this.raise.pid === p.id);
+  }
+  setTrustee(p, on) {
+    if (!p || !p.alive) return;
+    if (p.isAI && !p.trustee) return;  // 本来就是 AI 的玩家无需托管
+    on = !!on;
+    if (!!p.trustee === on) return;
+    p.trustee = on;
+    p.isAI = on;                       // 托管 = 走全套 AI 决策；取回 = 恢复真人操作
+    this.addLog(on ? `🤖 ${p.name} 开启了 AI 托管，回合由 AI 代打` : `🙋 ${p.name} 取回了操作权`);
+    this.ev({ t: 'trustee', pid: p.id, on });
+    if (on) {
+      if (this.busySelf(p)) {
+        this.clearTimer();             // 清掉人类超时兜底，AI 立刻接手
+        if (this.phase === 'roll') this.aiTimers.push(setTimeout(() => this.aiAct(), rnd(2200, 4600)));
+        else if (this.phase === 'buy') this.aiTimers.push(setTimeout(() => this.aiBuy(), rnd(2600, 5200)));
+        else if (this.phase === 'build') this.aiTimers.push(setTimeout(() => this.aiBuild(), rnd(2200, 4600)));
+        else if (this.phase === 'reroll') this.aiTimers.push(setTimeout(() => this.aiReroll(p), rnd(1800, 3600)));
+        else if (this.phase === 'branch') this.aiTimers.push(setTimeout(() => this.aiBranch(p), rnd(2600, 5200)));
+        else if (this.phase === 'invest') this.aiTimers.push(setTimeout(() => this.aiInvest(p), rnd(2600, 5200)));
+        else if (this.phase === 'skill') this.aiTimers.push(setTimeout(() => this.aiSkill(p), rnd(2000, 4000)));
+        else if (this.phase === 'faculty') this.aiTimers.push(setTimeout(() => this.aiFacultyVote(p), rnd(1200, 2600)));
+        else this.aiTimers.push(setTimeout(() => this.aiRaise(), 2600));
+      } else if (this.phase === 'auction' && this.auction && this.auction.bidder !== p.id) {
+        this.aiTimers.push(setTimeout(() => this.aiBid(p), rnd(2800, 7000)));
+      } else if (this.vote && this.vote.votes[p.id] === undefined) {
+        this.aiTimers.push(setTimeout(() => this.aiVote(p), rnd(2200, 4800)));
+      }
+    } else if (this.busySelf(p)) {
+      // 取回操作权：重新给人类起超时兜底（按当前决策阶段恢复对应的跳过逻辑）
+      this.clearTimer();
+      this.setTimer(TURN_MS, () => {
+        if (this.phase === 'buy') this.declineBuy(p);
+        else if (this.phase === 'build') this.skipBuild(p);
+        else if (this.phase === 'branch') this.declineBranch(p);
+        else if (this.phase === 'invest') this.declineInvest(p);
+        else if (this.phase === 'skill') this.skipSkill(p);
+        else if (this.phase === 'reroll') this.confirmRoll(p);
+        else this.autoAct();
+      });
     }
   }
   setTimer(ms, fn) { this.clearTimer(); this.timer = setTimeout(fn, ms); }
@@ -2203,7 +2269,15 @@ class Room {
     }
   }
 
-  scheduleBuy() { const p = this.curp(); if (p.isAI) this.aiTimers.push(setTimeout(() => this.aiBuy(), rnd(4200, 8800))); else this.setTimer(TURN_MS, () => this.declineBuy(this.curp())); }
+  // v5.4：AI 拟人 —— 贵的地要想更久（像真人纠结掏不掏钱），便宜的地果断拿下
+  scheduleBuy() {
+    const p = this.curp();
+    if (p.isAI) {
+      const price = (this.pendingBuy && this.pendingBuy.price != null) ? this.pendingBuy.price : 0;
+      const delay = price > p.cash * 0.55 ? rnd(5600, 11000) : rnd(3600, 7200);
+      this.aiTimers.push(setTimeout(() => this.aiBuy(), delay));
+    } else this.setTimer(TURN_MS, () => this.declineBuy(this.curp()));
+  }
   scheduleBuild() { const p = this.curp(); if (p.isAI) this.aiTimers.push(setTimeout(() => this.aiBuild(), rnd(3600, 7600))); else this.setTimer(TURN_MS, () => this.skipBuild(this.curp())); }
 
   buy(p) {
@@ -2260,6 +2334,7 @@ class Room {
       if (gc.length && gc.every(i => this.cells[i].own === p.id)) {
         this.addLog(`🏆 ${p.name} 集齐 ${c.g.toUpperCase()} 色组 3 所名校，裸地租金 ×3！`);
         this.ev({ t: 'mono', pid: p.id, g: c.g, cells: gc.slice(), names: gc.map(i => BOARD[i].name) });
+        this.aiChat(p, pick(['🏆 三所齐了，租金翻三倍！', '这组名校我承包了！', '✌️ 从今天起这段路我说了算']), true);
       }
     }
     this.aiChat(p, pick(['😎', '🤑']));
@@ -2434,8 +2509,10 @@ class Room {
     this.ev({ t: 'charge', pid: p.id, amount, creditor: creditor ? creditor.id : null, reason, cell: cellIdx, toPool });
     const r = this.tryPay(p, amount, creditor, toPool);
     // v5.1：表情包必须排在付款事件之后 —— 否则人机会在移动动画还没播完时就抢先发表情（剧透结果）
-    if (p.isAI && amount >= 1000) this.aiChat(p, pick(['😭', '😱', '💸']));
-    if (creditor && creditor.isAI && amount >= 1500) this.aiChat(creditor, pick(['🤑', '😆']));
+    // v5.4：AI 拟人 —— 大额付款偶尔用文字吐槽；现金见底时求饶，更像真人
+    if (p.isAI && amount >= 1000) this.aiChat(p, pick(['😭', '😱', '💸', '这也太贵了吧！', '我的钱啊……', '下次赊账行不行']));
+    if (p.isAI && p.cash < 1500 && amount >= 600) this.aiChat(p, pick(['要破产了，救命！', '各位大爷少收点 🙏', '我是不是该卖地了']));
+    if (creditor && creditor.isAI && amount >= 1500) this.aiChat(creditor, pick(['🤑', '😆', '谢谢惠顾～', '过路费拿来！']));
     return r;
   }
   checkCombo(p) { if ((p.combo || 0) >= 3) this.giveAch(p, 'combo3'); }
