@@ -124,6 +124,35 @@ const MAJORS = {
   news: { id:'news', name:'新闻', icon:'📰', skill:'独家爆料', mode:'passive', uses:3, fx:'#8a8f96', tier:3, desc:'抽到负面卡时自动重抽一次' },
   food: { id:'food', name:'食品科学', icon:'🍜', skill:'能量补给', mode:'passive', uses:4, fx:'#d1873f', tier:3, desc:'每次被罚停留休整时 +¥700' },
   marine:{id:'marine',name:'海洋科学', icon:'🌊', skill:'深海资源', mode:'passive', uses:3, fx:'#2f8fbf', tier:3, desc:'每次经过起点 +¥1200' },
+  // ===== v5.3 新增 27 个专业（覆盖面更广：工科 / 理科 / 医农生 / 人文社科 / 艺术设计）=====
+  // 与服务端 game.js 的 MAJORS 逐字同步；test_v53.js 会做镜像一致性校验
+  elec:  { id:'elec', name:'电气工程', icon:'⚡', skill:'峰谷套利', mode:'active', uses:3, fx:'#f0b429', tier:2, desc:'发动后立刻 +¥1300，本回合买地 6 折' },
+  comm:  { id:'comm', name:'通信工程', icon:'📡', skill:'信号覆盖', mode:'passive', uses:4, fx:'#3aa0d8', tier:2, desc:'每次经过起点 +¥1200；每抽到任意卡 +¥300' },
+  ctrl:  { id:'ctrl', name:'控制科学', icon:'🎛️', skill:'闭环调节', mode:'passive', uses:3, fx:'#5b7fd1', tier:2, desc:'单笔收租 ≥¥1200 时 +30%；被收租 ≥¥1200 时减免 25%' },
+  robot: { id:'robot', name:'机器人工程', icon:'🦾', skill:'机械臂协作', mode:'active', uses:3, fx:'#e2663f', tier:2, desc:'发动后本回合盖房 −60%，并立刻 +¥1000' },
+  se:    { id:'se', name:'软件工程', icon:'⌨️', skill:'敏捷迭代', mode:'passive', uses:4, fx:'#4a90d9', tier:2, desc:'每局 4 次免费重投骰子（不用付 ¥900）' },
+  ai:    { id:'ai', name:'人工智能', icon:'🧠', skill:'模型推理', mode:'active', uses:3, fx:'#7a5fc1', tier:2, desc:'发动后本轮收租 +35%，并从总资产最高者处取 ¥800' },
+  imes:  { id:'imes', name:'智能制造', icon:'🏭', skill:'柔性产线', mode:'passive', uses:3, fx:'#7b8fa8', tier:2, desc:'升级房产 −25%；每次升级成功再 +¥500' },
+  power: { id:'power', name:'能源与动力', icon:'🔥', skill:'热机循环', mode:'passive', uses:4, fx:'#e07a3f', tier:2, desc:'每轮开局 +¥400；每次经过起点 +¥800' },
+  astro: { id:'astro', name:'天文学', icon:'🔭', skill:'眺望星河', mode:'passive', uses:3, fx:'#5468a8', tier:2, desc:'掷骰点数 ≥9 时自动 +¥1100' },
+  meteo: { id:'meteo', name:'气象学', icon:'🌦️', skill:'预报风向', mode:'passive', uses:4, fx:'#4f9ad1', tier:2, desc:'恶劣天气（雨/台风/雪/雾）里自己回合开始 +¥700' },
+  geop:  { id:'geop', name:'地球物理', icon:'🌏', skill:'地层探测', mode:'passive', uses:3, fx:'#8a7b52', tier:2, desc:'买入无主地产 85 折；每买下一块地再 +¥400' },
+  or:    { id:'or', name:'运筹学', icon:'🧮', skill:'资源调度', mode:'active', uses:3, fx:'#5f9ea0', tier:2, desc:'发动后立刻 +¥900，本回合移动 +3 步' },
+  nurs:  { id:'nurs', name:'护理学', icon:'💉', skill:'悉心看护', mode:'passive', uses:4, fx:'#e05a9a', tier:2, desc:'被收租 ≥¥800 时自动减免 35%' },
+  dent:  { id:'dent', name:'口腔医学', icon:'🦷', skill:'牙科门诊', mode:'passive', uses:3, fx:'#57c1c0', tier:2, desc:'单笔收租 ≥¥1200 时自动 +45%' },
+  vet:   { id:'vet', name:'兽医学', icon:'🐾', skill:'牲畜保险', mode:'passive', uses:3, fx:'#8fbf4a', tier:2, desc:'自己的地产免于被拆除；每次被收租减免 12%' },
+  hort:  { id:'hort', name:'园艺学', icon:'🌷', skill:'嫁接育种', mode:'passive', uses:3, fx:'#d1568f', tier:3, desc:'每次经过起点 +¥1100；升级房产 −12%' },
+  forest:{ id:'forest', name:'林学', icon:'🌲', skill:'封山育林', mode:'passive', uses:3, fx:'#3fa76a', tier:3, desc:'每轮开局 +¥350；被罚停留休整时 +¥600' },
+  acc:   { id:'acc', name:'会计学', icon:'🧾', skill:'精算审计', mode:'passive', uses:3, fx:'#c9a227', tier:2, desc:'买入地产 85 折；被收租 ≥¥1000 时减免 25%' },
+  trade: { id:'trade', name:'国际贸易', icon:'🚢', skill:'跨境套利', mode:'passive', uses:4, fx:'#2f8fbf', tier:2, desc:'每次经过起点 +¥1000；每抽到任意卡 +¥350' },
+  mkt:   { id:'mkt', name:'市场营销', icon:'📣', skill:'带货直播', mode:'active', uses:3, fx:'#e0803f', tier:2, desc:'发动后立刻 +¥1200，其他每位玩家再各付你 ¥250' },
+  hr:    { id:'hr', name:'人力资源管理', icon:'🧑‍💼', skill:'团队激励', mode:'passive', uses:3, fx:'#a8823f', tier:3, desc:'回合开始时现金 +3%；被罚停留休整时 +¥700' },
+  tourism:{ id:'tourism', name:'旅游管理', icon:'🧳', skill:'导游外快', mode:'passive', uses:3, fx:'#c86a3f', tier:3, desc:'进入岔路时 +¥900；每次经过起点 +¥700' },
+  edu:   { id:'edu', name:'教育学', icon:'📚', skill:'因材施教', mode:'passive', uses:4, fx:'#9a7b5a', tier:3, desc:'每轮开局 +¥350；抽到负面卡时自动重抽（4 次）' },
+  hist:  { id:'hist', name:'历史学', icon:'🏺', skill:'考古发现', mode:'passive', uses:3, fx:'#a8823f', tier:3, desc:'掷骰点数 ≤4 时发掘出文物 +¥900；买入无主地产 9 折' },
+  soc:   { id:'soc', name:'社会学', icon:'🧑‍🤝‍🧑', skill:'田野调查', mode:'passive', uses:3, fx:'#8a7f9a', tier:3, desc:'每抽到一张机会 / 命运卡 +¥450' },
+  design:{ id:'design', name:'工业设计', icon:'🖌️', skill:'人机工学', mode:'passive', uses:3, fx:'#d1619a', tier:3, desc:'升级房产 −18%；买入地产 −8%' },
+  film:  { id:'film', name:'影视传媒', icon:'🎬', skill:'院线首映', mode:'active', uses:3, fx:'#b04a9a', tier:2, desc:'发动后立刻 +¥1500，本轮自己收租 +25%' },
 };
 // ---------- v5.2：校园风貌（与服务端 game.js 的 FACULTY 表逐字同步，改一边必须改另一边） ----------
 // 开场随机 3 候选 → 全体投票 → 随机抽一名玩家，他的那一票成为本局风貌，全场共享、贯穿整局。
@@ -230,6 +259,8 @@ const SFX = {
   click: () => tone({ f: 620, t: 'triangle', d: 0.06, v: 0.1 }),
   dice: () => { for (let i = 0; i < 8; i++) noiseFx({ d: 0.045, v: 0.14, when: i * 0.15, hp: 1800 }); },
   diceLand: () => { tone({ f: 200, t: 'triangle', d: 0.13, v: 0.22 }); tone({ f: 315, t: 'triangle', d: 0.12, v: 0.16, when: 0.06 }); },
+  // v5.3：骰子落定「轻轻一磕」—— 替代原来的重物落地 thud（用户反馈落地那下太重太吵）
+  diceSettle: () => { noiseFx({ d: 0.04, v: 0.1, hp: 2600 }); tone({ f: 520, slide: -150, t: 'triangle', d: 0.09, v: 0.11 }); },
   step: () => tone({ f: 480 + Math.random() * 260, t: 'square', d: 0.045, v: 0.05 }),
   buy: () => [523, 659, 784].forEach((f, i) => tone({ f, t: 'triangle', d: 0.14, v: 0.2, when: i * 0.09 })),
   pay: () => tone({ f: 420, slide: -200, t: 'sawtooth', d: 0.28, v: 0.13 }),
@@ -367,6 +398,39 @@ const SFX = {
   facAlarm: () => { for (let i = 0; i < 3; i++) { tone({ f: 880, t: 'square', d: 0.16, v: 0.13, when: i * 0.22 }); tone({ f: 1320, t: 'sine', d: 0.14, v: 0.09, when: i * 0.22 + 0.05 }); } },
   // 免停留卡：轻快双音
   stayFree: () => { [740, 988].forEach((f, i) => tone({ f, t: 'triangle', d: 0.16, v: 0.15, when: i * 0.1 })); noiseFx({ d: 0.1, v: 0.09, hp: 2000 }); },
+  // ---------- v5.3 新增音效（技能演出 / 美术动效专用） ----------
+  // 主动技发动：上行号角 + 高频泛音（比被动技的 skill 更有仪式感）
+  skillCast: () => {
+    noiseFx({ d: 0.14, v: 0.12, hp: 1800 });
+    [[659, 0], [880, 0.09], [1175, 0.18]].forEach(([f, w]) => tone({ f, t: 'triangle', d: 0.26, v: 0.19, when: w }));
+    tone({ f: 1760, t: 'sine', d: 0.5, v: 0.085, when: 0.26 });
+  },
+  // 扫描光束：由低到高的窄带扫频
+  beam: () => { for (let i = 0; i < 9; i++) tone({ f: 420 * Math.pow(1.19, i), t: 'sine', d: 0.07, v: 0.075, when: i * 0.032 }); },
+  // 盖楼落成：短促木质敲击 + 上行落实
+  chip: () => { noiseFx({ d: 0.05, v: 0.2, hp: 900 }); tone({ f: 420, slide: -80, t: 'triangle', d: 0.11, v: 0.16, when: 0.01 }); [620, 830].forEach((f, i) => tone({ f, t: 'sine', d: 0.13, v: 0.1, when: 0.07 + i * 0.06 })); },
+  // 升级光柱：由下往上的明亮琶音
+  upgrade: () => { [523, 659, 784, 1047, 1319].forEach((f, i) => tone({ f, t: 'sine', d: 0.18, v: 0.12, when: i * 0.055 })); },
+  // 金币飞出：一串细碎金属声
+  coinFly: () => { for (let i = 0; i < 6; i++) tone({ f: 1100 + (i % 3) * 240, t: 'triangle', d: 0.05, v: 0.07, when: i * 0.038 }); },
+  // 法槌：裁定 / 加盖印章
+  gavel: () => { noiseFx({ d: 0.07, v: 0.24, hp: 640 }); tone({ f: 240, slide: -90, t: 'square', d: 0.2, v: 0.16, when: 0.01 }); },
+  // 危机心跳：两下低频（破产前 / 现金告急）
+  pulse: () => { tone({ f: 92, t: 'sine', d: 0.2, v: 0.16 }); tone({ f: 86, t: 'sine', d: 0.24, v: 0.12, when: 0.26 }); },
+  // 闪光：一声清脆高频
+  glint: () => { tone({ f: 2637, t: 'sine', d: 0.14, v: 0.075 }); tone({ f: 3520, t: 'sine', d: 0.1, v: 0.04, when: 0.03 }); },
+  // 低频掠过：转场 / 大事件前的铺垫
+  whooshLow: () => { noiseFx({ d: 0.3, v: 0.1, hp: 380 }); tone({ f: 120, slide: 150, t: 'sine', d: 0.32, v: 0.09 }); },
+  // 加冕：皇冠落顶（金属 + 长尾）
+  crown: () => {
+    noiseFx({ d: 0.1, v: 0.16, hp: 1400 });
+    [784, 1047, 1319, 1568].forEach((f, i) => tone({ f, t: 'triangle', d: 0.24, v: 0.14, when: i * 0.07 }));
+    tone({ f: 2093, t: 'sine', d: 0.62, v: 0.07, when: 0.28 });
+  },
+  // 回暖 / 翻盘：由暗转亮的两段
+  revive: () => { [330, 494, 659, 988].forEach((f, i) => tone({ f, t: 'sine', d: 0.2, v: 0.12, when: i * 0.08 })); },
+  // 轮次开场：一声轻钟
+  roundBell: () => { tone({ f: 1319, t: 'sine', d: 0.34, v: 0.075 }); tone({ f: 1976, t: 'sine', d: 0.26, v: 0.04, when: 0.02 }); },
 };
 
 
@@ -1006,11 +1070,10 @@ function renderLobby() {
   const me = S.players.find(p => p.id === myPid);
   const row = $('majorRow');
   if (row) {
-    row.innerHTML = Object.values(MAJORS).map(m =>
-      `<button class="major-btn ${me && me.major === m.id ? 'sel' : ''}" onclick="act({type:'major',major:'${m.id}'})">
-        <span class="mj-name">${m.icon} ${esc(m.name)} · ${esc(m.skill)}</span>
-        <span class="mj-skill">${esc(m.desc)}（每局 ${m.uses} 次）</span>
-      </button>`).join('');
+    // v5.3：专业扩到 60 种 —— 按梯队分组 + 可搜索；用签名守卫避免每次状态推送都重建 DOM
+    // （否则正在输入的搜索词与滚动位置会被重置）
+    const sig = (me ? me.major : '') + ':' + S.players.length;
+    if (sig !== majorRowSig) { majorRowSig = sig; row.innerHTML = buildMajorHtml(me); filterMajors($('majorSearch') ? $('majorSearch').value : ''); }
   }
   const mh = $('majorHint');
   if (mh && me) {
@@ -1019,6 +1082,40 @@ function renderLobby() {
     mh.textContent = `你的专业：${m.name || '—'} · 技能「${m.skill || ''}」${how}（每局 ${m.uses} 次）`;
   }
 }
+// v5.3：专业选择列表 —— 按 tier 分组，每个按钮带 data-txt 供搜索
+let majorRowSig = '';
+const MAJOR_TIERS = [[1, '🥇 第一梯队', '开局就是强'], [2, '🥈 主流强度', '各有专业特色'], [3, '🥉 特色向', '小额高频 / 玩梗']];
+function buildMajorHtml(me) {
+  const all = Object.values(MAJORS);
+  let html = '';
+  for (const [t, label, sub] of MAJOR_TIERS) {
+    const list = all.filter(m => m.tier === t);
+    if (!list.length) continue;
+    html += `<div class="mj-block" data-tier="${t}"><div class="mj-group">${label}<span class="mj-sub">${sub}</span><span class="mj-count">${list.length} 种</span></div><div class="mj-grid">`;
+    html += list.map(m => `<button class="major-btn ${me && me.major === m.id ? 'sel' : ''}" data-txt="${esc((m.name + ' ' + m.skill + ' ' + m.desc + ' ' + m.id).toLowerCase())}" onclick="act({type:'major',major:'${m.id}'})">
+        <span class="mj-name">${m.icon} ${esc(m.name)}${m.mode === 'active' ? '<i class="mj-active">主动</i>' : ''}</span>
+        <span class="mj-skillname">${esc(m.skill)}</span>
+        <span class="mj-skill">${esc(m.desc)}（每局 ${m.uses} 次）</span>
+      </button>`).join('');
+    html += '</div></div>';
+  }
+  return html;
+}
+// 搜索过滤：隐藏不匹配的按钮；整组都不匹配时把组标题一并收起
+function filterMajors(q) {
+  const row = $('majorRow'); if (!row) return;
+  q = String(q || '').trim().toLowerCase();
+  row.querySelectorAll('.mj-block').forEach(blk => {
+    let shown = 0;
+    blk.querySelectorAll('.major-btn').forEach(btn => {
+      const hit = !q || (btn.dataset.txt || '').includes(q);
+      btn.style.display = hit ? '' : 'none';
+      if (hit) shown++;
+    });
+    blk.style.display = shown ? '' : 'none';
+  });
+}
+window.filterMajors = filterMajors;
 
 // ---------- 动画队列 ----------
 const ANIMATED = new Set(['roll', 'move', 'card', 'buy', 'build', 'charge', 'money', 'mortgage', 'redeem', 'gojail', 'stay', 'jackpot', 'bankrupt', 'turn', 'quit', 'season', 'weather', 'calevent', 'caleventHit', 'tax', 'ach', 'skill', 'duel', 'item', 'shield', 'medal', 'voucher', 'medalBuy', 'medalGain', 'combo', 'demolish', 'cardBuild', 'calwave', 'gift', 'buff', 'invest', 'rollpay', 'draw', 'major_switch', 'endgame', 'mono',
@@ -1093,19 +1190,22 @@ async function handleAnim(e) {
     case 'build': {
       const grp = (BOARD[e.cell] && BOARD[e.cell].g) ? GROUPS[BOARD[e.cell].g] : '#e8b04b';
       if (e.hotel) {
-        SFX.hotel(); SFX.fanfare(); SFX.coinRain(); confettiBurst(90); fxCoinRain(34);
+        SFX.hotel(); SFX.fanfare(); SFX.coinRain(); SFX.crown(); confettiBurst(90); fxCoinRain(34);
         flashScreen('radial-gradient(circle at 50% 50%, rgba(255,228,140,.5), rgba(255,214,90,0) 62%)', 620);
         fxBurst(e.cell, { kind: 'star', n: 22, speed: 4.2, size: 5.4, life: 54, color: ['#ffd76a', '#fff1c2', '#e8b04b'], wave: { r: 92, color: '#e8b04b', life: 48 } });
+        upgradePillar(e.cell, '#e8b04b');
+        crownAt(e.cell, '#e8b04b');
       } else {
-        SFX.build(); SFX.level(); SFX.thud();
+        SFX.build(); SFX.level(); SFX.chip(); SFX.upgrade();
         fxBurst(e.cell, { kind: 'star', n: 14, speed: 3.2, size: 4.2, life: 42, color: [grp, '#ffd76a', '#ffffff'], lift: 0.6, wave: { r: 62, color: grp } });
+        upgradePillar(e.cell, grp);
       }
       buildAnim(e);
       await announce(`<span class="who">${esc(ownerName(e.pid))}</span> 在「${esc(BOARD[e.cell].name)}」${e.hotel ? '🏨 开出旅馆！' : '盖起一栋房 🏠'}`, e.hotel ? 2100 : 1600);
       break;
     }
     case 'charge': {
-      SFX.pay();
+      SFX.pay(); SFX.coinFly();
       if (e.creditor != null) fxAt(e.cell, `<div class="floaty minus">-¥${e.amount}</div>`);
       shakePlayer(e.pid);
       // 付款方溅出红色"破财"碎屑；收款方溅出金色火花（一眼看清钱往哪走）
@@ -1133,8 +1233,10 @@ async function handleAnim(e) {
     case 'jackpot': { SFX.jackpot(); SFX.fanfare(); SFX.coinRain(); confettiBurst(); fxCoinRain(30); flashScreen('radial-gradient(circle at 50% 46%, rgba(255,232,160,.45), rgba(255,214,90,0) 64%)', 600); flyCoin(POOL_PT(), cellCenter(playerCell(e.pid)), 8); await announce(`🎓 <span class="who">${esc(ownerName(e.pid))}</span> 领取教育基金 <span class="amt">¥${e.amount}</span>！`, 1950); break; }
     case 'endgame': { SFX.seasonDown(); flashScreen('linear-gradient(180deg, rgba(150,200,255,.4), rgba(120,160,220,0))', 900); await announce(`❄️ <b>经济寒冬来临！</b><br>第 ${e.round} 轮起银行停发工资`, 2300); break; }
     case 'bankrupt': {
-      SFX.bankrupt(); SFX.buzzer(); shakeBoard();
+      // v5.3：破产不再晃屏（用户反馈整屏晃太晕）—— 改成心跳低鸣 + 全屏灰化慢镜 + 红色冲击
+      SFX.bankrupt(); SFX.buzzer(); SFX.pulse();
       flashScreen('radial-gradient(circle at 50% 50%, rgba(200,40,40,.42), rgba(120,0,0,0) 62%)', 760);
+      greyMoment();
       fxBurst(playerCell(e.pid), { kind: 'shard', n: 26, speed: 4.6, size: 5, life: 64, color: ['#8a1c1c', '#c0392b', '#5b5b5b', '#3f3f3f'], gravity: 0.34 });
       await announce(`💀 <span class="who">${esc(ownerName(e.pid))}</span> 破产出局！`, 1850);
       break;
@@ -1199,9 +1301,10 @@ async function handleAnim(e) {
       break;
     }
     case 'tax': {
-      SFX.tax();
+      SFX.tax(); SFX.gavel();
       const its = e.items || [];
       its.forEach(it => pulseCell(playerCell(it.pid), '#8a6d1a'));
+      if (its.length) flyCoin(playerCell(its[0].pid), POOL_PT(), 4);
       const who = its.map(it => `<span class="who">${esc(ownerName(it.pid))}</span> ¥${it.amount}`).join(' · ');
       await announce(`🏛️ 物业税（大户）：${who}<br>共 <span class="amt">¥${e.total}</span> 入教育基金池`, 1900);
       break;
@@ -1219,13 +1322,14 @@ async function handleAnim(e) {
     }
     case 'ach': { SFX.ach(); SFX.fanfare(); confettiBurst(70); fxBurst(playerCell(e.pid), { kind: 'star', n: 20, speed: 3.8, size: 5, life: 52, color: ['#ffd76a', '#fff1c2', '#7a1522'], wave: { r: 84, color: '#e8b04b' } }); await achBanner(e); break; }
     case 'mono': {
-      // 集齐同色 3 所 → 金色礼花 + 三格同时脉冲 + 全屏金光 + 号角
-      SFX.fanfare(); SFX.coinRain(); SFX.ach();
+      // 集齐同色 3 所 → 金色礼花 + 三格同时脉冲 + 全屏金光 + 号角 + v5.3 皇冠落顶
+      SFX.fanfare(); SFX.coinRain(); SFX.ach(); SFX.crown();
       const gcol = GROUPS[e.g] || '#e8b04b';
       confettiBurst(110); fxCoinRain(38);
       flashScreen(`radial-gradient(circle at 50% 50%, ${gcol}88, ${gcol}00 66%)`, 780);
       pulseGroup(e.cells, '#e8b04b');
-      (e.cells || []).forEach((c, k) => setTimeout(() => fxBurst(c, { kind: 'star', n: 16, speed: 3.6, size: 4.6, life: 48, color: ['#ffd76a', gcol, '#ffffff'], lift: 0.8, wave: { r: 70, color: '#e8b04b' } }), k * 150));
+      (e.cells || []).forEach((c, k) => setTimeout(() => { fxBurst(c, { kind: 'star', n: 16, speed: 3.6, size: 4.6, life: 48, color: ['#ffd76a', gcol, '#ffffff'], lift: 0.8, wave: { r: 70, color: '#e8b04b' } }); upgradePillar(c, gcol); }, k * 150));
+      if (e.cells && e.cells.length) crownAt(e.cells[Math.floor(e.cells.length / 2)], gcol);
       await announce(`🏆 <b>垄断达成！</b><br><span class="who">${esc(ownerName(e.pid))}</span> 集齐 ${esc((e.g || '').toUpperCase())} 色组：${(e.names || []).map(n => esc(n)).join(' · ')}<br>裸地租金 <span class="amt">×3</span>`, 2500);
       break;
     }
@@ -1283,7 +1387,7 @@ async function handleAnim(e) {
     }
     case 'duel': { await duelAnim(e); break; }
     case 'demolish': {
-      SFX.demolish(); SFX.sweepDown(); shakeBoard();
+      SFX.demolish(); SFX.sweepDown(); SFX.gavel();
       const nm = e.name || (BOARD[e.cell] ? BOARD[e.cell].name : '');
       if (e.self) shakePlayer(e.pid);
       // 拆房：木屑 + 砖块碎块（带重力翻滚）+ 尘土环 + 轻微震屏
@@ -1321,7 +1425,14 @@ async function handleAnim(e) {
     case 'invest': { SFX.item(); await announce(`🔬 <span class="who">${esc(ownerName(e.pid))}</span> 投入科研经费 ¥${e.cost}，到期返还 ¥${e.back}`, 1500); break; }
     case 'rollpay': { await rollPayAnim(e); break; }
     case 'draw': { await drawCardsAnim(e); break; }
-    case 'turn': { SFX.turn(); render(); await sleep(520); break; }
+    case 'turn': {
+      // v5.3：轮到谁，谁的棋子脚下亮一圈本人主题色光环；轮到自己时再补一声轻钟
+      SFX.turn();
+      if (e.pid === myPid) SFX.roundBell();
+      const tp = S.players.find(p => p.id === e.pid);
+      pulseCell(playerCell(e.pid), (tp && tp.color) || '#e8b04b');
+      render(); await sleep(520); break;
+    }
     case 'land': await sleep(320); break;
     default: await sleep(90);   // 纯信息型事件（paid/log 等）不占用节拍
   }
@@ -1729,17 +1840,22 @@ function hexA(hex, a) {
 async function skillFx(e) {
   const mj = MAJORS[e.major] || {};
   const color = mj.fx || '#4a90d9';
-  SFX.skill(); SFX.sparkle();
+  const isActive = !!e.active;   // v5.3：主动技给更完整的一套演出（号角 + 横扫光束 + 双环）
+  if (isActive) { SFX.skillCast(); SFX.beam(); } else { SFX.skill(); }
+  SFX.sparkle();
   const cell = playerCell(e.pid);
   const [x, y] = cellCenter(cell);
   const pt = svgToScreen(x, y);
 
   // 1) 全屏染色闪光：所有人屏幕同步
   flashScreen(`radial-gradient(circle at 50% 50%, ${hexA(color, .40)}, ${hexA(color, .06)} 55%, ${hexA(color, 0)} 72%)`, 820);
+  // 1.5) v5.3：主动技额外扫一道横向光束（左→右，带主题色）
+  if (isActive) { skillBeam(color); pulseCell(cell, color); }
   // 2) 棋子处：脉冲 + 冲击波 + 星屑
   pulseCell(cell, color);
   fxBurst(cell, { kind: 'star', n: 22, speed: 3.8, size: 4.6, life: 48, color: [color, '#ffffff', '#ffe9a8'], wave: { r: 78, color, life: 44 } });
   fxBurst(cell, { kind: 'spark', n: 12, speed: 2.6, size: 3.2, life: 34, color: ['#ffffff', color] });
+  if (isActive) fxBurst(cell, { kind: 'star', n: 16, speed: 5.2, size: 3.6, life: 56, color: [color, '#ffffff'], wave: { r: 116, color, life: 52 } });
 
   // 3) 中央大横幅（图标 + 技能名 + 谁发的 + 效果）
   const d = document.createElement('div');
@@ -1892,7 +2008,7 @@ async function duelAnim(e) {
       const ws = wLeft ? sideA : sideB, ls = wLeft ? sideB : sideA;
       ws.classList.add('win'); ls.classList.add('lose');
       const wp = wLeft ? pa : pb;
-      setTimeout(() => { SFX.clash(); shakeBoard(); flashScreen('radial-gradient(circle at 50% 50%, rgba(255,214,140,.42), rgba(180,60,40,0) 62%)', 460); }, 60);
+      setTimeout(() => { SFX.clash(); SFX.glint(); shakeBoard(); flashScreen('radial-gradient(circle at 50% 50%, rgba(255,214,140,.42), rgba(180,60,40,0) 62%)', 460); }, 60);
       setTimeout(() => { fxBurst(wp, { kind: 'star', n: 20, speed: 4.6, size: 5.4, life: 48, color: ['#ffffff', '#ffd76a', '#ffb347'], wave: { r: 92, color: '#ffd76a', life: 40 } }); confettiBurst(70); }, 160);
       SFX.fanfare();
       const pct = e.pct ? `（输者现金的 ${Math.round(e.pct * 100)}%）` : '';
@@ -2042,9 +2158,9 @@ function drawWeather() {
         if (d.y < -12) d.y = H + 12; else if (d.y > H + 12) d.y = -12;
       }
       wxCtx.globalAlpha = 1;
-      // 阵雷闪
+      // 阵雷闪（v5.3：只保留闪光视觉，不再重复播放雷声——用户反馈"台风那个嗯一下的声音"太吵）
       s.next--;
-      if (s.next <= 0) { s.next = Math.round(WR(300, 780)); wxFlash = 9; SFX.thunder(); }
+      if (s.next <= 0) { s.next = Math.round(WR(300, 780)); wxFlash = 9; }
       if (wxFlash > 0) { wxCtx.fillStyle = `rgba(232,240,255,${wxFlash / 20})`; wxCtx.fillRect(0, 0, W, H); wxFlash--; }
       break;
     }
@@ -2147,7 +2263,9 @@ function diceAnim(d1, d2) {
     setTimeout(() => {
       clearInterval(iv);
       SFX.diceLand();
-      setTimeout(() => { try { SFX.thud(); shakeBoard(); } catch (e) {} }, sp(70));
+      // v5.3：骰子落定不再晃动整个屏幕（用户反馈"整屏晃一下"太晕），
+      // 改成只在骰子落点画一圈扩散涟漪 + 光晕，观感干净、不晕人。
+      setTimeout(() => { try { SFX.diceSettle(); diceRipple(box); } catch (e) {} }, sp(70));
       dice[0].innerHTML = dieDots(d1); dice[1].innerHTML = dieDots(d2);
       dice.forEach(d => { d.classList.remove('rolling'); d.classList.add('land'); });
       const im = document.createElement('div'); im.className = 'dice-impact';
@@ -2252,7 +2370,7 @@ function buildAnim(e) {
   }, 150);
   // ④ 收尾：旅馆震屏 + 礼花；普通房一圈上浮星光
   if (e.hotel) {
-    setTimeout(() => { shockwave(e.cell); shakeBoard(); confettiBurst(64); fxCoinRain(16); }, 460);
+    setTimeout(() => { shockwave(e.cell); crownAt(e.cell, grp); confettiBurst(64); fxCoinRain(16); }, 460);
   } else {
     setTimeout(() => fxBurst(e.cell, { kind: 'star', n: 10, speed: 2.4, size: 3.6, life: 36, lift: 0.9, color: [grp, '#ffd76a', '#ffffff'] }), 460);
   }
@@ -2268,6 +2386,48 @@ function shockwave(cell) {
   setTimeout(() => c.remove(), 900);
 }
 function shakeBoard() { const b = $('boardWrap'); b.style.animation = 'shake .5s'; setTimeout(() => b.style.animation = '', 520); }
+// v5.3：主动技横扫光束 —— 一道带主题色的光带从左扫到右，全屏可见
+function skillBeam(color) {
+  const d = document.createElement('div');
+  d.className = 'skill-beam';
+  d.style.setProperty('--sk', color || '#e8b04b');
+  $('fxLayer').appendChild(d);
+  setTimeout(() => d.remove(), 900);
+}
+// v5.3：盖楼 / 升级光柱 —— 从格子底部升起的竖直光柱 + 顶上星芒
+function upgradePillar(cell, color) {
+  const [x, y] = cellCenter(cell);
+  const pt = svgToScreen(x, y);
+  const d = document.createElement('div');
+  d.className = 'up-pillar';
+  d.style.left = pt[0] + 'px';
+  d.style.top = pt[1] + 'px';
+  d.style.setProperty('--up', color || '#e8b04b');
+  $('fxLayer').appendChild(d);
+  setTimeout(() => d.remove(), 1150);
+}
+// v5.3：破产「灰化慢镜」—— 棋盘瞬间褪色压暗再缓缓恢复，比晃屏更有"落幕"的重量感
+function greyMoment() {
+  const b = $('boardWrap');
+  if (!b) return;
+  b.classList.remove('grey-out');
+  void b.offsetWidth;
+  b.classList.add('grey-out');
+  setTimeout(() => b.classList.remove('grey-out'), 1500);
+}
+// v5.3：加冕皇冠 —— 落在指定格子（垄断 / 夺冠用）
+function crownAt(cell, color) {
+  const [x, y] = cellCenter(cell);
+  const pt = svgToScreen(x, y);
+  const d = document.createElement('div');
+  d.className = 'crown-pop';
+  d.innerHTML = '👑';
+  d.style.left = pt[0] + 'px';
+  d.style.top = pt[1] + 'px';
+  d.style.setProperty('--cr', color || '#e8b04b');
+  $('fxLayer').appendChild(d);
+  setTimeout(() => d.remove(), 1400);
+}
 // v5.1：拆除时的烟尘 + 坠落碎块（DOM 层，比纯 canvas 粒子更有"塌"的重量感）
 function collapseAt(cell, big) {
   const [x, y] = cellCenter(cell);
@@ -2326,6 +2486,23 @@ function trailAt(cell, r) {
   c.setAttribute('class', 'dust');
   $('board').appendChild(c);
   setTimeout(() => c.remove(), 560);
+}
+// v5.3：骰子落定涟漪 —— 替代原先「整个屏幕晃一下」的 shakeBoard()。
+// 以骰子落点为圆心画 3 圈扩散光环 + 一圈地面压痕，纯局部动效，不动整屏。
+function diceRipple(box) {
+  if (!box || !box.parentNode) return;
+  for (let i = 0; i < 3; i++) {
+    const r = document.createElement('i');
+    r.className = 'dice-ripple';
+    r.style.animationDelay = (i * 0.09).toFixed(2) + 's';
+    r.style.width = r.style.height = (54 + i * 16) + 'px';
+    box.appendChild(r);
+    setTimeout(() => r.remove(), 1000 + i * 100);
+  }
+  const fl = document.createElement('i');
+  fl.className = 'dice-flare';
+  box.appendChild(fl);
+  setTimeout(() => fl.remove(), 700);
 }
 function confettiBurst(count) {
   const cv = $('confetti'), ctx = cv.getContext('2d');
@@ -2634,15 +2811,19 @@ function renderTokens(s) {
   layer.querySelectorAll('.halo').forEach(h => h.remove());
   const byCell = {};
   s.players.filter(p => p.alive).forEach(p => { (byCell[p.pos] = byCell[p.pos] || []).push(p); });
-  // 当前行动者光环
+  // 当前行动者光环（v5.3：双环 + 外圈旋转虚线，比原来一圈实线更醒目）
   if (s.phase !== 'over' && s.phase !== 'lobby' && s.players[s.cur] && s.players[s.cur].alive) {
     const cur = s.players[s.cur];
     const [hx, hy] = cellCenter(cur.pos);
-    const halo = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    halo.setAttribute('cx', hx); halo.setAttribute('cy', hy); halo.setAttribute('r', 26);
-    halo.setAttribute('fill', 'none'); halo.setAttribute('stroke', '#e8b04b'); halo.setAttribute('stroke-width', 4);
-    halo.setAttribute('class', 'halo');
-    layer.appendChild(halo);
+    for (const [r, w, cls, col, dash] of [[30, 2.4, 'halo halo-dash', '#e8b04b', '9 7'], [24, 4, 'halo', cur.color || '#e8b04b', '']]) {
+      const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      c.setAttribute('cx', hx); c.setAttribute('cy', hy); c.setAttribute('r', r);
+      c.setAttribute('fill', 'none'); c.setAttribute('stroke', col); c.setAttribute('stroke-width', w);
+      if (dash) c.setAttribute('stroke-dasharray', dash);
+      c.setAttribute('class', cls);
+      c.style.transformOrigin = `${hx}px ${hy}px`;
+      layer.appendChild(c);
+    }
   }
   for (const p of s.players.filter(p => p.alive)) {
     const idx = byCell[p.pos].indexOf(p);
@@ -2651,7 +2832,12 @@ function renderTokens(s) {
     const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     g.setAttribute('transform', `translate(${cx + off[0]},${cy + off[1]})`);
     const active = s.phase !== 'over' && s.players[s.cur] && s.players[s.cur].id === p.id;
-    g.innerHTML = `<ellipse cy="15" rx="17" ry="6.5" fill="rgba(60,45,20,.32)"/><circle r="19" fill="${p.color}" stroke="#fff" stroke-width="4" class="${active ? 'tok-breathe' : ''}"/><circle cx="-6" cy="-6.6" r="7.4" fill="rgba(255,255,255,.55)"/><text y="6.6" text-anchor="middle" font-size="16" fill="#fff" font-weight="700" style="paint-order:stroke;stroke:rgba(0,0,0,.25);stroke-width:2.8px">${esc(p.name.slice(0, 1))}</text>`;
+    // v5.3：棋子加了外发光圈与更立体的投影，颜色更跳
+    g.innerHTML = `<ellipse cy="16" rx="18" ry="7" fill="rgba(60,45,20,.36)"/>`
+      + `<circle r="22.6" fill="none" stroke="${p.color}" stroke-width="3" opacity=".38"/>`
+      + `<circle r="19" fill="${p.color}" stroke="#fff" stroke-width="4" class="${active ? 'tok-breathe' : ''}"/>`
+      + `<circle cx="-6" cy="-6.6" r="7.4" fill="rgba(255,255,255,.6)"/>`
+      + `<text y="6.6" text-anchor="middle" font-size="16" fill="#fff" font-weight="700" style="paint-order:stroke;stroke:rgba(0,0,0,.25);stroke-width:2.8px">${esc(p.name.slice(0, 1))}</text>`;
     layer.appendChild(g);
     tokenEls[p.id] = g;
   }

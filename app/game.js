@@ -238,11 +238,104 @@ const MAJORS = {
            desc: '每次被罚停留休整时自动 +¥700' },
   marine:{ id: 'marine',name: '海洋科学', icon: '🌊', skill: '深海资源', mode: 'passive', uses: 3, fx: '#2f8fbf', tier: 3,
            desc: '每次经过起点自动 +¥1200' },
+
+  // ==================== v5.3 新增 27 个专业（覆盖面更广） ====================
+  // 说明：为了让新专业「加得进去、又不碰坏老专业」，v5.3 给 MAJORS 增加了一批
+  // **数据驱动字段**（salary / turnPct / lowRoll / rentGain / tollCut / buyCut /
+  // buildCut / mortgageUp / cardPos / cardAny / duelPip / branch / stayCash /
+  // immuneN / weather / rerollFree / noDemolish …）。老专业走原来的硬编码分支不动，
+  // 新专业只填表 + 通用层统一读取，互不干扰。
+  // ===== 工科 / 信息技术 =====
+  elec:  { id: 'elec',  name: '电气工程',   icon: '⚡', skill: '峰谷套利', mode: 'active', uses: 3, fx: '#f0b429', tier: 2,
+           desc: '发动后立刻 +¥1300，本回合买地 6 折' },
+  comm:  { id: 'comm',  name: '通信工程',   icon: '📡', skill: '信号覆盖', mode: 'passive', uses: 4, fx: '#3aa0d8', tier: 2,
+           desc: '每次经过起点 +¥1200；每抽到任意卡 +¥300',
+           salary: { amt: 1200, use: true }, cardAny: 300 },
+  ctrl:  { id: 'ctrl',  name: '控制科学',   icon: '🎛️', skill: '闭环调节', mode: 'passive', uses: 3, fx: '#5b7fd1', tier: 2,
+           desc: '单笔收租 ≥¥1200 时 +30%；被收租 ≥¥1200 时减免 25%',
+           rentGain: { min: 1200, pct: 0.30 }, tollCut: { min: 1200, pct: 0.25 } },
+  robot: { id: 'robot', name: '机器人工程', icon: '🦾', skill: '机械臂协作', mode: 'active', uses: 3, fx: '#e2663f', tier: 2,
+           desc: '发动后本回合盖房 −60%，并立刻 +¥1000' },
+  se:    { id: 'se',    name: '软件工程',   icon: '⌨️', skill: '敏捷迭代', mode: 'passive', uses: 4, fx: '#4a90d9', tier: 2,
+           desc: '每局 4 次免费重投骰子（不用付 ¥900）',
+           rerollFree: true },
+  ai:    { id: 'ai',    name: '人工智能',   icon: '🧠', skill: '模型推理', mode: 'active', uses: 3, fx: '#7a5fc1', tier: 2,
+           desc: '发动后本轮收租 +35%，并从总资产最高者处取 ¥800' },
+  imes:  { id: 'imes',  name: '智能制造',   icon: '🏭', skill: '柔性产线', mode: 'passive', uses: 3, fx: '#7b8fa8', tier: 2,
+           desc: '升级房产 −25%；每次升级成功再 +¥500',
+           buildCut: 0.25, buildCash: 500 },
+  power: { id: 'power', name: '能源与动力', icon: '🔥', skill: '热机循环', mode: 'passive', uses: 4, fx: '#e07a3f', tier: 2,
+           desc: '每轮开局 +¥400；每次经过起点 +¥800',
+           turnCash: 400, salary: { amt: 800, use: true } },
+  // ===== 理科 / 地球科学 =====
+  astro: { id: 'astro', name: '天文学',     icon: '🔭', skill: '眺望星河', mode: 'passive', uses: 3, fx: '#5468a8', tier: 2,
+           desc: '掷骰点数 ≥9 时自动 +¥1100',
+           highRoll: { min: 9, amt: 1100 } },
+  meteo: { id: 'meteo', name: '气象学',     icon: '🌦️', skill: '预报风向', mode: 'passive', uses: 4, fx: '#4f9ad1', tier: 2,
+           desc: '恶劣天气（雨/台风/雪/雾）里自己回合开始 +¥700',
+           weather: { kinds: ['rain', 'storm', 'snow', 'fog'], amt: 700 } },
+  geop:  { id: 'geop',  name: '地球物理',   icon: '🌏', skill: '地层探测', mode: 'passive', uses: 3, fx: '#8a7b52', tier: 2,
+           desc: '买入无主地产 85 折；每买下一块地再 +¥400',
+           buyCut: 0.15, buyCash: 400 },
+  or:    { id: 'or',    name: '运筹学',     icon: '🧮', skill: '资源调度', mode: 'active', uses: 3, fx: '#5f9ea0', tier: 2,
+           desc: '发动后立刻 +¥900，本回合移动 +3 步' },
+  // ===== 医农生 =====
+  nurs:  { id: 'nurs',  name: '护理学',     icon: '💉', skill: '悉心看护', mode: 'passive', uses: 4, fx: '#e05a9a', tier: 2,
+           desc: '被收租 ≥¥800 时自动减免 35%',
+           tollCut: { min: 800, pct: 0.35 } },
+  dent:  { id: 'dent',  name: '口腔医学',   icon: '🦷', skill: '牙科门诊', mode: 'passive', uses: 3, fx: '#57c1c0', tier: 2,
+           desc: '单笔收租 ≥¥1200 时自动 +45%',
+           rentGain: { min: 1200, pct: 0.45 } },
+  vet:   { id: 'vet',   name: '兽医学',     icon: '🐾', skill: '牲畜保险', mode: 'passive', uses: 3, fx: '#8fbf4a', tier: 2,
+           desc: '自己的地产免于被拆除；每次被收租减免 12%',
+           noDemolish: true, tollCut: { min: 0, pct: 0.12 } },
+  hort:  { id: 'hort',  name: '园艺学',     icon: '🌷', skill: '嫁接育种', mode: 'passive', uses: 3, fx: '#d1568f', tier: 3,
+           desc: '每次经过起点 +¥1100；升级房产 −12%',
+           salary: { amt: 1100, use: true }, buildCut: 0.12 },
+  forest:{ id: 'forest',name: '林学',       icon: '🌲', skill: '封山育林', mode: 'passive', uses: 3, fx: '#3fa76a', tier: 3,
+           desc: '每轮开局 +¥350；被罚停留休整时 +¥600',
+           turnCash: 350, stayCash: 600 },
+  // ===== 人文社科 / 管理 =====
+  acc:   { id: 'acc',   name: '会计学',     icon: '🧾', skill: '精算审计', mode: 'passive', uses: 3, fx: '#c9a227', tier: 2,
+           desc: '买入地产 85 折；被收租 ≥¥1000 时减免 25%',
+           buyCut: 0.15, tollCut: { min: 1000, pct: 0.25 } },
+  trade: { id: 'trade', name: '国际贸易',   icon: '🚢', skill: '跨境套利', mode: 'passive', uses: 4, fx: '#2f8fbf', tier: 2,
+           desc: '每次经过起点 +¥1000；每抽到任意卡 +¥350',
+           salary: { amt: 1000, use: true }, cardAny: 350 },
+  mkt:   { id: 'mkt',   name: '市场营销',   icon: '📣', skill: '带货直播', mode: 'active', uses: 3, fx: '#e0803f', tier: 2,
+           desc: '发动后立刻 +¥1200，其他每位玩家再各付你 ¥250' },
+  hr:    { id: 'hr',    name: '人力资源管理', icon: '🧑‍💼', skill: '团队激励', mode: 'passive', uses: 3, fx: '#a8823f', tier: 3,
+           desc: '回合开始时现金 +3%；被罚停留休整时 +¥700',
+           turnPct: 0.03, stayCash: 700 },
+  tourism:{ id: 'tourism', name: '旅游管理', icon: '🧳', skill: '导游外快', mode: 'passive', uses: 3, fx: '#c86a3f', tier: 3,
+           desc: '进入岔路时 +¥900；每次经过起点 +¥700',
+           branch: 900, salary: { amt: 700, use: true } },
+  edu:   { id: 'edu',   name: '教育学',     icon: '📚', skill: '因材施教', mode: 'passive', uses: 4, fx: '#9a7b5a', tier: 3,
+           desc: '每轮开局 +¥350；抽到负面卡时自动重抽（4 次）',
+           turnCash: 350, negReroll: true },
+  hist:  { id: 'hist',  name: '历史学',     icon: '🏺', skill: '考古发现', mode: 'passive', uses: 3, fx: '#a8823f', tier: 3,
+           desc: '掷骰点数 ≤4 时发掘出文物 +¥900；买入无主地产 9 折',
+           lowRoll: { max: 4, amt: 900 }, buyCut: 0.10 },
+  soc:   { id: 'soc',   name: '社会学',     icon: '🧑‍🤝‍🧑', skill: '田野调查', mode: 'passive', uses: 3, fx: '#8a7f9a', tier: 3,
+           desc: '每抽到一张机会 / 命运卡 +¥450',
+           cardAny: 450 },
+  // ===== 艺术 / 设计 / 传媒 =====
+  design:{ id: 'design',name: '工业设计',   icon: '🖌️', skill: '人机工学', mode: 'passive', uses: 3, fx: '#d1619a', tier: 3,
+           desc: '升级房产 −18%；买入地产 −8%',
+           buildCut: 0.18, buyCut: 0.08 },
+  film:  { id: 'film',  name: '影视传媒',   icon: '🎬', skill: '院线首映', mode: 'active', uses: 3, fx: '#b04a9a', tier: 2,
+           desc: '发动后立刻 +¥1500，本轮自己收租 +25%' },
 };
 const MAJOR_KEYS = [
   'mech', 'newe', 'fin', 'cs',
   'econ', 'med', 'pharm', 'law', 'arch', 'chem', 'auto', 'ee', 'math', 'agri', 'stat', 'pe', 'phil', 'mil', 'phys', 'lang', 'art', 'mse', 'env', 'civil',
   'geol', 'aero', 'bio', 'drama', 'music', 'psych', 'news', 'food', 'marine',
+  // v5.3 新增 27 个
+  'elec', 'comm', 'ctrl', 'robot', 'se', 'ai', 'imes', 'power',
+  'astro', 'meteo', 'geop', 'or',
+  'nurs', 'dent', 'vet', 'hort', 'forest',
+  'acc', 'trade', 'mkt', 'hr', 'tourism', 'edu', 'hist', 'soc',
+  'design', 'film',
 ];
 
 // ---------- 成就 ----------
@@ -972,13 +1065,20 @@ class Room {
     this.clearTimer(); this.pendingReroll = null;
     const cost = this.rerollCostFor(p);
     if (p.cash < cost) { this.execRoll(p); return; }
-    p.cash -= cost;
+    const freeRoll = cost === 0 && (MAJORS[p.major] || {}).rerollFree && p.skillLeft > 0;
+    if (freeRoll) p.skillLeft--;
+    else { p.cash -= cost; this.addToFund(Math.round(cost * FUND_SHARE)); }   // v5.0：重掷花费的 1/3 进教育基金池
     p.rerollUsed = true;
-    this.addToFund(Math.round(cost * FUND_SHARE));   // v5.0：重掷花费的 1/3 进教育基金池
     const [d1, d2] = this.rollDice(p);
     this.dice = [d1, d2];
-    this.addLog(`🎲 ${p.name} 花 ¥${cost} 重投一次：${d1} + ${d2} = ${d1 + d2}`);
-    this.ev({ t: 'item', pid: p.id, item: 'reroll', cost, name: '重掷骰', detail: `重投 ${d1}+${d2}` });
+    if (freeRoll) {
+      const mj = MAJORS[p.major] || {};
+      this.addLog(`${mj.icon} ${p.name} 发动【${mj.skill}】免费重投一次：${d1} + ${d2} = ${d1 + d2}`);
+      this.ev({ t: 'skill', pid: p.id, major: p.major, name: mj.skill, detail: `免费重投 ${d1}+${d2}`, active: false });
+    } else {
+      this.addLog(`🎲 ${p.name} 花 ¥${cost} 重投一次：${d1} + ${d2} = ${d1 + d2}`);
+      this.ev({ t: 'item', pid: p.id, item: 'reroll', cost, name: '重掷骰', detail: `重投 ${d1}+${d2}` });
+    }
     this.ev({ t: 'roll', pid: p.id, d1, d2 });
     this.execRoll(p);
   }
@@ -1020,6 +1120,16 @@ class Room {
       this.addLog(`🛰️ ${p.name} 发动【一飞冲天】+¥1000`);
       this.ev({ t: 'skill', pid: p.id, major: 'aero', name: '一飞冲天', detail: '+¥1000' });
       this.ev({ t: 'money', pid: p.id, amount: 1000, reason: '一飞冲天' });
+    }
+    // v5.3：通用被动 —— 进入岔路收益（branch）
+    {
+      const amj = MAJORS[p.major] || {};
+      if (amj.branch && p.skillLeft > 0) {
+        p.skillLeft--; p.cash += amj.branch;
+        this.addLog(`${amj.icon} ${p.name} 发动【${amj.skill}】+¥${amj.branch}`);
+        this.ev({ t: 'skill', pid: p.id, major: p.major, name: amj.skill, detail: `+¥${amj.branch}` });
+        this.ev({ t: 'money', pid: p.id, amount: amj.branch, reason: amj.skill });
+      }
     }
     this.resolveCell(p);
   }
@@ -1123,6 +1233,54 @@ class Room {
         this.ev({ t: 'money', pid: p.id, amount: take, reason: '读心术' });
         return `从 ${rich.name} 处取得 ¥${take}`;
       }
+      // ===== v5.3 新增主动技 =====
+      case 'elec': {   // 峰谷套利：立刻 +¥1300，本回合买地 6 折
+        p.buyCutTurn = 0.4; p.cash += 1300;
+        this.ev({ t: 'money', pid: p.id, amount: 1300, reason: '峰谷套利' });
+        return '+¥1300，本回合买地 6 折';
+      }
+      case 'robot': {  // 机械臂协作：本回合盖房 −60%，立刻 +¥1000
+        p.buildCutTurn = 0.6; p.cash += 1000;
+        this.ev({ t: 'money', pid: p.id, amount: 1000, reason: '机械臂协作' });
+        return '+¥1000，本回合盖房 −60%';
+      }
+      case 'ai': {     // 模型推理：本轮收租 +35%，并从总资产最高者处取 ¥800
+        p.rentBuff = (p.rentBuff || 0) + 0.35;
+        const others = this.alive().filter(q => q.id !== p.id);
+        let got = 0;
+        if (others.length) {
+          let rich = others[0];
+          for (const q of others) if (this.netWorth(q) > this.netWorth(rich)) rich = q;
+          got = Math.min(800, Math.max(0, rich.cash));
+          rich.cash -= got; p.cash += got;
+          this.ev({ t: 'money', pid: rich.id, amount: -got, reason: '被模型推理' });
+          this.ev({ t: 'money', pid: p.id, amount: got, reason: '模型推理' });
+        }
+        return `本轮收租 +35%${got > 0 ? `，取得 ¥${got}` : ''}`;
+      }
+      case 'or': {     // 资源调度：立刻 +¥900，本回合移动 +3 步
+        p.buffSteps = (p.buffSteps || 0) + 3; p.cash += 900;
+        this.ev({ t: 'money', pid: p.id, amount: 900, reason: '资源调度' });
+        return '+¥900，本回合移动 +3 步';
+      }
+      case 'mkt': {    // 带货直播：立刻 +¥1200，其他每位玩家各付 ¥250
+        p.cash += 1200;
+        this.ev({ t: 'money', pid: p.id, amount: 1200, reason: '带货直播' });
+        let extra = 0;
+        for (const q of this.alive()) {
+          if (q.id === p.id) continue;
+          const pay = Math.min(250, Math.max(0, q.cash));
+          q.cash -= pay; p.cash += pay; extra += pay;
+          this.ev({ t: 'money', pid: q.id, amount: -pay, reason: '带货直播·坑位费' });
+        }
+        if (extra > 0) this.ev({ t: 'money', pid: p.id, amount: extra, reason: '带货直播·坑位费' });
+        return `+¥${1200 + extra}`;
+      }
+      case 'film': {   // 院线首映：立刻 +¥1500，本轮自己收租 +25%
+        p.rentBuff = (p.rentBuff || 0) + 0.25; p.cash += 1500;
+        this.ev({ t: 'money', pid: p.id, amount: 1500, reason: '院线首映' });
+        return '+¥1500，本轮收租 +25%';
+      }
       default: return '';
     }
   }
@@ -1159,6 +1317,13 @@ class Room {
     else if (key === 'mech') go = p.cash >= 1200;
     else if (key === 'psych' || key === 'music') go = p.skillLeft > 0 && this.alive().length > 1;
     else if (key === 'mse') go = p.skillLeft > 0;
+    // v5.3 新增主动技的 AI 判断（没把握就先留着，别浪费次数）
+    else if (key === 'elec') go = p.cash >= 1200;
+    else if (key === 'robot') go = p.cash >= 1000;
+    else if (key === 'ai') go = this.alive().length > 1;
+    else if (key === 'mkt') go = this.alive().length > 1;
+    else if (key === 'film') go = p.skillLeft > 0;
+    else if (key === 'or') go = p.skillLeft > 0;
     void mj;
     if (go) this.useSkill(p); else this.skipSkill(p);
   }
@@ -1174,6 +1339,7 @@ class Room {
     p.rerollUsed = false;               // 重掷骰每回合重置
     p.skillUsedThisTurn = false;        // v5.1 主动技：本回合可询问一次
     p.buildCutTurn = 0;                 // v5.1 主动技临时折扣到期
+    p.buyCutTurn = 0;                   // v5.3 主动技「峰谷套利」临时买地折扣到期
     p.autoBonus = false;                // v5.1 自动化落点奖励到期
     // rentBuff / defBuff 是「本轮」持续：上一次自己回合发动后，一直保留到这一次自己回合才清零
     p.rentBuff = 0;                     // v5.1：收租加成到期
@@ -1193,6 +1359,14 @@ class Room {
         this.ev({ t: 'skill', pid: p.id, major: 'food', name: '能量补给', detail: '+¥700' });
         this.ev({ t: 'money', pid: p.id, amount: 700, reason: '能量补给' });
       }
+      // v5.3：通用被动 —— 被罚停留补贴（stayCash）
+      const smj = MAJORS[p.major] || {};
+      if (smj.stayCash && p.skillLeft > 0) {
+        p.skillLeft--; p.cash += smj.stayCash;
+        this.addLog(`${smj.icon || '✨'} ${p.name} 发动【${smj.skill}】+¥${smj.stayCash}`);
+        this.ev({ t: 'skill', pid: p.id, major: p.major, name: smj.skill, detail: `+¥${smj.stayCash}` });
+        this.ev({ t: 'money', pid: p.id, amount: smj.stayCash, reason: smj.skill });
+      }
       this.endTurn();
       return;
     }
@@ -1205,6 +1379,8 @@ class Room {
       this.ev({ t: 'skill', pid: p.id, major: 'bio', name: '细胞增殖', detail: `+¥${gain}` });
       this.ev({ t: 'money', pid: p.id, amount: gain, reason: '细胞增殖' });
     }
+    // v5.3：通用被动 —— 回合开始类收益（每轮补贴 / 现金流百分比 / 天气红利）
+    this.applyTurnStartPassives(p);
     // 主动技：先问一句要不要发动，选完再掷骰
     if (this.openSkillPrompt(p)) return;
     this.schedule();
@@ -1341,6 +1517,22 @@ class Room {
       this.ev({ t: 'skill', pid: p.id, major: 'stat', name: '数据洞察', detail: '+¥800' });
       this.ev({ t: 'money', pid: p.id, amount: 800, reason: '数据洞察' });
     }
+    // v5.3：通用被动 —— 点数相关（低点数补贴 / 高点数补贴 / 低点数多走）
+    {
+      const rmj = MAJORS[p.major] || {};
+      if (rmj.lowRoll && p.skillLeft > 0 && raw <= rmj.lowRoll.max) {
+        p.skillLeft--; p.cash += rmj.lowRoll.amt;
+        this.addLog(`${rmj.icon} ${p.name} 发动【${rmj.skill}】+¥${rmj.lowRoll.amt}`);
+        this.ev({ t: 'skill', pid: p.id, major: p.major, name: rmj.skill, detail: `+¥${rmj.lowRoll.amt}` });
+        this.ev({ t: 'money', pid: p.id, amount: rmj.lowRoll.amt, reason: rmj.skill });
+      }
+      if (rmj.highRoll && p.skillLeft > 0 && raw >= rmj.highRoll.min) {
+        p.skillLeft--; p.cash += rmj.highRoll.amt;
+        this.addLog(`${rmj.icon} ${p.name} 发动【${rmj.skill}】+¥${rmj.highRoll.amt}`);
+        this.ev({ t: 'skill', pid: p.id, major: p.major, name: rmj.skill, detail: `+¥${rmj.highRoll.amt}` });
+        this.ev({ t: 'money', pid: p.id, amount: rmj.highRoll.amt, reason: rmj.skill });
+      }
+    }
     if (steps < 1) steps = 1;
     if (steps !== raw) this.addLog(`${p.name} 实际前进 ${steps} 步`);
 
@@ -1420,7 +1612,12 @@ class Room {
   fundCap() { return this.facIs('finance') ? 25000 : FUND_CAP; }
   facFine(amt) { return this.facIs('med') ? Math.round(amt * 1.2) : amt; }        // 医学：罚款类支出 +20%
   facBranch(amt) { return this.facIs('intl') ? Math.round(amt * 1.12) : amt; }    // 国际：岔路奖励 ×1.12
-  rerollCostFor(p) { return (this.facIs('sports') && !p.rerollUsed) ? 900 : REROLL_COST; }  // 文体：每轮首次重投 ¥900
+  // v5.2 文体：每轮首次重投 ¥900；v5.3 软件工程·敏捷迭代：有次数时重投免费
+  rerollCostFor(p) {
+    const mj = MAJORS[p.major] || {};
+    if (mj.rerollFree && p.skillLeft > 0) return 0;
+    return (this.facIs('sports') && !p.rerollUsed) ? 900 : REROLL_COST;
+  }
   // v5.2：统一的「停留」入口 —— 师范校区发的「免停留卡」在这里生效（只对纯惩罚性停留有效）
   applyStay(p, turns, why) {
     if ((p.stayFree || 0) > 0) {
@@ -1590,6 +1787,15 @@ class Room {
           this.addLog(`📈 ${owner.name} 发动【资本运作】+¥${bonus}`);
           this.ev({ t: 'skill', pid: owner.id, major: 'econ', name: '资本运作', detail: `+¥${bonus}` });
         }
+        // v5.3：通用被动 —— 收租加成（rentGain）
+        {
+          const omj = MAJORS[owner.major] || {};
+          if (omj.rentGain && owner.skillLeft > 0 && rent >= omj.rentGain.min) {
+            const bonus = Math.round(rent * omj.rentGain.pct); rent += bonus; owner.skillLeft--;
+            this.addLog(`${omj.icon} ${owner.name} 发动【${omj.skill}】+¥${bonus}`);
+            this.ev({ t: 'skill', pid: owner.id, major: owner.major, name: omj.skill, detail: `+¥${bonus}` });
+          }
+        }
         // ===== 付租方减免 =====
         // 被动：物理·守恒定律（≥¥1200 时 −35%）
         if (p.major === 'phys' && p.skillLeft > 0 && rent >= 1200) {
@@ -1608,6 +1814,15 @@ class Room {
           const saved = Math.round(rent * 0.15); rent -= saved; p.skillLeft--;
           this.addLog(`♻️ ${p.name} 发动【循环利用】减免 ¥${saved}`);
           this.ev({ t: 'skill', pid: p.id, major: 'env', name: '循环利用', detail: `-${saved}` });
+        }
+        // v5.3：通用被动 —— 付租减免（tollCut；min=0 表示无门槛）
+        {
+          const pmj = MAJORS[p.major] || {};
+          if (pmj.tollCut && p.skillLeft > 0 && rent > 0 && rent >= (pmj.tollCut.min || 0)) {
+            const saved = Math.round(rent * pmj.tollCut.pct); rent -= saved; p.skillLeft--;
+            this.addLog(`${pmj.icon} ${p.name} 发动【${pmj.skill}】减免 ¥${saved}`);
+            this.ev({ t: 'skill', pid: p.id, major: p.major, name: pmj.skill, detail: `-¥${saved}` });
+          }
         }
         // 主动技：药学·对症下药（本轮被收租 −60%）
         if ((p.defBuff || 0) > 0 && rent > 0) {
@@ -1676,6 +1891,15 @@ class Room {
           this.addLog(`🎖️ ${p.name} 发动【战术压制】，擂台点数 +1`);
           this.ev({ t: 'skill', pid: p.id, major: 'mil', name: '战术压制', detail: '点数 +1' });
         }
+        // v5.3：通用被动 —— 擂台点数加成（duelPip）
+        {
+          const dmj = MAJORS[p.major] || {};
+          if (dmj.duelPip && p.skillLeft > 0) {
+            a += dmj.duelPip; p.skillLeft--;
+            this.addLog(`${dmj.icon} ${p.name} 发动【${dmj.skill}】，擂台点数 +${dmj.duelPip}`);
+            this.ev({ t: 'skill', pid: p.id, major: p.major, name: dmj.skill, detail: `点数 +${dmj.duelPip}` });
+          }
+        }
         if (a === b) {
           this.addLog(`⚔️ 擂台！${p.name}(${a}) 与 ${opp.name}(${b}) 战成平手，各回各家`);
           this.ev({ t: 'duel', pid: p.id, opp: opp.id, a, b, label: '辩论擂台', winner: null, amount: 0 });
@@ -1697,6 +1921,16 @@ class Room {
           this.addLog(`🎖️ ${winner.name} 乘胜追击【战术压制】+¥500`);
           this.ev({ t: 'skill', pid: winner.id, major: 'mil', name: '战术压制', detail: '胜者 +¥500' });
           this.ev({ t: 'money', pid: winner.id, amount: 500, reason: '战术压制' });
+        }
+        // v5.3：通用被动 —— 擂台获胜奖励（duelWin）
+        {
+          const wmj = MAJORS[winner.major] || {};
+          if (wmj.duelWin && winner.skillLeft > 0) {
+            winner.skillLeft--; winner.cash += wmj.duelWin;
+            this.addLog(`${wmj.icon} ${winner.name} 乘胜追击【${wmj.skill}】+¥${wmj.duelWin}`);
+            this.ev({ t: 'skill', pid: winner.id, major: winner.major, name: wmj.skill, detail: `胜者 +¥${wmj.duelWin}` });
+            this.ev({ t: 'money', pid: winner.id, amount: wmj.duelWin, reason: wmj.skill });
+          }
         }
         this.aiChat(loser, pick(['😵', '😤']), true);
         this.aiChat(winner, pick(['😎', '🤣']), true);
@@ -1988,16 +2222,35 @@ class Room {
     if (!freeNow && !mortgageBuy && !usedDiscount && p.major === 'geol' && p.skillLeft > 0 && p.cash >= Math.max(1, Math.round(basePrice * 0.9))) {
       price = Math.max(1, Math.round(basePrice * 0.9)); geolCut = true;
     }
+    // v5.3：通用买地折扣 —— 主动技临时折扣（buyCutTurn，如电气·峰谷套利）优先，其次被动 buyCut
+    let genCut = 0, genTurn = false;
+    const bmj = MAJORS[p.major] || {};
+    if (!freeNow && !mortgageBuy && !usedDiscount && !mathCut && !geolCut && p.skillLeft > 0) {
+      if ((p.buyCutTurn || 0) > 0) { genCut = p.buyCutTurn; genTurn = true; }
+      else if (bmj.buyCut) { genCut = bmj.buyCut; }
+      if (genCut > 0) price = Math.max(1, Math.round(basePrice * (1 - genCut)));
+    }
     if (p.cash < price) { this.declineBuy(p); return; }
     if (mathCut || geolCut) {
       p.skillLeft--;
       this.addLog(`${mathCut ? '📐' : '🗺️'} ${p.name} 发动【${mathCut ? '精算砍价' : '勘探评估'}】，买价 ¥${basePrice} → ¥${price}`);
       this.ev({ t: 'skill', pid: p.id, major: mathCut ? 'math' : 'geol', name: mathCut ? '精算砍价' : '勘探评估', detail: `省 ¥${basePrice - price}` });
     }
+    if (genCut > 0) {
+      if (!genTurn) p.skillLeft--;   // 被动折扣消耗次数；主动技的临时折扣在发动时已扣
+      this.addLog(`${bmj.icon || '✨'} ${p.name} 发动【${bmj.skill}】，买价 ¥${basePrice} → ¥${price}`);
+      this.ev({ t: 'skill', pid: p.id, major: p.major, name: bmj.skill, detail: `省 ¥${basePrice - price}`, active: genTurn });
+      // v5.3：部分地区研究类专业买地还有现金返利（如地球物理）
+      if (bmj.buyCash) {
+        p.cash += bmj.buyCash;
+        this.addLog(`${bmj.icon} ${p.name} 的【${bmj.skill}】勘探返利 +¥${bmj.buyCash}`);
+        this.ev({ t: 'money', pid: p.id, amount: bmj.buyCash, reason: bmj.skill });
+      }
+    }
     p.cash -= price;
     cs.own = p.id; cs.mortgaged = false; cs.mortgageAt = 0;
     if (p.discount) p.discount = false;
-    this.addLog(`${p.name} 以 ¥${price} 买下「${c.name}」${usedDiscount ? '（8折卡生效）' : ''}${mathCut ? '（精算砍价）' : ''}${geolCut ? '（勘探评估）' : ''}`);
+    this.addLog(`${p.name} 以 ¥${price} 买下「${c.name}」${usedDiscount ? '（8折卡生效）' : ''}${mathCut ? '（精算砍价）' : ''}${geolCut ? '（勘探评估）' : ''}${genCut > 0 ? `（${bmj.skill}）` : ''}`);
     this.ev({ t: 'buy', pid: p.id, cell, price, mortgageBuy: !!mortgageBuy });
     this.pendingBuy = null;
     this.checkOwnership(p);
@@ -2083,6 +2336,12 @@ class Room {
     if (p.major === 'mech' && (p.buildCutTurn || 0) > 0) { mul *= (1 - p.buildCutTurn); usedCuts.push(['精益制造', 'mech', true]); }
     if (p.major === 'arch' && p.skillLeft > 0) { mul *= 0.65; usedCuts.push(['造价管理', 'arch', false]); }
     if (p.major === 'civil' && p.skillLeft > 0) { mul *= 0.8; usedCuts.push(['基建加固', 'civil', false]); }
+    // v5.3：通用盖房折扣 —— 主动技临时折扣（buildCutTurn）优先，其次被动 buildCut（消耗次数）
+    if (p.major !== 'mech' && p.major !== 'arch' && p.major !== 'civil') {
+      const gmj = MAJORS[p.major] || {};
+      if ((p.buildCutTurn || 0) > 0) { mul *= (1 - p.buildCutTurn); usedCuts.push([gmj.skill || '主动技', p.major, true]); }
+      else if (gmj.buildCut && p.skillLeft > 0) { mul *= (1 - gmj.buildCut); usedCuts.push([gmj.skill, p.major, false]); }
+    }
     if (mul < 0.3) mul = 0.3;                       // 折扣下限，避免费用被压到 0
     const price = this.isFreeRound() ? 0 : Math.max(1, Math.round(baseCost * mul));   // v5.2 免费轮：盖楼不要钱
     if (cs.level < 4 && p.cash >= price) {
@@ -2099,6 +2358,13 @@ class Room {
         for (const [, , actv] of usedCuts) if (!actv) p.skillLeft--;
       }
       p.cash -= price; cs.level++;
+      // v5.3：通用 —— 升级成功后的现金返利（buildCash，如智能制造·柔性产线）
+      const bmj2 = MAJORS[p.major] || {};
+      if (bmj2.buildCash && usedCuts.some(x => x[1] === p.major)) {
+        p.cash += bmj2.buildCash;
+        this.addLog(`${bmj2.icon} ${p.name} 的【${bmj2.skill}】产线返利 +¥${bmj2.buildCash}`);
+        this.ev({ t: 'money', pid: p.id, amount: bmj2.buildCash, reason: bmj2.skill });
+      }
       const isHotel = cs.level === 4;
       this.addLog(`${p.name} 花 ¥${price} 将「${c.name}」升到 Lv${cs.level}${isHotel ? ' —— 旅馆落成！！' : ''}`);
       this.ev({ t: 'build', pid: p.id, cell, level: cs.level, cost: price, hotel: isHotel });
@@ -2223,6 +2489,16 @@ class Room {
       mp += bonus; p.skillLeft--;
       this.addLog(`💰 ${p.name} 发动【杠杆操作】，抵押多拿 ¥${bonus}`);
       this.ev({ t: 'skill', pid: p.id, major: 'fin', name: '杠杆操作', detail: `+¥${bonus}` });
+    }
+    // v5.3：通用被动 —— 抵押加成（mortgageUp）
+    {
+      const mmj = MAJORS[p.major] || {};
+      if (mmj.mortgageUp && p.skillLeft > 0) {
+        const bonus = Math.round(mp * mmj.mortgageUp);
+        mp += bonus; p.skillLeft--;
+        this.addLog(`${mmj.icon} ${p.name} 发动【${mmj.skill}】，抵押多拿 ¥${bonus}`);
+        this.ev({ t: 'skill', pid: p.id, major: p.major, name: mmj.skill, detail: `+¥${bonus}` });
+      }
     }
     cs.mortgaged = true;
     cs.mortgageAt = this.round;   // v5.1：记录抵押轮次，用于计算赎回解锁轮
@@ -2349,6 +2625,18 @@ class Room {
         card = c2;
       }
     }
+    // v5.3：通用被动 —— 负面卡重抽（negReroll，如教育学 · 因材施教）
+    if (p.major !== 'news') {
+      const nmj = MAJORS[p.major] || {};
+      if (nmj.negReroll && p.skillLeft > 0 && this.isBadCard(card)) {
+        const c2 = pick(deck);
+        if (!this.isBadCard(c2)) {
+          p.skillLeft--;
+          this.ev({ t: 'skill', pid: p.id, major: p.major, name: nmj.skill, detail: '重抽卡牌' });
+          card = c2;
+        }
+      }
+    }
     this.addLog(`${p.name} 抽到${type === 'chance' ? '机会' : '命运'}卡「${card.name}」：${card.desc}`);
     this.ev({ t: 'card', pid: p.id, type, card });
     // 专业：艺术 · 灵感迸发（抽到正面机会卡额外 +¥800）
@@ -2377,6 +2665,19 @@ class Room {
       this.addLog(`📚 【书香校区】${p.name} 抽到机会卡，额外 +¥250`);
       this.ev({ t: 'money', pid: p.id, amount: 250, reason: '书香校区' });
     }
+    // v5.3：通用被动 —— 抽卡收益（cardAny 任意卡；cardPos 仅正面机会卡）
+    {
+      const cmj = MAJORS[p.major] || {};
+      let amt = 0;
+      if (cmj.cardAny && p.skillLeft > 0) amt = cmj.cardAny;
+      else if (cmj.cardPos && type === 'chance' && p.skillLeft > 0 && !this.isBadCard(card) && card.kind !== 'each') amt = cmj.cardPos;
+      if (amt > 0) {
+        p.skillLeft--; p.cash += amt;
+        this.addLog(`${cmj.icon} ${p.name} 发动【${cmj.skill}】+¥${amt}`);
+        this.ev({ t: 'skill', pid: p.id, major: p.major, name: cmj.skill, detail: `+¥${amt}` });
+        this.ev({ t: 'money', pid: p.id, amount: amt, reason: cmj.skill });
+      }
+    }
     this.applyCard(p, card, type);
   }
   isBadCard(c) {
@@ -2395,19 +2696,29 @@ class Room {
   buildSum(p) { return this.propCells(p).reduce((s, i) => s + this.cells[i].level, 0); }
   aliveList() { return this.players.filter(q => q.alive); }
   // v5.1：法学 · 法律援助 / 哲学 · 批判思维：抵消一次不利判定
+  // v5.3：通用化 —— 任何带 immuneN 的专业都走这里
   immune(p, why) {
-    if (!p || (p.major !== 'law' && p.major !== 'phil') || p.skillLeft <= 0) return false;
+    if (!p || p.skillLeft <= 0) return false;
+    const mj = MAJORS[p.major] || {};
+    const ok = (p.major === 'law' || p.major === 'phil') || (mj.immuneN > 0);
+    if (!ok) return false;
     p.skillLeft--;
-    const mj = MAJORS[p.major];
     this.addLog(`${mj.icon} ${p.name} 发动【${mj.skill}】，免除「${why}」`);
     this.ev({ t: 'skill', pid: p.id, major: p.major, name: mj.skill, detail: `免除「${why}」` });
     return true;
   }
   // v5.1：土木工程 · 基建加固 —— 自己的地产免于被拆除（消耗 1 次）
+  // v5.3：通用化 —— 带 noDemolish 的专业常驻免拆（不消耗次数）
   landImmune(p, why) {
-    if (!p || p.major !== 'civil' || p.skillLeft <= 0) return false;
+    if (!p) return false;
+    const mj = MAJORS[p.major] || {};
+    if (mj.noDemolish) {
+      this.addLog(`${mj.icon} ${p.name} 的【${mj.skill}】护住了「${why}」`);
+      this.ev({ t: 'skill', pid: p.id, major: p.major, name: mj.skill, detail: `常驻·免除「${why}」` });
+      return true;
+    }
+    if (p.major !== 'civil' || p.skillLeft <= 0) return false;
     p.skillLeft--;
-    const mj = MAJORS.civil;
     this.addLog(`${mj.icon} ${p.name} 发动【基建加固】，保住了「${why}」`);
     this.ev({ t: 'skill', pid: p.id, major: 'civil', name: '基建加固', detail: `免除「${why}」` });
     return true;
@@ -2737,6 +3048,21 @@ class Room {
     this.ev({ t: 'move', pid: p.id, path, final: pos });
     this.resolveCell(p);
   }
+  // v5.3：通用「回合开始」被动 —— 每轮固定补贴 / 现金流百分比 / 恶劣天气红利。
+  // 每个专业最多命中一条，命中即消耗 1 次技能次数，避免一回合被薅多次。
+  applyTurnStartPassives(p) {
+    const mj = MAJORS[p.major] || {};
+    if (!mj || p.skillLeft <= 0) return;
+    let gain = 0, tag = '';
+    if (mj.turnCash) { gain = mj.turnCash; tag = '每轮补贴'; }
+    else if (mj.turnPct && p.cash > 0) { gain = Math.round(p.cash * mj.turnPct); tag = '现金流滚存'; }
+    else if (mj.weather && (mj.weather.kinds || []).includes(this.weather)) { gain = mj.weather.amt; tag = '天气红利'; }
+    if (gain <= 0) return;
+    p.skillLeft--; p.cash += gain;
+    this.addLog(`${mj.icon || '✨'} ${p.name} 发动【${mj.skill}】+¥${gain}（${tag}）`);
+    this.ev({ t: 'skill', pid: p.id, major: p.major, name: mj.skill, detail: `+¥${gain} · ${tag}` });
+    this.ev({ t: 'money', pid: p.id, amount: gain, reason: mj.skill });
+  }
   // v5.1：经过起点的专业被动（微电子/农学/海洋科学 消耗次数；新能源为常驻）
   applyGoSkills(p) {
     const GO_SKILL = { ee: ['信号增益', 1400], agri: ['春华秋实', 1500], marine: ['深海资源', 1200] };
@@ -2751,6 +3077,18 @@ class Room {
       p.cash += 1000;
       this.addLog(`🔋 ${p.name} 的光伏阵列并网发电，+¥1000（常驻）`);
       this.ev({ t: 'money', pid: p.id, amount: 1000, reason: '光伏增益' });
+    }
+    // v5.3：通用被动 —— 经过起点收益（salary.amt；use=true 消耗 1 次，false 常驻）
+    const mj = MAJORS[p.major] || {};
+    if (mj.salary) {
+      const always = !mj.salary.use;
+      if (always || p.skillLeft > 0) {
+        if (!always) p.skillLeft--;
+        p.cash += mj.salary.amt;
+        this.addLog(`${mj.icon || '✨'} ${p.name} 发动【${mj.skill}】+¥${mj.salary.amt}${always ? '（常驻）' : ''}`);
+        this.ev({ t: 'skill', pid: p.id, major: p.major, name: mj.skill, detail: `+¥${mj.salary.amt}` });
+        this.ev({ t: 'money', pid: p.id, amount: mj.salary.amt, reason: mj.skill });
+      }
     }
   }
 

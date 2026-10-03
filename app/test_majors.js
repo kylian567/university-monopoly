@@ -1,4 +1,6 @@
 // v5.1 专业系统专项验证：33 个专业表完整性 + 主动技询问/发动/结算 + 被动技触发
+// v5.3：专业扩充到 60 种（新增电气/通信/控制/机器人/软件/AI/智造/能动力/天文/气象/地球物理/运筹/
+//        护理/口腔/兽医/园艺/林学/会计/国贸/营销/人力/旅游/教育/历史/社会学/工业设计/影视）
 'use strict';
 const assert = require('assert');
 const { Room, MAJORS, MAJOR_KEYS } = require('./game');
@@ -35,14 +37,14 @@ t('每个专业字段齐全（id/name/icon/skill/mode/uses/fx/desc）', () => {
     assert.ok(m.mode === 'active' || m.mode === 'passive', `${k} mode 异常: ${m.mode}`);
   }
 });
-t('主动技专业共 7 个（mech/newe/pharm/auto/mse/music/psych）', () => {
+t('主动技专业共 13 个（v5.1 的 7 个 + v5.3 新增 6 个）', () => {
   const act = Object.values(MAJORS).filter(m => m.mode === 'active').map(m => m.id).sort();
-  assert.deepStrictEqual(act, ['auto', 'mech', 'mse', 'music', 'newe', 'pharm', 'psych']);
+  assert.deepStrictEqual(act, ['ai', 'auto', 'elec', 'film', 'mech', 'mkt', 'mse', 'music', 'newe', 'or', 'pharm', 'psych', 'robot']);
 });
-t('个数达到 33 种', () => assert.strictEqual(Object.keys(MAJORS).length, 33));
+t('个数达到 60 种', () => assert.strictEqual(Object.keys(MAJORS).length, 60));
 
 console.log('\n=== 2. 主动技：每个主动技专业都能被询问并正确结算 ===');
-const ACTIVE = ['mech', 'newe', 'pharm', 'auto', 'mse', 'music', 'psych'];
+const ACTIVE = ['mech', 'newe', 'pharm', 'auto', 'mse', 'music', 'psych', 'elec', 'robot', 'ai', 'or', 'mkt', 'film'];
 for (const key of ACTIVE) {
   t(`${MAJORS[key].name}·${MAJORS[key].skill} 询问→发动→效果生效`, () => {
     const room = mkRoom([key, 'agri']);

@@ -127,12 +127,12 @@ console.log('\n[5] 经济与人数调整');
   let joined = 0;
   for (let i = 0; i < 6; i++) if (r3.join('Q' + i, false)) joined++;
   ok(joined === 5, `最多 5 人（成功加入 ${joined} 人）`);
-  // v5.1：专业扩充到 33 种
-  ok(MAJOR_KEYS.length === 33 && MAJORS.lang && MAJORS.pe && MAJORS.phys && MAJORS.chem && MAJORS.phil
+  // v5.1：专业扩充到 33 种；v5.3 再扩到 60 种
+  ok(MAJOR_KEYS.length === 60 && MAJORS.lang && MAJORS.pe && MAJORS.phys && MAJORS.chem && MAJORS.phil
      && MAJORS.agri && MAJORS.drama && MAJORS.mech && MAJORS.stat && MAJORS.aero && MAJORS.fin && MAJORS.geol && MAJORS.mil
      && MAJORS.newe && MAJORS.auto && MAJORS.mse && MAJORS.env && MAJORS.civil && MAJORS.pharm
      && MAJORS.music && MAJORS.psych && MAJORS.news && MAJORS.food && MAJORS.marine,
-     `专业数 = ${MAJOR_KEYS.length}（v5.1 新增 新能源/自动化/材料/环境/土木/药学/音乐/心理/食品/海洋）`);
+     `专业数 = ${MAJOR_KEYS.length}（v5.3 扩充后共 60 种）`);
   ok(MAJOR_KEYS.length === new Set(MAJOR_KEYS).size && MAJOR_KEYS.every(k => MAJORS[k] && MAJORS[k].uses > 0),
      `${MAJOR_KEYS.length} 个专业 id 唯一且都配了技能次数`);
 }

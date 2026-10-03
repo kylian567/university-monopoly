@@ -130,6 +130,12 @@ body {
   animation:dieShadow .62s ease-in-out infinite; }
 .dice-impact { position:absolute; left:50%; top:50%; width:20px; height:20px; margin:-10px 0 0 -10px; border-radius:50%;
   border:3px solid rgba(232,176,75,.85); animation:dieImpact .8s ease-out forwards; pointer-events:none; }
+/* v5.3：骰子落定涟漪（替代整屏晃动）—— 三圈扩散光环 + 一圈暖色光晕 */
+.dice-ripple { position:absolute; left:50%; top:52%; border-radius:50%; border:3px solid rgba(232,176,75,.7);
+  box-shadow:0 0 14px rgba(255,214,120,.45); animation:diceRippleOut .95s cubic-bezier(.16,.85,.3,1) both; pointer-events:none; }
+.dice-flare { position:absolute; left:50%; top:52%; width:120px; height:120px; margin:-60px 0 0 -60px; border-radius:50%;
+  background:radial-gradient(circle, rgba(255,232,170,.72), rgba(255,196,90,.22) 46%, rgba(255,196,90,0) 72%);
+  animation:diceFlare .68s ease-out both; pointer-events:none; }
 
 /* ---------- 弹窗 ---------- */
 .modal-bg { position:fixed; inset:0; background:rgba(40,34,26,.5); backdrop-filter:blur(3px); display:flex; align-items:center; justify-content:center; z-index:100; }
@@ -157,7 +163,19 @@ body {
 
 @keyframes floatUp { 0%{opacity:0; transform:translateY(6px) scale(.7);} 15%{opacity:1; transform:translateY(0) scale(1.15);} 100%{opacity:0; transform:translateY(-46px) scale(1);} }
 @keyframes popfade { 0%{opacity:0; transform:translate(-50%,-50%) scale(.6);} 12%{opacity:1; transform:translate(-50%,-50%) scale(1);} 80%{opacity:1;} 100%{opacity:0; transform:translate(-50%,-64%) scale(.95);} }
-@keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-5px)} 40%{transform:translateX(5px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
+/* v5.3：整屏晃动幅度收窄（原 ±5px 太晕），只在破产 / 拆除 / 擂台这种戏剧性节点保留轻微一颤 */
+@keyframes shake { 0%,100%{transform:translateX(0)} 22%{transform:translateX(-2.5px)} 44%{transform:translateX(2.5px)} 66%{transform:translateX(-1.8px)} 88%{transform:translateX(1.8px)} }
+/* v5.3：骰子落定涟漪 + 落点光晕（替代整屏晃动） */
+@keyframes diceRippleOut {
+  0%   { opacity:.85; transform:translate(-50%,-50%) scale(.25); border-width:4px; }
+  70%  { opacity:.28; }
+  100% { opacity:0;   transform:translate(-50%,-50%) scale(1);   border-width:1px; }
+}
+@keyframes diceFlare {
+  0%   { opacity:0;   transform:translate(-50%,-50%) scale(.4); }
+  18%  { opacity:.9;  transform:translate(-50%,-50%) scale(1); }
+  100% { opacity:0;   transform:translate(-50%,-50%) scale(1.9); }
+}
 @keyframes diceTumble {
   0%   { transform: rotateX(0deg)   rotateY(0deg)   rotateZ(0deg)   translateY(0)      scale(1); }
   25%  { transform: rotateX(180deg) rotateY(90deg)  rotateZ(-14deg) translateY(-16px) scale(1.06); }
@@ -181,6 +199,9 @@ body {
 /* ---------- 特效 ---------- */
 .halo { animation:haloPulse 1.6s ease-in-out infinite; }
 @keyframes haloPulse { 0%,100%{ opacity:.95; } 50%{ opacity:.2; } }
+/* v5.3：行动者外圈旋转虚线环 */
+.halo-dash { animation:haloSpin 9s linear infinite, haloPulse 2.4s ease-in-out infinite; }
+@keyframes haloSpin { from{ transform:rotate(0deg); } to{ transform:rotate(360deg); } }
 .tok-breathe { animation:breathe 1.8s ease-in-out infinite; transform-box:fill-box; transform-origin:center; }
 @keyframes breathe { 0%,100%{ transform:scale(1); } 50%{ transform:scale(1.2); } }
 .shockwave { animation:shockAnim .85s ease-out forwards; transform-box:fill-box; transform-origin:center; }
@@ -328,6 +349,22 @@ body {
 .major-btn .mj-name { font-size:13px; font-weight:700; color:#3a3630; }
 .major-btn .mj-skill { font-size:10.5px; color:#8a847a; line-height:1.28; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
 .major-hint { font-size:12px; color:#9a938a; min-height:16px; margin-bottom:8px; }
+/* v5.3：60 个专业的选择区（分组 + 搜索） */
+.major-search { width:100%; box-sizing:border-box; margin:6px 0 8px; padding:7px 11px; font-size:12.5px;
+  border:1.5px solid #e5d9b8; border-radius:10px; background:linear-gradient(180deg,#fffdf8,#f8f2e6); color:#3a3630;
+  box-shadow:inset 0 1px 2px rgba(120,100,60,.08); outline:none; }
+.major-search:focus { border-color:#c9a05a; box-shadow:0 0 0 3px rgba(201,160,90,.16); }
+.major-row { display:block; margin:0 0 6px; max-height:340px; overflow-y:auto; padding-right:3px; }
+.mj-block { margin-bottom:8px; }
+.mj-group { display:flex; align-items:center; gap:7px; font-size:11.5px; font-weight:700; color:#7a6a4a;
+  padding:3px 2px 5px; position:sticky; top:0; background:linear-gradient(180deg,#fff9ec,#fff9ec00); z-index:2; }
+.mj-group .mj-sub { font-weight:400; font-size:10.5px; color:#a89f90; }
+.mj-group .mj-count { margin-left:auto; font-weight:600; font-size:10.5px; color:#b0a48f;
+  background:#f4ecda; border:1px solid #e7dcc2; border-radius:999px; padding:0 7px; }
+.mj-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:6px; }
+.major-btn .mj-skillname { font-size:11px; font-weight:600; color:#a8763a; }
+.major-btn .mj-active { font-style:normal; font-size:9px; font-weight:700; color:#fff; background:#e0674a;
+  border-radius:999px; padding:0 5px; margin-left:5px; vertical-align:1px; }
 .player-item .mj-tag { font-size:11px; background:#f3e9d6; border:1px solid #e5d9b8; border-radius:6px; padding:1px 6px; color:#7a6a4a; }
 
 /* ---------- 新机制特效 ---------- */
@@ -804,4 +841,52 @@ body {
   .fv-big { font-size:24px; letter-spacing:5px; }
   .fac-layer.lottery .fv-card { width:calc(33.3% - 8px); min-width:0; }
   .fac-round .fr-title { font-size:24px; letter-spacing:5px; }
+}
+
+/* ==================== v5.3：技能 / 升级 / 加冕 新特效 ==================== */
+/* 主动技横扫光束：一道主题色光带从屏幕左扫到右 + 上下两条细亮线 */
+.skill-beam { position:absolute; left:-45%; top:0; width:45%; height:100%; z-index:47; pointer-events:none;
+  background:linear-gradient(90deg, rgba(255,255,255,0) 0%, var(--sk) 46%, rgba(255,255,255,.9) 52%, var(--sk) 58%, rgba(255,255,255,0) 100%);
+  filter:blur(14px) saturate(1.25); mix-blend-mode:screen; opacity:0;
+  animation:beamSweep .78s cubic-bezier(.2,.7,.3,1) forwards; }
+.skill-beam::before, .skill-beam::after { content:""; position:absolute; left:0; right:0; height:2px; background:rgba(255,255,255,.85);
+  filter:blur(1px); }
+.skill-beam::before { top:24%; } .skill-beam::after { bottom:24%; }
+@keyframes beamSweep {
+  0%   { opacity:0;   transform:translateX(0)     scaleY(.72); }
+  14%  { opacity:.95; transform:translateX(28%)   scaleY(1); }
+  100% { opacity:0;   transform:translateX(330%)  scaleY(1.06); }
+}
+/* 盖楼 / 升级光柱：从格子底部升起的竖直光柱 + 顶上星芒扩散 */
+.up-pillar { position:absolute; width:56px; height:150px; margin-left:-28px; margin-top:-150px;
+  z-index:46; pointer-events:none; transform-origin:50% 100%;
+  background:linear-gradient(0deg, rgba(255,255,255,0) 0%, var(--up) 18%, rgba(255,255,255,.92) 62%, rgba(255,255,255,0) 100%);
+  filter:blur(5px) saturate(1.15); opacity:0; animation:pillarRise 1.05s cubic-bezier(.18,.9,.3,1) forwards; }
+@keyframes pillarRise {
+  0%   { opacity:0;   transform:scaleY(.06) scaleX(.55); }
+  24%  { opacity:1;   transform:scaleY(1)   scaleX(1); }
+  62%  { opacity:.8;  transform:scaleY(1.06) scaleX(.9); }
+  100% { opacity:0;   transform:scaleY(1.12) scaleX(.5); }
+}
+/* 加冕皇冠：从上方坠落、弹一下、再缓缓升起淡出 */
+.crown-pop { position:absolute; z-index:49; pointer-events:none; font-size:34px; line-height:1;
+  margin-left:-17px; margin-top:-40px; filter:drop-shadow(0 3px 6px rgba(120,80,10,.5)) drop-shadow(0 0 12px var(--cr));
+  animation:crownDrop 1.35s cubic-bezier(.2,1.5,.35,1) forwards; }
+@keyframes crownDrop {
+  0%   { opacity:0; transform:translateY(-46px) scale(.5) rotate(-18deg); }
+  30%  { opacity:1; transform:translateY(-6px)  scale(1.16) rotate(6deg); }
+  48%  { transform:translateY(-16px) scale(1) rotate(-3deg); }
+  74%  { opacity:1; transform:translateY(-20px) scale(1.04) rotate(0deg); }
+  100% { opacity:0; transform:translateY(-58px) scale(.92) rotate(0deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skill-beam, .up-pillar, .crown-pop, .dice-ripple, .dice-flare { animation-duration:.01ms !important; }
+}
+/* v5.3：破产灰化慢镜 */
+.grey-out { animation:greyMoment 1.5s ease-in-out forwards; }
+@keyframes greyMoment {
+  0%   { filter:none; }
+  22%  { filter:saturate(.12) brightness(.68) contrast(1.06); }
+  66%  { filter:saturate(.22) brightness(.78); }
+  100% { filter:none; }
 }
