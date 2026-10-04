@@ -263,6 +263,8 @@ section(6, '新钩子：挂科保险 / 报税减免 / 赎回优惠 / 拍卖慧�
   {
     const r = mkRoom(2, { hex: false });
     const [a, b] = r.players;
+    // 固定中性专业且无技能次数：join() 随机 major 会让护理 −35% / 环境 −15% 等被动混入租金结算（CI 上偶发）
+    a.major = 'mech'; a.skillLeft = 0; b.major = 'mech'; b.skillLeft = 0;
     const idx = G.BOARD.findIndex(c => c.type === 'prop');
     r.cells[idx].own = b.id; r.cells[idx].level = 0; r.cells[idx].mortgaged = false;
     b.hex = { rentFlat: 80 }; a.hex = { tollFlat: 150 };
