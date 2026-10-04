@@ -221,7 +221,7 @@ const FACULTY = {
   gamble:   { name: '博弈校区',   icon: '🃏', color: '#8E44AD', lead: '擂台/运动会赌注 ×1.25',                 cost: '全场租金 ×1.03',                    tag: '富贵险中求' },
 };
 const FACULTY_KEYS = Object.keys(FACULTY);
-const FACULTY_VOTE_MS = 40000;   // v5.10：与服务端同步拉长到 40s（59 个城邦说明更厚，看清楚再投）
+const FACULTY_VOTE_MS = 60000;   // v5.12：与服务端同步拉长到 60s（59 个城邦说明更厚，看清楚再投）
 
 // ---------- v5.7：海克斯 · 研究项目（与服务端 game.js 的 PROJECTS/HEX_TIERS 表逐字同步，改一边必须改另一边） ----------
 const HEX_TIERS = {
@@ -1272,7 +1272,7 @@ function onState(state) {
     render(state);
     // v5.2：断线重连 / 中途加入时，服务端不会再补发 faculty_offer —— 按快照把投票浮层补回来
     const hasChosen = (state.events || []).some(e => e.t === 'faculty_chosen');
-    if (state.phase === 'faculty' && (state.facultyOptions || []).length) facOpenVote({ options: state.facultyOptions, ms: 12000, termStart: state.facTermStart || 1 });   // v5.9：带届数
+    if (state.phase === 'faculty' && (state.facultyOptions || []).length) facOpenVote({ options: state.facultyOptions, ms: state.facultyMs || 12000, termStart: state.facTermStart || 1 });   // v5.9：带届数；v5.12：快照带剩余时长
     else if (!hasChosen && !facCeremonyBusy) facCloseUI();
     // v5.7：断线重连 / 中途加入时，按快照把「研究项目三选一」浮层补回来；阶段已过则关闭
     if (state.phase === 'project' && state.project && state.project.offers) {
@@ -1562,7 +1562,13 @@ async function handleAnim(e) {
       break;
     }
     // ---------- v5.2：校园风貌 ----------
-    case 'faculty_offer': { facOpenVote(e); break; }        // 15 秒投票期：浮层自带倒计时，不占用动画队列
+    case 'faculty_offer': {
+      // v5.12：快照兜底已用同批候选先弹了浮层时，正式 offer 只需把倒计时校准成服务端时长
+      const osig = (e.options || []).join(',');
+      if (facVoteEl && facVoteSig === osig && e.ms) facStartClock(facVoteEl, e.ms);
+      else facOpenVote(e);
+      break;
+    }
     case 'faculty_vote': { facMarkVote(e); break; }
     // v5.7：研究项目（海克斯）
     case 'project_offer': { projectOpenPick(e); break; }    // 三选一浮层自带倒计时，不占用动画队列
@@ -1818,6 +1824,30 @@ function facCardHtml(k, i) {
 }
 
 // 第一幕 + 第二幕：牌匾升起 → 三张候选卡 3D 翻入 → 开始 15 秒投票倒计时
+// v5.12：城邦推选倒计时（模块级；可重复调用以校准剩余时长——快照兜底 → 正式 offer）
+function facStartClock(d, ms) {
+  clearInterval(facVoteClock);
+  let left = Math.max(1, Math.round(ms / 1000));
+  const total = left;
+  const fill = d.querySelector('#fvBarFill'), clock = d.querySelector('#fvClock');
+  if (fill) fill.style.width = '100%';
+  facVoteClock = setInterval(() => {
+    left--;
+    const pct = Math.max(0, Math.min(100, (left / total) * 100));
+    if (clock) clock.textContent = String(Math.max(0, left));
+    if (fill) {
+      fill.style.width = pct.toFixed(1) + '%';
+      // v5.5：倒计时分三段变色 —— 金 → 橙 → 红，最后 5 秒进入"紧迫"心跳模式
+      fill.classList.toggle('warn', pct <= 55 && pct > 26);
+      fill.classList.toggle('danger', pct <= 26);
+      const timerEl = fill.closest('.fv-timer');
+      if (timerEl) timerEl.classList.toggle('urgent', left > 0 && left <= 5);
+    }
+    if (left > 0 && left <= 5) SFX.tick();
+    if (left <= 0) clearInterval(facVoteClock);
+  }, 1000);
+}
+
 function facOpenVote(e) {
   const opts = (e && e.options) || [];
   const sig = opts.join(',');
@@ -1847,28 +1877,10 @@ function facOpenVote(e) {
   facVoteEl = d;
   facMyVote = null;
   SFX.facRise();
-  setTimeout(() => { try { SFX.glint(); SFX.sparkle(); } catch (e) {} }, sp(360));   // v5.5：牌匾定场后的星光点缀
-  opts.forEach((k, i) => setTimeout(() => { if (facVoteEl) SFX.facFlip(i); }, sp(520 + i * 400)));
-  // 倒计时（真实时间，不随播放倍速缩放）
-  let left = Math.max(1, Math.round(ms / 1000));
-  const total = left;
-  const fill = d.querySelector('#fvBarFill'), clock = d.querySelector('#fvClock');
-  if (fill) fill.style.width = '100%';
-  facVoteClock = setInterval(() => {
-    left--;
-    const pct = Math.max(0, Math.min(100, (left / total) * 100));
-    if (clock) clock.textContent = String(Math.max(0, left));
-    if (fill) {
-      fill.style.width = pct.toFixed(1) + '%';
-      // v5.5：倒计时分三段变色 —— 金 → 橙 → 红，最后 5 秒进入"紧迫"心跳模式
-      fill.classList.toggle('warn', pct <= 55 && pct > 26);
-      fill.classList.toggle('danger', pct <= 26);
-      const timerEl = fill.closest('.fv-timer');
-      if (timerEl) timerEl.classList.toggle('urgent', left > 0 && left <= 5);
-    }
-    if (left > 0 && left <= 5) SFX.tick();
-    if (left <= 0) clearInterval(facVoteClock);
-  }, 1000);
+  setTimeout(() => { try { SFX.glint(); SFX.sparkle(); } catch (e) {} }, sp(450));   // v5.5：牌匾定场后的星光点缀（v5.12 节奏放慢）
+  opts.forEach((k, i) => setTimeout(() => { if (facVoteEl) SFX.facFlip(i); }, sp(640 + i * 520)));
+  // 倒计时（真实时间，不随播放倍速缩放）；v5.12 抽成 facStartClock，供正式 offer 校准复用
+  facStartClock(d, ms);
   // 点击投票
   d.querySelectorAll('.fv-card').forEach(card => {
     // v5.5：悬停轻响 + 微光提示，让"选卡"这件事更有手感
@@ -1932,20 +1944,20 @@ function facultyCeremony(e) {
     const roll = box.querySelector('#fvRoll');
     const names = ((S && S.players) || []).filter(p => p.alive).map(p => p.name);
     if (!names.length) names.push(luckyName);
-    const total = 17;
+    const total = 20;   // v5.12：滚筒 17→20 拍，整体放慢
     for (let i = 0; i < total; i++) {
       if (roll) roll.textContent = names[i % names.length];
       SFX.facRoll();
-      await sleep(i >= total - 6 ? 96 + (i - (total - 6)) * 40 : 64);
+      await sleep(i >= total - 6 ? 112 + (i - (total - 6)) * 46 : 72);
     }
     if (roll) { roll.textContent = luckyName; roll.classList.add('hit'); }
     SFX.facCrown();
     flashScreen(`radial-gradient(circle at 50% 46%, ${hexA(col, .34)}, ${hexA(col, 0)} 68%)`, 900);
-    await sleep(1000);
+    await sleep(1300);
     // 高亮他投的那张卡，其余压暗
     if (luckyCard) { luckyCard.classList.add('lucky'); SFX.sparkle(); }
     d.querySelectorAll('.fv-card').forEach(c => { if (c !== luckyCard) c.classList.add('dim'); });
-    await sleep(820);
+    await sleep(1100);
     // 第四幕：加冕大徽章
     const crown = document.createElement('div');
     crown.className = 'fv-crown';
@@ -1962,13 +1974,13 @@ function facultyCeremony(e) {
     confettiBurst(120); fxCoinRain(26);
     SFX.facCrown(); SFX.sparkle(); SFX.glint();
     requestAnimationFrame(() => requestAnimationFrame(() => crown.classList.add('show')));
-    await sleep(2900);
+    await sleep(3600);   // v5.12：加冕停留 2.9s → 3.6s，看清楚主效果与代价
     // 落位：写入地图中央的常驻徽章
     if (S) S.faculty = e.key;
     renderFacultyBadge(true);
     d.classList.remove('show');
     setTimeout(() => { if (facVoteEl === d) { d.remove(); facVoteEl = null; facVoteSig = ''; } }, 700);
-    await sleep(620);
+    await sleep(720);
     if (e.lucky != null) {
       pulseCell(playerCell(e.lucky), col);
       fxBurst(playerCell(e.lucky), { kind: 'star', n: 18, speed: 3.4, size: 4.6, life: 48, color: [col, '#ffffff', '#ffd76a'], lift: 0.8, wave: { r: 74, color: col } });
@@ -1999,7 +2011,7 @@ function facultyRoundBanner(e) {
     if (free) { SFX.fanfare(); confettiBurst(96); fxCoinRain(28); }
     else { SFX.facBadge(); confettiBurst(64); }
     flashScreen(`radial-gradient(circle at 50% 50%, ${hexA(col, .34)}, ${hexA(col, 0)} 68%)`, 900);
-    st(() => { d.classList.remove('show'); setTimeout(() => d.remove(), 560); res(); }, 2650);
+    st(() => { d.classList.remove('show'); setTimeout(() => d.remove(), 560); res(); }, 2900);   // v5.12：2.65s → 2.9s
   });
 }
 
@@ -2021,23 +2033,23 @@ function facultyDrawAnim(e) {
     $('fxLayer').appendChild(d);
     requestAnimationFrame(() => requestAnimationFrame(() => d.classList.add('show')));
     SFX.facRise();
-    await sleep(sp(750));
+    await sleep(sp(850));
     for (let i = 0; i < rounds.length; i++) {
       const slot = d.querySelector('#fdSlot' + i);
       const total = 13;
       for (let k = 0; k < total; k++) {
         slot.textContent = String(2 + Math.floor(Math.random() * 13));
         SFX.facRoll();
-        await sleep(k >= total - 5 ? 100 + (k - (total - 5)) * 52 : 62);
+        await sleep(k >= total - 5 ? 112 + (k - (total - 5)) * 56 : 70);
       }
       slot.textContent = '第 ' + rounds[i] + ' 轮';
       slot.classList.add('hit');
       SFX.facBadge();
       flashScreen(`radial-gradient(circle at 50% 46%, ${hexA(col, .3)}, ${hexA(col, 0)} 68%)`, 650);
       if (i === rounds.length - 1) { SFX.facCrown(); confettiBurst(90); fxCoinRain(22); }
-      await sleep(sp(700));
+      await sleep(sp(800));
     }
-    await sleep(sp(1400));
+    await sleep(sp(1700));
     d.classList.remove('show');
     setTimeout(() => d.remove(), 620);
     res();
@@ -2076,7 +2088,7 @@ function projectOpenPick(e) {
   const meP = S && S.players ? S.players.find(p => p.id === myPid) : null;
   const canRefresh = !!meP && (meP.hexRefreshLeft == null || meP.hexRefreshLeft > 0);
   hexMine = mine.slice(); hexCanRefresh = canRefresh; hexPickTier = tier; hexPickRound = e.round;
-  const ms = (e && e.ms) || HEX_PICK_MS || 32000;
+  const ms = (e && e.ms) || HEX_PICK_MS || 70000;
   const T = HEX_TIERS[tier] || {};
   const d = document.createElement('div');
   d.className = 'hx-layer';
@@ -2094,9 +2106,9 @@ function projectOpenPick(e) {
   requestAnimationFrame(() => requestAnimationFrame(() => d.classList.add('show')));
   hexPickEl = d;
   SFX.hexRise();
-  setTimeout(() => { try { SFX.glint(); SFX.sparkle(); } catch (err) {} }, sp(400));
-  mine.forEach((k, i) => setTimeout(() => { if (hexPickEl) SFX.hexFlip(i); }, sp(600 + i * 430)));
-  if (tier === 'prism') setTimeout(() => { if (hexPickEl) { SFX.hexPrism(); confettiBurst(70); } }, sp(1500));
+  setTimeout(() => { try { SFX.glint(); SFX.sparkle(); } catch (err) {} }, sp(500));
+  mine.forEach((k, i) => setTimeout(() => { if (hexPickEl) SFX.hexFlip(i); }, sp(720 + i * 560)));   // v5.12：翻牌节奏放慢
+  if (tier === 'prism') setTimeout(() => { if (hexPickEl) { SFX.hexPrism(); confettiBurst(70); } }, sp(1900));
   // 倒计时（真实时间，不随播放倍速缩放）
   let left = Math.max(1, Math.round(ms / 1000));
   const total = left;
@@ -2512,6 +2524,9 @@ function applyWeather(w) {
 // 天气粒子引擎：所有天气共用一张 canvas，按 kind 分发到各自的绘制例程
 let wxCv = null, wxCtx = null, wxRAF = 0, wxKind = null, wxSeed = null, wxFrame = 0, wxFlash = 0;
 const WR = (a, b) => a + Math.random() * (b - a);
+// v5.12 性能：触屏设备（手机/平板）粒子量降为 55%，观感几乎无差、显著减少掉帧
+const FXQ = ((window.matchMedia && matchMedia('(pointer: coarse)').matches) || 'ontouchstart' in window) ? 0.55 : 1;
+const qN = n => Math.max(6, Math.round(n * FXQ));
 function wxCanvas() {
   const wrap = $('boardWrap'); if (!wrap) return null;
   if (!wxCv) {
@@ -2531,44 +2546,52 @@ function startWeatherFx(kind) {
   wxSeed = seedWeather(kind, W, H);
   if (kind === 'cloud') { wxCv.style.display = 'none'; return; }   // 阴天只有整体压暗，不铺粒子
   wxCv.style.display = 'block';
-  const loop = () => { if (!wxKind) { wxRAF = 0; return; } drawWeather(); wxRAF = requestAnimationFrame(loop); };
+  // v5.12 性能：天气是慢速背景动画，60fps → 30fps 节流，肉眼几乎无差、GPU 减半
+  let wxLast = 0;
+  const loop = ts => {
+    if (!wxKind) { wxRAF = 0; return; }
+    wxRAF = requestAnimationFrame(loop);
+    if (ts - wxLast < 33) return;
+    wxLast = ts;
+    drawWeather();
+  };
   wxRAF = requestAnimationFrame(loop);
 }
 function seedWeather(kind, W, H) {
   switch (kind) {
     case 'rain':
       // v5.4：雨丝加密加长 + 落地水花圈（rings 运行时生成）
-      return { drops: Array.from({ length: 74 }, () => ({ x: WR(-W * .3, W), y: WR(0, H), len: WR(14, 27), v: WR(10, 16), a: WR(.35, .8) })), rings: [] };
+      return { drops: Array.from({ length: qN(74) }, () => ({ x: WR(-W * .3, W), y: WR(0, H), len: WR(14, 27), v: WR(10, 16), a: WR(.35, .8) })), rings: [] };
     case 'storm':
       // 旋转风眼 + 横扫阵风 + 飞舞碎片（与雨天完全不同的观感）；v5.4 气流臂/阵风加密
       return {
         eye: { x: W * .5, y: H * .5 }, spin: 0, next: Math.round(WR(300, 780)),
         arms: Array.from({ length: 9 }, (_, i) => ({ ph: i * Math.PI / 4.5, off: WR(0, .6) })),
-        debris: Array.from({ length: 52 }, () => ({
+        debris: Array.from({ length: qN(52) }, () => ({
           x: WR(0, W), y: WR(0, H), r: WR(1.6, 4.8), vx: WR(3.2, 7.4), vy: WR(-1.4, 1.4),
           rot: WR(0, 6.28), vr: WR(-.2, .2), a: WR(.22, .58), c: pick(['#c9cfd8', '#9aa4b2', '#e7c98d', '#8f9bb3']),
         })),
-        gusts: Array.from({ length: 20 }, () => ({ y: WR(0, H), x: WR(-W, W), w: WR(60, 230), v: WR(9, 20), a: WR(.05, .16) })),
+        gusts: Array.from({ length: qN(20) }, () => ({ y: WR(0, H), x: WR(-W, W), w: WR(60, 230), v: WR(9, 20), a: WR(.05, .16) })),
       };
     case 'snow':
       // v5.4：雪量加大 + 远近两层（近景大而快、远景小而慢），配地面霜白
-      return { flakes: Array.from({ length: 96 }, () => ({ x: WR(0, W), y: WR(0, H), r: WR(1.4, 5.2), v: WR(1.1, 3.2), sway: WR(.4, 1.5), ph: WR(0, 6.28), a: WR(.4, .95) })) };
+      return { flakes: Array.from({ length: qN(96) }, () => ({ x: WR(0, W), y: WR(0, H), r: WR(1.4, 5.2), v: WR(1.1, 3.2), sway: WR(.4, 1.5), ph: WR(0, 6.28), a: WR(.4, .95) })) };
     case 'fog':
       return { banks: Array.from({ length: 13 }, () => ({ x: WR(-W * .2, W * 1.1), y: WR(0, H), r: WR(120, 340), v: WR(.18, .62), a: WR(.05, .15) })) };
     case 'heat':
       return {
-        motes: Array.from({ length: 34 }, () => ({ x: WR(0, W), y: WR(0, H), r: WR(1.2, 3.2), v: WR(.5, 1.6), a: WR(.15, .4), ph: WR(0, 6.28) })),
+        motes: Array.from({ length: qN(34) }, () => ({ x: WR(0, W), y: WR(0, H), r: WR(1.2, 3.2), v: WR(.5, 1.6), a: WR(.15, .4), ph: WR(0, 6.28) })),
         waves: Array.from({ length: 7 }, (_, i) => ({ y: H * (i + .5) / 7, ph: WR(0, 6.28), a: WR(.04, .09) })),
       };
     case 'wind':
       return {
-        lines: Array.from({ length: 32 }, () => ({ y: WR(0, H), x: WR(-W, W), len: WR(40, 200), v: WR(8, 21), a: WR(.06, .22) })),
-        leaves: Array.from({ length: 26 }, () => ({ x: WR(0, W), y: WR(0, H), r: WR(3, 7), vx: WR(3.4, 8), vy: WR(-1.2, 1.6), rot: WR(0, 6.28), vr: WR(-.13, .13), a: WR(.3, .7), c: pick(['#c8a24a', '#b5763a', '#8fae5d', '#d8c07a']) })),
+        lines: Array.from({ length: qN(32) }, () => ({ y: WR(0, H), x: WR(-W, W), len: WR(40, 200), v: WR(8, 21), a: WR(.06, .22) })),
+        leaves: Array.from({ length: qN(26) }, () => ({ x: WR(0, W), y: WR(0, H), r: WR(3, 7), vx: WR(3.4, 8), vy: WR(-1.2, 1.6), rot: WR(0, 6.28), vr: WR(-.13, .13), a: WR(.3, .7), c: pick(['#c8a24a', '#b5763a', '#8fae5d', '#d8c07a']) })),
       };
     case 'sun':
       return {
         rays: Array.from({ length: 12 }, (_, i) => ({ ph: i * Math.PI / 6 })),
-        motes: Array.from({ length: 26 }, () => ({ x: WR(0, W), y: WR(0, H), r: WR(1, 2.6), v: WR(-.35, -.12), a: WR(.12, .38), ph: WR(0, 6.28) })),
+        motes: Array.from({ length: qN(26) }, () => ({ x: WR(0, W), y: WR(0, H), r: WR(1, 2.6), v: WR(-.35, -.12), a: WR(.12, .38), ph: WR(0, 6.28) })),
       };
     default: return {};
   }
@@ -3024,7 +3047,7 @@ function diceRipple(box) {
 function confettiBurst(count) {
   const cv = $('confetti'), ctx = cv.getContext('2d');
   cv.width = cv.offsetWidth; cv.height = cv.offsetHeight;
-  const parts = Array.from({ length: count || 130 }, () => ({
+  const parts = Array.from({ length: Math.max(30, Math.round((count || 130) * FXQ)) }, () => ({
     x: cv.width / 2 + rnd(-60, 60), y: cv.height / 2, vx: rnd(-6, 6), vy: rnd(-11, -4),
     c: pick(['#e8b04b', '#7a1522', '#43A047', '#1E88E5', '#F48FB1']), s: rnd(4, 9), life: rnd(50, 90),
   }));
@@ -3149,7 +3172,7 @@ function fxCoinRain(n, opts) {
   const wrap = $('boardWrap'); if (!wrap) return;
   const ctx = fxCanvas(); if (!ctx) return;
   const w = wrap.clientWidth;
-  for (let i = 0; i < (n || 26); i++) {
+  for (let i = 0; i < Math.max(8, Math.round((n || 26) * FXQ)); i++) {
     fx2Parts.push({
       k: 'coin', x: rnd(w * 0.08, w * 0.92), y: rnd(-90, -10), vx: rnd(-0.5, 0.5), vy: rnd(3.2, 5.4),
       g: 0.06, s: rnd(3.4, 6.4), life: rnd(90, 140), age: 0, c: pick(['#e8b04b', '#f5d071', '#d9a83c']),
@@ -3999,9 +4022,9 @@ connect();
 // ---------- v5.10：大厅天气轮播特效（阳光光斑 → 细雨 → 飘雪，每 17 秒自动轮换） ----------
 let lobbyCv = null, lobbyCtx = null, lobbyKind = 'sun', lobbySeed = null, lobbyT0 = Date.now();
 function lobbySeedFor(kind, W, H) {
-  if (kind === 'sun') return { motes: Array.from({ length: 30 }, () => ({ x: WR(0, W), y: WR(0, H), r: WR(1.5, 4.2), v: WR(.15, .6), ph: WR(0, 6.28), a: WR(.12, .4) })) };
-  if (kind === 'rain') return { drops: Array.from({ length: 64 }, () => ({ x: WR(0, W), y: WR(0, H), len: WR(9, 22), v: WR(5, 10), a: WR(.12, .4) })) };
-  return { flakes: Array.from({ length: 56 }, () => ({ x: WR(0, W), y: WR(0, H), r: WR(1.2, 3.8), v: WR(.5, 1.5), sway: WR(.3, 1.1), ph: WR(0, 6.28), a: WR(.25, .75) })) };
+  if (kind === 'sun') return { motes: Array.from({ length: qN(30) }, () => ({ x: WR(0, W), y: WR(0, H), r: WR(1.5, 4.2), v: WR(.15, .6), ph: WR(0, 6.28), a: WR(.12, .4) })) };
+  if (kind === 'rain') return { drops: Array.from({ length: qN(64) }, () => ({ x: WR(0, W), y: WR(0, H), len: WR(9, 22), v: WR(5, 10), a: WR(.12, .4) })) };
+  return { flakes: Array.from({ length: qN(56) }, () => ({ x: WR(0, W), y: WR(0, H), r: WR(1.2, 3.8), v: WR(.5, 1.5), sway: WR(.3, 1.1), ph: WR(0, 6.28), a: WR(.25, .75) })) };
 }
 function lobbyDraw() {
   if (!lobbyCtx) return;
@@ -4048,6 +4071,59 @@ function lobbyDraw() {
     lobbyKind = lobbyKind === 'sun' ? 'rain' : (lobbyKind === 'rain' ? 'snow' : 'sun');
     lobbySeed = lobbySeedFor(lobbyKind, lobbyCv.width, lobbyCv.height);
   }, 17000);
-  const loop = () => { lobbyDraw(); requestAnimationFrame(loop); };
-  loop();
+  // v5.12 性能：大厅特效 60fps 常驻 → 30fps 节流；大厅隐藏 / 页面切后台时完全跳过
+  let lobbyLast = 0;
+  const loop = ts => {
+    requestAnimationFrame(loop);
+    if (document.hidden || lobby.style.display === 'none') return;
+    if (ts - lobbyLast < 33) return;
+    lobbyLast = ts;
+    lobbyDraw();
+  };
+  requestAnimationFrame(loop);
+})();
+// ---------- v5.12：手机竖屏伪装横屏 ----------
+// 触屏设备竖屏时把 #app 整体旋转 90°（宽=屏高、高=屏宽），游戏即以横屏呈现；
+// 用户把手机真正横过来（或浏览器原生支持 orientation.lock）时自动还原。
+(function mobileLandscape() {
+  const app = document.getElementById('app');
+  if (!app) return;
+  const isTouch = (window.matchMedia && matchMedia('(pointer: coarse)').matches) || 'ontouchstart' in window;
+  let rotOn = false;
+  function setOn(w, h) {   // w=屏宽(短边) h=屏高(长边)
+    if (!rotOn) document.body.classList.add('rotmode');
+    rotOn = true;
+    app.style.cssText = 'position:fixed;top:0;left:' + w + 'px;width:' + h + 'px;height:' + w + 'px;'
+      + 'transform:rotate(90deg);transform-origin:0 0;margin:0;';
+    document.body.style.overflow = 'hidden';
+  }
+  function setOff() {
+    if (!rotOn) return;
+    rotOn = false;
+    document.body.classList.remove('rotmode');
+    app.style.cssText = '';
+    document.body.style.overflow = '';
+  }
+  function fit() {
+    if (!isTouch) { setOff(); return; }
+    const w = window.innerWidth, h = window.innerHeight;
+    if (h > w) setOn(w, h); else setOff();
+    // 旋转会改变 #app 尺寸：让 lobby / 天气等 canvas 重新量宽（一次性抖出到下一帧）
+    setTimeout(() => window.dispatchEvent(new Event('resize')), 60);
+  }
+  window.addEventListener('resize', fit);
+  window.addEventListener('orientationchange', () => setTimeout(fit, 150));
+  fit();
+  // 原生横屏锁定尽力尝试（Android Chrome 等）；失败则由上面的 CSS 旋转兜底
+  document.addEventListener('pointerdown', function tryLock() {
+    document.removeEventListener('pointerdown', tryLock);
+    try {
+      if (isTouch && screen.orientation && screen.orientation.lock) {
+        const p = document.documentElement.requestFullscreen
+          ? document.documentElement.requestFullscreen({ navigationUI: 'hide' }).catch(() => {})
+          : Promise.resolve();
+        Promise.resolve(p).then(() => screen.orientation.lock('landscape')).catch(() => {});
+      }
+    } catch (e) { /* 不支持就交给 CSS 旋转 */ }
+  });
 })();

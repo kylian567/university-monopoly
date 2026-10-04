@@ -582,7 +582,7 @@ const FACULTY = {
   gamble:   { name: '博弈校区',   icon: '🃏', color: '#8E44AD', lead: '擂台/运动会赌注 ×1.25',                 cost: '全场租金 ×1.03',                    tag: '富贵险中求' },
 };
 const FACULTY_KEYS = Object.keys(FACULTY);
-const FACULTY_VOTE_MS = 40000;   // 开局风貌投票时长（v5.10 由 28s 拉长到 40s：59 个城邦的说明更厚，看清楚再投）
+const FACULTY_VOTE_MS = 60000;   // 开局/换届风貌投票时长（v5.12 由 40s 拉长到 60s：59 个城邦的说明更厚，看清楚再投）
 const FACULTY_MAX_RARE = 0;      // 本版无稀有风貌（原「变数校区」已按要求删去）
 
 // ---------- v5.7：海克斯 · 研究项目（校级=银 / 省级=金 / 国家级=棱彩） ----------
@@ -714,7 +714,7 @@ for (const k in PROJECTS) PROJECT_KEYS[PROJECTS[k].tier].push(k);
 const HEX_TRIGGERS = [2, 10, 20, 30, 40, 50];
 const HEX_TRIGGERS_EARLY = [2, 5, 10, 20, 32, 40];   // v5.10「时光之城」：海克斯整体提前的触发轮
 const HEX_TIER_P = [[0.70, 0.20, 0.10], [0.40, 0.40, 0.20], [0.30, 0.40, 0.30], [0.40, 0.30, 0.30], [0.40, 0.30, 0.30], [0.40, 0.30, 0.30]];   // v5.11：第 4/5/6 次银金彩 40/30/30（彩占比回调，后期更依赖银金基础盘）
-const HEX_PICK_MS = 52000;       // 三选一决策时长（v5.10：38s → 52s，卡池破百 + 可刷新，选得更从容）
+const HEX_PICK_MS = 70000;       // 三选一决策时长（v5.12：52s → 70s，卡池破百 + 可刷新，选得更从容）
 // v5.8：第 15/25/40 轮后，除「房产租金」外的一切奖金收入衰减为 ×70% / ×50% / ×25%
 const INCOME_DECAY = [{ r: 15, mul: 0.70 }, { r: 25, mul: 0.50 }, { r: 40, mul: 0.25 }];
 // 衰减豁免的入账理由（非「奖金」类：转账 / 返还 / 返现 / 兜底等）
@@ -978,6 +978,7 @@ class Room {
     this.freeRound = null; this.freeRentRounds = [];   // 清掉上一届的免费轮 / 免租轮
     this.phase = 'faculty';
     this.addLog(`🏫 第 ${term} 届「校园风貌」换届（第 ${termStart}~${termStart + 9} 轮生效）候选：${opts.map(k => FACULTY[k].icon + FACULTY[k].name).join(' / ')} —— 全体投票中（${Math.round(FACULTY_VOTE_MS / 1000)} 秒）`);
+    this.facEndsAt = Date.now() + FACULTY_VOTE_MS;   // v5.12：重连快照下发剩余时长用
     this.ev({ t: 'faculty_offer', options: opts, ms: FACULTY_VOTE_MS, term, termStart });
     this.setTimer(FACULTY_VOTE_MS, () => this.settleFaculty());
     for (const q of this.players) if (q.isAI) this.aiTimers.push(setTimeout(() => this.aiFacultyVote(q), rnd(1400, 3400)));

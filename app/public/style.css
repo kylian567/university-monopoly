@@ -1130,3 +1130,34 @@ body {
 /* ---------- v5.10：大厅天气特效层 ---------- */
 #lobbyWxCv { position:absolute; inset:0; z-index:0; pointer-events:none; opacity:.9; }
 #lobby .lobby-box { position:relative; z-index:2; }
+
+/* ---------- v5.12：手机竖屏伪装横屏 ----------
+   触屏设备竖屏时 JS 给 #app 加内联 transform:rotate(90deg)（宽=屏高、高=屏宽），
+   body 挂 .rotmode；vw/vh 在旋转后仍指物理竖屏视口，所有用 vw/vh 定尺寸的面板
+   在此改用 % / 固定值。布局从「手机窄屏单列」切回「桌面横排」。 */
+body.rotmode { overflow:hidden !important; }
+body.rotmode .screen { min-height:0; height:100%; }
+body.rotmode #game { flex-direction:row; align-items:stretch; justify-content:center; }
+body.rotmode #playCol { width:auto; flex:1 1 auto; min-width:0; }
+body.rotmode #side { width:244px; flex:none; max-height:100%; overflow:auto; }
+body.rotmode .lobby-box { width:min(430px,92%); }
+body.rotmode .announce-card { width:min(88%,432px); }
+body.rotmode .intro-card { width:min(92%,520px); max-height:94%; }
+body.rotmode .intro-body { max-height:58%; }
+body.rotmode .rules-card { width:min(92%,600px); max-height:92%; }
+body.rotmode .ask-box { width:min(400px,90%); }
+body.rotmode .fv-panel { width:min(96%,980px); max-height:94%; }
+body.rotmode .fv-card { width:min(282px,30%); }
+body.rotmode .fac-layer.lottery .fv-card { width:min(196px,22%); }
+body.rotmode .fac-detail .fd-panel { width:min(96%,1020px); max-height:92%; }
+body.rotmode .fd-draw-panel { width:min(96%,760px); }
+body.rotmode .hx-panel { width:min(96%,1000px); max-height:94%; }
+body.rotmode .hx-card { width:min(286px,30%); }
+body.rotmode .hxp-card { width:min(94%,520px); max-height:90%; }
+body.rotmode .hxp-assets { max-height:36%; }
+
+/* ---------- v5.12 性能：触屏设备关掉高开销的 backdrop-filter 毛玻璃 ----------
+   手机 GPU 上大面积实时模糊是卡顿大户，关掉后观感差别很小、帧率明显更稳 */
+@media (pointer:coarse) {
+  .lobby-box, .modal-bg, .announce-bg, .rules-bg, .fac-layer, .hx-layer, .hxp-layer { backdrop-filter:none; -webkit-backdrop-filter:none; }
+}

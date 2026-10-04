@@ -32,7 +32,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 
     console.log('\n[1] 公告版本 + 运行时镜像');
     const ann = await page.evaluate(() => (document.querySelector('#intro .announce-logo') || {}).textContent || '');
-    ok(/v5\.(7|8|9|10|11)/.test(ann), `开局公告标题：${ann}`);
+    ok(/v5\.(7|8|9|10|11|12)/.test(ann), `开局公告标题：${ann}`);
     await page.click('#btnAnnounce'); await sleep(240);
     await page.click('#btnIntro'); await sleep(240);
     await page.click('#btnRulesClose').catch(() => {});
@@ -111,7 +111,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
     }));
     ok(pick0.cards === 3, `浮层有 ${pick0.cards} 张项目卡`);
     ok(/校级|省级|国家级/.test(pick0.tier), `档位横幅：${pick0.tier.trim()}`);
-    ok(pick0.clock >= 45 && pick0.clock <= 52, `倒计时 ${pick0.clock} 秒（从容选择，v5.10 起 52s）`);
+    ok(pick0.clock >= 60 && pick0.clock <= 70, `倒计时 ${pick0.clock} 秒（从容选择，v5.12 起 70s）`);
     await shot('01-hex-pick.png');
 
     console.log('\n[3] 点卡立项 → 结算横幅 → 回到 roll');

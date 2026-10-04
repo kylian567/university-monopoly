@@ -31,9 +31,9 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 
     console.log('\n[1] 公告版本 + 运行时镜像 + 大厅美化');
     const ann = await page.evaluate(() => (document.querySelector('#intro .announce-logo') || {}).textContent || '');
-    ok(/v5\.11/.test(ann), `开局公告标题：${ann}`);
+    ok(/v5\.(12|11)/.test(ann), `开局公告标题：${ann}`);
     const annSub = await page.evaluate(() => (document.querySelector('.announce-sub') || {}).textContent || '');
-    ok(/v5\.11/.test(annSub), `作者公告版本号：${annSub.trim()}`);
+    ok(/v5\.12/.test(annSub), `作者公告版本号：${annSub.trim()}`);
     await page.click('#btnAnnounce'); await sleep(240);
     await page.click('#btnIntro'); await sleep(240);
     await page.click('#btnRulesClose').catch(() => {});

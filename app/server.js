@@ -39,6 +39,7 @@ function snapshot(room) {
     // v5.2：校园风貌（本局风貌 / 候选 / 投票明细 / 抽中的幸运儿 / 免费轮与免租轮）
     faculty: room.faculty || null,
     facultyOptions: (room.facultyOptions || []).slice(),
+    facultyMs: (room.phase === 'faculty' && room.facEndsAt) ? Math.max(1000, room.facEndsAt - Date.now()) : undefined,   // v5.12：重连时投票剩余毫秒
     facultyVotes: { ...(room.facultyVotes || {}) },
     facultyLucky: room.facultyLucky || null,
     facTermStart: room.facTermStart || 1,   // v5.9：本届城邦起始轮（10 轮一届）

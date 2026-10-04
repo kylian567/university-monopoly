@@ -124,7 +124,7 @@ const ok = (cond, msg) => { if (cond) { pass++; console.log('  ✓', msg); } els
       phone: FACULTY_KEYS.length,
       name: (document.querySelector('.fac-detail .fd-name') || {}).textContent || '',
     }));
-    ok(detail.cells === 23, `详情浮层列出全部 ${detail.cells} 个校园风貌`);
+    ok(detail.cells === detail.phone && detail.cells >= 23, `详情浮层列出全部 ${detail.cells} 个校园风貌（镜像 ${detail.phone}）`);
     ok(detail.on === 1, '当前本局风貌被高亮标记');
     ok(detail.name.length > 0, `详情浮层显示本局风貌：${detail.name}`);
     await shot('05-detail.png');
@@ -137,7 +137,7 @@ const ok = (cond, msg) => { if (cond) { pass++; console.log('  ✓', msg); } els
       const bad = FACULTY_KEYS.filter(k => !FACULTY[k] || !FACULTY[k].name);
       return { n: FACULTY_KEYS.length, bad: bad.length, facUses: typeof facOpenVote };
     });
-    ok(mirror.n === 23 && mirror.bad === 0, `前端 FACULTY 镜像 ${mirror.n} 项齐全`);
+    ok(mirror.n >= 23 && mirror.bad === 0, `前端 FACULTY 镜像 ${mirror.n} 项齐全`);
     ok(mirror.facUses === 'function', '风貌演出函数已挂到全局');
 
     console.log('\n[8] 控制台无报错');

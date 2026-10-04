@@ -35,6 +35,7 @@ section(1, '城邦 59 / 海克斯 104 / 镜像一致 / 提前触发表');
   // 客户端镜像逐字一致
   const game = fs.readFileSync(path.join(__dirname, 'game.js'), 'utf8');
   const cli = fs.readFileSync(path.join(__dirname, 'public/client.js'), 'utf8');
+  const css = fs.readFileSync(path.join(__dirname, 'public/style.css'), 'utf8');
   const span = (src, a, b) => src.slice(src.indexOf(a), src.indexOf(b, src.indexOf(a)));
   const gFac = span(game, 'const FACULTY = {', 'const FACULTY_KEYS = Object.keys(FACULTY);');
   const cFac = span(cli, 'const FACULTY = {', 'const FACULTY_KEYS = Object.keys(FACULTY);');
@@ -45,7 +46,11 @@ section(1, '城邦 59 / 海克斯 104 / 镜像一致 / 提前触发表');
   // 每个新城邦字段齐全
   const bad = G.FACULTY_KEYS.filter(k => !G.FACULTY[k].name || !G.FACULTY[k].icon || !G.FACULTY[k].color || !G.FACULTY[k].lead || !G.FACULTY[k].cost || !G.FACULTY[k].tag);
   ok(bad.length === 0, `59 城字段齐全${bad.length ? '（缺 ' + bad.join(',') + '）' : ''}`);
-  ok(G.HEX_PICK_MS === 52000 && G.FACULTY_VOTE_MS === 40000, `时长：海克斯 ${G.HEX_PICK_MS / 1000}s / 投票 ${G.FACULTY_VOTE_MS / 1000}s`);
+  ok(G.HEX_PICK_MS === 70000 && G.FACULTY_VOTE_MS === 60000, `时长：海克斯 ${G.HEX_PICK_MS / 1000}s / 投票 ${G.FACULTY_VOTE_MS / 1000}s（v5.12）`);
+  // v5.12：client 镜像同步 + 横屏模块 + 性能节流点存在
+  ok(/FACULTY_VOTE_MS = 60000/.test(cli), 'client 投票时长镜像 60s');
+  ok(/HEX_PICK_MS \|\| 70000/.test(cli), 'client 海克斯时长兜底 70s');
+  ok(/mobileLandscape/.test(cli) && /body\.rotmode/.test(css) && /qN\(74\)/.test(cli) && /ts - lobbyLast < 33/.test(cli) && /ts - wxLast < 33/.test(cli), '横屏模块 / rotmode 样式 / 30fps 节流 / 粒子减量齐备');
 }
 
 // ================= [2] 前五轮限购 =================
