@@ -32,7 +32,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 
     console.log('\n[1] 公告版本 + 运行时镜像');
     const ann = await page.evaluate(() => (document.querySelector('#intro .announce-logo') || {}).textContent || '');
-    ok(/v5\.(7|8|9|10|11|12|13)/.test(ann), `开局公告标题：${ann}`);
+    ok(/v5\.(7|8|9|10|11|12|13|14)/.test(ann), `开局公告标题：${ann}`);
     await page.click('#btnAnnounce'); await sleep(240);
     await page.click('#btnIntro'); await sleep(240);
     await page.click('#btnRulesClose').catch(() => {});
@@ -48,7 +48,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
     }));
     ok(mir.projects === 104, `PROJECTS 镜像 ${mir.projects} 项（预期 104 = 54 + 50）`);
     ok(mir.tiers === 3 && `${mir.silver}/${mir.gold}/${mir.prism}` === '40/35/29', `三档池 ${mir.silver}/${mir.gold}/${mir.prism}`);
-    ok(mir.charged === 33, `限次（合约期）项目 ${mir.charged} 个（v5.13 预期 33）`);
+    ok(mir.charged === 34, `限次（合约期）项目 ${mir.charged} 个（v5.14 预期 34）`);
     ok(mir.hexSfx, '5 个海克斯音效已挂载');
     ok(mir.viewer === 'function', 'openPlayerViewer 已挂到 window');
 

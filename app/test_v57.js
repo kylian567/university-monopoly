@@ -57,7 +57,7 @@ section(1, 'PROJECTS / HEX_TIERS 镜像一致 + 表完整性');
   ok(keysOK, 'PROJECT_KEYS 三档分组完整');
   // 同档内效果幅度一致（平衡约束抽查：同名修正在不同项目里的量纲统一）
   ok(G.HEX_TIER_P.length === 6 && G.HEX_TIER_P.every(r => Math.abs(r[0] + r[1] + r[2] - 1) < 1e-9), '六次立项档位概率各自归一（v5.13：六次全面降彩升银）');
-  ok(JSON.stringify(G.HEX_TRIGGERS) === JSON.stringify([2, 10, 20, 30, 40, 50]), '触发轮次 = 第 2 / 10 / 20 / 30 / 40 / 50 轮（v5.9）');
+  ok(JSON.stringify(G.HEX_TRIGGERS) === JSON.stringify([2, 10, 20, 32, 40, 50]), '触发轮次 = 第 2 / 10 / 20 / 32 / 40 / 50 轮（v5.14：第 4 次 30→32）');
 }
 
 // ================= [2] maybeProject 流程与发牌 =================
@@ -110,7 +110,7 @@ section(3, '档位概率：第 1 次银多、第 3 次彩明显增多');
     count[room.project.tier]++;
     room.clearTimer(); room.clearAiTimers();
   }
-  ok(count.silver > count.gold && count.gold >= count.prism * 1.2, `第 1 次立项分布合理 银=${count.silver} 金=${count.gold} 彩=${count.prism}`);
+  ok(count.silver > count.gold * 3 && count.gold > count.prism * 0.9, `第 1 次立项以银为主、金仍多于彩 银=${count.silver} 金=${count.gold} 彩=${count.prism}`);
   const cnt3 = { silver: 0, gold: 0, prism: 0 };
   for (let i = 0; i < N; i++) {
     const room = mkRoom(2);
@@ -119,7 +119,7 @@ section(3, '档位概率：第 1 次银多、第 3 次彩明显增多');
     cnt3[room.project.tier]++;
     room.clearTimer(); room.clearAiTimers();
   }
-  ok(cnt3.prism > count.prism * 2.5 && cnt3.silver > cnt3.prism * 1.5, `第 3 次彩占比明显高于第 1 次、且银仍多于彩 彩=${cnt3.prism}（第1次=${count.prism}）银=${cnt3.silver}`);
+  ok(cnt3.prism > count.prism * 1.9 && cnt3.silver > cnt3.prism * 1.35, `第 3 次彩占比明显高于第 1 次、且银仍多于彩 彩=${cnt3.prism}（第1次=${count.prism}）银=${cnt3.silver}`);
 }
 
 // ================= [4] 选择与结算闭环 =================

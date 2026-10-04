@@ -520,7 +520,9 @@ body {
   background:rgba(58,44,22,.45); backdrop-filter:blur(3px); }
 .announce-card { width:min(88vw,432px); background:linear-gradient(170deg,#fffdf6,#f7efdc); border-radius:20px;
   border:2px solid #e2d3ac; box-shadow:0 24px 70px rgba(60,40,10,.45); padding:30px 30px 24px; text-align:center;
-  animation:annIn .45s cubic-bezier(.2,1.4,.4,1); }
+  animation:annIn .45s cubic-bezier(.2,1.4,.4,1);
+  /* v5.14：卡片改为纵向 flex —— 内容区独立滚动，「下一步」按钮固定在卡片底部，随时可点 */
+  display:flex; flex-direction:column; max-height:92vh; }
 @keyframes annIn { from{opacity:0; transform:translateY(26px) scale(.92);} to{opacity:1; transform:none;} }
 .announce-logo { font-size:30px; font-weight:900; color:#7a1522; letter-spacing:2px; }
 .announce-sub { font-size:11px; color:#a89f8f; letter-spacing:3px; margin-top:2px; }
@@ -529,7 +531,7 @@ body {
 .announce-author { margin-top:18px; font-size:17px; font-weight:900; letter-spacing:2px; padding:9px 0;
   background:linear-gradient(90deg,#fff7e0,#fdeec3,#fff7e0); border:1.5px solid #e2c46a; border-radius:12px;
   color:#7a1522; text-shadow:0 1px 0 rgba(255,255,255,.7); }
-#btnAnnounce { margin-top:14px; width:100%; }
+#btnAnnounce { margin-top:14px; width:100%; flex:0 0 auto; }
 
 /* ---------- v5.0：对局控制条（顶部一排，不再压在棋盘格子上） ---------- */
 #ctrlBar { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px; position:relative; z-index:170; }
@@ -540,13 +542,16 @@ body {
 .ctrl-btn.live { color:#fff; background:linear-gradient(180deg,#e8544a,#b3281f); border-color:#ffb3ad; animation:micPulse 1.7s infinite; }
 .ghost-wide { width:100%; margin-top:10px; background:linear-gradient(180deg,#fffdf7,#f6efdd); }
 
-/* ---------- v5.0：v5.0 更新简介 ---------- */
-.intro-card { width:min(92vw,520px); text-align:left; max-height:92vh; overflow-y:auto; }
-/* v5.6 修复：公告里多个版本段落并列导致卡片远超一屏，遮罩不滚动 → 开始游戏按钮够不着 */
-.intro-card::-webkit-scrollbar { width:6px; }
-.intro-card::-webkit-scrollbar-thumb { background:#d8c9a4; border-radius:3px; }
-.intro-body { max-height:52vh; overflow-y:auto; }
+/* ---------- v5.0：版本更新简介 ---------- */
+.intro-card { width:min(92vw,520px); text-align:left; }
+/* v5.6 → v5.14：公告里的历史版本段落极长，卡片整体滚动时「开始游戏」按钮被顶到末尾够不着。
+   v5.14 改为「内容区滚动 + 按钮常驻底部」：标题与按钮固定，只滚中间的版本正文。 */
+.intro-scroll { flex:1 1 auto; min-height:0; overflow-y:auto; overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch; padding-right:2px; }
+.intro-scroll::-webkit-scrollbar { width:6px; }
+.intro-scroll::-webkit-scrollbar-thumb { background:#d8c9a4; border-radius:3px; }
 .intro-body p { font-size:13px; line-height:1.7; }
+#btnIntro { margin-top:14px; width:100%; flex:0 0 auto; }
 
 /* ---------- v5.0：规则介绍弹层（创房页与对局中都能开） ---------- */
 .rules-bg { position:fixed; inset:0; z-index:210; display:flex; align-items:center; justify-content:center;
@@ -1131,10 +1136,11 @@ body {
 #lobbyWxCv { position:absolute; inset:0; z-index:0; pointer-events:none; opacity:.9; }
 #lobby .lobby-box { position:relative; z-index:2; }
 
-/* ---------- v5.12：手机竖屏伪装横屏 ----------
-   触屏设备竖屏时 JS 给 #app 加内联 transform:rotate(90deg)（宽=屏高、高=屏宽），
-   body 挂 .rotmode；vw/vh 在旋转后仍指物理竖屏视口，所有用 vw/vh 定尺寸的面板
-   在此改用 % / 固定值。布局从「手机窄屏单列」切回「桌面横排」。 */
+/* ---------- v5.12 / v5.14：手机「对局内」横屏 ----------
+   v5.14 起只在对局屏（#game，有地图）可见时，JS 才给 #app 加内联 transform:rotate(90deg)
+   （宽=屏高、高=屏宽），body 挂 .rotmode；大厅 / 创房 / 公告一律保持自然竖屏。
+   vw/vh 在旋转后仍指物理竖屏视口，故所有用 vw/vh 定尺寸的面板在此改用 % / 固定值，
+   布局从「手机窄屏单列」切回「桌面横排」。 */
 body.rotmode { overflow:hidden !important; }
 body.rotmode .screen { min-height:0; height:100%; }
 body.rotmode #game { flex-direction:row; align-items:stretch; justify-content:center; }
@@ -1143,7 +1149,7 @@ body.rotmode #side { width:244px; flex:none; max-height:100%; overflow:auto; }
 body.rotmode .lobby-box { width:min(430px,92%); }
 body.rotmode .announce-card { width:min(88%,432px); }
 body.rotmode .intro-card { width:min(92%,520px); max-height:94%; }
-body.rotmode .intro-body { max-height:58%; }
+body.rotmode .intro-scroll { max-height:62%; }
 body.rotmode .rules-card { width:min(92%,600px); max-height:92%; }
 body.rotmode .ask-box { width:min(400px,90%); }
 body.rotmode .fv-panel { width:min(96%,980px); max-height:94%; }
@@ -1165,3 +1171,6 @@ body.rotmode .hxp-assets { max-height:36%; }
 /* v5.13：限次项目合约到期后置灰 */
 .hxp-chip.expired { opacity:.5; filter:grayscale(.7); }
 .hxp-chip.expired i { color:#8a8f96; }
+/* v5.14：合约剩余量用独立小胶囊标出（轮 / 次通用），临近到期变为琥珀色提示 */
+.hxp-chip .hxp-left { font-size:10.5px; font-weight:800; letter-spacing:0; opacity:.85; }
+.hxp-chip.near-end { border-color:#e0a23c; box-shadow:0 0 0 1px rgba(224,162,60,.35) inset; }

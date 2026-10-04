@@ -374,8 +374,9 @@ console.log('\n[23] 进修校区：开局所有人技能次数 +1');
 console.log('\n[24] 免费轮校区：随机 1 轮买地、盖楼免费');
 {
   const r = mkRoom(1, ['agri'], 'freeRound');
-  ok(r.freeRound >= 2 && r.freeRound <= 13, `抽中免费轮：第 ${r.freeRound} 轮`);
-  ok(r.isFreeRound() === false, '第 1 轮不是免费轮');
+  ok(r.freeRound >= 1 && r.freeRound <= 10, `抽中免费轮：第 ${r.freeRound} 轮（首届窗口 1~10，v5.9）`);
+  r.round = 1;
+  ok(r.isFreeRound() === (r.freeRound === 1), `第 1 轮免费判定与抽中轮次一致（抽中第 ${r.freeRound} 轮）`);
   r.round = r.freeRound;
   ok(r.isFreeRound() === true, `第 ${r.round} 轮进入免费轮`);
   const p = cur(r);

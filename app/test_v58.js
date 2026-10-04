@@ -240,21 +240,21 @@ section(8, '裸地 ×1.3 / 垄断裸地 ×2 / 机场 800/1600/3500/5500（v5.9�
 }
 
 // ================= [9] 海克斯：第 4 次触发 + 削弱抽查 =================
-section(9, '海克斯：第 30 轮第四次立项 + 全池削弱抽查 + 镜像一致');
+section(9, '海克斯：第 32 轮第四次立项 + 全池削弱抽查 + 镜像一致');
 {
-  ok(JSON.stringify(G.HEX_TRIGGERS) === JSON.stringify([2, 10, 20, 30, 40, 50]), '触发轮 [2,10,20,30,40,50]（v5.9）');
-  ok(G.HEX_TIER_P[3][0] === 0.50 && G.HEX_TIER_P[3][1] === 0.34 && G.HEX_TIER_P[3][2] === 0.16, '第 4 次概率 50/34/16（v5.13 降彩升银）');
+  ok(JSON.stringify(G.HEX_TRIGGERS) === JSON.stringify([2, 10, 20, 32, 40, 50]), '触发轮 [2,10,20,32,40,50]（v5.14）');
+  ok(G.HEX_TIER_P[3][0] === 0.46 && G.HEX_TIER_P[3][1] === 0.32 && G.HEX_TIER_P[3][2] === 0.22, '第 4 次概率 46/32/22（v5.14 彩卡上调）');
   ok(G.HEX_PICK_MS === 70000, `海克斯选择时长 70s（v5.12）`);
   ok(G.FACULTY_VOTE_MS === 60000, `风貌投票时长 60s（v5.12）`);
-  ok(G.PROJECTS.stipend.mods.goCash === 270, '勤工俭学 300→270（v5.11）');
+  ok(G.PROJECTS.stipend.mods.goCash === 320, '勤工俭学 320（v5.14 合约补偿）');
   ok(G.PROJECTS.seize.pct === 0.11 && G.PROJECTS.seize.amt === 3200, '强取豪夺 12%/3500 → 11%/3200（v5.11 再削）');
   ok(G.PROJECTS.aegis.mods.immuneCharges === 2, '绝对防御 3 → 2 次');
-  ok(G.PROJECTS.salaryx2.mods.salaryX2 === 1, '双倍工资保留');
+  ok(G.PROJECTS.salaryx2.mods.salaryX2 === 1 && G.PROJECTS.salaryx2.mods.goCash === 700 && G.PROJECTS.salaryx2.charges === 12, '双倍工资保留 salaryX2，并补 +¥700/次（限 12 次，v5.14 救活死卡）');
   // 第 30 轮能开
   const r = mkRoom(2);
-  r.round = 30; r.hexDoneRounds = [];
+  r.round = 32; r.hexDoneRounds = [];
   const opened = r.maybeProject();
-  ok(opened && r.phase === 'project' && r.project.round === 30, '第 30 轮正常开启三选一');
+  ok(opened && r.phase === 'project' && r.project.round === 32, '第 32 轮正常开启三选一（v5.14 第四次改到 32 轮）');
   r.clearTimer(); r.clearAiTimers();
   // 镜像一致（复用 v5.7 的提取逻辑）
   const src = fs.readFileSync(path.join(__dirname, 'public', 'client.js'), 'utf8');
@@ -364,8 +364,8 @@ section(13, 'v5.9 海克斯平衡：停发工资后工资类项目不再出现')
     r.phase = 'roll'; r.project = null;
     return offs;
   };
-  // 第 30/40/50 轮立项（停薪 15 轮之后）：不应出现工资类项目
-  for (const round of [30, 40, 50]) {
+  // 第 32/40/50 轮立项（停薪 15 轮之后）：不应出现工资类项目（v5.14 第 4 次改到 32 轮）
+  for (const round of [32, 40, 50]) {
     const offs = check(round);
     ok(!offs.some(k => DEAD.includes(k)), `第 ${round} 轮立项不含工资类项目（共 ${offs.length} 张候选）`);
   }
