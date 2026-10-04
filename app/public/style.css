@@ -1111,3 +1111,19 @@ body {
 .pcard { cursor:pointer; }
 .pcard:hover { filter:brightness(1.05); }
 .tag.hx-tag { background:#efe4fa; color:#7a3cb0; }
+
+/* ---------- v5.10：海克斯刷新按钮 ---------- */
+.hx-refresh {
+  position:absolute; right:10px; bottom:44px; width:36px; height:36px; border-radius:50%;
+  border:1.5px solid rgba(120,100,70,.45); background:rgba(255,255,255,.55); color:#6b5b3e;
+  font-size:17px; line-height:33px; text-align:center; cursor:pointer; z-index:6;
+  transition:transform .18s, background .18s, box-shadow .18s; user-select:none;
+  box-shadow:0 2px 8px rgba(90,70,40,.18);
+}
+.hx-refresh:hover { background:rgba(255,255,255,.9); transform:rotate(72deg) scale(1.12); box-shadow:0 4px 14px rgba(90,70,40,.28); }
+.hx-refresh.spin { animation:hxRfSpin .7s linear infinite; }
+@keyframes hxRfSpin { to { transform:rotate(360deg); } }
+.hx-card.picked .hx-refresh, .hx-layer.waiting .hx-refresh, .hx-refresh.used { display:none; }
+/* ---------- v5.10：大厅天气特效层 ---------- */
+#lobbyWxCv { position:absolute; inset:0; z-index:0; pointer-events:none; opacity:.9; }
+#lobby .lobby-box { position:relative; z-index:2; }

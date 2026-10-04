@@ -55,6 +55,7 @@ function snapshot(room) {
       medal: p.medal || 0, stayFree: p.stayFree || 0,
       buffSteps: p.buffSteps || 0, stepBuffs: (p.stepBuffs || []).slice(),
       hexList: (p.hexList || []).slice(),   // v5.7：已立项的研究项目（供他人查看 / 玩家卡片标签）
+      hexRefreshLeft: (p.hexRefreshLeft == null) ? 1 : p.hexRefreshLeft,   // v5.10：刷新机会剩余次数
       fundBanned: !!p.fundBanned,           // v5.8：被教育基金拉黑
       fineFree: p.fineFree || 0,            // v5.8：免罚款卡张数
       stayFree: p.stayFree || 0,            // v5.8：免停留卡张数
@@ -342,6 +343,7 @@ function onMessage(ws, str) {
     case 'skipSkill': room.skipSkill(p); break;                 // v5.1 主动技：放弃
     case 'voteFaculty': room.voteFaculty(p, String(a.key || '')); break;   // v5.2 校园风貌：投票
     case 'pickProject': room.pickProject(p, String(a.key || '')); break;   // v5.7 研究项目：三选一
+    case 'refreshProject': room.refreshProject(p, String(a.key || '')); break;   // v5.10 研究项目：刷新一张
     case 'trustee': room.setTrustee(p, !!a.on); break;   // v5.4 AI 托管：开/关
     case 'major': room.setMajor(p, a.major); break;
     case 'again': // 再来一局

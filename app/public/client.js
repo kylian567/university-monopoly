@@ -181,9 +181,47 @@ const FACULTY = {
   retrain:  { name: '进修校区',   icon: '📖', color: '#5548B0', lead: '当选时全场技能次数 +1',                 cost: '所有地皮买入价 +3%',                tag: '多学一门手艺' },
   freeRound:{ name: '免费轮校区', icon: '🎟️', color: '#4E9B2A', lead: '随机 1 轮全场买地、盖楼完全免费',       cost: '全场租金 ×1.08',                    tag: '那一轮，随便花' },
   freeRent: { name: '免租轮校区', icon: '🕊️', color: '#3FBF9E', lead: '随机 4 轮全场所有人免交租金',           cost: '其余轮次全场租金 ×1.05',            tag: '这四轮，谁也别想收租' },
+  // ===== v5.10 新增：「海克斯定调」六城（只在第一轮城邦推选出现，且候选权重更高） =====
+  hxPrism:  { name: '彩霞之城',   icon: '🌈', color: '#B76CE8', hexTheme: 1, terms: [1, 1], lead: '本局海克斯前三次必出国家级（棱彩）',  cost: '全场租金 ×1.05',                    tag: '天降紫雨，只下前三发' },
+  hxSilver: { name: '白银学城',   icon: '⚪', color: '#8FA6BF', hexTheme: 1, terms: [1, 1], lead: '本局海克斯前三次必出校级（银）',      cost: '所有地皮买入价 +3%',                tag: '稳扎稳打，从不惊喜' },
+  hxGold:   { name: '黄金学府',   icon: '🟡', color: '#E8B04B', hexTheme: 1, terms: [1, 1], lead: '本局海克斯前三次必出省级（金）',      cost: '全场租金 ×1.04',                    tag: '含金量直接拉满' },
+  hxMix:    { name: '极光之城',   icon: '🌌', color: '#7B68EE', hexTheme: 1, terms: [1, 1], lead: '本局海克斯前三次必为银/金/彩各一个',  cost: '物业税起征门槛降低 1',              tag: '雨露均沾，档档来一遍' },
+  hex3:     { name: '精研之城',   icon: '🧭', color: '#3FBF9E', hexTheme: 1, terms: [1, 1], lead: '本局海克斯只有 3 次（第 2/10/20 轮）', cost: '此后所有立项机会全部取消——选卡时记得用刷新', tag: '少即是多，张张要紧' },
+  hexEarly: { name: '时光之城',   icon: '⏳', color: '#E07A45', hexTheme: 1, terms: [1, 1], lead: '海克斯提前触发：第 2/5/10/20/32/40 轮', cost: '第 40 轮后就再也没有立项机会',      tag: '早起的鸟儿有项目吃' },
+  // ===== v5.10 新增：30 个娱乐城邦（一利一弊，幅度克制，主打好玩） =====
+  lantern:  { name: '灯会校区',   icon: '🏮', color: '#E8A23F', lead: '每轮开场全场 +¥150 灯会补贴',           cost: '全场租金 ×1.03',                    tag: '张灯结彩，人人有份' },
+  midterm:  { name: '期中周校区', icon: '📝', color: '#8E86E0', lead: '每 5 轮全场各缴 ¥400 助学捐款',         cost: '躲不掉——人人有份，直接进基金池',     tag: '谁也别想逃' },
+  lottery:  { name: '抽奖校区',   icon: '🎰', color: '#D9437A', lead: '每 3 轮随机 1 人独中 ¥1000',            cost: '其余人各付 ¥100 参与费',            tag: '一夜暴富的梦想还是要有的' },
+  oldbook:  { name: '旧书集校区', icon: '📦', color: '#A9682B', lead: '每 3 轮按名下地皮数 ×¥120 摆摊收益',    cost: '基金池上限 −20%',                   tag: '书摊支起来，地越多越赚' },
+  nightowl: { name: '夜猫校区',   icon: '🌙', color: '#5548B0', lead: '每轮开场现金最少者 +¥600',              cost: '现金最多者缴 ¥300 进基金池',         tag: '熬夜的人有补贴' },
+  shuffle:  { name: '洗牌校区',   icon: '🔀', color: '#2E9BC4', lead: '每 8 轮全场资金随机互转一轮',            cost: '全场租金 ×1.02',                    tag: '钱在谁手里，全看天意' },
+  stampede: { name: '早八校区',   icon: '🌅', color: '#F2B33D', lead: '掷出 7 点 +¥300（准时到教室）',         cost: '掷出 ≤3 点 −¥150（起晚了）',        tag: '早八人的悲欢并不相通' },
+  carnival: { name: '嘉年华校区', icon: '🎡', color: '#E2569F', lead: '每轮首次重投免费',                      cost: '全场租金 ×1.05',                    tag: '今天全场都是游乐场' },
+  liberal:  { name: '通识校区',   icon: '🎭', color: '#6FAE3F', lead: '每抽一张命运卡 +¥150',                  cost: '机会卡的收益 −8%',                  tag: '命运的馈赠暗中标好了价' },
+  dorm:     { name: '宿舍校区',   icon: '🛏️', color: '#B04B2C', lead: '被罚停留时 +¥800 休整补贴',             cost: '所有地皮买入价 +4%',                tag: '躺平也有躺平的收入' },
+  runner:   { name: '校车站校区', icon: '🚌', color: '#3F8FBF', lead: '掷出双数时 +¥250（班来得巧）',          cost: '所有地皮买入价 +3%',                tag: '等车的时间也是钱' },
+  cafe:     { name: '咖啡校区',   icon: '☕', color: '#8B5A3C', lead: '每 3 轮全场各领 ¥250 咖啡补贴',         cost: '罚款类支出 +10%',                   tag: '续命水，学院报销一半' },
+  silent:   { name: '自习校区',   icon: '🤫', color: '#7A8B99', lead: '全场租金 ×0.94',                        cost: '卡牌收益 −10%',                     tag: '安静，但安静得有点穷' },
+  gala:     { name: '校友日校区', icon: '🎗️', color: '#C99A3F', lead: '每 5 轮总资产最高者捐 ¥800 进基金池',   cost: '全场租金 ×1.02',                    tag: '成功人士该表示表示了' },
+  spring:   { name: '创业热土校区', icon: '🌱', color: '#4E9B2A', lead: '全场建筑升级费 −5%',                  cost: '全场租金 ×1.03',                    tag: '万物生长，施工不停' },
+  artfest:  { name: '艺术节校区', icon: '🎪', color: '#9B59B6', lead: '效果卡盲盒每次多抽 1 张',               cost: '基金池上限 −10%',                   tag: '艺术无价，池子有价' },
+  metro:    { name: '地铁校区',   icon: '🚇', color: '#2E7BC4', lead: '机场路费 ×0.85',                        cost: '文印店/快递租金 ×1.15',             tag: '机场快了，驿站贵了' },
+  scholar:  { name: '讲座校区',   icon: '🎤', color: '#1FA37A', lead: '每 3 轮随机 1 人技能次数 +1',           cost: '其余人各付 ¥150 讲座门票',          tag: '听讲座也能涨本事' },
+  market:   { name: '市集校区',   icon: '🧺', color: '#D98E2B', lead: '每 4 轮全场各领 ¥200 摊位分红',         cost: '所有地皮买入价 +2%',                tag: '摆摊的自由，买地的代价' },
+  snowville:{ name: '冰雪校区',   icon: '❄️', color: '#7FB3D9', lead: '雨/雾/雪/台风天全场各 +¥250',           cost: '晴/烈日天全场各 −¥150',             tag: '怕冷的来，怕热的绕道' },
+  veteran:  { name: '老生校区',   icon: '🎓', color: '#6B8E23', lead: '当选时全场各领 1 张免租金卡',           cost: '所有地皮买入价 +5%',                tag: '学长学姐的传家宝' },
+  freshman: { name: '新生校区',   icon: '🍼', color: '#F4A460', lead: '当选时全场各领 ¥1500 迎新红包',         cost: '第 10 轮起每 3 轮各缴 ¥300 社团费',  tag: '先甜后苦，年轻的代价' },
+  dicegod:  { name: '骰神校区',   icon: '🎲', color: '#E67E22', lead: '每轮开场随机 1 人移动 +2 步',           cost: '被选中者当场付 ¥300 车马费',         tag: '被骰神摸过头' },
+  charity:  { name: '公益校区',   icon: '🤲', color: '#E74C3C', lead: '每 5 轮最富者向最穷者转 ¥600',          cost: '全场租金 ×1.02',                    tag: '先富带后富' },
+  professor:{ name: '名师校区',   icon: '👨‍🏫', color: '#34495E', lead: '每 3 轮随机 1 人免费盖一栋房',         cost: '全场租金 ×1.04',                    tag: '名师亲自监工' },
+  cram:     { name: '补习街校区', icon: '📐', color: '#16A085', lead: '机会卡的负面金额 −15%',                 cost: '机会卡的正面收益 −8%',              tag: '补课补不出暴富' },
+  reunion:  { name: '聚餐校区',   icon: '🍲', color: '#C0392B', lead: '每 4 轮随机 1 人请全场吃饭（每人 +¥150）', cost: '请客的人当场放血 ¥150×人数',        tag: 'AA 是不可能 AA 的' },
+  observatory:{ name: '观星校区', icon: '🔭', color: '#2C3E94', lead: '掷出 ≥10 点 +¥400（星象大吉）',        cost: '掷出 ≤4 点 −¥200（乌云蔽月）',      tag: '夜观天象，日进斗金' },
+  green:    { name: '环保校区',   icon: '♻️', color: '#27AE60', lead: '全场建筑升级费 −6%',                    cost: '经过起点工资 ¥1850（−150）',        tag: '绿化好了，工资少了' },
+  gamble:   { name: '博弈校区',   icon: '🃏', color: '#8E44AD', lead: '擂台/运动会赌注 ×1.25',                 cost: '全场租金 ×1.03',                    tag: '富贵险中求' },
 };
 const FACULTY_KEYS = Object.keys(FACULTY);
-const FACULTY_VOTE_MS = 24000;   // v5.5：与服务端同步拉长（原 15s），看清楚再投
+const FACULTY_VOTE_MS = 40000;   // v5.10：与服务端同步拉长到 40s（59 个城邦说明更厚，看清楚再投）
 
 // ---------- v5.7：海克斯 · 研究项目（与服务端 game.js 的 PROJECTS/HEX_TIERS 表逐字同步，改一边必须改另一边） ----------
 const HEX_TIERS = {
@@ -217,11 +255,11 @@ const PROJECTS = {
   raise:      { tier: 'gold', icon: '💼', name: '涨薪合同',   desc: '每次经过起点额外 +¥600', mods: { goCash: 600 } },
   overseer:   { tier: 'gold', icon: '🏗️', name: '工程监理',  desc: '盖房费用 −15%', mods: { buildCut: 0.15 } },
   landrush:   { tier: 'gold', icon: '🗺️', name: '圈地许可',  desc: '买入无主地 88 折', mods: { buyCut: 0.12 } },
-  fortune:    { tier: 'gold', icon: '🎴', name: '卡运亨通',   desc: '每抽一张卡 +¥350', mods: { cardGain: 350 } },
-  scholarship:{ tier: 'gold', icon: '🎖️', name: '一等奖学金', desc: '每轮开始 +¥550', mods: { turnCash: 550 } },
+  fortune:    { tier: 'gold', icon: '🎴', name: '卡运亨通',   desc: '每抽一张卡 +¥300', mods: { cardGain: 300 } },
+  scholarship:{ tier: 'gold', icon: '🎖️', name: '一等奖学金', desc: '每轮开始 +¥500', mods: { turnCash: 500 } },
   leverage:   { tier: 'gold', icon: '🏦', name: '杠杆大师',   desc: '抵押地产时多拿 20%', mods: { mortgageUp: 0.20 } },
   tollpass:   { tier: 'gold', icon: '🎫', name: '通行优惠',   desc: '被收租时一律减免 12%', mods: { tollCut: 0.12 } },
-  rentboost:  { tier: 'gold', icon: '📈', name: '收租培训',   desc: '单笔收租 ≥¥1500 时 +20%', mods: { rentGainPct: 0.20, rentGainMin: 1500 } },
+  rentboost:  { tier: 'gold', icon: '📈', name: '收租培训',   desc: '单笔收租 ≥¥1200 时 +18%', mods: { rentGainPct: 0.18, rentGainMin: 1200 } },
   medkit:     { tier: 'gold', icon: '⛑️', name: '急救包',     desc: '被收租 ≥¥800 时减免 20%（4 次）', mods: { tollShield: 4, tollShieldPct: 0.20, tollShieldMin: 800 } },
   giftbag:    { tier: 'gold', icon: '🎁', name: '票券大礼包', desc: '立即获得 3 张免租金卡', once: 'pack', medal: 3 },
   deposit:    { tier: 'gold', icon: '🏛️', name: '定期存款',  desc: '每轮开始现金 ≥¥15000 时生息 4%（封顶 ¥900）', mods: { interestPct: 0.04, interestMin: 15000, interestCap: 900 } },
@@ -232,23 +270,76 @@ const PROJECTS = {
   buildcash:  { tier: 'gold', icon: '🔨', name: '盖房返现',   desc: '每次盖房返还 ¥150', mods: { buildCash: 150 } },
   buycash:    { tier: 'gold', icon: '🏷️', name: '拿地返现',   desc: '每次买地返还 ¥120', mods: { buyCash: 120 } },
   patron:     { tier: 'gold', icon: '🛡️', name: '学术保护',   desc: '额外获得 2 次免疫负面判定的机会', mods: { immuneBonus: 2 } },
-  startup:    { tier: 'gold', icon: '🚀', name: '创业启动金', desc: '立即 +¥2800', once: 'cash', amt: 2800 },
+  startup:    { tier: 'gold', icon: '🚀', name: '创业启动金', desc: '立即 +¥2600', once: 'cash', amt: 2600 },
   intuition:  { tier: 'gold', icon: '🧠', name: '考场直觉',   desc: '掷出 ≥9 点时 +¥500', mods: { highRollCash: 500 } },
   // ===== 国家级（棱彩）× 14 =====
   salaryx2:    { tier: 'prism', icon: '💵', name: '双倍工资',   desc: '经过起点工资 ×2（整局）', mods: { salaryX2: 1 } },
   monopoly:    { tier: 'prism', icon: '🏆', name: '垄断宣言',   desc: '立即随机占有一块无主地，并 +¥1500', once: 'land', amt: 1500 },
-  seize:       { tier: 'prism', icon: '💎', name: '强取豪夺',   desc: '立即夺取现金最多者 15% 的现金（封顶 ¥4000）', once: 'seize', pct: 0.15, amt: 4000 },
+  seize:       { tier: 'prism', icon: '💎', name: '强取豪夺',   desc: '立即夺取现金最多者 12% 的现金（封顶 ¥3500）', once: 'seize', pct: 0.12, amt: 3500 },
   nirvana:     { tier: 'prism', icon: '🔥', name: '涅槃',       desc: '首次破产时以 ¥6000 复活并免除该笔债务（限 1 次）', mods: { nirvana: 1 } },
   aegis:       { tier: 'prism', icon: '🛡️', name: '绝对防御',  desc: '免疫 2 次负面判定（挂科留级 / 拆地拆房等）', mods: { immuneCharges: 2 } },
-  tollbooth:   { tier: 'prism', icon: '🚧', name: '收费站',     desc: '对手经过你的地产时每次付 ¥250（单次移动封顶 ¥750）', mods: { tollBooth: 250 } },
+  tollbooth:   { tier: 'prism', icon: '🚧', name: '收费站',     desc: '对手经过你的地产时每次付 ¥220（单次移动封顶 ¥750）', mods: { tollBooth: 220 } },
   fatewheel:   { tier: 'prism', icon: '🎲', name: '命运改写',   desc: '抽到负面卡自动重抽（2 次）', mods: { rerollBad: 2 } },
   wallstreet:  { tier: 'prism', icon: '🐺', name: '华尔街之狼', desc: '抵押地产可获得地价 100%', mods: { mortgage100: 1 } },
-  legacy:      { tier: 'prism', icon: '🧧', name: '遗产继承',   desc: '每轮开始，当前总资产最低者向你支付 ¥600', mods: { legacy: 1 } },
+  legacy:      { tier: 'prism', icon: '🧧', name: '遗产继承',   desc: '每轮开始，当前总资产最低者向你支付 ¥450', mods: { legacy: 1, legacyAmt: 450 } },
   dividends:   { tier: 'prism', icon: '🏛️', name: '基金抽成',  desc: '教育基金池每次进账，你抽成 8%（单笔封顶 ¥400）', mods: { fundKick: 0.08 } },
-  headstart:   { tier: 'prism', icon: '⚡', name: '先发优势',   desc: '每轮开始 +¥750', mods: { turnCash: 750 } },
-  landmark:    { tier: 'prism', icon: '🏙️', name: '地标经济',   desc: '每轮开始按名下建筑数 ×¥45 收益', mods: { landmark: 45 } },
+  headstart:   { tier: 'prism', icon: '⚡', name: '先发优势',   desc: '每轮开始 +¥650', mods: { turnCash: 650 } },
+  landmark:    { tier: 'prism', icon: '🏙️', name: '地标经济',   desc: '每轮开始按名下建筑数 ×¥40 收益', mods: { landmark: 40 } },
   rerollmaster:{ tier: 'prism', icon: '🔁', name: '重投大师',   desc: '每回合首次重投免费', mods: { freeReroll: 1 } },
   safety:      { tier: 'prism', icon: '💯', name: '风险兜底',   desc: '每轮开始若现金 <¥2000，直接补到 ¥2000', mods: { floor: 2000 } },
+  // ===== v5.10 新增：校级（银）× 20 =====
+  buscard:    { tier: 'silver', icon: '🚌', name: '校车月票',   desc: '每次被收机场 / 文印店 / 快递路费时立减 ¥150', mods: { tollFlat: 150 } },
+  nightbus:   { tier: 'silver', icon: '🌃', name: '夜班校车',   desc: '被收租 ≥¥600 时减免 10%（3 次）', mods: { tollShield: 3, tollShieldPct: 0.10, tollShieldMin: 600 } },
+  waterfree:  { tier: 'silver', icon: '🚰', name: '免费开水',   desc: '每轮开始 +¥180', mods: { turnCash: 180 } },
+  canteen:    { tier: 'silver', icon: '🍱', name: '食堂套餐',   desc: '每轮开始若现金 <¥6000，+¥300', mods: { poorCash: 300, poorCashUnder: 6000 } },
+  notesduty:  { tier: 'silver', icon: '📒', name: '笔记出借',   desc: '每抽一张机会/命运卡 +¥120', mods: { cardGain: 120 } },
+  gymrun:     { tier: 'silver', icon: '🏃', name: '操场夜跑',   desc: '掷出 ≤4 点时 +¥180', mods: { lowRollCash: 180 } },
+  bike:       { tier: 'silver', icon: '🚲', name: '单车代步',   desc: '掷出双数时 +¥120', mods: { doubleCash: 120 } },
+  earlyclass: { tier: 'silver', icon: '☀️', name: '早八全勤',   desc: '晴天 / 烈日每轮开始 +¥250', mods: { sunCash: 250 } },
+  keychain:   { tier: 'silver', icon: '🔑', name: '挂科保险',   desc: '免于挂科留级 2 次（补考费照交）', mods: { jailFree: 2 } },
+  pawnshop:   { tier: 'silver', icon: '🏪', name: '二手好价',   desc: '赎回抵押地产时少付 10%', mods: { redeemCut: 0.10 } },
+  ticketx:    { tier: 'silver', icon: '🎟️', name: '尾票福利',   desc: '立即获得 1 张免租金卡 + 1 张免停留卡', once: 'stayPack', medal: 1, stayFree: 1 },
+  smallcash:  { tier: 'silver', icon: '💰', name: '零花补贴',   desc: '立即 +¥800', once: 'cash', amt: 800 },
+  taxrebate:  { tier: 'silver', icon: '🧾', name: '税费返还',   desc: '物业税 −25%', mods: { taxCut: 0.25 } },
+  studycard:  { tier: 'silver', icon: '📚', name: '通宵补习',   desc: '被罚停留时 +¥400 补贴', mods: { stayCash: 400 } },
+  dormkey:    { tier: 'silver', icon: '🛡️', name: '宿舍免检',   desc: '免疫 1 次负面判定（留级 / 拆地拆房等）', mods: { immuneCharges: 1 } },
+  couponbk:   { tier: 'silver', icon: '🎫', name: '优惠券册',   desc: '每次付款返还 3%（单笔封顶 ¥90）', mods: { cashbackPct: 0.03, cashbackCap: 90 } },
+  umbrellas:  { tier: 'silver', icon: '☔', name: '雨天专车',   desc: '雨 / 雾 / 雪 / 台风天，每轮开始 +¥250', mods: { weatherCash: 250 } },
+  regent:     { tier: 'silver', icon: '🏅', name: '院系嘉奖',   desc: '立即 +¥900', once: 'cash', amt: 900 },
+  auctioneer: { tier: 'silver', icon: '🔨', name: '拍卖慧眼',   desc: '你赢下的拍卖成交价 −10%', mods: { auctionCut: 0.10 } },
+  milktea:    { tier: 'silver', icon: '🧋', name: '奶茶自由',   desc: '每轮开始若现金 <¥10000，+¥220', mods: { poorCash: 220, poorCashUnder: 10000 } },
+  // ===== v5.10 新增：省级（金）× 15 =====
+  express:    { tier: 'gold', icon: '🚄', name: '高铁学生票', desc: '每次被收机场 / 文印店 / 快递路费时立减 ¥300', mods: { tollFlat: 300 } },
+  vaultkey:   { tier: 'gold', icon: '🏦', name: '金库钥匙',   desc: '抵押多拿 18%，赎回再少付 10%', mods: { mortgageUp: 0.18, redeemCut: 0.10 } },
+  goldcard:   { tier: 'gold', icon: '💳', name: '白金返现',   desc: '每次付款返还 8%（单笔封顶 ¥300）', mods: { cashbackPct: 0.08, cashbackCap: 300 } },
+  housefund:  { tier: 'gold', icon: '🧱', name: '建材补贴',   desc: '盖房费用 −12%，且每次盖房返还 ¥120', mods: { buildCut: 0.12, buildCash: 120 } },
+  grants:     { tier: 'gold', icon: '📜', name: '科研津贴',   desc: '每轮开始 +¥480', mods: { turnCash: 480 } },
+  welfare:    { tier: 'gold', icon: '🧸', name: '救助大礼包', desc: '每轮开始若名下没有地产 +¥800；现金 <¥5000 再 +¥300', mods: { noLandCash: 800, poorCash: 300, poorCashUnder: 5000 } },
+  highjump:   { tier: 'gold', icon: '🏆', name: '竞技状态',   desc: '掷出 ≥9 点 +¥420，掷出双数再 +¥200', mods: { highRollCash: 420, doubleCash: 200 } },
+  legalaid:   { tier: 'gold', icon: '⚖️', name: '法律顾问',   desc: '免于挂科留级 3 次 + 免疫 1 次负面判定', mods: { jailFree: 3, immuneCharges: 1 } },
+  insurance:  { tier: 'gold', icon: '🛡️', name: '全额保险',   desc: '被收租一律减免 10%；单笔 ≥¥1200 再减 15%（4 次）', mods: { tollCut: 0.10, tollShield: 4, tollShieldPct: 0.15, tollShieldMin: 1200 } },
+  alumninet:  { tier: 'gold', icon: '🤝', name: '校友网络',   desc: '立即获得 2 张免租金卡 + 1 张免停留卡', once: 'stayPack2', medal: 2, stayFree: 1 },
+  contract:   { tier: 'gold', icon: '📈', name: '独家代理',   desc: '单笔收租 ≥¥1200 时 +15%，且每笔收租再 +¥80', mods: { rentGainPct: 0.15, rentGainMin: 1200, rentFlat: 80 } },
+  landgift:   { tier: 'gold', icon: '🗺️', name: '土地划拨',   desc: '立即随机占有一块无主地，并 +¥800', once: 'land', amt: 800 },
+  fundseed:   { tier: 'gold', icon: '🌱', name: '种子基金',   desc: '立即从教育基金池提取 12%（封顶 ¥2400）', once: 'fundCut', pct: 0.12, cap: 2400 },
+  overtime:   { tier: 'gold', icon: '⏱️', name: '弹性学制',   desc: '被罚停留的回合数 −1，且被罚停留时 +¥500', mods: { stayCut: 1, stayCash: 500 } },
+  taxshield:  { tier: 'gold', icon: '🧮', name: '报税大师',   desc: '物业税 −40%', mods: { taxCut: 0.40 } },
+  // ===== v5.10 新增：国家级（棱彩）× 15 =====
+  salaryplus: { tier: 'prism', icon: '💸', name: '津贴加码',   desc: '每次经过起点额外 +¥900', mods: { goCash: 900 } },
+  goldenland: { tier: 'prism', icon: '🏰', name: '御赐封地',   desc: '立即随机占有 2 块无主地，并 +¥1000', once: 'land2', amt: 1000 },
+  mindrain:   { tier: 'prism', icon: '🧠', name: '智囊天团',   desc: '立即夺取现金最多者 12% 的现金（封顶 ¥3500），此后每轮开始再 +¥300', once: 'seize', pct: 0.12, amt: 3500, mods: { turnCash: 300 } },
+  fortress:   { tier: 'prism', icon: '🏯', name: '不动如山',   desc: '免疫 3 次负面判定 + 免于挂科留级 3 次', mods: { immuneCharges: 3, jailFree: 3 } },
+  tollking:   { tier: 'prism', icon: '🌉', name: '车水马龙',   desc: '对手经过你的地产每次付 ¥350（封顶 ¥1050），且每笔收租 +¥100', mods: { tollBooth: 350, tollBoothCap: 1050, rentFlat: 100 } },
+  fateward:   { tier: 'prism', icon: '🧿', name: '厄运退散',   desc: '抽到负面卡自动重抽（3 次）', mods: { rerollBad: 3 } },
+  bankline:   { tier: 'prism', icon: '🏛️', name: '银行白名单', desc: '抵押地产可获得地价 100%，赎回再少付 20%', mods: { mortgage100: 1, redeemCut: 0.20 } },
+  tithe:      { tier: 'prism', icon: '👑', name: '万民伞',     desc: '每轮开始，总资产最低者向你支付 ¥450', mods: { legacy: 1, legacyAmt: 450 } },
+  fundlord:   { tier: 'prism', icon: '🏦', name: '基金合伙人', desc: '教育基金池每次进账，你抽成 10%（单笔封顶 ¥500）', mods: { fundKick: 0.10, fundKickCap: 500 } },
+  megahead:   { tier: 'prism', icon: '⚡', name: '大先发优势', desc: '每轮开始 +¥900', mods: { turnCash: 900 } },
+  skyscraper: { tier: 'prism', icon: '🌃', name: '摩天经济',   desc: '每轮开始按名下建筑数 ×¥70 收益', mods: { landmark: 70 } },
+  rerollking: { tier: 'prism', icon: '🔁', name: '时来运转',   desc: '每回合首次重投免费，其余重投费用 −50%', mods: { freeReroll: 1, rerollCut: 0.50 } },
+  megafloor:  { tier: 'prism', icon: '🛟', name: '终身兜底',   desc: '每轮开始若现金 <¥3000，直接补到 ¥3000', mods: { floor: 3000 } },
+  taxexempt:  { tier: 'prism', icon: '🧾', name: '免税特许',   desc: '物业税 −60%，且每次付款返还 5%（封顶 ¥200）', mods: { taxCut: 0.60, cashbackPct: 0.05, cashbackCap: 200 } },
+  phoenix2:   { tier: 'prism', icon: '🔥', name: '浴火重生',   desc: '首次破产时以 ¥5000 复活并免除该笔债务，且免疫 1 次负面判定', mods: { nirvana: 1, immuneCharges: 1 } },
 };
 const PROJECT_KEYS = { silver: [], gold: [], prism: [] };
 for (const k in PROJECTS) PROJECT_KEYS[PROJECTS[k].tier].push(k);
@@ -1238,7 +1329,9 @@ const ANIMATED = new Set(['roll', 'move', 'card', 'buy', 'build', 'charge', 'mon
   // v5.6：双数再掷提示 + 免费轮/免租轮大屏抽签
   'doubles', 'faculty_draw',
   // v5.7：研究项目（海克斯）
-  'project_offer', 'project_pick', 'project_grant', 'hexfx', 'income_decay', 'item_locked', 'reroll_lock', 'fund_banned', 'fine_free', 'skill_steal', 'buildcut_used', 'invest_fail']);
+  'project_offer', 'project_pick', 'project_grant', 'project_refresh', 'hexfx', 'income_decay', 'item_locked', 'reroll_lock', 'fund_banned', 'fine_free', 'skill_steal', 'buildcut_used', 'invest_fail',
+  // v5.10：前五轮限购
+  'buy_capped']);
 let animPending = 0;   // 排队中的动画数；>0 时 renderTokens 冻结，防止棋子瞬移
 let visLog = [];       // 已"播放"的日志：按事件流逐步出现，与地图动画严格同节奏（不超前、不滞后）
 let logRendered = 0;   // visLog 中已渲染的下标数（增量渲染，避免每次重排 200+ 行）
@@ -1474,6 +1567,13 @@ async function handleAnim(e) {
     // v5.7：研究项目（海克斯）
     case 'project_offer': { projectOpenPick(e); break; }    // 三选一浮层自带倒计时，不占用动画队列
     case 'project_pick': { projectMarkPick(e); break; }
+    case 'project_refresh': { projectRefreshFx(e); break; }   // v5.10：海克斯刷新
+    case 'buy_capped': {   // v5.10：前五轮限购提示
+      SFX.click(); pulseCell(e.cell, '#c0392b');
+      fxAt(e.cell, '<div class="floaty lockfloat">🚫 限购</div>');
+      await announce(`🚫 <span class="who">${esc(ownerName(e.pid))}</span> 本回合已经买过地（前 5 轮限购），「${esc(BOARD[e.cell].name)}」不能买、也不进拍卖`, 1500);
+      break;
+    }
     case 'project_grant': { await projectGrantFx(e); break; }
     case 'hexfx': { await hexFxBanner(e); break; }
     case 'faculty_chosen': { await facultyCeremony(e); break; }
@@ -1946,8 +2046,9 @@ function facultyDrawAnim(e) {
 
 // ---------- v5.7：海克斯 · 研究项目（三选一大屏演出 + 发动特效 + 他人资产查看） ----------
 let hexPickEl = null, hexPickClock = null, hexPickSig = '', hexMyPick = null;
+let hexMine = [], hexCanRefresh = false, hexPickTier = 'silver', hexPickRound = 0;   // v5.10：刷新相关显示态
 
-function hexCardHtml(key, i, tier) {
+function hexCardHtml(key, i, tier, canRefresh) {
   const pr = PROJECTS[key] || {};
   const T = HEX_TIERS[tier] || {};
   return `<div class="hx-card t-${tier}" data-key="${key}" style="--hc:${T.color || '#999'};animation-delay:${(0.65 + i * 0.45).toFixed(2)}s">
@@ -1956,6 +2057,7 @@ function hexCardHtml(key, i, tier) {
       <div class="hx-desc">${esc(pr.desc || '')}</div>
       <div class="hx-tier">${T.icon || ''} ${esc(T.short || '')}</div>
       <div class="hx-voters"></div>
+      ${canRefresh ? `<button class="hx-refresh" title="刷新：把这张换成同档随机新卡（整局一次）">🔁</button>` : ''}
       <div class="hx-picked">✔ 已立项</div>
     </div>`;
 }
@@ -1970,6 +2072,10 @@ function projectOpenPick(e) {
   if (hexPickEl) closeHexUI();
   hexPickSig = sig;
   hexMyPick = null;
+  // v5.10：刷新机会（每人整局一次）——快照里没有该字段的老局视为可用
+  const meP = S && S.players ? S.players.find(p => p.id === myPid) : null;
+  const canRefresh = !!meP && (meP.hexRefreshLeft == null || meP.hexRefreshLeft > 0);
+  hexMine = mine.slice(); hexCanRefresh = canRefresh; hexPickTier = tier; hexPickRound = e.round;
   const ms = (e && e.ms) || HEX_PICK_MS || 32000;
   const T = HEX_TIERS[tier] || {};
   const d = document.createElement('div');
@@ -1981,8 +2087,8 @@ function projectOpenPick(e) {
         <div class="hx-big hx-tier-txt t-${tier}">${T.icon || ''} ${esc(T.name || '研究项目')}</div>
         <div class="hx-hint">每 位 玩 家 三 选 一 · 全 场 同 档 · 各 自 抽 卡<br>立 项 即 生 效 · 贯 穿 整 局</div>
       </div></div>
-      <div class="hx-row">${mine.map((k, i) => hexCardHtml(k, i, tier)).join('')}</div>
-      <div class="hx-timer"><i class="hx-bar"><b id="hxBarFill"></b></i><span>剩余 <em id="hxClock">${Math.max(1, Math.round(ms / 1000))}</em> 秒 · 点击卡片立项</span></div>
+      <div class="hx-row">${mine.map((k, i) => hexCardHtml(k, i, tier, canRefresh)).join('')}</div>
+      <div class="hx-timer"><i class="hx-bar"><b id="hxBarFill"></b></i><span>剩余 <em id="hxClock">${Math.max(1, Math.round(ms / 1000))}</em> 秒 · 点击卡片立项${canRefresh ? '<br>🔁 点卡片右下角的刷新按钮，可把那张换成同档随机新卡（整局一次）' : ''}</span></div>
     </div>`;
   $('fxLayer').appendChild(d);
   requestAnimationFrame(() => requestAnimationFrame(() => d.classList.add('show')));
@@ -2010,13 +2116,19 @@ function projectOpenPick(e) {
     if (left > 0 && left <= 5) SFX.tick();
     if (left <= 0) clearInterval(hexPickClock);
   }, 1000);
-  // 点击立项（只有轮到自己给的那三张才能点；已选定 / 非本人则忽略）
+  // 点击立项（只有轮到自己给的那三张才能点；已选定 / 非本人则忽略）；v5.10：刷新按钮绑定
+  bindHexCards(d, tier);
+  // 断线重连：把已选定的补画上
+  if (S && e.picks) for (const pid in e.picks) projectMarkPick({ pid, key: e.picks[pid] }, true);
+}
+// v5.10：三选一卡片绑定（点击立项 / 刷新按钮）—— 刷新后整行重建时复用
+function bindHexCards(d, tier) {
   d.querySelectorAll('.hx-card').forEach(card => {
-    card.addEventListener('mouseenter', () => { if (!hexMyPick && mine.includes(card.dataset.key) && mine.length) SFX.click(); });
+    card.addEventListener('mouseenter', () => { if (!hexMyPick && hexMine.includes(card.dataset.key) && hexMine.length) SFX.click(); });
     card.onclick = () => {
       const key = card.dataset.key;
       if (hexMyPick) { SFX.click(); return; }
-      if (!mine.includes(key)) return;
+      if (!hexMine.includes(key)) return;
       hexMyPick = key;
       card.classList.add('picked');
       SFX.hexPick();
@@ -2024,10 +2136,30 @@ function projectOpenPick(e) {
       send({ action: { type: 'pickProject', key } });
       d.classList.add('waiting');
     };
+    const rf = card.querySelector('.hx-refresh');
+    if (rf) rf.onclick = ev => {
+      ev.stopPropagation();
+      if (hexMyPick || !hexCanRefresh) { SFX.click(); return; }
+      SFX.glint();
+      rf.classList.add('spin');
+      send({ action: { type: 'refreshProject', key: card.dataset.key } });
+    };
   });
-  // 断线重连：把已选定的补画上
-  if (S && e.picks) for (const pid in e.picks) projectMarkPick({ pid, key: e.picks[pid] }, true);
 }
+// v5.10：服务端确认刷新 → 重建卡行（倒计时不重置）
+function projectRefreshFx(e) {
+  if (!hexPickEl || e.pid !== myPid) return;
+  hexMine = (e.offers || []).slice();
+  hexCanRefresh = false;
+  hexPickSig = hexPickRound + '|' + hexPickTier + '|' + hexMine.join(',');
+  if (S && S.project && S.project.offers) S.project.offers[myPid] = hexMine.slice();
+  const row = hexPickEl.querySelector('.hx-row');
+  if (row) row.innerHTML = hexMine.map((k, i) => hexCardHtml(k, i, hexPickTier, false)).join('');
+  bindHexCards(hexPickEl, hexPickTier);
+  try { SFX.hexFlip(1); SFX.glint(); } catch (err) {}
+  fxAt(cellCenter(0), '<div class="floaty plus">🔁 已刷新</div>');
+}
+
 function closeHexUI() {
   clearInterval(hexPickClock);
   if (hexPickEl) { hexPickEl.remove(); hexPickEl = null; }
@@ -3854,3 +3986,58 @@ function buildBoard() {
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeRules(); });
 })();
 connect();
+
+// ---------- v5.10：大厅天气轮播特效（阳光光斑 → 细雨 → 飘雪，每 17 秒自动轮换） ----------
+let lobbyCv = null, lobbyCtx = null, lobbyKind = 'sun', lobbySeed = null, lobbyT0 = Date.now();
+function lobbySeedFor(kind, W, H) {
+  if (kind === 'sun') return { motes: Array.from({ length: 30 }, () => ({ x: WR(0, W), y: WR(0, H), r: WR(1.5, 4.2), v: WR(.15, .6), ph: WR(0, 6.28), a: WR(.12, .4) })) };
+  if (kind === 'rain') return { drops: Array.from({ length: 64 }, () => ({ x: WR(0, W), y: WR(0, H), len: WR(9, 22), v: WR(5, 10), a: WR(.12, .4) })) };
+  return { flakes: Array.from({ length: 56 }, () => ({ x: WR(0, W), y: WR(0, H), r: WR(1.2, 3.8), v: WR(.5, 1.5), sway: WR(.3, 1.1), ph: WR(0, 6.28), a: WR(.25, .75) })) };
+}
+function lobbyDraw() {
+  if (!lobbyCtx) return;
+  const lobby = document.getElementById('lobby');
+  if (!lobby || lobby.style.display === 'none') { lobbyCtx.clearRect(0, 0, lobbyCv.width, lobbyCv.height); return; }
+  const W = lobbyCv.width, H = lobbyCv.height, ctx = lobbyCtx, t = (Date.now() - lobbyT0) / 1000;
+  ctx.clearRect(0, 0, W, H);
+  if (lobbyKind === 'sun') {
+    for (const m of lobbySeed.motes) {
+      const yy = (m.y + t * 12 * m.v) % (H + 40) - 20;
+      const g = ctx.createRadialGradient(m.x, yy + Math.sin(t + m.ph) * 14, 0, m.x, yy + Math.sin(t + m.ph) * 14, m.r * 4);
+      g.addColorStop(0, `rgba(255,214,110,${m.a})`); g.addColorStop(1, 'rgba(255,214,110,0)');
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(m.x, yy + Math.sin(t + m.ph) * 14, m.r * 4, 0, 6.29); ctx.fill();
+    }
+  } else if (lobbyKind === 'rain') {
+    ctx.strokeStyle = 'rgba(110,140,190,.5)'; ctx.lineWidth = 1.1;
+    for (const d of lobbySeed.drops) {
+      const yy = (d.y + t * 60 * d.v * .16 + t * 60) % (H + 60) - 30;
+      ctx.globalAlpha = d.a;
+      ctx.beginPath(); ctx.moveTo(d.x, yy); ctx.lineTo(d.x - 2.4, yy + d.len); ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+  } else {
+    ctx.fillStyle = '#ffffff';
+    for (const f of lobbySeed.flakes) {
+      const yy = (f.y + t * 26 * f.v) % (H + 40) - 20;
+      const xx = f.x + Math.sin(t * f.sway + f.ph) * 26;
+      ctx.globalAlpha = f.a;
+      ctx.beginPath(); ctx.arc(xx, yy, f.r, 0, 6.29); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+  }
+}
+(function startLobbyFx() {
+  const lobby = document.getElementById('lobby'); if (!lobby) return;
+  lobbyCv = document.createElement('canvas');
+  lobbyCv.id = 'lobbyWxCv';
+  lobby.prepend(lobbyCv);
+  const fit = () => { lobbyCv.width = lobby.clientWidth; lobbyCv.height = lobby.clientHeight; lobbySeed = lobbySeedFor(lobbyKind, lobbyCv.width, lobbyCv.height); };
+  fit();
+  window.addEventListener('resize', fit);
+  setInterval(() => {
+    lobbyKind = lobbyKind === 'sun' ? 'rain' : (lobbyKind === 'rain' ? 'snow' : 'sun');
+    lobbySeed = lobbySeedFor(lobbyKind, lobbyCv.width, lobbyCv.height);
+  }, 17000);
+  const loop = () => { lobbyDraw(); requestAnimationFrame(loop); };
+  loop();
+})();

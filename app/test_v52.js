@@ -1,5 +1,5 @@
 // test_v52.js —— 校园风貌（v5.2）引擎单测
-// 覆盖：风貌表完整性 + 客户端镜像一致性、开局投票与随机抽取、23 个风貌各自的效果与代价、
+// 覆盖：风貌表完整性 + 客户端镜像一致性、开局投票与随机抽取、59 个风貌各自的效果与代价、
 //      免费轮 / 免租轮、免停留卡、以及"全风貌无异常结算"冒烟。
 'use strict';
 const fs = require('fs');
@@ -36,7 +36,7 @@ console.log('========================================');
 // ---------------- [1] 风貌表 ----------------
 console.log('\n[1] 风貌表完整性 + 客户端镜像一致性');
 {
-  ok(FACULTY_KEYS.length === 23, `共 ${FACULTY_KEYS.length} 个校园风貌（预期 23）`);
+  ok(FACULTY_KEYS.length === 59, `共 ${FACULTY_KEYS.length} 个校园风貌（预期 59 = 23 老 + 6 定调 + 30 娱乐）`);
   const bad = FACULTY_KEYS.filter(k => !FACULTY[k].name || !FACULTY[k].icon || !FACULTY[k].color || !FACULTY[k].lead || !FACULTY[k].cost);
   ok(bad.length === 0, '每个风貌都有 name / icon / color / lead(主效果) / cost(代价)');
   const dupName = FACULTY_KEYS.map(k => FACULTY[k].name).filter((v, i, a) => a.indexOf(v) !== i);
@@ -426,7 +426,7 @@ console.log('\n[25] 免租轮校区：随机 4 轮全场免租');
 }
 
 // ---------------- [26] 全风貌冒烟 ----------------
-console.log('\n[26] 23 个风貌全部无异常结算');
+console.log('\n[26] 59 个风貌全部无异常结算');
 {
   const errs = [];
   for (const k of FACULTY_KEYS) {
@@ -446,7 +446,7 @@ console.log('\n[26] 23 个风貌全部无异常结算');
       r.clearTimer(); r.clearAiTimers();
     } catch (e) { errs.push(k + '(' + e.message + ')'); }
   }
-  ok(errs.length === 0, `23 个风貌的关键结算路径全部无异常${errs.length ? ' —— ' + errs.join(' | ') : ''}`);
+  ok(errs.length === 0, `59 个风貌的关键结算路径全部无异常${errs.length ? ' —— ' + errs.join(' | ') : ''}`);
 }
 
 console.log('\n========================================');

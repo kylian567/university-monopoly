@@ -244,10 +244,10 @@ section(9, '海克斯：第 30 轮第四次立项 + 全池削弱抽查 + 镜像�
 {
   ok(JSON.stringify(G.HEX_TRIGGERS) === JSON.stringify([2, 10, 20, 30, 40, 50]), '触发轮 [2,10,20,30,40,50]（v5.9）');
   ok(G.HEX_TIER_P[3][0] === 0.3 && G.HEX_TIER_P[3][1] === 0.3 && G.HEX_TIER_P[3][2] === 0.4, '第 4 次概率 30/30/40');
-  ok(G.HEX_PICK_MS === 38000, `海克斯选择时长 38s`);
-  ok(G.FACULTY_VOTE_MS === 28000, `风貌投票时长 28s`);
+  ok(G.HEX_PICK_MS === 52000, `海克斯选择时长 52s（v5.10）`);
+  ok(G.FACULTY_VOTE_MS === 40000, `风貌投票时长 40s（v5.10）`);
   ok(G.PROJECTS.stipend.mods.goCash === 300, '勤工俭学 400→300');
-  ok(G.PROJECTS.seize.pct === 0.15 && G.PROJECTS.seize.amt === 4000, '强取豪夺 20%/5000 → 15%/4000');
+  ok(G.PROJECTS.seize.pct === 0.12 && G.PROJECTS.seize.amt === 3500, '强取豪夺 15%/4000 → 12%/3500（v5.10 再削）');
   ok(G.PROJECTS.aegis.mods.immuneCharges === 2, '绝对防御 3 → 2 次');
   ok(G.PROJECTS.salaryx2.mods.salaryX2 === 1, '双倍工资保留');
   // 第 30 轮能开

@@ -32,7 +32,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 
     console.log('\n[1] 公告版本 + 运行时镜像');
     const ann = await page.evaluate(() => (document.querySelector('#intro .announce-logo') || {}).textContent || '');
-    ok(/v5\.[789]/.test(ann), `开局公告标题：${ann}`);
+    ok(/v5\.(7|8|9|10)/.test(ann), `开局公告标题：${ann}`);
     await page.click('#btnAnnounce'); await sleep(240);
     await page.click('#btnIntro'); await sleep(240);
     await page.click('#btnRulesClose').catch(() => {});
@@ -45,8 +45,8 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
       hexSfx: ['hexRise', 'hexFlip', 'hexPick', 'hexHit', 'hexPrism'].every(k => typeof SFX[k] === 'function'),
       viewer: typeof window.openPlayerViewer,
     }));
-    ok(mir.projects === 54, `PROJECTS 镜像 ${mir.projects} 项（预期 54）`);
-    ok(mir.tiers === 3 && `${mir.silver}/${mir.gold}/${mir.prism}` === '20/20/14', `三档池 ${mir.silver}/${mir.gold}/${mir.prism}`);
+    ok(mir.projects === 104, `PROJECTS 镜像 ${mir.projects} 项（预期 104 = 54 + 50）`);
+    ok(mir.tiers === 3 && `${mir.silver}/${mir.gold}/${mir.prism}` === '40/35/29', `三档池 ${mir.silver}/${mir.gold}/${mir.prism}`);
     ok(mir.hexSfx, '5 个海克斯音效已挂载');
     ok(mir.viewer === 'function', 'openPlayerViewer 已挂到 window');
 
@@ -111,7 +111,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
     }));
     ok(pick0.cards === 3, `浮层有 ${pick0.cards} 张项目卡`);
     ok(/校级|省级|国家级/.test(pick0.tier), `档位横幅：${pick0.tier.trim()}`);
-    ok(pick0.clock >= 28 && pick0.clock <= 38, `倒计时 ${pick0.clock} 秒（从容选择，v5.8 起 38s）`);
+    ok(pick0.clock >= 45 && pick0.clock <= 52, `倒计时 ${pick0.clock} 秒（从容选择，v5.10 起 52s）`);
     await shot('01-hex-pick.png');
 
     console.log('\n[3] 点卡立项 → 结算横幅 → 回到 roll');

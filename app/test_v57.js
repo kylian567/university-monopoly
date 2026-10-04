@@ -52,7 +52,7 @@ section(1, 'PROJECTS / HEX_TIERS 镜像一致 + 表完整性');
     tiers[pr.tier]++;
   }
   ok(structOK, '所有项目都有 tier/icon/name/desc 且 id 唯一');
-  ok(tiers.silver === 20 && tiers.gold === 20 && tiers.prism === 14, `池子规模 银级20/金级20/彩级14（实际 ${tiers.silver}/${tiers.gold}/${tiers.prism}）`);
+  ok(tiers.silver === 40 && tiers.gold === 35 && tiers.prism === 29, `池子规模 银级40/金级35/彩级29（实际 ${tiers.silver}/${tiers.gold}/${tiers.prism}）`);
   let keysOK = Object.values(G.PROJECT_KEYS).flat().length === Object.keys(G.PROJECTS).length;
   ok(keysOK, 'PROJECT_KEYS 三档分组完整');
   // 同档内效果幅度一致（平衡约束抽查：同名修正在不同项目里的量纲统一）
@@ -234,7 +234,7 @@ section(7, '客户端接线检查');
   const css = fs.readFileSync(path.join(__dirname, 'public', 'style.css'), 'utf8');
   const srv = fs.readFileSync(path.join(__dirname, 'server.js'), 'utf8');
   ok(cli.includes("case 'project_offer'") && cli.includes("case 'project_pick'") && cli.includes("case 'project_grant'") && cli.includes("case 'hexfx'"), 'handleAnim 挂了 4 个新 case');
-  ok(cli.includes("'project_offer', 'project_pick', 'project_grant', 'hexfx'"), 'ANIMATED 集合已登记');
+  ok(cli.includes("'project_offer', 'project_pick', 'project_grant', 'project_refresh'"), 'ANIMATED 集合已登记');
   ok(cli.includes("openPlayerViewer('${p.id}')"), '玩家卡可点击查看他人');
   ok(cli.includes("action: { type: 'pickProject', key }"), '点卡发送 pickProject');
   ok(css.includes('.hx-card.t-prism') && css.includes('.hxp-layer') && css.includes('.hx-bar b.danger'), '样式：三档卡 / 查看浮层 / 倒计时三段变色');
