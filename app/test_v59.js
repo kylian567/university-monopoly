@@ -290,7 +290,7 @@ section(7, '新 once：stayPack / fundCut / land2');
   r.fundPool = 5000;
   const c0 = a.cash; a.hexList = a.hexList.filter(k => k !== 'fundseed');
   r.grantProject(a, 'fundseed');
-  ok(a.cash - c0 === 600 && r.fundPool === 4400, `种子基金：从池提取 12%（5000→提 600，池 4400）`);
+  ok(a.cash - c0 === 550 && r.fundPool === 4450, `种子基金：从池提取 11%（5000→提 550，池 4450）`);
   a.hexList = a.hexList.filter(k => k !== 'goldenland');
   const own0 = r.cells.filter(cs => cs.own === a.id).length;
   r.grantProject(a, 'goldenland');
@@ -369,6 +369,69 @@ section(8, '娱乐城邦每轮结算：灯会 / 期中周 / 名师 / 老生 / �
     const m = r.calcRent(tIdx, [2, 5]);
     ok(Math.abs(m - Math.round(base * 0.85)) <= 1, `地铁校区：机场租金 ${base} → ${m}（×0.85）`);
   }
+}
+
+// ================= [9] v5.11：换届触发修复 / 每次立项刷新 / 概率 40/30/30 / 数值削弱 =================
+section(9, 'v5.11：换届只在轮次刚开始触发 / 每次立项都有刷新 / 概率与削弱');
+{
+  // ① 第 1 轮：玩家回合结束不再触发换届（开局已选过）
+  const r1 = mkRoom(2);
+  r1.round = 1; r1.cur = 1; r1.phase = 'roll';
+  r1.endTurn(); r1.clearTimer(); r1.clearAiTimers();
+  ok(r1.phase !== 'faculty' && r1.round === 2, '① 第 1 轮玩家回合结束不触发换届（v5.11 修复）');
+
+  // ② 第 11 轮刚开始（round 10 → 11 的轮转瞬间）触发一次
+  const r2 = mkRoom(2);
+  r2.round = 10; r2.cur = 1; r2.phase = 'roll';
+  r2.endTurn();
+  ok(r2.phase === 'faculty' && r2.facTermStart === 11 && r2.round === 11,
+    '② 第 11 轮刚开始触发换届投票（facTermStart=11）');
+  r2.clearTimer(); r2.clearAiTimers();
+
+  // ③ 第 11 轮内其余玩家回合结束不再重复触发
+  const r3 = mkRoom(2);
+  r3.round = 11; r3.cur = 0; r3.phase = 'roll';
+  r3.endTurn(); r3.clearTimer(); r3.clearAiTimers();
+  ok(r3.phase !== 'faculty', '③ 第 11 轮内玩家回合结束不再重复触发');
+
+  // ④ 每次立项三选一都重置刷新机会（原 v5.10 为整局一次）
+  const r4 = mkRoom(2);
+  r4.players[0].hexRefreshLeft = 0; r4.players[1].hexRefreshLeft = 0;
+  r4.hexDoneRounds = []; r4.round = 10; r4.phase = 'roll';
+  const opened = r4.maybeProject();
+  r4.clearTimer(); r4.clearAiTimers();
+  ok(opened && r4.players.every(p => p.hexRefreshLeft === 1),
+    '④ 立项开启时全员刷新机会重置为 1（每次立项一次）');
+
+  // ⑤ 第 4/5/6 次抽取银金彩概率 40/30/30
+  ok(G.HEX_TIER_P.slice(3).every(p => p[0] === 0.4 && p[1] === 0.3 && p[2] === 0.3),
+    '⑤ 第 4/5/6 次概率 = 40/30/30');
+
+  // ⑥ 全局削弱抽查
+  ok(G.PROJECTS.seize.pct === 0.11 && G.PROJECTS.seize.amt === 3200, '⑥ 强取豪夺 11%/3200');
+  ok(G.PROJECTS.stipend.mods.goCash === 270, '⑥ 勤工俭学 270');
+  ok(G.PROJECTS.nirvana.mods.nirvanaCash === 5500 && G.PROJECTS.phoenix2.mods.nirvanaCash === 4600,
+    '⑥ 涅槃 5500 / 浴火重生 4600（复活金额入表）');
+  ok(G.MAJORS.mech.desc.includes('+¥1350'), '⑥ 机械 精益制造 1350');
+  ok(G.MAJORS.agri.desc.includes('+¥1350') && G.MAJORS.ee.desc.includes('+¥1250'), '⑥ 农学 1350 / 微电子 1250');
+
+  // ⑦ MAJORS 双镜像仍逐字一致
+  const game2 = fs.readFileSync(path.join(__dirname, 'game.js'), 'utf8');
+  const cli2 = fs.readFileSync(path.join(__dirname, 'public/client.js'), 'utf8');
+  const span2 = (src, a, b) => src.slice(src.indexOf(a), src.indexOf(b, src.indexOf(a)));
+  // ⑦ MAJORS 双镜像数值一致（client 为压缩显示版，校验 desc 中 ¥/％ 数值集合一致）
+  const majSpan = src => { const i = src.indexOf('const MAJORS = {'); return src.slice(i, src.indexOf('\n};', i)); };
+  const descsOf = (src, compact) => {
+    const out = {};
+    const re = compact ? /(\w+):\s*\{[^}]*?desc:'([^']*)'/g : /(\w+):\s*\{[^{}]*?desc:\s*'([^']*)'/g;
+    let m; while ((m = re.exec(src))) out[m[1]] = m[2];
+    return out;
+  };
+  const gd = descsOf(majSpan(game2), false), cd = descsOf(majSpan(cli2), true);
+  const nums = s => (s.match(/¥\d+|\d+(?:\.\d+)?%/g) || []).sort().join(',');
+  const bad = Object.keys(gd).filter(k => cd[k] === undefined || nums(gd[k]) !== nums(cd[k]));
+  ok(Object.keys(gd).length === 60 && Object.keys(cd).length === 60 && bad.length === 0,
+    `⑦ MAJORS 镜像 60 个专业 desc 数值一致${bad.length ? '，不一致：' + bad.join('/') : ''}`);
 }
 
 // ================= 结果 =================

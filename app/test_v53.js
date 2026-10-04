@@ -103,17 +103,17 @@ console.log('\n[2] 新增 6 个主动技：询问 → 发动 → 效果生效');
   {
     const r = mkRoom(1, ['elec']); const p = cur(r);
     p.skillLeft = 3; r.openSkillPrompt(p); r.useSkill(p);
-    ok(p.buyCutTurn === 0.4, `电气·峰谷套利：本回合买地折扣 40%（6 折）`);
+    ok(p.buyCutTurn === 0.36, `电气·峰谷套利：本回合买地折扣 36%（6.4 折）`);
   }
   {
     const r = mkRoom(1, ['robot']); const p = cur(r);
     p.skillLeft = 3; r.openSkillPrompt(p); r.useSkill(p);
-    ok(p.buildCutTurn === 0.6, `机器人·机械臂协作：本回合盖房折扣 60%（4 折）`);
+    ok(p.buildCutTurn === 0.55, `机器人·机械臂协作：本回合盖房折扣 55%（4.5 折）`);
   }
   {
     const r = mkRoom(2, ['ai', 'agri']); const p = cur(r);
     p.skillLeft = 3; r.openSkillPrompt(p); r.useSkill(p);
-    ok(Math.abs(p.rentBuff - 0.35) < 1e-9, `人工智能·模型推理：本轮收租 +35%`);
+    ok(Math.abs(p.rentBuff - 0.32) < 1e-9, `人工智能·模型推理：本轮收租 +32%`);
   }
   {
     const r = mkRoom(1, ['or']); const p = cur(r);
@@ -124,13 +124,13 @@ console.log('\n[2] 新增 6 个主动技：询问 → 发动 → 效果生效');
     const r = mkRoom(3, ['mkt', 'agri', 'agri']); const p = cur(r);
     const c0 = p.cash; p.skillLeft = 3; r.openSkillPrompt(p); r.useSkill(p);
     // +1200 底 + 其他两人各 ¥250
-    ok(p.cash - c0 === 1200 + 250 * 2, `市场营销·带货直播：+¥1200 且另有两人各付 ¥250（实得 ${p.cash - c0}）`);
+    ok(p.cash - c0 === 1100 + 230 * 2, `市场营销·带货直播：+¥1100 且另有两人各付 ¥230（实得 ${p.cash - c0}）`);
   }
   {
     const r = mkRoom(1, ['film']); const p = cur(r);
     p.skillLeft = 3; r.openSkillPrompt(p); r.useSkill(p);
-    const okBoth = Math.abs(p.rentBuff - 0.25) < 1e-9;
-    ok(okBoth, `影视传媒·院线首映：本轮收租 +25%`);
+    const okBoth = Math.abs(p.rentBuff - 0.23) < 1e-9;
+    ok(okBoth, `影视传媒·院线首映：本轮收租 +23%`);
   }
 }
 
@@ -138,13 +138,13 @@ console.log('\n[2] 新增 6 个主动技：询问 → 发动 → 效果生效');
 console.log('\n[3] 数据驱动通用被动：逐个 hook 验证');
 {
   // salary（经过起点）
-  for (const [key, amt] of [['comm', 1200], ['power', 800], ['hort', 1100], ['trade', 1000], ['tourism', 700]]) {
+  for (const [key, amt] of [['comm', 1100], ['power', 730], ['hort', 1000], ['trade', 900], ['tourism', 640]]) {
     const r = mkRoom(1, [key]); const p = cur(r);
     const c0 = p.cash; r.applyGoSkills(p);
     ok(p.cash - c0 === amt, `${MAJORS[key].name}·过起点 +¥${amt}（实得 ${p.cash - c0}）`);
   }
   // turnCash
-  for (const [key, amt] of [['power', 400], ['forest', 350], ['edu', 350]]) {
+  for (const [key, amt] of [['power', 360], ['forest', 320], ['edu', 320]]) {
     const r = mkRoom(1, [key]); const p = cur(r);
     const c0 = p.cash; r.applyTurnStartPassives(p);
     ok(p.cash - c0 === amt, `${MAJORS[key].name}·回合开始 +¥${amt}（实得 ${p.cash - c0}）`);
@@ -153,13 +153,13 @@ console.log('\n[3] 数据驱动通用被动：逐个 hook 验证');
   {
     const r = mkRoom(1, ['hr']); const p = cur(r);
     p.cash = 10000; r.applyTurnStartPassives(p);
-    ok(p.cash - 10000 === 300, `人力资源管理·回合开始现金 +3%（¥10000 → +¥${p.cash - 10000}）`);
+    ok(p.cash - 10000 === 250, `人力资源管理·回合开始现金 +2.5%（¥10000 → +¥${p.cash - 10000}）`);
   }
   // weather（雨/台风/雪/雾）
   {
     const r = mkRoom(1, ['meteo'], { weather: 'storm' }); const p = cur(r);
     const c0 = p.cash; r.applyTurnStartPassives(p);
-    ok(p.cash - c0 === 700, `气象学·恶劣天气（台风）+¥700（实得 ${p.cash - c0}）`);
+    ok(p.cash - c0 === 640, `气象学·恶劣天气（台风）+¥640（实得 ${p.cash - c0}）`);
     const r2 = mkRoom(1, ['meteo'], { weather: 'sun' }); const q = cur(r2);
     const c1 = q.cash; r2.applyTurnStartPassives(q);
     ok(q.cash === c1, '气象学·晴天不触发（只在恶劣天气给钱）');
@@ -168,7 +168,7 @@ console.log('\n[3] 数据驱动通用被动：逐个 hook 验证');
   {
     const r = mkRoom(1, ['astro']); const p = cur(r);
     r.dice = [5, 5]; const c0 = p.cash; r.execRoll(p);
-    ok(p.cash - c0 === 1100, `天文学·点数 ≥9 时 +¥1100（10 点，实得 ${p.cash - c0}）`);
+    ok(p.cash - c0 === 1000, `天文学·点数 ≥9 时 +¥1000（10 点，实得 ${p.cash - c0}）`);
     const r2 = mkRoom(1, ['astro']); const q = cur(r2);
     r2.dice = [1, 2]; const c1 = q.cash; r2.execRoll(q);
     ok(q.cash === c1, '天文学·点数不足 9 不触发');
@@ -177,7 +177,7 @@ console.log('\n[3] 数据驱动通用被动：逐个 hook 验证');
     const r = mkRoom(1, ['hist']); const p = cur(r);
     p.major = 'hist'; p.skillLeft = MAJORS.hist.uses;
     r.dice = [2, 2]; const c0 = p.cash; r.execRoll(p);
-    ok(p.cash - c0 === 900, `历史学·点数 ≤4 时 +¥900（4 点，实得 ${p.cash - c0}）`);
+    ok(p.cash - c0 === 820, `历史学·点数 ≤4 时 +¥900（4 点，实得 ${p.cash - c0}）`);
   }
   // rentGain / tollCut
   {
@@ -194,7 +194,7 @@ console.log('\n[3] 数据驱动通用被动：逐个 hook 验证');
     const c0 = own.cash;
     r.resolveCell(walker);
     const got = own.cash - c0;
-    ok(base >= 1200 && got > 0 && got >= Math.round(base * 1.3) - 2, `控制科学·收租 ≥¥1200 时 +30%（基准 ¥${base} → 实收 ¥${got}）`);
+    ok(base >= 1200 && got > 0 && got >= Math.round(base * 1.27) - 2, `控制科学·收租 ≥¥1200 时 +27%（基准 ¥${base} → 实收 ¥${got}）`);
   }
   {
     const idx = firstProp();
@@ -206,7 +206,7 @@ console.log('\n[3] 数据驱动通用被动：逐个 hook 验证');
     const c0 = payer.cash;
     r.resolveCell(payer);
     const paid = c0 - payer.cash;
-    ok(paid <= Math.round(base * 0.66) + 2, `护理学·被收租 ≥¥800 时减免 35%（基准 ¥${base} → 实付 ¥${paid}）`);
+    ok(paid <= Math.round(base * 0.68) + 2, `护理学·被收租 ≥¥800 时减免 32%（基准 ¥${base} → 实付 ¥${paid}）`);
   }
   // buyCut + buyCash
   {
@@ -217,8 +217,8 @@ console.log('\n[3] 数据驱动通用被动：逐个 hook 验证');
     r.phase = 'buy'; r.pendingBuy = { pid: p.id, cell: idx, price: base, base };
     const c0 = p.cash; r.buy(p);
     const spent = c0 - p.cash;
-    const want = Math.max(1, Math.round(base * 0.85)) - 400;   // 85 折后再返 ¥400
-    ok(r.cells[idx].own === p.id && Math.abs(spent - want) <= 1, `地球物理·买地 85 折 + 返利 ¥400（应花 ¥${want}，实花 ¥${spent}）`);
+    const want = Math.max(1, Math.round(base * 0.87)) - 360;   // 8.7 折后再返 ¥360
+    ok(r.cells[idx].own === p.id && Math.abs(spent - want) <= 1, `地球物理·买地 8.7 折 + 返利 ¥360（应花 ¥${want}，实花 ¥${spent}）`);
   }
   // buildCut + buildCash
   {
@@ -230,8 +230,8 @@ console.log('\n[3] 数据驱动通用被动：逐个 hook 验证');
     r.phase = 'build'; r.pendingBuild = { pid: p.id, cell: idx };
     const c0 = p.cash; r.build(p);
     const spent = c0 - p.cash;
-    const want = Math.max(1, Math.round(baseCost * 0.75)) - 500;   // 75 折后再返 ¥500
-    ok(r.cells[idx].level === 1 && Math.abs(spent - want) <= 1, `智能制造·升级 −25% + 返利 ¥500（应花 ¥${want}，实花 ¥${spent}）`);
+    const want = Math.max(1, Math.round(baseCost * 0.77)) - 460;   // 7.7 折后再返 ¥460
+    ok(r.cells[idx].level === 1 && Math.abs(spent - want) <= 1, `智能制造·升级 −23% + 返利 ¥460（应花 ¥${want}，实花 ¥${spent}）`);
   }
   // mortgageUp
   {
@@ -251,14 +251,14 @@ console.log('\n[3] 数据驱动通用被动：逐个 hook 验证');
     const deck = [{ name: '测试卡', desc: '固定测试卡', kind: 'money', amount: 1000 }];
     const c0 = p.cash;
     r.drawCard(p, deck, 'fate');
-    ok(p.cash - c0 === 1450, `社会学·抽到任意卡 +¥450（卡本身 +¥1000，共 +¥${p.cash - c0}）`);
+    ok(p.cash - c0 === 1410, `社会学·抽到任意卡 +¥410（卡本身 +¥1000，共 +¥${p.cash - c0}）`);
   }
   // branch
   {
     const r = mkRoom(1, ['tourism']); const p = cur(r);
     r.phase = 'branch'; r.pendingBranch = { pid: p.id, line: 'A' };
     const c0 = p.cash; r.enterBranch(p);
-    ok(p.cash - c0 >= 900, `旅游管理·进入岔路 +¥900（实得 ${p.cash - c0}）`);
+    ok(p.cash - c0 >= 820, `旅游管理·进入岔路 +¥820（实得 ${p.cash - c0}）`);
   }
   // stayCash（注意：房间必须 ≥2 人，否则 startTurn 一进来就判「只剩一人」直接结束）
   {
@@ -267,7 +267,7 @@ console.log('\n[3] 数据驱动通用被动：逐个 hook 验证');
     const c0 = p.cash;
     r.startTurn();
     const gain = p.cash - c0;
-    ok(gain >= 600, `林学·被罚停留 +¥600（本轮共 +¥${gain}，含回合类收益路径）`);
+    ok(gain >= 550, `林学·被罚停留 +¥550（本轮共 +¥${gain}，含回合类收益路径）`);
   }
   // noDemolish（常驻免拆，不消耗次数）
   {

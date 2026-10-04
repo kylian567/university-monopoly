@@ -243,11 +243,11 @@ section(8, '裸地 ×1.3 / 垄断裸地 ×2 / 机场 800/1600/3500/5500（v5.9�
 section(9, '海克斯：第 30 轮第四次立项 + 全池削弱抽查 + 镜像一致');
 {
   ok(JSON.stringify(G.HEX_TRIGGERS) === JSON.stringify([2, 10, 20, 30, 40, 50]), '触发轮 [2,10,20,30,40,50]（v5.9）');
-  ok(G.HEX_TIER_P[3][0] === 0.3 && G.HEX_TIER_P[3][1] === 0.3 && G.HEX_TIER_P[3][2] === 0.4, '第 4 次概率 30/30/40');
+  ok(G.HEX_TIER_P[3][0] === 0.4 && G.HEX_TIER_P[3][1] === 0.3 && G.HEX_TIER_P[3][2] === 0.3, '第 4 次概率 40/30/30（v5.11）');
   ok(G.HEX_PICK_MS === 52000, `海克斯选择时长 52s（v5.10）`);
   ok(G.FACULTY_VOTE_MS === 40000, `风貌投票时长 40s（v5.10）`);
-  ok(G.PROJECTS.stipend.mods.goCash === 300, '勤工俭学 400→300');
-  ok(G.PROJECTS.seize.pct === 0.12 && G.PROJECTS.seize.amt === 3500, '强取豪夺 15%/4000 → 12%/3500（v5.10 再削）');
+  ok(G.PROJECTS.stipend.mods.goCash === 270, '勤工俭学 300→270（v5.11）');
+  ok(G.PROJECTS.seize.pct === 0.11 && G.PROJECTS.seize.amt === 3200, '强取豪夺 12%/3500 → 11%/3200（v5.11 再削）');
   ok(G.PROJECTS.aegis.mods.immuneCharges === 2, '绝对防御 3 → 2 次');
   ok(G.PROJECTS.salaryx2.mods.salaryX2 === 1, '双倍工资保留');
   // 第 30 轮能开
@@ -277,7 +277,7 @@ section(10, '客户端：新事件 / 查看浮层效果 / 虚影渐变 / 房子�
   ok(cli.includes("case 'invest_fail'") && cli.includes("case 'skill_steal'") && cli.includes("case 'income_decay'"), 'handleAnim 挂了新 case');
   ok(cli.includes('hxp-rich'), '查看浮层：项目/技能效果胶囊（hxp-rich）');
   ok(cli.includes('ghostFade'), '虚影：左淡右浓渐变（ghostFade）');
-  ok(cli.includes('y + 18, s2, oc'), '房子上移到 y+18');
+  ok(cli.includes('y + 15, s2, oc'), '房子放大上移到 y+15（v5.11）');
   ok(cli.includes("BOARD[p.pos].type === 'prop' ? 9 : 0"), '棋子在地皮格上下移 9px');
   ok(cli.includes('decayText'), '中央看板：收益衰减常驻行');
   ok(cli.includes('me.shieldLock'), '免罚符按钮冷却锁定');

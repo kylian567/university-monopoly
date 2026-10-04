@@ -51,6 +51,9 @@ body {
   -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
   filter:drop-shadow(0 2px 3px rgba(122,21,34,.25)); animation:logoShine 5s ease-in-out infinite; }
 @keyframes logoShine { 0%,100%{background-position:0% 0} 50%{background-position:100% 0} }
+.logo-by { font-size:13px; font-weight:600; letter-spacing:1px; margin-left:10px; vertical-align:7px;
+  font-family:'PingFang SC',sans-serif; color:#b9ac92; -webkit-text-fill-color:#b9ac92;
+  animation:none; filter:none; }
 .lobby-sub { font-size:12px; color:#9a938a; margin:10px 0 26px; letter-spacing:3px; }
 .inp { width:100%; padding:13px 15px; border:1.5px solid #ddd3c4; border-radius:12px; font-size:16px; outline:none;
   background:#faf7f1; box-shadow:inset 0 2px 5px rgba(90,70,40,.08); transition:.2s; }

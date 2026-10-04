@@ -166,7 +166,7 @@ console.log('\n[6] 客户端托管 UI / 音效 / 虚影增强 / 天气增强');
   ok(cli.includes('trusteeOn:') && cli.includes('trusteeOff:') && cli.includes('flagPop:'), '新增音效 trusteeOn/trusteeOff/flagPop 已定义');
   ok(css.includes('.ctrl-btn.trustee.on') && css.includes('.trustee-toast'), '托管按钮高亮与横幅样式就位');
   ok(cli.includes('四角瞄准框') && cli.includes('预计落点'), '虚影增强：四角瞄准框 + 落点标签');
-  ok(cli.includes('stroke-width="5"') && cli.includes('ff8c1a'), '虚影描边加粗加深（5px 橙色）');
+  ok(cli.includes('stroke-width="6"') && cli.includes('ff8c1a') && cli.includes('ghostPath'), '虚影描边加粗加深（6px 橙色 · 左侧留空 v5.11）');
   ok(cli.includes('落地水花圈'), '雨天落地水花圈已加入');
   ok(cli.includes('脉动呼吸'), '台风风眼脉动已加入');
   ok(cli.includes('地面霜白'), '暴雪地面霜白已加入');

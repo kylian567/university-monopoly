@@ -209,7 +209,7 @@ section(5, '效果钩子：补贴 / 返现 / 免疫 / 重投 / 双倍工资 / �
   room.phase = 'roll';
   room.raise = null;
   room.bankrupt(a, null);
-  ok(a.alive && a.cash === 6000, '涅槃：破产被拦下，带 ¥6000 复活');
+  ok(a.alive && a.cash === 5500, '涅槃：破产被拦下，带 ¥5500 复活（v5.11 削弱）');
   a.hex = {};
   room.clearTimer(); room.clearAiTimers();
   room.clearAiTimers();

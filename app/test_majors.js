@@ -62,11 +62,11 @@ for (const key of ACTIVE) {
     assert.strictEqual(room.phase, 'roll', '发动后应回到 roll');
     assert.strictEqual(p.skillLeft, MAJORS[key].uses - 1, '次数未扣');
     // 各技能的具体断言
-    if (key === 'mech') { assert.ok(p.cash >= cashBefore + 1500, 'mech 未 +1500'); assert.ok(p.buildCutTurn > 0, 'mech 未设盖房折扣'); }
+    if (key === 'mech') { assert.ok(p.cash >= cashBefore + 1350, 'mech 未 +1350'); assert.ok(p.buildCutTurn > 0, 'mech 未设盖房折扣'); }
     if (key === 'newe') { assert.ok(p.cash > cashBefore, 'newe 未加现金'); assert.ok(p.rentBuff > 0, 'newe 未设收租加成'); }
-    if (key === 'pharm') { assert.ok(p.cash >= cashBefore + 600, 'pharm 未 +600'); assert.ok(p.defBuff > 0, 'pharm 未设减免'); }
+    if (key === 'pharm') { assert.ok(p.cash >= cashBefore + 550, 'pharm 未 +550'); assert.ok(p.defBuff > 0, 'pharm 未设减免'); }
     if (key === 'auto') { assert.ok(p.buffSteps >= 2, 'auto 未加步数'); assert.ok(p.autoBonus, 'auto 未开落点奖励'); }
-    if (key === 'mse') { assert.ok(p.rentBuff >= 0.6, 'mse 未设收租加成'); }
+    if (key === 'mse') { assert.ok(p.rentBuff >= 0.55, 'mse 未设收租加成'); }
     if (key === 'music') { assert.ok(p.cash >= cashBefore + 1000, 'music 未 +1000'); assert.ok(opp.cash < 30000, 'music 未让对手付费'); }
     if (key === 'psych') { assert.ok(p.cash > cashBefore, 'psych 未抽到钱'); }
     room.clearAiTimers(); room.clearTimer();
@@ -128,28 +128,28 @@ t('付租方 defBuff 生效：租金被减免', () => {
 });
 
 console.log('\n=== 4. 被动技抽样验证 ===');
-t('微电子 过起点 +¥1400', () => {
+t('微电子 过起点 +¥1250（v5.11 削弱）', () => {
   const room = mkRoom(['ee', 'agri']);
   const p = room.players[0]; p.cash = 10000; p.pos = 46; p.skillLeft = 3;
   room.weather = 'cloud'; room.phase = 'roll'; room.cur = 0; room.dice = [1, 1];
   room.execRoll(p);
-  assert.ok(p.cash >= 10000 + 2000 + 1400, `ee 未生效: cash=${p.cash}`);
+  assert.ok(p.cash >= 10000 + 2000 + 1250, `ee 未生效: cash=${p.cash}`);
   room.clearAiTimers(); room.clearTimer();
 });
-t('农学 过起点 +¥1500', () => {
+t('农学 过起点 +¥1350（v5.11 削弱）', () => {
   const room = mkRoom(['agri', 'ee']);
   const p = room.players[0]; p.cash = 10000; p.pos = 46; p.skillLeft = 3;
   room.weather = 'cloud'; room.phase = 'roll'; room.cur = 0; room.dice = [1, 1];
   room.execRoll(p);
-  assert.ok(p.cash >= 10000 + 2000 + 1500, `agri 未生效: cash=${p.cash}`);
+  assert.ok(p.cash >= 10000 + 2000 + 1350, `agri 未生效: cash=${p.cash}`);
   room.clearAiTimers(); room.clearTimer();
 });
-t('海洋科学 过起点 +¥1200', () => {
+t('海洋科学 过起点 +¥1100（v5.11 削弱）', () => {
   const room = mkRoom(['marine', 'ee']);
   const p = room.players[0]; p.cash = 10000; p.pos = 46; p.skillLeft = 3;
   room.weather = 'cloud'; room.phase = 'roll'; room.cur = 0; room.dice = [1, 1];
   room.execRoll(p);
-  assert.ok(p.cash >= 10000 + 2000 + 1200, `marine 未生效: cash=${p.cash}`);
+  assert.ok(p.cash >= 10000 + 2000 + 1100, `marine 未生效: cash=${p.cash}`);
   room.clearAiTimers(); room.clearTimer();
 });
 t('机械 常驻盖房 −10%（不消耗次数）', () => {
