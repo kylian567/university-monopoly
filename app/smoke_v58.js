@@ -31,9 +31,9 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 
     console.log('\n[1] 公告版本 + 运行时镜像 + 大厅美化');
     const ann = await page.evaluate(() => (document.querySelector('#intro .announce-logo') || {}).textContent || '');
-    ok(/v5\.8/.test(ann), `开局公告标题：${ann}`);
+    ok(/v5\.9/.test(ann), `开局公告标题：${ann}`);
     const annSub = await page.evaluate(() => (document.querySelector('.announce-sub') || {}).textContent || '');
-    ok(/v5\.8/.test(annSub), `作者公告版本号：${annSub.trim()}`);
+    ok(/v5\.9/.test(annSub), `作者公告版本号：${annSub.trim()}`);
     await page.click('#btnAnnounce'); await sleep(240);
     await page.click('#btnIntro'); await sleep(240);
     await page.click('#btnRulesClose').catch(() => {});
@@ -74,11 +74,13 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
         pool: g('poolText'),
         ghost: [...document.querySelectorAll('linearGradient')].some(x => (x.getAttribute('id') || '').includes('ghost')),
         card: typeof CTR_CARD !== 'undefined' ? CTR_CARD : null,
+        sign: [...document.querySelectorAll('#board text, svg text')].some(t => (t.textContent || '').trim() === 'by fangzhongxing'),
       };
     });
     ok(panel.decay != null && /收益衰减|×100%|×70%/.test(panel.decay), `看板衰减行已填充：「${(panel.decay || '').trim()}」`);
     ok(panel.season && panel.pool, `季节 / 基金池行已渲染（${(panel.season || '').trim()}）`);
     ok(panel.card && panel.card.h >= 380, `中央看板已扩容（h=${panel.card && panel.card.h}）`);
+    ok(panel.sign, '中央看板含作者署名 by fangzhongxing（v5.9）');
     await shot('01-panel.png');
 
     console.log('\n[3] 点击右侧玩家名 → 查看浮层（两行胶囊）');

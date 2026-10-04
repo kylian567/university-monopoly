@@ -41,6 +41,7 @@ function snapshot(room) {
     facultyOptions: (room.facultyOptions || []).slice(),
     facultyVotes: { ...(room.facultyVotes || {}) },
     facultyLucky: room.facultyLucky || null,
+    facTermStart: room.facTermStart || 1,   // v5.9：本届城邦起始轮（10 轮一届）
     freeRound: room.freeRound || 0,
     freeRentRounds: (room.freeRentRounds || []).slice(),
     // v5.7：研究项目三选一进行中（断线重连按快照把选择浮层补回来）

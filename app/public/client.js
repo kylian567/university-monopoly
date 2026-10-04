@@ -160,7 +160,7 @@ const MAJORS = {
 const FACULTY = {
   urban:    { name: '都市校区',   icon: '🏙️', color: '#4A90D9', lead: '经过起点工资 ¥2250（+250）',           cost: '所有地皮买入价 +3%',              tag: '钱来得快，地也贵' },
   garden:   { name: '园林校区',   icon: '🌳', color: '#6FAE3F', lead: '所有地皮买入价 −4%',                  cost: '经过起点工资 ¥1800（−200）',       tag: '便宜是便宜，就是远' },
-  ancient:  { name: '百年学府',   icon: '🏛️', color: '#C8941F', lead: '每 3 轮全场各领 ¥300 校友捐款',         cost: '第 1~3 轮全场租金 ×0.93',          tag: '底蕴要慢慢显' },
+  ancient:  { name: '百年学府',   icon: '🏛️', color: '#C8941F', terms: [1, 1], lead: '每 3 轮全场各领 ¥300 校友捐款',         cost: '本届前 3 轮全场租金 ×0.93',         tag: '底蕴要慢慢显（只在第一轮城邦出现）' },
   tech:     { name: '理工校区',   icon: '🔬', color: '#2E7BC4', lead: '全场建筑升级费 −8%',                  cost: '机会 / 命运卡的金钱收益 −7%',       tag: '自己动手，丰衣足食' },
   general:  { name: '综合校区',   icon: '🎓', color: '#9A968C', lead: '正面卡 +¥200、负面卡少损失 ¥200',       cost: '无——但也没有爆发点',              tag: '什么都有点，什么都不极致' },
   biz:      { name: '商科校区',   icon: '💼', color: '#A9682B', lead: '抵押可拿地价 58%（基准 50%）',          cost: '赎回时多付 8% 手续费',             tag: '银行永远在你身边，也永远在收你的钱' },
@@ -175,10 +175,10 @@ const FACULTY = {
   normal:   { name: '师范校区',   icon: '🎯', color: '#2BB88C', lead: '每过 10 轮全场各得 1 张「免停留卡」',    cost: '全场租金 ×0.97',                    tag: '老师总是手下留情' },
   book:     { name: '书香校区',   icon: '📚', color: '#B04B2C', lead: '每抽到一张机会卡 +¥250',               cost: '命运卡的负面金额 +10%',             tag: '书中自有黄金屋，也有催款单' },
   life:     { name: '生活区校区', icon: '🍜', color: '#E88A6F', lead: '文印店/快递租金、机场路费 ×0.92',       cost: '地皮买入价 +3%',                    tag: '生活便利，就是有点挤' },
-  austerity:{ name: '紧缩校区',   icon: '⏰', color: '#6E6C66', lead: '本局免征物业税',                       cost: '银行提前 5 轮停发工资（第 10 轮起）', tag: '勒紧腰带过日子' },
-  boom:     { name: '繁荣校区',   icon: '🌇', color: '#C99A3F', lead: '停发工资推迟 5 轮、过起点额外 +¥200',   cost: '所有地皮买入价 +6%',                tag: '日子还长，先涨个价' },
-  nofund:   { name: '限薪校区',   icon: '🏚️', color: '#9B3A3A', lead: '全场地价 −12%、升级费 −10%',           cost: '银行全程停发起点工资',              tag: '没有工资，全凭本事' },
-  retrain:  { name: '进修校区',   icon: '📖', color: '#5548B0', lead: '开局所有人技能次数 +1',                 cost: '所有地皮买入价 +3%',                tag: '多学一门手艺' },
+  austerity:{ name: '紧缩校区',   icon: '⏰', color: '#6E6C66', terms: [1, 2], lead: '本届免征物业税',                    cost: '银行提前 5 轮停发工资（第 10 轮起）', tag: '勒紧腰带过日子' },
+  boom:     { name: '繁荣校区',   icon: '🌇', color: '#C99A3F', terms: [1, 2], lead: '停发工资推迟 5 轮、过起点额外 +¥200',   cost: '所有地皮买入价 +6%',                tag: '日子还长，先涨个价' },
+  nofund:   { name: '限薪校区',   icon: '🏚️', color: '#9B3A3A', terms: [1, 2], lead: '全场地价 −12%、升级费 −10%',           cost: '本届起停发起点工资',                tag: '没有工资，全凭本事' },
+  retrain:  { name: '进修校区',   icon: '📖', color: '#5548B0', lead: '当选时全场技能次数 +1',                 cost: '所有地皮买入价 +3%',                tag: '多学一门手艺' },
   freeRound:{ name: '免费轮校区', icon: '🎟️', color: '#4E9B2A', lead: '随机 1 轮全场买地、盖楼完全免费',       cost: '全场租金 ×1.08',                    tag: '那一轮，随便花' },
   freeRent: { name: '免租轮校区', icon: '🕊️', color: '#3FBF9E', lead: '随机 4 轮全场所有人免交租金',           cost: '其余轮次全场租金 ×1.05',            tag: '这四轮，谁也别想收租' },
 };
@@ -1181,7 +1181,7 @@ function onState(state) {
     render(state);
     // v5.2：断线重连 / 中途加入时，服务端不会再补发 faculty_offer —— 按快照把投票浮层补回来
     const hasChosen = (state.events || []).some(e => e.t === 'faculty_chosen');
-    if (state.phase === 'faculty' && (state.facultyOptions || []).length) facOpenVote({ options: state.facultyOptions, ms: 12000 });
+    if (state.phase === 'faculty' && (state.facultyOptions || []).length) facOpenVote({ options: state.facultyOptions, ms: 12000, termStart: state.facTermStart || 1 });   // v5.9：带届数
     else if (!hasChosen && !facCeremonyBusy) facCloseUI();
     // v5.7：断线重连 / 中途加入时，按快照把「研究项目三选一」浮层补回来；阶段已过则关闭
     if (state.phase === 'project' && state.project && state.project.offers) {
@@ -1726,14 +1726,18 @@ function facOpenVote(e) {
   clearInterval(facVoteClock);
   facVoteSig = sig;
   const ms = (e && e.ms) || FACULTY_VOTE_MS;
+  // v5.9：城邦 10 轮一届 —— 换届时标题与提示带届数
+  const fts = (e && e.termStart) || 1;
+  const term = (e && e.term) || Math.floor((fts - 1) / 10) + 1;
+  const kick = term > 1 ? `第 ${term} 届 · 校 园 风 貌 换 届` : '本 局 · 校 园 风 貌 推 选';
   const d = document.createElement('div');
   d.className = 'fac-layer';
   d.innerHTML = `<div class="fv-panel">
       <div class="fv-glow"></div><div class="fv-beam"></div><i class="fv-mote m1"></i><i class="fv-mote m2"></i><i class="fv-mote m3"></i><i class="fv-mote m4"></i><i class="fv-mote m5"></i><i class="fv-mote m6"></i>
       <div class="fv-plaque"><div class="fv-plaque-in">
-        <div class="fv-kicker">本 局 · 校 园 风 貌 推 选</div>
+        <div class="fv-kicker">${kick}</div>
         <div class="fv-big">🏫 校园风貌</div>
-        <div class="fv-hint">三 位 候 选 · 全 场 各 投 一 票 · <b>随 机 抽 一 位 玩 家</b>，他投的那一个即本局风貌<br>全场共享 · 贯穿整局 15 轮</div>
+        <div class="fv-hint">三 位 候 选 · 全 场 各 投 一 票 · <b>随 机 抽 一 位 玩 家</b>，他投的那一个即本届风貌<br>全场共享 · 每届 10 轮（第 ${fts}~${fts + 9} 轮生效）</div>
       </div></div>
       <div class="fv-row">${opts.map(facCardHtml).join('')}</div>
       <div class="fv-timer"><i class="fv-bar"><b id="fvBarFill"></b></i><span>剩余 <em id="fvClock">${Math.max(1, Math.round(ms / 1000))}</em> 秒 · 点击卡片投票</span></div>
@@ -1910,7 +1914,7 @@ function facultyDrawAnim(e) {
     d.innerHTML = `<div class="fv-panel fd-draw-panel" style="--fc:${col}">
         <div class="fv-glow"></div><div class="fv-beam"></div>
         <div class="fd-t">${isFR ? '🎟️ 免 费 轮 · 抽 签' : '🕊️ 免 租 轮 · 抽 签'}</div>
-        <div class="fd-sub">本局风貌附带的轮次抽取 · 全场共同见证</div>
+        <div class="fd-sub">本届风貌附带的轮次抽取 · 全场共同见证</div>
         <div class="fd-slots">${rounds.map((_, i) => `<div class="fd-slot${isFR ? ' big' : ''}" id="fdSlot${i}">？</div>`).join('')}</div>
         <div class="fd-note">${isFR ? '抽中的那一轮：全场买地皮、盖楼完全免费' : '抽中的四轮：全场踩到谁的地都不用交租金'}</div>
       </div>`;
@@ -2100,7 +2104,7 @@ function renderFacultyBadge(landing) {
       <animateTransform attributeName="transform" type="rotate" from="0 ${bx + 42} ${cy}" to="360 ${bx + 42} ${cy}" dur="16s" repeatCount="indefinite"/>
     </circle>
     <text x="${bx + 42}" y="${cy + 8.5}" text-anchor="middle" font-size="23">${f.icon || '🏫'}</text>
-    <text x="${bx + 78}" y="${by + 21}" font-size="10.5" fill="#a3946f" letter-spacing="2">本局校园风貌 · 全场共享</text>
+    <text x="${bx + 78}" y="${by + 21}" font-size="10.5" fill="#a3946f" letter-spacing="2">本届校园风貌 · 全场共享</text>
     <text x="${bx + 78}" y="${by + 42}" font-size="19" font-weight="800" fill="${shade(col, -58)}">${esc(f.name)}</text>
     <text x="${bx + 78}" y="${by + 56.5}" font-size="12" fill="#7a6a52">▸ ${esc(f.lead)}　｜　代价：${esc(f.cost)}</text>
     <rect x="${bx + bw - 62}" y="${by + 6}" width="52" height="17" rx="8.5" fill="${hexA(col, .18)}" stroke="${hexA(col, .45)}" stroke-width="1"/>
@@ -2129,7 +2133,7 @@ function openFacDetail() {
       <div class="fd-head" style="--fc:${f.color}">
         <span class="fd-ico">${f.icon}</span>
         <span class="fd-name">${esc(f.name)}</span>
-        <span class="fd-badge">本局风貌</span>
+        <span class="fd-badge">本届风貌</span>
       </div>
       <div class="fd-cur" style="--fc:${f.color}">
         <div class="fd-row"><b>主效果</b>${esc(f.lead)}</div>
@@ -3781,6 +3785,8 @@ function buildBoard() {
   const ccx = C.x + C.w / 2;
   html += `<text x="${ccx}" y="${C.y + 46}" text-anchor="middle" font-size="24" font-weight="800" fill="#7a1522" letter-spacing="5" font-family="STKaiti,KaiTi,'PingFang SC',serif">没事就玩大富翁</text>`;
   html += `<text x="${ccx}" y="${C.y + 63}" text-anchor="middle" font-size="10.5" fill="#a89c88" letter-spacing="4">UNIVERSITY MONOPOLY</text>`;
+  // v5.9：作者署名（比天气行更小、低调挂在标题右下角）
+  html += `<text x="${C.x + C.w - 26}" y="${C.y + 63}" text-anchor="end" font-size="10" fill="#b9ac92">by fangzhongxing</text>`;
   html += `<line x1="${C.x + 80}" y1="${C.y + 74}" x2="${C.x + C.w - 80}" y2="${C.y + 74}" stroke="#e0d3b4" stroke-width="1.3" stroke-dasharray="5 5"/>`;
   // v5.2：校园风貌常驻徽章（内容由 renderFacultyBadge() 动态填充）——永久挂在地图正中央
   html += `<g id="facBadge"></g>`;

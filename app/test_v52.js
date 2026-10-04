@@ -310,13 +310,13 @@ console.log('\n[19] 生活区校区：公用事业/机场 ×0.92 / 地价 +3%');
   const utilRent = r.calcRent(ui, [3, 4]);
   ok(utilRent === Math.round(7 * 100 * 0.92), `公用事业租金（1 家 ×100）= ¥${utilRent}（已 ×0.92）`);
   const trRent = r.calcRent(ti, [3, 4]);
-  ok(trRent === Math.round(600 * 0.92), `机场路费（1 座 ¥600，v5.8 削弱）= ¥${trRent}（已 ×0.92）`);
+  ok(trRent === Math.round(800 * 0.92), `机场路费（1 座 ¥800，v5.9）= ¥${trRent}（已 ×0.92）`);
   const g = landOf('general', 10000), l = landOf('life', 10000);
   ok(Math.abs(l - g * 1.03) <= 1, `地价 +3%：¥${g} → ¥${l}`);
   // 对照：普通风貌下不加成
   const r2 = mkRoom(2, ['agri', 'agri'], 'general');
   r2.cells[ui].own = r2.players[0].id; r2.cells[ti].own = r2.players[0].id;
-  ok(r2.calcRent(ui, [3, 4]) === 700 && r2.calcRent(ti, [3, 4]) === 600, '对照（综合校区）：原价 ¥700 / ¥600（机场 v5.8 削弱）');
+  ok(r2.calcRent(ui, [3, 4]) === 700 && r2.calcRent(ti, [3, 4]) === 800, '对照（综合校区）：文印 ¥700 / 机场 ¥800（v5.9）');
 }
 
 // ---------------- [20] 紧缩校区 ----------------
@@ -405,7 +405,7 @@ console.log('\n[25] 免租轮校区：随机 4 轮全场免租');
   const r = mkRoom(2, ['agri', 'agri'], 'freeRent');
   ok(r.freeRentRounds.length === 4, `抽中 4 个免租轮：第 ${r.freeRentRounds.join(' / ')} 轮`);
   ok(new Set(r.freeRentRounds).size === 4, '4 个免租轮互不重复');
-  ok(r.freeRentRounds.every(x => x >= 2 && x <= 14), '免租轮都落在第 2~14 轮之间');
+  ok(r.freeRentRounds.every(x => x >= 1 && x <= 10), '免租轮都落在首届窗口第 1~10 轮之间（v5.9）');
   ok(r.facRentMul() === 1.05, '代价：其余轮次租金 ×1.05');
   const owner = r.players[0], pay = r.players[1];
   pay.cash = 20000;
@@ -417,7 +417,7 @@ console.log('\n[25] 免租轮校区：随机 4 轮全场免租');
   r.phase = 'resolving'; pay.pos = ci;
   r.resolveCell(pay);
   ok(pay.cash === c0, `免租轮（第 ${r.round} 轮）踩到别人的地一分不付`);
-  const other = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].find(x => !r.freeRentRounds.includes(x));
+  const other = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].find(x => !r.freeRentRounds.includes(x));
   r.round = other;
   const c1 = pay.cash;
   r.phase = 'resolving';

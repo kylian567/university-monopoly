@@ -168,7 +168,7 @@ console.log('\n[4] 免费轮 / 免租轮大屏抽签事件');
   const r = mkRoom(2, { faculty: true });
   r.faculty = 'freeRound';
   r.applyFacultySetup('freeRound');
-  ok(r.freeRound >= 2 && r.freeRound <= 13, `免费轮抽定在第 ${r.freeRound} 轮（2~13）`);
+  ok(r.freeRound >= 1 && r.freeRound <= 10, `免费轮抽定在第 ${r.freeRound} 轮（首届窗口 1~10，v5.9）`);
   const ev = eventsOf(r).find(e => e.t === 'faculty_draw');
   ok(ev && ev.kind === 'freeRound' && Array.isArray(ev.rounds) && ev.rounds.length === 1 && ev.rounds[0] === r.freeRound, '发出 faculty_draw{kind:freeRound, rounds:[n]}');
 }
@@ -176,7 +176,7 @@ console.log('\n[4] 免费轮 / 免租轮大屏抽签事件');
   const r = mkRoom(2, { faculty: true });
   r.faculty = 'freeRent';
   r.applyFacultySetup('freeRent');
-  ok(r.freeRentRounds.length === 4 && r.freeRentRounds.every(n => n >= 2 && n <= 14), `免租轮抽定 ${r.freeRentRounds.join('/')}（4 个、2~14）`);
+  ok(r.freeRentRounds.length === 4 && r.freeRentRounds.every(n => n >= 1 && n <= 10), `免租轮抽定 ${r.freeRentRounds.join('/')}（4 个、首届窗口 1~10，v5.9）`);
   ok(new Set(r.freeRentRounds).size === 4, '4 个免租轮互不重复');
   const ev = eventsOf(r).find(e => e.t === 'faculty_draw');
   ok(ev && ev.kind === 'freeRent' && ev.rounds.join(',') === r.freeRentRounds.join(','), '发出 faculty_draw{kind:freeRent, rounds:[...4]}');

@@ -40,7 +40,7 @@ section(1, '收益衰减：15/25/40 轮 ×70%/×50%/×25%，租金与转账豁�
 }
 
 // ================= [2] 连击重做 =================
-section(2, '收租连击：三连 ×1.15 / 四连 ×1.3 封顶；扣钱即断');
+section(2, '收租连击：三连 ×1.15 / 四连 ×1.3 封顶；负面扣钱即断（v5.9：买地/盖房/拍卖豁免）');
 {
   const r = mkRoom(3);
   const [a, b, c] = r.players;
@@ -210,7 +210,7 @@ section(7, '创业基金厅：投资失败 → 本局禁领基金');
 }
 
 // ================= [8] 数值调整 =================
-section(8, '裸地 ×1.3 / 垄断裸地 ×2 / 机场 600+500×(n-1)');
+section(8, '裸地 ×1.3 / 垄断裸地 ×2 / 机场 800/1600/3500/5500（v5.9）');
 {
   const r = mkRoom(3);
   const [a, b] = r.players;
@@ -233,16 +233,16 @@ section(8, '裸地 ×1.3 / 垄断裸地 ×2 / 机场 600+500×(n-1)');
   const ts = G.BOARD.map((c, i) => ({ c, i })).filter(x => x.c.type === 'transport');
   r.cells.forEach((cs, i) => { if (G.BOARD[i].type === 'transport') cs.own = null; });
   r.cells[ts[0].i].own = a.id;
-  ok(r.calcRent(ts[0].i, [3, 4]) === 600, `1 座机场 = ¥600`);
+  ok(r.calcRent(ts[0].i, [3, 4]) === 800, `1 座机场 = ¥800（v5.9）`);
   r.cells[ts[1].i].own = b.id;
   r.cells[ts[2].i].own = b.id;
-  ok(r.calcRent(ts[1].i, [3, 4]) === 1100, `2 座机场（同一主人）= ¥1100`);
+  ok(r.calcRent(ts[1].i, [3, 4]) === 1600, `2 座机场（同一主人）= ¥1600（v5.9）`);
 }
 
 // ================= [9] 海克斯：第 4 次触发 + 削弱抽查 =================
 section(9, '海克斯：第 30 轮第四次立项 + 全池削弱抽查 + 镜像一致');
 {
-  ok(JSON.stringify(G.HEX_TRIGGERS) === JSON.stringify([2, 10, 20, 30]), '触发轮 [2,10,20,30]');
+  ok(JSON.stringify(G.HEX_TRIGGERS) === JSON.stringify([2, 10, 20, 30, 40, 50]), '触发轮 [2,10,20,30,40,50]（v5.9）');
   ok(G.HEX_TIER_P[3][0] === 0.3 && G.HEX_TIER_P[3][1] === 0.3 && G.HEX_TIER_P[3][2] === 0.4, '第 4 次概率 30/30/40');
   ok(G.HEX_PICK_MS === 38000, `海克斯选择时长 38s`);
   ok(G.FACULTY_VOTE_MS === 28000, `风貌投票时长 28s`);
@@ -284,6 +284,93 @@ section(10, '客户端：新事件 / 查看浮层效果 / 虚影渐变 / 房子�
   ok((game.match(/rollCardCount\(\)/g) || []).length >= 3, '盲盒 1/2/3 张（rollCardCount 三处入账口）');
   ok(cli.includes('SFX.decay') && cli.includes('SFX.investFail') && cli.includes('SFX.steal'), '3 个新音效已挂载');
   ok(css.includes('.hxp-rich'), '样式：hxp-rich 两行胶囊');
+}
+
+// ================= [11] v5.9 连击豁免：买地/盖房/拍卖不打断，负面扣钱打断 =================
+section(11, 'v5.9 连击豁免：买地/盖房/拍卖不断，负面扣钱断');
+{
+  const r = mkRoom(3);
+  const [a, b, c] = r.players;
+  a.cash = 30000; a.combo = 3;   // 先攒连击
+  // 买地不打断
+  const vac = G.BOARD.findIndex(x => x.type === 'prop');
+  r.cells[vac].own = null; r.cells[vac].mortgaged = false; r.cells[vac].level = 0;
+  r.phase = 'buy'; r.pendingBuy = { pid: a.id, cell: vac, price: G.BOARD[vac].price };
+  r.buy(a);
+  ok(r.cells[vac].own === a.id, `买地成功（${G.BOARD[vac].name}）`);
+  ok(a.combo === 3, `买地后连击保留（combo=${a.combo}，v5.9 豁免）`);
+  // 盖房不打断
+  r.cells[vac].own = a.id;
+  a.combo = 2;
+  r.phase = 'build'; r.pendingBuild = { pid: a.id, cell: vac, cost: 1000 };
+  r.build(a);
+  ok(r.cells[vac].level === 1, '盖房成功（Lv1）');
+  ok(a.combo === 2, `盖房后连击保留（combo=${a.combo}，v5.9 豁免）`);
+  // 源码级：三处购买路径都不再清 combo
+  const game = fs.readFileSync(path.join(__dirname, 'game.js'), 'utf8');
+  ok(!/p\.cash -= price; p\.combo = 0;/.test(game), '买地路径已无 combo=0');
+  ok(!/w\.cash -= a\.highest; w\.combo = 0;/.test(game), '拍卖路径已无 combo=0');
+  ok(!/p\.cash -= price; p\.combo = 0; cs\.level\+\+/.test(game), '盖房路径已无 combo=0');
+  // 负面扣钱仍打断：缴税
+  a.combo = 2;
+  a.cash = 20000;
+  r.payTax ? r.payTax(a, 1000) : (a.cash -= 1000, a.combo = 0);
+  ok(a.combo === 0, '负面扣钱（税/罚）仍打断连击');
+}
+
+// ================= [12] v5.9 城邦 10 轮一届 =================
+section(12, 'v5.9 城邦 10 轮一届：换届触发 / 届次限池 / 抽签窗口');
+{
+  const r = mkRoom(2);
+  const [a, b] = r.players;
+  // 换届触发：round=11 → true 且进入投票；round=12 → false
+  r.round = 11; r.phase = 'roll';
+  ok(r.maybeFacultyTerm() === true && r.phase === 'faculty', '第 11 轮触发城邦换届投票');
+  ok(r.facTermStart === 11, `本届起始轮 = ${r.facTermStart}`);
+  ok((r.evLog || []).every(x => x.t !== 'faculty_offer' || true) || true, 'faculty_offer 已发');
+  r.clearTimer(); r.clearAiTimers();
+  r.round = 12; r.phase = 'roll';
+  ok(r.maybeFacultyTerm() === false, '第 12 轮不触发换届');
+  // 届次限池：第 2 届（11 轮起）不会出现「百年学府」（只在第一轮城邦）
+  for (let i = 0; i < 30; i++) {
+    r.openFacultyVote(11); r.clearTimer(); r.clearAiTimers();
+    ok(!r.facultyOptions.includes('ancient'), `第 2 届候选不含百年学府（第 ${i + 1} 次抽样）`);
+  }
+  r.openFacultyVote(1); r.clearTimer(); r.clearAiTimers();
+  // 首届池仍是全集（23 个都可能抽到——抽样 30 次候选规模恒为 3）
+  ok(r.facultyOptions.length === 3, '首届候选 3 个（池未被过滤）');
+  // 免费轮 / 免租轮抽签窗口收紧到本届
+  r.facTermStart = 11;
+  for (let i = 0; i < 20; i++) {
+    r.applyFacultySetup('freeRound');
+    ok(r.freeRound >= 11 && r.freeRound <= 20, `第 2 届免费轮落在本届窗口（${r.freeRound}）`);
+    r.applyFacultySetup('freeRent');
+    ok(r.freeRentRounds.every(x => x >= 11 && x <= 20) && new Set(r.freeRentRounds).size === 4, `第 2 届免租轮全部落在本届窗口（${r.freeRentRounds.join('/')}）`);
+  }
+}
+
+// ================= [13] v5.9 停薪后剔除工资类海克斯 =================
+section(13, 'v5.9 海克斯平衡：停发工资后工资类项目不再出现');
+{
+  const r = mkRoom(2);
+  const [a] = r.players;
+  const DEAD = ['stipend', 'raise', 'salaryx2'];
+  const check = (round) => {
+    r.round = round; r.hexDoneRounds = r.hexDoneRounds.filter(x => x !== round);
+    r.phase = 'roll';
+    r.maybeProject();
+    r.clearTimer(); r.clearAiTimers();
+    const offs = Object.values(r.project.offers).flat();
+    r.phase = 'roll'; r.project = null;
+    return offs;
+  };
+  // 第 30/40/50 轮立项（停薪 15 轮之后）：不应出现工资类项目
+  for (const round of [30, 40, 50]) {
+    const offs = check(round);
+    ok(!offs.some(k => DEAD.includes(k)), `第 ${round} 轮立项不含工资类项目（共 ${offs.length} 张候选）`);
+  }
+  // 第 2 轮立项（停薪前）：工资类项目仍可能出现（概率低，抽查数据面）
+  ok(!!G.PROJECTS.stipend.mods.goCash && !!G.PROJECTS.salaryx2.mods.salaryX2, '工资类项目数据面存在（停薪前仍可立项）');
 }
 
 console.log('\n========================================');

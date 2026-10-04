@@ -521,7 +521,7 @@ const FATE = [
 const FACULTY = {
   urban:    { name: '都市校区',   icon: '🏙️', color: '#4A90D9', lead: '经过起点工资 ¥2250（+250）',           cost: '所有地皮买入价 +3%',              tag: '钱来得快，地也贵' },
   garden:   { name: '园林校区',   icon: '🌳', color: '#6FAE3F', lead: '所有地皮买入价 −4%',                  cost: '经过起点工资 ¥1800（−200）',       tag: '便宜是便宜，就是远' },
-  ancient:  { name: '百年学府',   icon: '🏛️', color: '#C8941F', lead: '每 3 轮全场各领 ¥300 校友捐款',         cost: '第 1~3 轮全场租金 ×0.93',          tag: '底蕴要慢慢显' },
+  ancient:  { name: '百年学府',   icon: '🏛️', color: '#C8941F', terms: [1, 1], lead: '每 3 轮全场各领 ¥300 校友捐款',         cost: '本届前 3 轮全场租金 ×0.93',         tag: '底蕴要慢慢显（只在第一轮城邦出现）' },
   tech:     { name: '理工校区',   icon: '🔬', color: '#2E7BC4', lead: '全场建筑升级费 −8%',                  cost: '机会 / 命运卡的金钱收益 −7%',       tag: '自己动手，丰衣足食' },
   general:  { name: '综合校区',   icon: '🎓', color: '#9A968C', lead: '正面卡 +¥200、负面卡少损失 ¥200',       cost: '无——但也没有爆发点',              tag: '什么都有点，什么都不极致' },
   biz:      { name: '商科校区',   icon: '💼', color: '#A9682B', lead: '抵押可拿地价 58%（基准 50%）',          cost: '赎回时多付 8% 手续费',             tag: '银行永远在你身边，也永远在收你的钱' },
@@ -536,10 +536,10 @@ const FACULTY = {
   normal:   { name: '师范校区',   icon: '🎯', color: '#2BB88C', lead: '每过 10 轮全场各得 1 张「免停留卡」',    cost: '全场租金 ×0.97',                    tag: '老师总是手下留情' },
   book:     { name: '书香校区',   icon: '📚', color: '#B04B2C', lead: '每抽到一张机会卡 +¥250',               cost: '命运卡的负面金额 +10%',             tag: '书中自有黄金屋，也有催款单' },
   life:     { name: '生活区校区', icon: '🍜', color: '#E88A6F', lead: '文印店/快递租金、机场路费 ×0.92',       cost: '地皮买入价 +3%',                    tag: '生活便利，就是有点挤' },
-  austerity:{ name: '紧缩校区',   icon: '⏰', color: '#6E6C66', lead: '本局免征物业税',                       cost: '银行提前 5 轮停发工资（第 10 轮起）', tag: '勒紧腰带过日子' },
-  boom:     { name: '繁荣校区',   icon: '🌇', color: '#C99A3F', lead: '停发工资推迟 5 轮、过起点额外 +¥200',   cost: '所有地皮买入价 +6%',                tag: '日子还长，先涨个价' },
-  nofund:   { name: '限薪校区',   icon: '🏚️', color: '#9B3A3A', lead: '全场地价 −12%、升级费 −10%',           cost: '银行全程停发起点工资',              tag: '没有工资，全凭本事' },
-  retrain:  { name: '进修校区',   icon: '📖', color: '#5548B0', lead: '开局所有人技能次数 +1',                 cost: '所有地皮买入价 +3%',                tag: '多学一门手艺' },
+  austerity:{ name: '紧缩校区',   icon: '⏰', color: '#6E6C66', terms: [1, 2], lead: '本届免征物业税',                    cost: '银行提前 5 轮停发工资（第 10 轮起）', tag: '勒紧腰带过日子' },
+  boom:     { name: '繁荣校区',   icon: '🌇', color: '#C99A3F', terms: [1, 2], lead: '停发工资推迟 5 轮、过起点额外 +¥200',   cost: '所有地皮买入价 +6%',                tag: '日子还长，先涨个价' },
+  nofund:   { name: '限薪校区',   icon: '🏚️', color: '#9B3A3A', terms: [1, 2], lead: '全场地价 −12%、升级费 −10%',           cost: '本届起停发起点工资',                tag: '没有工资，全凭本事' },
+  retrain:  { name: '进修校区',   icon: '📖', color: '#5548B0', lead: '当选时全场技能次数 +1',                 cost: '所有地皮买入价 +3%',                tag: '多学一门手艺' },
   freeRound:{ name: '免费轮校区', icon: '🎟️', color: '#4E9B2A', lead: '随机 1 轮全场买地、盖楼完全免费',       cost: '全场租金 ×1.08',                    tag: '那一轮，随便花' },
   freeRent: { name: '免租轮校区', icon: '🕊️', color: '#3FBF9E', lead: '随机 4 轮全场所有人免交租金',           cost: '其余轮次全场租金 ×1.05',            tag: '这四轮，谁也别想收租' },
 };
@@ -620,8 +620,8 @@ const PROJECTS = {
 const PROJECT_KEYS = { silver: [], gold: [], prism: [] };
 for (const k in PROJECTS) PROJECT_KEYS[PROJECTS[k].tier].push(k);
 // 四次立项的档位概率（银/金/彩）——完全随机，不是按顺序升档（v5.8：新增第 30 轮第四次）
-const HEX_TRIGGERS = [2, 10, 20, 30];
-const HEX_TIER_P = [[0.70, 0.20, 0.10], [0.40, 0.40, 0.20], [0.30, 0.40, 0.30], [0.30, 0.30, 0.40]];
+const HEX_TRIGGERS = [2, 10, 20, 30, 40, 50];
+const HEX_TIER_P = [[0.70, 0.20, 0.10], [0.40, 0.40, 0.20], [0.30, 0.40, 0.30], [0.30, 0.30, 0.40], [0.30, 0.30, 0.40], [0.30, 0.30, 0.40]];   // v5.9：第 5/6 次（40/50 轮）银金彩同第四轮 30/30/40
 const HEX_PICK_MS = 38000;       // 三选一决策时长（v5.8：32s → 38s，超时自动随机补选）
 // v5.8：第 15/25/40 轮后，除「房产租金」外的一切奖金收入衰减为 ×70% / ×50% / ×25%
 const INCOME_DECAY = [{ r: 15, mul: 0.70 }, { r: 25, mul: 0.50 }, { r: 40, mul: 0.25 }];
@@ -856,15 +856,23 @@ class Room {
 
   // ---------- v5.2：校园风貌 —— 开局投票 + 随机抽取（对应设计提案 1.1 节） ----------
   // 流程：随机 3 个候选 → 全体玩家（含 AI）各投 1 票 → 随机抽一名玩家，他所投的风貌成为本局风貌。
-  openFacultyVote() {
-    const pool = FACULTY_KEYS.slice();
+  openFacultyVote(termStart = 1) {
+    // v5.9：城邦 10 轮一届 —— 第 1/11/21/31/41/51 轮各推选一次；按届次过滤只在早期有意义的城邦
+    this.facTermStart = termStart;
+    const term = Math.floor((termStart - 1) / 10) + 1;
+    const pool = FACULTY_KEYS.filter(k => {
+      const w = FACULTY[k].terms;
+      return !w || (term >= w[0] && term <= w[1]);
+    });
     const opts = [];
     while (opts.length < 3 && pool.length) opts.push(pool.splice(Math.floor(Math.random() * pool.length), 1)[0]);
     this.facultyOptions = opts;
     this.facultyVotes = {};
+    this.faculty = null; this.facultyLucky = null;
+    this.freeRound = null; this.freeRentRounds = [];   // 清掉上一届的免费轮 / 免租轮
     this.phase = 'faculty';
-    this.addLog(`🏫 本局「校园风貌」候选：${opts.map(k => FACULTY[k].icon + FACULTY[k].name).join(' / ')} —— 全体投票中（15 秒）`);
-    this.ev({ t: 'faculty_offer', options: opts, ms: FACULTY_VOTE_MS });
+    this.addLog(`🏫 第 ${term} 届「校园风貌」换届（第 ${termStart}~${termStart + 9} 轮生效）候选：${opts.map(k => FACULTY[k].icon + FACULTY[k].name).join(' / ')} —— 全体投票中（${Math.round(FACULTY_VOTE_MS / 1000)} 秒）`);
+    this.ev({ t: 'faculty_offer', options: opts, ms: FACULTY_VOTE_MS, term, termStart });
     this.setTimer(FACULTY_VOTE_MS, () => this.settleFaculty());
     for (const q of this.players) if (q.isAI) this.aiTimers.push(setTimeout(() => this.aiFacultyVote(q), rnd(1400, 3400)));
   }
@@ -900,8 +908,8 @@ class Room {
     this.facultyLucky = lucky.id;
     this.applyFacultySetup(key);
     const f = FACULTY[key];
-    this.addLog(`🏫 抽中 ${lucky.name} 的选票 → 本局校园风貌【${f.name}】：${f.lead}｜代价：${f.cost}`);
-    this.ev({ t: 'faculty_chosen', key, lucky: lucky.id, votes: { ...this.facultyVotes }, tally: this.facultyTally() });
+    this.addLog(`🏫 抽中 ${lucky.name} 的选票 → 第 ${Math.floor((this.facTermStart - 1) / 10) + 1} 届校园风貌【${f.name}】（第 ${this.facTermStart}~${this.facTermStart + 9} 轮生效）：${f.lead}｜代价：${f.cost}`);
+    this.ev({ t: 'faculty_chosen', key, lucky: lucky.id, votes: { ...this.facultyVotes }, tally: this.facultyTally(), term: Math.floor((this.facTermStart - 1) / 10) + 1, termStart: this.facTermStart });
     this.phase = 'roll';
     this.beginRound();
     this.startTurn();
@@ -915,17 +923,20 @@ class Room {
   }
   // 风貌开局一次性结算：技能次数 +1 / 抽定「免费轮」「免租轮」的轮次
   applyFacultySetup(key) {
+    if (!this.facTermStart) this.facTermStart = this.round > 1 ? Math.floor((this.round - 1) / 10) * 10 + 1 : 1;   // v5.9：防御默认（测试直接调用时）
     if (key === 'retrain') {
       for (const q of this.players) q.skillLeft = (q.skillLeft || 0) + 1;
       this.addLog(`📖 【进修校区】全员专业技能次数 +1`);
     }
     if (key === 'freeRound') {
-      this.freeRound = 2 + Math.floor(Math.random() * 12);   // 第 2 ~ 13 轮
-      this.addLog(`🎟️ 【免费轮校区】已抽定：第 ${this.freeRound} 轮全场买地皮、盖楼完全免费`);
+      // v5.9：免费轮只在本届 10 轮窗口内抽（首轮城邦 → 第 1~10 轮）
+      this.freeRound = this.facTermStart + Math.floor(Math.random() * 10);
+      this.addLog(`🎟️ 【免费轮校区】已抽定：第 ${this.freeRound} 轮全场买地皮、盖楼完全免费（本届窗口内）`);
       this.ev({ t: 'faculty_draw', kind: 'freeRound', rounds: [this.freeRound] });   // v5.6：大屏抽签动画
     }
     if (key === 'freeRent') {
-      const pool = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
+      const pool = [];
+      for (let r = this.facTermStart; r < this.facTermStart + 10; r++) pool.push(r);   // v5.9：免租轮只在本届窗口内抽
       const got = [];
       while (got.length < 4 && pool.length) got.push(pool.splice(Math.floor(Math.random() * pool.length), 1)[0]);
       this.freeRentRounds = got.sort((a, b) => a - b);
@@ -952,12 +963,18 @@ class Room {
     const r = Math.random();
     const tier = r < ps ? 'silver' : (r < ps + pg ? 'gold' : 'prism');
     // ② 发牌：同一玩家不会见到自己已立项的项目；同一轮内尽量人手不同
+    //    v5.9：停发工资后，工资类项目（goCash / salaryX2）已无意义，从池中剔除以平衡同档强度
+    const wageDead = this.round >= this.salaryStop();
     const used = new Set();
     const offers = {};
     for (const p of this.alive()) {
       const owned = new Set(p.hexList);
-      let pool = PROJECT_KEYS[tier].filter(k => !owned.has(k) && !used.has(k));
-      if (pool.length < 3) pool = pool.concat(PROJECT_KEYS[tier].filter(k => !owned.has(k) && !pool.includes(k)));
+      const deadKey = k => {
+        const m = PROJECTS[k].mods || {};
+        return wageDead && (m.goCash || m.salaryX2);
+      };
+      let pool = PROJECT_KEYS[tier].filter(k => !owned.has(k) && !used.has(k) && !deadKey(k));
+      if (pool.length < 3) pool = pool.concat(PROJECT_KEYS[tier].filter(k => !owned.has(k) && !pool.includes(k) && !deadKey(k)));
       if (pool.length < 3) pool = PROJECT_KEYS[tier].filter(k => !owned.has(k));
       const cards = [];
       while (cards.length < 3 && pool.length) cards.push(pool.splice(Math.floor(Math.random() * pool.length), 1)[0]);
@@ -1872,8 +1889,17 @@ class Room {
     }
     this.cur = idx;
     if (idx === 0) { this.round++; this.beginRound(); }
-    if (this.maybeProject()) return;   // v5.7：第 2/10/20 轮 → 全体「研究项目」三选一，选完再回 startTurn
+    if (this.maybeProject()) return;   // v5.7：第 2/10/20/30/40/50 轮 → 全体「研究项目」三选一，选完再回 startTurn
+    if (this.maybeFacultyTerm()) return;   // v5.9：第 11/21/31/41/51 轮 → 城邦换届投票，选完再回 startTurn
     this.startTurn();
+  }
+
+  // v5.9：城邦 10 轮一届 —— 推进到换届轮（11/21/31/41/51）时开启新一轮推选；返回 true 表示暂停等待投票
+  maybeFacultyTerm() {
+    if (!this.facultyOn || this.alive().length <= 1) return false;
+    if ((this.round - 1) % 10 !== 0) return false;
+    this.openFacultyVote(this.round);   // AI 投票由 openFacultyVote 内部统一布置
+    return true;
   }
 
   // ---------- 掷骰与移动 ----------
@@ -2780,7 +2806,7 @@ class Room {
         this.ev({ t: 'money', pid: p.id, amount: bmj.buyCash, reason: bmj.skill });
       }
     }
-    p.cash -= price; p.combo = 0;   // v5.8：扣钱断连击
+    p.cash -= price;   // v5.9：买地不打断连击
     cs.own = p.id; cs.mortgaged = false; cs.mortgageAt = 0;
     if (p.discount) p.discount = false;
     // v5.7：研究项目的买地返现（拿地返现）
@@ -2847,7 +2873,7 @@ class Room {
     const a = this.auction, cell = a.cell, c = BOARD[cell];
     if (a.bidder) {
       const w = this.players.find(p => p.id === a.bidder);
-      w.cash -= a.highest; w.combo = 0;   // v5.8：扣钱断连击
+      w.cash -= a.highest;   // v5.9：拍卖不打断连击
       this.cells[cell].own = w.id;
       this.addLog(`${w.name} 以 ¥${a.highest} 拍得「${c.name}」`);
       this.ev({ t: 'buy', pid: w.id, cell, price: a.highest, auction: true });
@@ -2896,7 +2922,7 @@ class Room {
         }
         for (const [, , actv] of usedCuts) if (!actv) p.skillLeft--;
       }
-      p.cash -= price; p.combo = 0; cs.level++;   // v5.8：扣钱断连击
+      p.cash -= price; cs.level++;   // v5.9：盖房不打断连击
       // v5.7：研究项目的盖房返现（盖房返现）
       if (p.hex && p.hex.buildCash && price > 0) {
         p.cash += p.hex.buildCash;
@@ -2962,7 +2988,7 @@ class Room {
       }
     } else if (c.type === 'transport') {
       const n = BOARD.reduce((s, cc, i) => s + (cc.type === 'transport' && this.cells[i].own === owner.id ? 1 : 0), 0);
-      base = 600 + 500 * (n - 1);   // v5.8：机场租金削弱（1家600/2家1100/3家1600/4家2100，原 900×2^(n-1) 最高 7200）
+      base = [0, 800, 1600, 3500, 5500][n] || 5500;   // v5.9：机场租金 800/1600/3500/5500（购买价已统一 ¥2000）
     } else if (c.type === 'util') {
       const n = BOARD.reduce((s, cc, i) => s + (cc.type === 'util' && this.cells[i].own === owner.id ? 1 : 0), 0);
       // 文印店/快递驿站：一家 = 点数×100，两家垄断 = 点数×350（v5.1：×400 → ×350 削弱）

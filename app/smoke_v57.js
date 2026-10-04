@@ -32,7 +32,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 
     console.log('\n[1] 公告版本 + 运行时镜像');
     const ann = await page.evaluate(() => (document.querySelector('#intro .announce-logo') || {}).textContent || '');
-    ok(/v5\.[78]/.test(ann), `开局公告标题：${ann}`);
+    ok(/v5\.[789]/.test(ann), `开局公告标题：${ann}`);
     await page.click('#btnAnnounce'); await sleep(240);
     await page.click('#btnIntro'); await sleep(240);
     await page.click('#btnRulesClose').catch(() => {});
@@ -68,7 +68,10 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
     const ph1 = await page.evaluate(() => S.phase);
     ok(ph1 === 'roll', `风貌投票完成，进入第 1 轮（phase=${ph1}）`);
 
-    // 我的回合：掷骰 → 重投询问选「就这样走」
+    // 我的回合：掷骰 → 重投询问选「就这样走」（若先弹主动技询问则跳过，v5.9 防卡死）
+    await page.evaluate(() => { if (S.phase === 'skill') act({ type: 'skipSkill' }); });
+    await sleep(600);
+    await page.evaluate(() => { if (S.phase === 'skill') act({ type: 'skipSkill' }); });
     await page.evaluate(() => act({ type: 'roll' }));
     await sleep(2600);
     await page.evaluate(() => { try { act({ type: 'confirmRoll' }); } catch (e) {} });
@@ -85,6 +88,18 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
       await sleep(1200);
       await page.evaluate(() => { try { act({ type: 'confirmRoll' }); } catch (e) {} });
       await sleep(800);
+      // v5.9：通用解堵——轮到我但停在询问相位（买地 / 盖房 / 主动技）就选"否"，避免回合卡死
+      await page.evaluate(() => {
+        try {
+          if (!S || S.players[S.cur].id !== myPid) return;
+          if (S.phase === 'buy') act({ type: 'decline' });
+          else if (S.phase === 'build') act({ type: 'skipBuild' });
+          else if (S.phase === 'skill') act({ type: 'skipSkill' });
+          else if (S.phase === 'invest') act({ type: 'declineInvest' });
+          else if (S.phase === 'branch') act({ type: 'declineBranch' });
+        } catch (e) {}
+      });
+      await sleep(400);
     }
     ok(opened, '第 2 轮弹出「研究项目」三选一浮层');
     if (!opened) throw new Error('三选一浮层未出现');
@@ -125,7 +140,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
         ai: (S.players.find(p => p.isAI) || {}).hexList || [],
         overlay: !!document.querySelector('.hx-layer'),
       }));
-      if (st.phase === 'roll' && st.mine.length === 1 && st.ai.length === 1 && !st.overlay) { ok(true, `结算完成：双方各立项 1 个，回到 roll（我=${JSON.stringify(st.mine)}）`); break; }
+      if ((st.phase === 'roll' || st.phase === 'skill') && st.mine.length === 1 && st.ai.length === 1 && !st.overlay) { ok(true, `结算完成：双方各立项 1 个，回到 ${st.phase}（我=${JSON.stringify(st.mine)}）`); break; }
       await sleep(700);
       if (Date.now() - t0 > 28000) ok(false, `结算未完成：phase=${st.phase} hexList=${JSON.stringify(st.mine)}/${JSON.stringify(st.ai)}`);
     }
