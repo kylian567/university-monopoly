@@ -1161,3 +1161,7 @@ body.rotmode .hxp-assets { max-height:36%; }
 @media (pointer:coarse) {
   .lobby-box, .modal-bg, .announce-bg, .rules-bg, .fac-layer, .hx-layer, .hxp-layer { backdrop-filter:none; -webkit-backdrop-filter:none; }
 }
+
+/* v5.13：限次项目合约到期后置灰 */
+.hxp-chip.expired { opacity:.5; filter:grayscale(.7); }
+.hxp-chip.expired i { color:#8a8f96; }

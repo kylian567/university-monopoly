@@ -408,9 +408,9 @@ section(9, 'v5.11：换届只在轮次刚开始触发 / 每次立项都有刷新
   ok(opened && r4.players.every(p => p.hexRefreshLeft === 1),
     '④ 立项开启时全员刷新机会重置为 1（每次立项一次）');
 
-  // ⑤ 第 4/5/6 次抽取银金彩概率 40/30/30
-  ok(G.HEX_TIER_P.slice(3).every(p => p[0] === 0.4 && p[1] === 0.3 && p[2] === 0.3),
-    '⑤ 第 4/5/6 次概率 = 40/30/30');
+  // ⑤ 第 4/5/6 次抽取银金彩概率（v5.13：全面降彩升银）
+  ok(G.HEX_TIER_P.slice(3).every(p => p[0] === 0.50 && p[1] === 0.34 && p[2] === 0.16),
+    '⑤ 第 4/5/6 次概率 = 50/34/16（v5.13 降彩升银）');
 
   // ⑥ 全局削弱抽查
   ok(G.PROJECTS.seize.pct === 0.11 && G.PROJECTS.seize.amt === 3200, '⑥ 强取豪夺 11%/3200');
@@ -437,6 +437,70 @@ section(9, 'v5.11：换届只在轮次刚开始触发 / 每次立项都有刷新
   const bad = Object.keys(gd).filter(k => cd[k] === undefined || nums(gd[k]) !== nums(cd[k]));
   ok(Object.keys(gd).length === 60 && Object.keys(cd).length === 60 && bad.length === 0,
     `⑦ MAJORS 镜像 60 个专业 desc 数值一致${bad.length ? '，不一致：' + bad.join('/') : ''}`);
+}
+
+// ================= [10] v5.13：海克斯平衡（限次机制 / 降彩升银 / 描述校准） =================
+section(10, 'v5.13：海克斯限次（合约期）/ 抽取降彩升银 / 描述校准');
+{
+  // ① 六次概率全面「降彩升银」且各行归一
+  const P = G.HEX_TIER_P;
+  const silver0 = [0.70, 0.40, 0.30, 0.40, 0.40, 0.40], prism0 = [0.10, 0.20, 0.30, 0.30, 0.30, 0.30];
+  ok(P.length === 6 && P.every(r => Math.abs(r[0] + r[1] + r[2] - 1) < 1e-9), '① 六次概率各自归一');
+  ok(P.every((r, i) => r[0] > silver0[i] && r[2] < prism0[i]), '① 每一次都是「银上调、彩下调」');
+  ok(Math.abs(P[0][0] - 0.80) < 1e-9 && Math.abs(P[1][0] - 0.52) < 1e-9 && Math.abs(P[2][0] - 0.44) < 1e-9
+    && P.slice(3).every(r => Math.abs(r[0] - 0.50) < 1e-9 && Math.abs(r[1] - 0.34) < 1e-9 && Math.abs(r[2] - 0.16) < 1e-9),
+    '① 概率表 = 80/16/4 · 52/36/12 · 44/38/18 · 50/34/16 ×3');
+  const avg = P.reduce((a, r) => [a[0] + r[0], a[1] + r[1], a[2] + r[2]], [0, 0, 0]).map(v => v / 6);
+  ok(avg[0] > 0.52 && avg[2] < 0.15,
+    `① 六次平均：银 ${(avg[0] * 100).toFixed(1)}% / 金 ${(avg[1] * 100).toFixed(1)}% / 彩 ${(avg[2] * 100).toFixed(1)}%`);
+
+  // ② charges 字段：33 个项目带合约期，desc 与 charges 一并写入
+  const charged = Object.keys(G.PROJECTS).filter(k => G.PROJECTS[k].charges);
+  ok(charged.length === 33, `② 33 个项目带合约期（实际 ${charged.length}）`);
+  ok(charged.every(k => G.PROJECTS[k].charges > 0 && /限 \d+ (轮|次)/.test(G.PROJECTS[k].desc)),
+    '② 每个限次项目 desc 都写明「限 N 轮/次」');
+
+  // ③ 每轮类限次：allowance 12 轮后 turnCash 被移除
+  const r = mkRoom(2); const a = r.players[0];
+  r.grantProject(a, 'allowance');
+  ok(a.hexLeft.allowance === 12 && a.hex.turnCash === 230, '③ 立项登记 12 次合约 + turnCash 230');
+  for (let i = 0; i < 12; i++) r.applyHexPassives(a);
+  ok(a.hexLeft.allowance === 0 && a.hex.turnCash === undefined, '③ 满 12 轮后合约到期，turnCash 修正被移除');
+
+  // ④ 收费站 / 车水马龙 按次计
+  const t = mkRoom(2); const tb = t.players[0];
+  t.grantProject(tb, 'tollbooth');
+  ok(tb.hexLeft.tollbooth === 10 && tb.hex.tollBooth === 200, '④ 收费站 10 次 + tollBooth 200');
+  for (let i = 0; i < 10; i++) t.hexSpend(tb, t.hexKeyWith(tb, 'tollBooth'));
+  ok(tb.hex.tollBooth === undefined && t.hexKeyWith(tb, 'tollBooth') === null, '④ 收费站 10 次收完即止');
+  const tk = mkRoom(2); const tc = tk.players[0]; tk.grantProject(tc, 'tollking');
+  ok(tc.hexLeft.tollking === 9 && tc.hex.tollBooth === 320 && tc.hex.tollBoothCap === 950,
+    '④ 车水马龙 9 次 + 320/950');
+
+  // ⑤ floor 取最大值聚合 + 到期重算
+  const f = mkRoom(2); const fp = f.players[0];
+  f.grantProject(fp, 'safety'); f.grantProject(fp, 'megafloor');
+  ok(fp.hex.floor === 2750, '⑤ 同时持有兜底：floor 取最大 2750（非相加）');
+  for (let i = 0; i < 12; i++) f.hexSpend(fp, 'megafloor');
+  ok(fp.hex.floor === 1800, '⑤ 终身兜底到期后 floor 回落 1800');
+
+  // ⑥ 描述校准 + 数值微调
+  ok(!/补到 ¥1650/.test(G.PROJECTS.safety.desc) && G.PROJECTS.safety.desc.includes('¥1800'),
+    '⑥ 风险兜底描述与实际一致（补足到 ¥1800）');
+  ok(G.PROJECTS.usedbook.amt === 700 && G.PROJECTS.buildcash.mods.buildCash === 160 && G.PROJECTS.buycash.mods.buyCash === 140,
+    '⑥ 二手书摊 700 / 盖房返现 160 / 拿地返现 140');
+  ok(G.PROJECTS.talisman.charges === 10, '⑥ 平安符限 10 轮');
+
+  // ⑦ 双镜像（含 charges）逐字一致
+  const g3 = fs.readFileSync(path.join(__dirname, 'game.js'), 'utf8');
+  const c3 = fs.readFileSync(path.join(__dirname, 'public/client.js'), 'utf8');
+  const sp3 = (src, a2, b2) => src.slice(src.indexOf(a2), src.indexOf(b2, src.indexOf(a2)));
+  ok(sp3(g3, 'const PROJECTS = {', 'const PROJECT_KEYS = {') === sp3(c3, 'const PROJECTS = {', 'const PROJECT_KEYS = {'),
+    '⑦ PROJECTS 双镜像（含 charges）逐字一致');
+
+  // ⑧ 快照暴露 hexLeft
+  const srv = fs.readFileSync(path.join(__dirname, 'server.js'), 'utf8');
+  ok(/hexLeft/.test(srv), '⑧ server 快照暴露 hexLeft');
 }
 
 // ================= 结果 =================

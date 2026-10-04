@@ -56,6 +56,7 @@ function snapshot(room) {
       medal: p.medal || 0, stayFree: p.stayFree || 0,
       buffSteps: p.buffSteps || 0, stepBuffs: (p.stepBuffs || []).slice(),
       hexList: (p.hexList || []).slice(),   // v5.7：已立项的研究项目（供他人查看 / 玩家卡片标签）
+      hexLeft: { ...(p.hexLeft || {}) },     // v5.13：限次项目的剩余触发次数
       hexRefreshLeft: (p.hexRefreshLeft == null) ? 1 : p.hexRefreshLeft,   // v5.10：刷新机会剩余次数
       fundBanned: !!p.fundBanned,           // v5.8：被教育基金拉黑
       fineFree: p.fineFree || 0,            // v5.8：免罚款卡张数

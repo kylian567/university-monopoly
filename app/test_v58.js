@@ -243,7 +243,7 @@ section(8, '裸地 ×1.3 / 垄断裸地 ×2 / 机场 800/1600/3500/5500（v5.9�
 section(9, '海克斯：第 30 轮第四次立项 + 全池削弱抽查 + 镜像一致');
 {
   ok(JSON.stringify(G.HEX_TRIGGERS) === JSON.stringify([2, 10, 20, 30, 40, 50]), '触发轮 [2,10,20,30,40,50]（v5.9）');
-  ok(G.HEX_TIER_P[3][0] === 0.4 && G.HEX_TIER_P[3][1] === 0.3 && G.HEX_TIER_P[3][2] === 0.3, '第 4 次概率 40/30/30（v5.11）');
+  ok(G.HEX_TIER_P[3][0] === 0.50 && G.HEX_TIER_P[3][1] === 0.34 && G.HEX_TIER_P[3][2] === 0.16, '第 4 次概率 50/34/16（v5.13 降彩升银）');
   ok(G.HEX_PICK_MS === 70000, `海克斯选择时长 70s（v5.12）`);
   ok(G.FACULTY_VOTE_MS === 60000, `风貌投票时长 60s（v5.12）`);
   ok(G.PROJECTS.stipend.mods.goCash === 270, '勤工俭学 300→270（v5.11）');

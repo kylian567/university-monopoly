@@ -32,7 +32,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 
     console.log('\n[1] 公告版本 + 运行时常量 + v5.12 标记');
     const ann = await page.evaluate(() => (document.querySelector('#intro .announce-logo') || {}).textContent || '');
-    ok(/v5\.(12|11)/.test(ann), `开局公告标题：${ann}`);
+    ok(/v5\.(13|12|11)/.test(ann), `开局公告标题：${ann}`);
     const marks = await page.evaluate(() => ({
       facMs: typeof FACULTY_VOTE_MS !== 'undefined' ? FACULTY_VOTE_MS : null,
       rotScript: !!document.documentElement.outerHTML.match(/mobileLandscape/) || typeof window.closeHexUI === 'function',
