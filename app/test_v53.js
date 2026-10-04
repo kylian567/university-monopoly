@@ -289,12 +289,12 @@ console.log('\n[3] 数据驱动通用被动：逐个 hook 验证');
     r2.doReroll(q);
     ok(q.skillLeft === s0 - 1 && q.cash === 0, '软件工程·免费重投扣 1 次技能次数、不扣现金');
   }
-  // negReroll（用「少量负面 + 大量正面」的固定卡组，保证 pick 能抽到正面对照；重复多次计数）
+  // negReroll（半负面半正面的固定卡组——单次命中 50%，40 次全不中概率 ~2^-40，CI 不再偶发漏检；重复多次计数）
   {
     const { FATE } = require('./game.js');
     const bad = FATE.find(c => mkRoom(1, ['agri']).isBadCard(c));
     const good = { name: '好运卡', desc: '固定测试卡', kind: 'money', amount: 100 };
-    const deck = [].concat(Array(4).fill(bad), Array(40).fill(good));
+    const deck = [].concat(Array(20).fill(bad), Array(20).fill(good));
     let hits = 0;
     for (let i = 0; i < 40; i++) {
       const r2 = mkRoom(1, ['edu']); const q = cur(r2);
