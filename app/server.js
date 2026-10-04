@@ -70,6 +70,8 @@ function snapshot(room) {
     })),
     incomeMul: room.incomeMul ? room.incomeMul() : 1,   // v5.8：非租金收益衰减倍率
     cells: room.cells.map((cs) => ({ ...cs })),
+    // v6.0：格子租金预览表（点击地图格子查看详情）
+    rentViews: room.cells.map((cs, i) => room.rentView(i)),
     pendingBuy: room.pendingBuy, pendingBuild: room.pendingBuild,
     pendingReroll: room.pendingReroll || null,
     pendingBranch: room.pendingBranch || null, pendingInvest: room.pendingInvest || null,

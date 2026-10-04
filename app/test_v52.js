@@ -1,5 +1,5 @@
 // test_v52.js —— 校园风貌（v5.2）引擎单测
-// 覆盖：风貌表完整性 + 客户端镜像一致性、开局投票与随机抽取、59 个风貌各自的效果与代价、
+// 覆盖：风貌表完整性 + 客户端镜像一致性、开局投票与随机抽取、60 个风貌各自的效果与代价、
 //      免费轮 / 免租轮、免停留卡、以及"全风貌无异常结算"冒烟。
 'use strict';
 const fs = require('fs');
@@ -36,7 +36,7 @@ console.log('========================================');
 // ---------------- [1] 风貌表 ----------------
 console.log('\n[1] 风貌表完整性 + 客户端镜像一致性');
 {
-  ok(FACULTY_KEYS.length === 59, `共 ${FACULTY_KEYS.length} 个校园风貌（预期 59 = 23 老 + 6 定调 + 30 娱乐）`);
+  ok(FACULTY_KEYS.length === 60, `共 ${FACULTY_KEYS.length} 个校园风貌（预期 60 = 23 老 + 6 定调 + 30 娱乐 + 1 拆迁）`);
   const bad = FACULTY_KEYS.filter(k => !FACULTY[k].name || !FACULTY[k].icon || !FACULTY[k].color || !FACULTY[k].lead || !FACULTY[k].cost);
   ok(bad.length === 0, '每个风貌都有 name / icon / color / lead(主效果) / cost(代价)');
   const dupName = FACULTY_KEYS.map(k => FACULTY[k].name).filter((v, i, a) => a.indexOf(v) !== i);
@@ -162,14 +162,14 @@ console.log('\n[9] 国际校区：岔路奖励 ×1.12 / 长廊门槛降到 1 块
 }
 
 // ---------------- [10] 文体校区 ----------------
-console.log('\n[10] 文体校区：赌注 ×1.2 / 每轮首次重投 ¥900 / 租金 ×0.96');
+console.log('\n[10] 文体校区：赌注 ×1.2 / 每轮首次重投 8 折 ¥640 / 租金 ×0.96');
 {
   const r = mkRoom(2, ['agri', 'agri'], 'sports');
   const p = cur(r);
   p.rerollUsed = false;
-  ok(r.rerollCostFor(p) === 900, `每轮首次重投 ¥${r.rerollCostFor(p)}`);
+  ok(r.rerollCostFor(p) === 640, `每轮首次重投 8 折 ¥${r.rerollCostFor(p)}（基准 ¥800）`);
   p.rerollUsed = true;
-  ok(r.rerollCostFor(p) === 1200, `本回合再次重投恢复 ¥${r.rerollCostFor(p)}`);
+  ok(r.rerollCostFor(p) === 800, `本回合再次重投恢复基准价 ¥${r.rerollCostFor(p)}`);
   ok(r.facRentMul() === 0.96, '全场租金 ×0.96');
   // 擂台赌注
   const ci = BOARD.findIndex(c => c.type === 'duel');
@@ -192,13 +192,13 @@ console.log('\n[11] 金融校区：池上限 ¥25000 / 每轮注资 ¥500 / 税�
   ok(r.fundCap() === 25000, `基金池上限 ¥${r.fundCap()}（基准 ¥${FUND_CAP}）`);
   r.fundPool = 0; r.applyFacultyRound();
   ok(r.fundPool === 500, `银行每轮自动注资 ¥${r.fundPool}`);
-  // 6 块地 / 9 级建筑：门槛 6 时税 390，门槛 5 时税 610
+  // v6.0 分档税：6 块地 / 9 级建筑，门槛 6（金融降为 5）→ 每栋 ¥130，5 栋起征 = ¥650
   const p = cur(r); p.cash = 30000;
   BOARD.map((c, i) => i).filter(i => BOARD[i].type === 'prop').slice(0, 6)
     .forEach((i, k) => { r.cells[i].own = p.id; r.cells[i].level = k < 3 ? 2 : 1; });
   r.round = 2; r.collectTax();
   const tax = 30000 - p.cash;
-  ok(tax === 610, `税基门槛降 1（>5 即计税）：缴税 ¥${tax}（原门槛下为 ¥390）`);
+  ok(tax === 650, `税基门槛降 1（≥5 即计税）：缴税 ¥${tax}（5 栋 × ¥130）`);
 }
 
 // ---------------- [12] 改革校区 ----------------
@@ -427,7 +427,7 @@ console.log('\n[25] 免租轮校区：随机 4 轮全场免租');
 }
 
 // ---------------- [26] 全风貌冒烟 ----------------
-console.log('\n[26] 59 个风貌全部无异常结算');
+console.log('\n[26] 60 个风貌全部无异常结算');
 {
   const errs = [];
   for (const k of FACULTY_KEYS) {
@@ -447,7 +447,7 @@ console.log('\n[26] 59 个风貌全部无异常结算');
       r.clearTimer(); r.clearAiTimers();
     } catch (e) { errs.push(k + '(' + e.message + ')'); }
   }
-  ok(errs.length === 0, `59 个风貌的关键结算路径全部无异常${errs.length ? ' —— ' + errs.join(' | ') : ''}`);
+  ok(errs.length === 0, `60 个风貌的关键结算路径全部无异常${errs.length ? ' —— ' + errs.join(' | ') : ''}`);
 }
 
 console.log('\n========================================');

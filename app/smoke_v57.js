@@ -32,7 +32,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 
     console.log('\n[1] 公告版本 + 运行时镜像');
     const ann = await page.evaluate(() => (document.querySelector('#intro .announce-logo') || {}).textContent || '');
-    ok(/v5\.(7|8|9|10|11|12|13|14)/.test(ann), `开局公告标题：${ann}`);
+    ok(/v(?:5\.(?:7|8|9|10|11|12|13|14)|6\.\d+)/.test(ann), `开局公告标题：${ann}`);
     await page.click('#btnAnnounce'); await sleep(240);
     await page.click('#btnIntro'); await sleep(240);
     await page.click('#btnRulesClose').catch(() => {});
@@ -46,8 +46,8 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
       hexSfx: ['hexRise', 'hexFlip', 'hexPick', 'hexHit', 'hexPrism'].every(k => typeof SFX[k] === 'function'),
       viewer: typeof window.openPlayerViewer,
     }));
-    ok(mir.projects === 104, `PROJECTS 镜像 ${mir.projects} 项（预期 104 = 54 + 50）`);
-    ok(mir.tiers === 3 && `${mir.silver}/${mir.gold}/${mir.prism}` === '40/35/29', `三档池 ${mir.silver}/${mir.gold}/${mir.prism}`);
+    ok(mir.projects === 105, `PROJECTS 镜像 ${mir.projects} 项（v6.0 新增棱彩「攻守互换」= 105）`);
+    ok(mir.tiers === 3 && `${mir.silver}/${mir.gold}/${mir.prism}` === '40/35/30', `三档项目数 ${mir.silver}/${mir.gold}/${mir.prism}（v6.0 彩档 +1「攻守互换」；抽取概率 43/32/25 见 test_v60）`);
     ok(mir.charged === 34, `限次（合约期）项目 ${mir.charged} 个（v5.14 预期 34）`);
     ok(mir.hexSfx, '5 个海克斯音效已挂载');
     ok(mir.viewer === 'function', 'openPlayerViewer 已挂到 window');
@@ -117,13 +117,22 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
     await shot('01-hex-pick.png');
 
     console.log('\n[3] 点卡立项 → 结算横幅 → 回到 roll');
-    await page.evaluate(() => { const c = document.querySelector('.hx-card'); if (c) c.click(); });
+    // v6.0：存活玩家「选完即直接进入下一步」（不再空等计时）——若 AI 已先选完，
+    // 服务端会在点击后立刻结算并关闭浮层，故必须在同一个 evaluate 里同步读取点击瞬间的 DOM。
+    const picked = await page.evaluate(() => {
+      const c = document.querySelector('.hx-card');
+      if (!c) return { clicked: false };
+      const key = c.dataset.key;
+      c.click();
+      return {
+        clicked: true, key,
+        pickedNow: c.classList.contains('picked'),
+        waitingNow: !!document.querySelector('.hx-layer.waiting'),
+      };
+    });
+    ok(picked.clicked && picked.pickedNow && picked.waitingNow,
+      `点卡即锁定并转入等待/结算（key=${picked.key}）`);
     await sleep(900);
-    const picked = await page.evaluate(() => ({
-      picked: document.querySelectorAll('.hx-card.picked').length,
-      waiting: !!document.querySelector('.hx-layer.waiting'),
-    }));
-    ok(picked.picked === 1 && picked.waiting, '点卡后锁定 + 进入等待其他玩家');
     // 等 AI 补选 + 结算（grants 播横幅、浮层关闭）
     t0 = Date.now();
     let granted = 0;

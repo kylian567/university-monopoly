@@ -1,6 +1,6 @@
 'use strict';
 // v5.0 机制单测：大学主题数据 / 地图扩容 / 岔路出口收益 / 经济与人数
-const { Room, BOARD, GROUPS, MAJORS, MAJOR_KEYS, FUND_CAP, ENDGAME_ROUND, REROLL_COST, BRANCH, BRANCH2 } = require('./game');
+const { Room, BOARD, GROUPS, MAJORS, MAJOR_KEYS, FUND_CAP, ENDGAME_ROUND, REROLL_COST, START_CASH, BRANCH, BRANCH2 } = require('./game');
 
 let pass = 0, fail = 0;
 const ok = (cond, name) => { if (cond) { pass++; console.log('  ✓ ' + name); } else { fail++; console.error('  ✗ ' + name); } };
@@ -107,7 +107,7 @@ console.log('\n[5] 经济与人数调整');
 {
   const r = mkRoom();
   // v5.1：免罚符分段价整体再降一档（1~8 轮 / 9~20 轮 / 21 轮起）
-  const shieldAt = rn => { const n = Math.max(1, rn); return n <= 8 ? 260 + 55 * n : (n <= 20 ? 700 + 110 * (n - 8) : 2020 + 150 * (n - 20)); };
+  const shieldAt = rn => { const n = Math.max(1, rn); return n <= 8 ? 200 + 45 * n : (n <= 20 ? 560 + 90 * (n - 8) : 1640 + 120 * (n - 20)); };
   ok(r.shieldCost() === shieldAt(r.round), `免罚符分段价 = ¥${r.shieldCost()}`);
   const p0 = cur(r);
   p0.cash = 50000; r.phase = 'roll'; r.fundPool = 0;
@@ -173,7 +173,7 @@ console.log('\n[7] 既有机制回归');
   const p0 = cur(r2);
   p0.pos = 28; r2.fundPool = 5000; r2.phase = 'resolving';
   r2.resolveCell(p0);
-  ok(p0.cash === 35000 && r2.fundPool === 0, '踩教育基金会（28 号）领走全池');
+  ok(p0.cash === START_CASH + 5000 && r2.fundPool === 0, `踩教育基金会（28 号）领走全池（${START_CASH}+5000）`);
   ok(ENDGAME_ROUND === 15 && r2.salaryOn() === true, '经济寒冬仍设在第 15 轮');
   // 长廊门槛 2 块地皮
   ok(BRANCH.NEED === 2, `学术长廊门槛 = ${BRANCH.NEED} 块地皮`);

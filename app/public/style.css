@@ -382,7 +382,13 @@ body {
 .major-btn:hover { transform:translateY(-1px); border-color:#c9a05a; }
 .major-btn.sel { border-color:#7a1522; background:linear-gradient(180deg,#fdeef0,#f7dde1); box-shadow:0 0 0 3px rgba(122,21,34,.14), 0 2px 0 #d8b8bd; }
 .major-btn .mj-name { font-size:13px; font-weight:700; color:#3a3630; }
-.major-btn .mj-skill { font-size:10.5px; color:#8a847a; line-height:1.28; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.major-btn .mj-skill { font-size:10.5px; color:#8a847a; line-height:1.3; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+/* v6.0：专业介绍补全 —— 档位 / 主动被动 / 触发方式 */
+.major-btn .mj-tier { font-style:normal; margin-left:5px; font-size:9.5px; color:#d9a83c; letter-spacing:.5px; }
+.major-btn .mj-mode { font-style:normal; margin-left:4px; font-size:9px; font-weight:800; padding:0 5px; border-radius:7px; vertical-align:1px; color:#fff; }
+.major-btn .mj-mode.act { background:#c0564a; }
+.major-btn .mj-mode.pas { background:#4f8fb0; }
+.major-btn .mj-use { color:#a89c88; }
 .major-hint { font-size:12px; color:#9a938a; min-height:16px; margin-bottom:8px; }
 /* v5.3：专业搜索框（专业列表本身保持 v5.2 之前的平铺样式不变） */
 .major-search { width:100%; box-sizing:border-box; margin:6px 0 8px; padding:7px 11px; font-size:12.5px;
@@ -1174,3 +1180,99 @@ body.rotmode .hxp-assets { max-height:36%; }
 /* v5.14：合约剩余量用独立小胶囊标出（轮 / 次通用），临近到期变为琥珀色提示 */
 .hxp-chip .hxp-left { font-size:10.5px; font-weight:800; letter-spacing:0; opacity:.85; }
 .hxp-chip.near-end { border-color:#e0a23c; box-shadow:0 0 0 1px rgba(224,162,60,.35) inset; }
+
+
+/* ============================================================
+   v6.0 新增样式
+   ============================================================ */
+
+/* ---------- ① 点击地图格子：租金详情面板 ---------- */
+.rc-detail .rc-panel { width:min(94vw,520px); }
+.rc-sec { margin:12px 0 6px; font-size:11.5px; font-weight:800; letter-spacing:1px; color:#a89c88; }
+.rc-tbl { border-radius:12px; overflow:hidden; border:1px solid #e7dcc2; background:rgba(255,253,244,.9); }
+.rc-row { display:flex; align-items:center; justify-content:space-between; padding:6px 12px; font-size:13px; border-bottom:1px dashed #eee1c4; }
+.rc-row:last-child { border-bottom:none; }
+.rc-row .rc-l { color:#6a6252; }
+.rc-row .rc-v { font-weight:900; color:#7a1522; font-variant-numeric:tabular-nums; }
+.rc-row.on { background:rgba(232,176,75,.16); }
+.rc-row.on .rc-l { font-weight:800; color:#8a6d1a; }
+.rc-now { display:flex; align-items:center; justify-content:space-between; padding:10px 14px; border-radius:12px;
+  background:linear-gradient(90deg, rgba(232,176,75,.22), rgba(192,57,43,.16)); border:2px solid #e8b04b; }
+.rc-now span { font-size:12.5px; color:#7a5a2a; }
+.rc-now b { font-size:22px; font-weight:900; color:#c0392b; font-variant-numeric:tabular-nums; }
+.rc-none { display:block; padding:10px 14px; border-radius:12px; background:rgba(150,140,120,.12);
+  font-size:12.5px; color:#8a847a; text-align:center; }
+
+/* ---------- ② 三张候选风貌卡：炫酷科技 / 古风美术 / 清新学术 ---------- */
+.fv-card .c-style-tag { position:absolute; top:8px; right:9px; font-size:9.5px; font-weight:800; letter-spacing:1px;
+  padding:2px 7px; border-radius:8px; background:rgba(0,0,0,.18); color:#fff; z-index:3; }
+.fv-card > i { position:absolute; pointer-events:none; }
+
+/* st0 · 炫酷科技风 —— 深色底 + 青蓝网格 + 扫描线 + 四角括号 */
+.fv-card.st0 { background:linear-gradient(160deg,#0d1b2a,#132a43 55%,#0a1622); border:2px solid #35e0d6;
+  box-shadow:0 12px 30px rgba(4,20,34,.55), inset 0 0 26px rgba(53,224,214,.16), 0 0 0 1px rgba(53,224,214,.28); }
+.fv-card.st0 .c-grid { inset:0; border-radius:16px; opacity:.5;
+  background-image:linear-gradient(rgba(53,224,214,.16) 1px,transparent 1px),linear-gradient(90deg,rgba(53,224,214,.16) 1px,transparent 1px);
+  background-size:22px 22px; }
+.fv-card.st0 .c-scan { left:0; right:0; top:0; height:34%; border-radius:16px;
+  background:linear-gradient(180deg, rgba(53,224,214,.34), rgba(53,224,214,0)); animation:rcScan 2.6s ease-in-out infinite; }
+@keyframes rcScan { 0%{transform:translateY(-40%);opacity:0;} 30%{opacity:1;} 100%{transform:translateY(210%);opacity:0;} }
+.fv-card.st0 .c-corner { width:16px; height:16px; border:2px solid #35e0d6; opacity:.9; }
+.fv-card.st0 .c-corner.tl { top:7px; left:7px; border-right:none; border-bottom:none; }
+.fv-card.st0 .c-corner.tr { top:7px; right:7px; border-left:none; border-bottom:none; }
+.fv-card.st0 .c-corner.bl { bottom:7px; left:7px; border-right:none; border-top:none; }
+.fv-card.st0 .c-corner.br { bottom:7px; right:7px; border-left:none; border-top:none; }
+.fv-card.st0 .fv-name { color:#e8fdff; text-shadow:0 0 14px rgba(53,224,214,.7); }
+.fv-card.st0 .fv-ico { filter:drop-shadow(0 0 12px rgba(53,224,214,.85)); }
+.fv-card.st0 .fv-line { background:rgba(53,224,214,.12); color:#b8f2ee; }
+.fv-card.st0 .fv-line.cost { background:rgba(255,110,110,.14); color:#ffc4c4; }
+.fv-card.st0 .fv-tag { background:#0f9c96; }
+.fv-card.st0 .fv-tag.bad { background:#c0494a; }
+.fv-card.st0 .fv-tagline { color:#7fbcc4; }
+.fv-card.st0 .fv-chip { background:rgba(53,224,214,.2); color:#d6fbf8; }
+.fv-card.st0 .fv-chip.me { background:#35e0d6; color:#062631; }
+.fv-card.st0 .fv-picked { color:#5ff2e6; }
+.fv-card.st0 .c-style-tag { background:rgba(53,224,214,.28); color:#c9fffb; }
+
+/* st1 · 古风美术风 —— 宣纸底 + 墨线 + 朱印 + 楷体 */
+.fv-card.st1 { background:linear-gradient(170deg,#fbf3df,#f3e6c8 60%,#eadcbb); border:2px solid #8d6e4a;
+  box-shadow:0 12px 28px rgba(90,64,30,.32), inset 0 0 30px rgba(180,150,100,.2); }
+.fv-card.st1 .c-paper { inset:6px; border-radius:14px; border:1px solid rgba(141,110,74,.45);
+  background:radial-gradient(circle at 30% 20%, rgba(255,255,255,.55), rgba(255,255,255,0) 60%); }
+.fv-card.st1 .c-ink { left:0; right:0; bottom:0; height:52%; border-radius:16px; opacity:.14;
+  background:radial-gradient(ellipse at 50% 120%, #7a5a30, transparent 70%); }
+.fv-card.st1 .c-seal { top:8px; right:10px; width:30px; height:30px; border-radius:6px; background:#b23b2e; color:#fff;
+  font-family:STKaiti,KaiTi,serif; font-size:16px; font-weight:900; line-height:30px; text-align:center;
+  transform:rotate(-8deg); box-shadow:0 2px 6px rgba(120,30,20,.4); z-index:3; }
+.fv-card.st1 .fv-name { color:#4a3520; font-family:STKaiti,KaiTi,'Songti SC',serif; letter-spacing:2px; }
+.fv-card.st1 .fv-line { background:rgba(141,110,74,.12); color:#5a4a2e; }
+.fv-card.st1 .fv-line.cost { background:rgba(178,59,46,.12); color:#8c3a2e; }
+.fv-card.st1 .fv-tag { background:#7a8c4a; }
+.fv-card.st1 .fv-tag.bad { background:#b23b2e; }
+.fv-card.st1 .fv-tagline { color:#9c8b6a; font-family:STKaiti,KaiTi,serif; }
+.fv-card.st1 .c-style-tag { background:rgba(141,110,74,.75); }
+.fv-card.st1 .fv-chip.me { background:#b23b2e; }
+.fv-card.st1 .fv-picked { color:#8a6d1a; }
+
+/* st2 · 清新学术风 —— 纸白 + 松绿 + 叶脉 + 内衬横线 */
+.fv-card.st2 { background:linear-gradient(170deg,#ffffff,#f2f8ee 60%,#e6f2e0); border:2px solid #4fa06b;
+  box-shadow:0 12px 26px rgba(40,90,55,.24), inset 0 2px 0 rgba(255,255,255,.96); }
+.fv-card.st2 .c-rule { inset:8px 8px auto 8px; height:calc(100% - 16px); border-radius:12px;
+  background-image:repeating-linear-gradient(180deg, rgba(79,160,107,.13) 0 1px, transparent 1px 20px); }
+.fv-card.st2 .c-leaf { top:9px; left:10px; width:22px; height:22px; border-radius:50% 0 50% 0; background:#7cc79a; opacity:.75;
+  transform:rotate(-14deg); }
+.fv-card.st2 .c-leaf.b { top:auto; bottom:9px; left:auto; right:10px; transform:rotate(166deg); opacity:.55; }
+.fv-card.st2 .fv-name { color:#2c5a3c; }
+.fv-card.st2 .fv-line { background:rgba(79,160,107,.13); color:#33684a; }
+.fv-card.st2 .fv-line.cost { background:rgba(200,90,70,.12); color:#8c3a2e; }
+.fv-card.st2 .fv-tag { background:#3f8f5a; }
+.fv-card.st2 .c-style-tag { background:rgba(79,160,107,.82); }
+
+/* 抽取动画增强：命中的卡牌加一圈旋转光环 */
+.fv-card.lucky::after { content:''; position:absolute; inset:-10px; border-radius:24px; pointer-events:none;
+  border:3px dashed rgba(255,215,106,.9); animation:rcOrbit 3.2s linear infinite; }
+@keyframes rcOrbit { to { transform:rotate(360deg); } }
+
+/* ---------- ③ 免罚符 / 重投价格提示（规则浮层内） ---------- */
+.reroll-hint { font-size:12px; color:#9a938a; margin-top:6px; line-height:1.5; }
+.reroll-hint b { color:#7a1522; }

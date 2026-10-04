@@ -19,9 +19,9 @@ function mkRoom(n = 2, opts) {
 const unownedProp = r => G.BOARD.findIndex((c, i) => c.type === 'prop' && r.cells[i].own === null);
 
 // ================= [1] 表完整性与镜像 =================
-section(1, '城邦 59 / 海克斯 104 / 镜像一致 / 提前触发表');
+section(1, '城邦 60 / 海克斯 105 / 镜像一致 / 提前触发表');
 {
-  ok(G.FACULTY_KEYS.length === 59, `城邦共 ${G.FACULTY_KEYS.length} 个（预期 59）`);
+  ok(G.FACULTY_KEYS.length === 60, `城邦共 ${G.FACULTY_KEYS.length} 个（预期 60 = 59 + 新增「拆迁校区」）`);
   const themes = G.FACULTY_KEYS.filter(k => G.FACULTY[k].hexTheme);
   ok(themes.length === 6 && themes.every(k => JSON.stringify(G.FACULTY[k].terms) === '[1,1]'),
     `海克斯定调六城 ${themes.join('/')}，terms 全为 [1,1]`);
@@ -29,9 +29,9 @@ section(1, '城邦 59 / 海克斯 104 / 镜像一致 / 提前触发表');
   const cnt = { silver: 0, gold: 0, prism: 0 };
   for (const k in G.PROJECTS) cnt[G.PROJECTS[k].tier]++;
   const total = Object.keys(G.PROJECTS).length;
-  ok(total === 104 && cnt.silver === 40 && cnt.gold === 35 && cnt.prism === 29,
+  ok(total === 105 && cnt.silver === 40 && cnt.gold === 35 && cnt.prism === 30,
     `海克斯共 ${total} 个（银 ${cnt.silver} / 金 ${cnt.gold} / 彩 ${cnt.prism}）`);
-  ok(JSON.stringify(G.HEX_TRIGGERS_EARLY) === JSON.stringify([2, 5, 10, 20, 32, 40]), 'HEX_TRIGGERS_EARLY = 2/5/10/20/32/40');
+  ok(JSON.stringify(G.HEX_TRIGGERS_EARLY) === JSON.stringify([2, 5, 10, 16, 20, 25, 32, 36, 40, 46, 50]), 'HEX_TRIGGERS_EARLY v6.0 = 2/5/10/16/20/25/32/36/40/46/50');
   // 客户端镜像逐字一致
   const game = fs.readFileSync(path.join(__dirname, 'game.js'), 'utf8');
   const cli = fs.readFileSync(path.join(__dirname, 'public/client.js'), 'utf8');
@@ -241,7 +241,7 @@ section(6, '新钩子：挂科保险 / 报税减免 / 赎回优惠 / 拍卖慧�
     const before = a.cash;
     r.collectTax();
     const paid = before - a.cash;
-    ok(paid === 264, `物业税 (2×130+2×90)=440 → 40% 减免后 264（实际 ${paid}）`);
+    ok(paid === 234, `物业税 8 栋 ×¥130 = 390 → 40% 减免后 234（实际 ${paid}）`);
   }
   // 赎回优惠
   {
@@ -412,15 +412,15 @@ section(9, 'v5.11：换届只在轮次刚开始触发 / 每次立项都有刷新
   ok(opened && r4.players.every(p => p.hexRefreshLeft === 1),
     '④ 立项开启时全员刷新机会重置为 1（每次立项一次）');
 
-  // ⑤ 第 4/5/6 次抽取银金彩概率（v5.13：全面降彩升银）
-  ok(G.HEX_TIER_P.slice(3).every(p => p[0] === 0.46 && p[1] === 0.32 && p[2] === 0.22),
-    '⑤ 第 4/5/6 次概率 = 46/32/22（v5.14 彩卡上调）');
+  // ⑤ v6.0：所有立项统一一行概率（不再按「第几次」分档）
+  ok(G.HEX_TIER_P.length === 1 && G.HEX_TIER_P[0][0] === 0.43 && G.HEX_TIER_P[0][1] === 0.32 && G.HEX_TIER_P[0][2] === 0.25,
+    '⑤ v6.0：所有立项统一 银 43 / 金 32 / 彩 25');
 
   // ⑥ 全局削弱抽查
-  ok(G.PROJECTS.seize.pct === 0.11 && G.PROJECTS.seize.amt === 3200, '⑥ 强取豪夺 11%/3200');
+  ok(G.PROJECTS.seize.pct === 0.12 && G.PROJECTS.seize.amt === 3600, '⑥ v6.0 彩卡增强：强取豪夺 12%/3600');
   ok(G.PROJECTS.stipend.mods.goCash === 320, '⑥ 勤工俭学 320（v5.14 合约补偿）');
-  ok(G.PROJECTS.nirvana.mods.nirvanaCash === 5500 && G.PROJECTS.phoenix2.mods.nirvanaCash === 4600,
-    '⑥ 涅槃 5500 / 浴火重生 4600（复活金额入表）');
+  ok(G.PROJECTS.nirvana.mods.nirvanaCash === 6000 && G.PROJECTS.phoenix2.mods.nirvanaCash === 5200,
+    '⑥ v6.0：涅槃 6000 / 浴火重生 5200（复活金额入表）');
   ok(G.MAJORS.mech.desc.includes('+¥1350'), '⑥ 机械 精益制造 1350');
   ok(G.MAJORS.agri.desc.includes('+¥1350') && G.MAJORS.ee.desc.includes('+¥1250'), '⑥ 农学 1350 / 微电子 1250');
 
@@ -448,16 +448,9 @@ section(10, 'v5.13：海克斯限次（合约期）/ 抽取降彩升银 / 描述
 {
   // ① 六次概率全面「降彩升银」且各行归一
   const P = G.HEX_TIER_P;
-  const prism13 = [0.04, 0.12, 0.18, 0.16, 0.16, 0.16];
-  ok(P.length === 6 && P.every(r => Math.abs(r[0] + r[1] + r[2] - 1) < 1e-9), '① 六次概率各自归一');
-  ok(P.every((r, i) => r[2] > prism13[i]), '① 每一次的彩（国家级）概率都高于 v5.13（本轮上调彩色）');
-  ok(P.every(r => r[0] > r[1] && r[0] > r[2]), '① 每一次银（校级）依旧为单次最大盘');
-  ok(Math.abs(P[0][2] - 0.08) < 1e-9 && Math.abs(P[1][2] - 0.18) < 1e-9 && Math.abs(P[2][2] - 0.24) < 1e-9
-    && P.slice(3).every(r => Math.abs(r[0] - 0.46) < 1e-9 && Math.abs(r[1] - 0.32) < 1e-9 && Math.abs(r[2] - 0.22) < 1e-9),
-    '① 概率表 = 80/12/8 · 50/32/18 · 42/34/24 · 46/32/22 ×3');
-  const avg = P.reduce((a, r) => [a[0] + r[0], a[1] + r[1], a[2] + r[2]], [0, 0, 0]).map(v => v / 6);
-  ok(avg[2] > 0.185 && avg[2] < 0.20 && avg[0] > 0.50,
-    `① 六次平均：银 ${(avg[0] * 100).toFixed(1)}% / 金 ${(avg[1] * 100).toFixed(1)}% / 彩 ${(avg[2] * 100).toFixed(1)}%（目标彩 ≈19%）`);
+  ok(P.length === 1 && P.every(r => Math.abs(r[0] + r[1] + r[2] - 1) < 1e-9), '① v6.0：统一一行概率且归一');
+  ok(P[0][0] === 0.43 && P[0][1] === 0.32 && P[0][2] === 0.25, '① 概率表 = 银 43 / 金 32 / 彩 25（全时段一致）');
+  ok(P[0][0] > P[0][1] && P[0][1] > P[0][2], '① 银 > 金 > 彩（校级仍为单次最大盘）');
 
   // ② charges 字段：34 个项目带合约期，desc 与 charges 一并写入
   const charged = Object.keys(G.PROJECTS).filter(k => G.PROJECTS[k].charges);
@@ -479,22 +472,22 @@ section(10, 'v5.13：海克斯限次（合约期）/ 抽取降彩升银 / 描述
   // ④ 收费站 / 车水马龙 按次计
   const t = mkRoom(2); const tb = t.players[0];
   t.grantProject(tb, 'tollbooth');
-  ok(tb.hexLeft.tollbooth === 12 && tb.hex.tollBooth === 230 && tb.hex.tollBoothCap === 780,
-    '④ 收费站 12 次 + tollBooth 230（封顶 780 已入表，与描述一致）');
+  ok(tb.hexLeft.tollbooth === 12 && tb.hex.tollBooth === 260 && tb.hex.tollBoothCap === 880,
+    '④ 收费站 12 次 + tollBooth 260（v6.0 封顶 880）');
   for (let i = 0; i < 12; i++) t.hexSpend(tb, t.hexKeyWith(tb, 'tollBooth'));
   ok(tb.hex.tollBooth === undefined && t.hexKeyWith(tb, 'tollBooth') === null, '④ 收费站 12 次收完即止');
   const tk = mkRoom(2); const tc = tk.players[0]; tk.grantProject(tc, 'tollking');
-  ok(tc.hexLeft.tollking === 12 && tc.hex.tollBooth === 350 && tc.hex.tollBoothCap === 1050 && tc.hex.rentFlat === 100,
-    '④ 车水马龙 12 次 + 350/1050 + 收租 +100');
+  ok(tc.hexLeft.tollking === 12 && tc.hex.tollBooth === 390 && tc.hex.tollBoothCap === 1180 && tc.hex.rentFlat === 120,
+    '④ v6.0 车水马龙 12 次 + 390/1180 + 收租 +120');
 
   // ⑤ floor 取最大值聚合 + 到期重算
   const f = mkRoom(2); const fp = f.players[0];
   const fc0 = fp.cash;
   f.grantProject(fp, 'safety'); f.grantProject(fp, 'megafloor');
   f.recomputeMaxMods(fp);
-  ok(fp.hex.floor === 3000, '⑤ 同时持有兜底：floor 取最大 3000（非相加，v5.14 提线）');
+  ok(fp.hex.floor === 3400, '⑤ 同时持有兜底：floor 取最大 3400（非相加，v6.0 提线）');
   for (let i = 0; i < 16; i++) f.hexSpend(fp, 'megafloor');
-  ok(fp.hex.floor === 2000, '⑤ 终身兜底到期后 floor 回落 2000（风险兜底线）');
+  ok(fp.hex.floor === 2400, '⑤ 终身兜底到期后 floor 回落 2400（风险兜底线）');
   ok(fp.cash - fc0 === G.EXPIRY_STIPEND.prism, `⑤ 终身兜底（彩）到期发结项经费 ¥${G.EXPIRY_STIPEND.prism}`);
   for (let i = 0; i < 16; i++) f.hexSpend(fp, 'safety');
   ok(fp.hex.floor === undefined, '⑤ 风险兜底也到期后 floor 消失');
@@ -509,15 +502,15 @@ section(10, 'v5.13：海克斯限次（合约期）/ 抽取降彩升银 / 描述
     `⑤ 金级「科研津贴」14 轮到期：14×¥480 + 结项经费 ¥${G.EXPIRY_STIPEND.gold}`);
 
   // ⑥ 描述校准 + 数值微调
-  ok(!/补到 ¥1650/.test(G.PROJECTS.safety.desc) && G.PROJECTS.safety.desc.includes('¥2000')
-    && G.PROJECTS.megafloor.desc.includes('¥3000'),
-    '⑥ 风险兜底 / 终身兜底描述与实际一致（¥2000 / ¥3000）');
+  ok(!/补到 ¥1650/.test(G.PROJECTS.safety.desc) && G.PROJECTS.safety.desc.includes('¥2400')
+    && G.PROJECTS.megafloor.desc.includes('¥3400'),
+    '⑥ v6.0：风险兜底 / 终身兜底描述与实际一致（¥2400 / ¥3400）');
   ok(G.PROJECTS.usedbook.amt === 700 && G.PROJECTS.buildcash.mods.buildCash === 160 && G.PROJECTS.buycash.mods.buyCash === 140,
     '⑥ 二手书摊 700 / 盖房返现 160 / 拿地返现 140');
-  ok(G.PROJECTS.talisman.charges === 12, '⑥ 平安符限 12 轮（v5.14 合约延长）');
-  ok(G.PROJECTS.tollbooth.mods.tollBoothCap === 780 && /¥780/.test(G.PROJECTS.tollbooth.desc)
-    && G.PROJECTS.dividends.mods.fundKickCap === 400 && /¥400/.test(G.PROJECTS.dividends.desc),
-    '⑥ 收费站 / 基金抽成补齐真实封顶值，描述与结算一致');
+  ok(G.PROJECTS.talisman.charges === 5 && G.PROJECTS.talisman.mods.shieldCut === 0.30, '⑥ v6.0：平安符改为免罚符 7 折、限 5 轮');
+  ok(G.PROJECTS.tollbooth.mods.tollBoothCap === 880 && /¥880/.test(G.PROJECTS.tollbooth.desc)
+    && G.PROJECTS.dividends.mods.fundKickCap === 450 && /¥450/.test(G.PROJECTS.dividends.desc),
+    '⑥ v6.0：收费站 880 / 基金抽成 450 封顶，描述与结算一致');
 
   // ⑦ 双镜像（含 charges）逐字一致
   const g3 = fs.readFileSync(path.join(__dirname, 'game.js'), 'utf8');
@@ -535,8 +528,8 @@ section(10, 'v5.13：海克斯限次（合约期）/ 抽取降彩升银 / 描述
 section(11, 'v5.14：海克斯合约再平衡（数值 + 机制）/ 彩卡上调 / 第 32 轮第四次 / 手机竖屏与公告常驻按钮');
 {
   // ① 第四次立项改到第 32 轮
-  ok(JSON.stringify(G.HEX_TRIGGERS) === JSON.stringify([2, 10, 20, 32, 40, 50]),
-    '① 触发轮 = 2/10/20/32/40/50（第 4 次 30 → 32）');
+  ok(JSON.stringify(G.HEX_TRIGGERS) === JSON.stringify([2, 10, 16, 20, 25, 32, 36, 40, 46, 50, 60, 70, 80, 90, 100, 110, 120]),
+    '① v6.0 触发轮 = 2/10/16/20/25/32/36/40/46/50 + 每 10 轮（60~120）');
   const rr = mkRoom(2);
   rr.round = 30; rr.hexDoneRounds = [];
   rr.phase = 'roll'; rr.project = null; rr.clearTimer(); rr.clearAiTimers();
@@ -592,8 +585,8 @@ section(11, 'v5.14：海克斯合约再平衡（数值 + 机制）/ 彩卡上调
   ok(expEv && expEv.key === 'headstart' && expEv.stipend === 1300, '⑤ hex_expire 事件带上 stipend=1300（供前端播报）');
 
   // ⑥ 双倍工资不再是一张「停薪后即死」的卡
-  ok(G.PROJECTS.salaryx2.mods.salaryX2 === 1 && G.PROJECTS.salaryx2.mods.goCash === 700 && G.PROJECTS.salaryx2.charges === 12,
-    '⑥ 双倍工资 = 工资 ×2 + 过起点 +¥700（限 12 次）——停薪后仍有价值');
+  ok(G.PROJECTS.salaryx2.mods.salaryX2 === 1 && G.PROJECTS.salaryx2.mods.goCash === 800 && G.PROJECTS.salaryx2.charges === 12,
+    '⑥ v6.0：双倍工资 = 工资 ×2 + 过起点 +¥800（限 12 次）');
   const wd = mkRoom(2, { hex: true });
   wd.round = 20; wd.hexDoneRounds = [];   // 20 轮在触发表内，且已在停薪线（15 轮）之后
   wd.maybeProject(); wd.clearTimer(); wd.clearAiTimers();

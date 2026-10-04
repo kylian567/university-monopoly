@@ -134,7 +134,7 @@ section(4, '重投：连用两回合，第三回合锁定');
 // ================= [5] 效果卡池重做 =================
 section(5, '效果卡池：9 张新池（无免租券/免罚符）+ 盲盒 1/2/3 张 50/30/20');
 {
-  ok(G.EFFECT_CARDS.length === 9, `池 9 张（实际 ${G.EFFECT_CARDS.length}）`);
+  ok(G.EFFECT_CARDS.length === 10, `池 10 张（v6.0 新增万能卡，实际 ${G.EFFECT_CARDS.length}）`);
   ok(!G.EFFECT_CARDS.some(c => c.id === 'voucher') && !G.EFFECT_CARDS.some(c => c.id === 'shield'), '免租券 / 免罚符已移出卡池');
   ok(G.EFFECT_CARDS.some(c => c.id === 'buildcut') && G.EFFECT_CARDS.some(c => c.id === 'finefree') && G.EFFECT_CARDS.some(c => c.id === 'steal') && G.EFFECT_CARDS.some(c => c.id === 'stayfree'), '新增 盖房9折 / 免罚款 / 偷师 / 免停留');
   const r = mkRoom();
@@ -242,14 +242,14 @@ section(8, '裸地 ×1.3 / 垄断裸地 ×2 / 机场 800/1600/3500/5500（v5.9�
 // ================= [9] 海克斯：第 4 次触发 + 削弱抽查 =================
 section(9, '海克斯：第 32 轮第四次立项 + 全池削弱抽查 + 镜像一致');
 {
-  ok(JSON.stringify(G.HEX_TRIGGERS) === JSON.stringify([2, 10, 20, 32, 40, 50]), '触发轮 [2,10,20,32,40,50]（v5.14）');
-  ok(G.HEX_TIER_P[3][0] === 0.46 && G.HEX_TIER_P[3][1] === 0.32 && G.HEX_TIER_P[3][2] === 0.22, '第 4 次概率 46/32/22（v5.14 彩卡上调）');
+  ok(JSON.stringify(G.HEX_TRIGGERS) === JSON.stringify([2, 10, 16, 20, 25, 32, 36, 40, 46, 50, 60, 70, 80, 90, 100, 110, 120]), '触发轮 v6.0：2/10/16/20/25/32/36/40/46/50 + 每 10 轮（60~120）');
+  ok(G.HEX_TIER_P.length === 1 && G.HEX_TIER_P[0][0] === 0.43 && G.HEX_TIER_P[0][1] === 0.32 && G.HEX_TIER_P[0][2] === 0.25, 'v6.0：所有立项统一 43/32/25');
   ok(G.HEX_PICK_MS === 70000, `海克斯选择时长 70s（v5.12）`);
   ok(G.FACULTY_VOTE_MS === 60000, `风貌投票时长 60s（v5.12）`);
   ok(G.PROJECTS.stipend.mods.goCash === 320, '勤工俭学 320（v5.14 合约补偿）');
-  ok(G.PROJECTS.seize.pct === 0.11 && G.PROJECTS.seize.amt === 3200, '强取豪夺 12%/3500 → 11%/3200（v5.11 再削）');
-  ok(G.PROJECTS.aegis.mods.immuneCharges === 2, '绝对防御 3 → 2 次');
-  ok(G.PROJECTS.salaryx2.mods.salaryX2 === 1 && G.PROJECTS.salaryx2.mods.goCash === 700 && G.PROJECTS.salaryx2.charges === 12, '双倍工资保留 salaryX2，并补 +¥700/次（限 12 次，v5.14 救活死卡）');
+  ok(G.PROJECTS.seize.pct === 0.12 && G.PROJECTS.seize.amt === 3600, 'v6.0 彩卡增强：强取豪夺 12%/3600');
+  ok(G.PROJECTS.aegis.mods.immuneCharges === 3, 'v6.0：绝对防御 3 次（与描述一致）');
+  ok(G.PROJECTS.salaryx2.mods.salaryX2 === 1 && G.PROJECTS.salaryx2.mods.goCash === 800 && G.PROJECTS.salaryx2.charges === 12, 'v6.0：双倍工资 salaryX2 + 过起点 +¥800（限 12 次）');
   // 第 30 轮能开
   const r = mkRoom(2);
   r.round = 32; r.hexDoneRounds = [];

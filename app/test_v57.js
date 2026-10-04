@@ -52,12 +52,12 @@ section(1, 'PROJECTS / HEX_TIERS 镜像一致 + 表完整性');
     tiers[pr.tier]++;
   }
   ok(structOK, '所有项目都有 tier/icon/name/desc 且 id 唯一');
-  ok(tiers.silver === 40 && tiers.gold === 35 && tiers.prism === 29, `池子规模 银级40/金级35/彩级29（实际 ${tiers.silver}/${tiers.gold}/${tiers.prism}）`);
+  ok(tiers.silver === 40 && tiers.gold === 35 && tiers.prism === 30, `池子规模 银级40/金级35/彩级30（v6.0 新增攻守互换，实际 ${tiers.silver}/${tiers.gold}/${tiers.prism}）`);
   let keysOK = Object.values(G.PROJECT_KEYS).flat().length === Object.keys(G.PROJECTS).length;
   ok(keysOK, 'PROJECT_KEYS 三档分组完整');
   // 同档内效果幅度一致（平衡约束抽查：同名修正在不同项目里的量纲统一）
-  ok(G.HEX_TIER_P.length === 6 && G.HEX_TIER_P.every(r => Math.abs(r[0] + r[1] + r[2] - 1) < 1e-9), '六次立项档位概率各自归一（v5.13：六次全面降彩升银）');
-  ok(JSON.stringify(G.HEX_TRIGGERS) === JSON.stringify([2, 10, 20, 32, 40, 50]), '触发轮次 = 第 2 / 10 / 20 / 32 / 40 / 50 轮（v5.14：第 4 次 30→32）');
+  ok(G.HEX_TIER_P.length === 1 && G.HEX_TIER_P.every(r => Math.abs(r[0] + r[1] + r[2] - 1) < 1e-9), 'v6.0：所有立项统一一行档位概率且归一（银 43 / 金 32 / 彩 25）');
+  ok(JSON.stringify(G.HEX_TRIGGERS) === JSON.stringify([2, 10, 16, 20, 25, 32, 36, 40, 46, 50, 60, 70, 80, 90, 100, 110, 120]), '触发轮次 v6.0：2/10/16/20/25/32/36/40/46/50 + 每 10 轮（60~120）');
 }
 
 // ================= [2] maybeProject 流程与发牌 =================
@@ -99,10 +99,10 @@ section(2, '三选一开启：全员同档、选项不重复、不发已拥有�
 }
 
 // ================= [3] 档位概率分布（统计抽样） =================
-section(3, '档位概率：第 1 次银多、第 3 次彩明显增多');
+section(3, '档位概率：v6.0 所有立项统一 银 43 / 金 32 / 彩 25');
 {
   const count = { silver: 0, gold: 0, prism: 0 };
-  const N = 600;
+  const N = 900;
   for (let i = 0; i < N; i++) {
     const room = mkRoom(2);
     room.start(); room.clearTimer(); room.clearAiTimers();
@@ -110,16 +110,20 @@ section(3, '档位概率：第 1 次银多、第 3 次彩明显增多');
     count[room.project.tier]++;
     room.clearTimer(); room.clearAiTimers();
   }
-  ok(count.silver > count.gold * 3 && count.gold > count.prism * 0.9, `第 1 次立项以银为主、金仍多于彩 银=${count.silver} 金=${count.gold} 彩=${count.prism}`);
-  const cnt3 = { silver: 0, gold: 0, prism: 0 };
+  ok(count.silver > count.gold && count.gold > count.prism, `银 > 金 > 彩（银=${count.silver} 金=${count.gold} 彩=${count.prism}）`);
+  const tot = count.silver + count.gold + count.prism;
+  ok(Math.abs(count.silver / tot - 0.43) < 0.07 && Math.abs(count.gold / tot - 0.32) < 0.07 && Math.abs(count.prism / tot - 0.25) < 0.07,
+    `分布贴近 43/32/25（实得 ${(count.silver / tot * 100).toFixed(1)}/${(count.gold / tot * 100).toFixed(1)}/${(count.prism / tot * 100).toFixed(1)}）`);
+  // 第 8 次立项（第 50 轮）与第 1 次用同一行概率，长期分布应基本一致
+  const cnt8 = { silver: 0, gold: 0, prism: 0 };
   for (let i = 0; i < N; i++) {
     const room = mkRoom(2);
     room.start(); room.clearTimer(); room.clearAiTimers();
-    room.round = 20; room.maybeProject();
-    cnt3[room.project.tier]++;
+    room.round = 50; room.maybeProject();
+    cnt8[room.project.tier]++;
     room.clearTimer(); room.clearAiTimers();
   }
-  ok(cnt3.prism > count.prism * 1.9 && cnt3.silver > cnt3.prism * 1.35, `第 3 次彩占比明显高于第 1 次、且银仍多于彩 彩=${cnt3.prism}（第1次=${count.prism}）银=${cnt3.silver}`);
+  ok(cnt8.silver > cnt8.prism && Math.abs(cnt8.prism / N - count.prism / N) < 0.08, `第 50 轮立项同样走统一概率（彩 ${(cnt8.prism / N * 100).toFixed(1)}% vs 第 1 次 ${(count.prism / N * 100).toFixed(1)}%）`);
 }
 
 // ================= [4] 选择与结算闭环 =================
@@ -185,7 +189,7 @@ section(5, '效果钩子：补贴 / 返现 / 免疫 / 重投 / 双倍工资 / �
 
   // 重投：情报网打折 + 重投大师免费
   a.hex = { rerollCut: 0.25 };
-  ok(room.rerollCostFor(a) === Math.round(1200 * 0.75), '情报网：重投费用 1200→900');
+  ok(room.rerollCostFor(a) === Math.round(G.REROLL_COST * 0.75), `情报网：重投费用 ${G.REROLL_COST}→${Math.round(G.REROLL_COST * 0.75)}`);
   a.hex = { freeReroll: 1 };
   a.hexFreeUsed = false;
   a.cash = 30000;

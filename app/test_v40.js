@@ -2,7 +2,7 @@
 // v4.0 机制单测：直接驱动 Room，验证五大新机制
 // 1) 教育基金 3 万上限 + 溢出均分  2) 重掷骰付费重投  3) 江湾支线（岔路B）
 // 4) 经济寒冬（第 15 轮停发工资）  5) 教育基金会/特权商店改名与结算
-const { Room, BOARD, FUND_CAP, ENDGAME_ROUND, REROLL_COST, BRANCH, BRANCH2 } = require('./game');
+const { Room, BOARD, FUND_CAP, ENDGAME_ROUND, REROLL_COST, START_CASH, BRANCH, BRANCH2 } = require('./game');
 
 let pass = 0, fail = 0;
 const ok = (cond, name) => { if (cond) { pass++; console.log('  ✓ ' + name); } else { fail++; console.error('  ✗ ' + name); } };
@@ -42,7 +42,7 @@ console.log('\n[2] 教育基金会（28号）：走到领走全池');
   r.phase = 'resolving';
   p0.pos = 28;
   r.resolveCell(p0);
-  ok(p0.cash === 30000 + 7777, `领取全池 7777（现金 ${p0.cash}）`);
+  ok(p0.cash === START_CASH + 7777, `领取全池 7777（现金 ${p0.cash}）`);
   ok(r.fundPool === 0, '池子清零');
   ok(BOARD[28].name === '教育基金会' && BOARD[28].type === 'parking', '28 号格是「教育基金会」（与长廊入口互换）');
 }
@@ -170,10 +170,10 @@ console.log('\n[5] 经济寒冬：第 15 轮起停发工资');
       ok(BOARD.filter(c => c.type === 'transport').every(c => c.price === 2000), '全部交通格价格 2000');
       const r3 = mkRoom();
       // v5.1：免罚符分段价整体再降一档（1~8 轮 / 9~20 轮 / 21 轮起）
-      const shieldAt = r => { const n = Math.max(1, r); return n <= 8 ? 260 + 55 * n : (n <= 20 ? 700 + 110 * (n - 8) : 2020 + 150 * (n - 20)); };
+      const shieldAt = r => { const n = Math.max(1, r); return n <= 8 ? 200 + 45 * n : (n <= 20 ? 560 + 90 * (n - 8) : 1640 + 120 * (n - 20)); };
       ok(r3.shieldCost() === shieldAt(r3.round), `免罚符价格 = 分段价 = ¥${r3.shieldCost()}`);
       const _r8 = mkRoom(); _r8.round = 8; const _r9 = mkRoom(); _r9.round = 9; const _r25 = mkRoom(); _r25.round = 25;
-      ok(_r8.shieldCost() === 700 && _r9.shieldCost() === 810 && _r25.shieldCost() === 2770,
+      ok(_r8.shieldCost() === 560 && _r9.shieldCost() === 650 && _r25.shieldCost() === 2240,
         `免罚符分段连续：第8轮¥${_r8.shieldCost()} → 第9轮¥${_r9.shieldCost()} → 第25轮¥${_r25.shieldCost()}`);
       ok(_r8.shieldCost() < 350 + 130 * 8 && _r25.shieldCost() < 350 + 130 * 25, '分段价整体低于原线性价');
       const s0 = cur(r3);
@@ -202,8 +202,9 @@ console.log('\n[5] 经济寒冬：第 15 轮起停发工资');
       // v5.1：校园商城改为随机抽 1~2 张效果卡（免租金卡 / 免租券 / 技能次数 +1 / 8折卡 / 加速卡 / 现金 / 免罚符）
       // v5.3：补上 discount（8折卡）与 shield（免罚符）两种不带计数的卡，消除随机抽卡造成的偶发误报
       // v5.8：卡池 9 张——voucher/shield 已移出，新增 fineFree（免罚款）/ buildCutCard（盖房9折）/ stayFree（免停留）
+      // v6.0：卡池新增「万能卡」joker，判定式必须一并覆盖
       const gained = w.medal > 0 || w.voucher > 0 || w.skillLeft > ws || w.stepBuffs.length > 0 || w.cash > wc || w.discount || w.shield
-        || w.fineFree > 0 || w.buildCutCard > 0 || w.stayFree > 0;
+        || w.fineFree > 0 || w.buildCutCard > 0 || w.stayFree > 0 || (w.joker || 0) > 0;
       ok(gained, `踩校园商城抽到效果卡（medal=${w.medal} voucher=${w.voucher} 技能+${w.skillLeft - ws} 加速×${w.stepBuffs.length} 现金${w.cash - wc >= 0 ? '+' : ''}${w.cash - wc}）`);
       console.log(`\n结果：${pass} 通过 / ${fail} 失败`);
       process.exit(fail ? 1 : 0);
