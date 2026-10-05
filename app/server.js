@@ -42,6 +42,8 @@ function snapshot(room) {
     facultyMs: (room.phase === 'faculty' && room.facEndsAt) ? Math.max(1000, room.facEndsAt - Date.now()) : undefined,   // v5.12：重连时投票剩余毫秒
     facultyVotes: { ...(room.facultyVotes || {}) },
     facultyLucky: room.facultyLucky || null,
+    // v7.5：本届中期突变（中央城邦徽章要显示「变异后的实际效果」）
+    mutation: room.mutation ? { kind: room.mutation.kind, facId: room.mutation.facId || null, id: room.mutation.id, name: room.mutation.name, desc: room.mutation.desc } : null,
     facTermStart: room.facTermStart || 1,   // v5.9：本届城邦起始轮（10 轮一届）
     freeRound: room.freeRound || 0,
     freeRentRounds: (room.freeRentRounds || []).slice(),
@@ -60,12 +62,13 @@ function snapshot(room) {
       forceReroll: p.forceReroll || 0, backstep: p.backstep || 0, reverseDice: p.reverseDice || 0, branchCard: p.branchCard || 0,   // v7.0
       major: p.major, skillLeft: p.skillLeft, combo: p.combo || 0, ach: p.ach || {},
       shield: !!p.shield, sabotage: p.sabotage || 0,
-      medal: p.medal || 0, stayFree: p.stayFree || 0,
+      medal: p.medal || 0, stayFree: p.stayFree || 0, joker: p.joker || 0,   // v7.5：joker 也下发（查看面板要列全效果卡）
       buffSteps: p.buffSteps || 0, stepBuffs: (p.stepBuffs || []).slice(),
       hexList: (p.hexList || []).slice(),   // v5.7：已立项的研究项目（供他人查看 / 玩家卡片标签）
       hexLeft: { ...(p.hexLeft || {}) },     // v5.13：限次项目的剩余触发次数
       hexRefreshLeft: (p.hexRefreshLeft == null) ? 1 : p.hexRefreshLeft,   // v5.10：刷新机会剩余次数
       fundBanned: !!p.fundBanned,           // v5.8：被教育基金拉黑
+      borrow: p.borrow ? { ...p.borrow } : null,   // v7.5：偷师卡借来的技能次数（查看面板展示）
       fineFree: p.fineFree || 0,            // v5.8：免罚款卡张数
       stayFree: p.stayFree || 0,            // v5.8：免停留卡张数
       buildCutCard: p.buildCutCard || 0,    // v5.8：盖房 9 折卡张数

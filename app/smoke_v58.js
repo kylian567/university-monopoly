@@ -33,7 +33,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
     const ann = await page.evaluate(() => (document.querySelector('#intro .announce-logo') || {}).textContent || '');
     ok(/v(?:5\.(?:14|13|12)|6\.\d+|7\.\d+)/.test(ann), `开局公告标题：${ann}`);
     const annSub = await page.evaluate(() => (document.querySelector('.announce-sub') || {}).textContent || '');
-    ok(/v7\.[0-4]/.test(annSub), `作者公告版本号：${annSub.trim()}`);
+    ok(/v7\.[0-9]/.test(annSub), `作者公告版本号：${annSub.trim()}`);
     await page.click('#btnAnnounce'); await sleep(240);
     await page.click('#btnIntro'); await sleep(240);
     await page.click('#btnRulesClose').catch(() => {});
@@ -96,7 +96,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
       closeBtn: !!document.getElementById('hxpClose'),
     }));
     ok(viewer.open, '查看浮层已打开');
-    ok(viewer.secs.length === 3, `三个分区：${viewer.secs.join(' / ')}`);
+    ok(viewer.secs.length === 4, `四个分区（v7.5 起「效果卡」独立成区）：${viewer.secs.join(' / ')}`);
     ok(viewer.rich >= 1, `两行效果胶囊（hxp-rich）${viewer.rich} 枚`);
     await shot('02-viewer.png');
     await page.click('#hxpClose'); await sleep(500);

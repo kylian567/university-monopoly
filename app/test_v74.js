@@ -35,8 +35,8 @@ section(1, 'v7.4：卡池 152（银 56 / 金 51 / 彩 45）· 触发轮 12 次 �
     `海克斯共 ${total} 个（银 ${cnt.silver} / 金 ${cnt.gold} / 彩 ${cnt.prism}）`);
   ok(G.PROJECT_KEYS.silver.length === 56 && G.PROJECT_KEYS.gold.length === 51 && G.PROJECT_KEYS.prism.length === 45,
     'PROJECT_KEYS 三档分组与 tier 一致');
-  ok(JSON.stringify(G.HEX_TRIGGERS) === JSON.stringify([2, 8, 15, 23, 32, 41, 51, 62, 74, 86, 98, 110]),
-    '触发轮 12 次 = 2/8/15/23/32/41/51/62/74/86/98/110');
+  ok(JSON.stringify(G.HEX_TRIGGERS) === JSON.stringify([2, 8, 15, 23, 32, 40, 50, 62, 74, 86, 98, 110]),
+    '触发轮 12 次 = 2/8/15/23/32/40/50/62/74/86/98/110');
   ok(G.HEX_TRIGGERS.length === 12 && G.HEX_TRIGGERS.every((v, i, a) => i === 0 || v > a[i - 1]), '触发轮严格递增且共 12 次');
   ok(JSON.stringify(G.HEX_TRIGGERS_EARLY) === JSON.stringify([2, 6, 12, 19, 27, 35, 44, 54, 65, 77, 89, 101]),
     '时光之城提前表 12 次 = 2/6/12/19/27/35/44/54/65/77/89/101');
@@ -122,7 +122,7 @@ section(3, '每轮 / 周期型新卡：阶梯津贴 / 长线投资 / 终身教�
     const r = mkRoom(2, { hex: false }); const a = r.players[0];
     a.hexList = []; a.hexLeft = {}; a.hex = {}; a.cash = 0;
     r.grantProject(a, 'ladderpay');
-    ok(a.hexLeft.ladderpay === 16 && a.hex.growCash === 200 && a.hex.growCap === 400, '阶梯津贴：合约 16 轮 + growCash 200 / 上限 400');
+    ok(a.hexLeft.ladderpay === 13 && a.hex.growCash === 200 && a.hex.growCap === 400, '阶梯津贴：合约 13 轮 + growCash 200 / 上限 400');
     const seq = [];
     for (const rd of [1, 7, 13, 19, 25, 31, 37]) {
       a.cash = 0; r.round = rd; r.applyHexPassives(a);
@@ -130,7 +130,7 @@ section(3, '每轮 / 周期型新卡：阶梯津贴 / 长线投资 / 终身教�
     }
     ok(JSON.stringify(seq) === JSON.stringify([200, 240, 280, 320, 360, 400, 400]),
       `阶梯津贴逐轮 200/240/280/320/360/400/400（实得 ${seq.join('/')}）`);
-    ok(a.hexLeft.ladderpay === 16 - 7, `阶梯津贴按轮消耗合约（剩 ${a.hexLeft.ladderpay}）`);
+    ok(a.hexLeft.ladderpay === 13 - 7, `阶梯津贴按轮消耗合约（剩 ${a.hexLeft.ladderpay}）`);
   }
   // 长线投资：每 10 轮返 1300，限 3 次
   {
@@ -155,9 +155,9 @@ section(3, '每轮 / 周期型新卡：阶梯津贴 / 长线投资 / 终身教�
     a.hexList = []; a.hexLeft = {}; a.hex = {}; a.cash = 0;
     r.grantProject(a, 'tenured');
     r.round = 49; a.cash = 0; r.applyHexPassives(a);
-    ok(a.cash === 0 && a.hexLeft.tenured === 12, '第 49 轮终身教职尚未生效、也不消耗合约');
+    ok(a.cash === 0 && a.hexLeft.tenured === 10, '第 49 轮终身教职尚未生效、也不消耗合约');
     r.round = 50; a.cash = 0; r.applyHexPassives(a);
-    ok(a.cash === 1000 && a.hexLeft.tenured === 11, '第 50 轮起每轮 +¥1000 并按轮消耗合约');
+    ok(a.cash === 1000 && a.hexLeft.tenured === 9, '第 50 轮起每轮 +¥1000 并按轮消耗合约');
   }
   // 万能卡补给：每 8 轮 1 张，限 3 次
   {
@@ -173,10 +173,10 @@ section(3, '每轮 / 周期型新卡：阶梯津贴 / 长线投资 / 终身教�
     a.hexList = []; a.hexLeft = {}; a.hex = {}; a.cash = 10000; r.round = 5;
     r.grantProject(a, 'coinflip'); a.cash = 10000;
     withRandom(0.05, () => r.applyHexPassives(a));
-    ok(a.cash === 10000 + 2600, '午夜赌局 22% 命中时 +¥2600');
+    ok(a.cash === 10000 + 2200, '午夜赌局 22% 命中时 +¥2200');
     a.cash = 10000;
     withRandom(0.90, () => r.applyHexPassives(a));
-    ok(a.cash === 10000 - 600, '午夜赌局未命中时 −¥600');
+    ok(a.cash === 10000 - 700, '午夜赌局未命中时 −¥700');
   }
   // 梭哈一把：立刻 +6600，之后每轮 −330
   {
@@ -185,7 +185,7 @@ section(3, '每轮 / 周期型新卡：阶梯津贴 / 长线投资 / 终身教�
     r.grantProject(a, 'allin');
     ok(a.cash === 6600 && a.hex.roundPay === 330, '梭哈一把：立项立得 ¥6600，登记每轮 −330');
     r.applyHexPassives(a);
-    ok(a.cash === 6600 - 330 && a.hexLeft.allin === 11, '梭哈一把每轮还款 ¥330 并消耗合约');
+    ok(a.cash === 6600 - 330 && a.hexLeft.allin === 9, '梭哈一把每轮还款 ¥330 并消耗合约');
   }
   // 绝地反击：仅总资产垫底时补
   {
@@ -223,7 +223,7 @@ section(4, '事件触发型新卡：晨跑打卡 / 通勤补助 / 反向护盾 /
     a.cash = 0;
     r.doRoll(a);
     r.clearTimer(); r.clearAiTimers();
-    ok(a.cash === 200 && a.hexLeft.sevenrun === 13, `掷出 7 点 +¥200 并消耗合约（现金 ${a.cash} / 剩 ${a.hexLeft.sevenrun}）`);
+    ok(a.cash === 200 && a.hexLeft.sevenrun === 10, `掷出 7 点 +¥200 并消耗合约（现金 ${a.cash} / 剩 ${a.hexLeft.sevenrun}）`);
   }
   // 通勤补助 + 反向护盾：被收租时的联动
   {
@@ -323,12 +323,12 @@ section(5, 'once: hexcopy —— 学术镜像立即复制他人一项研究项�
 {
   const r = mkRoom(2, { hex: false });
   const [a, b] = r.players;
-  b.hexList = ['ladderpay']; b.hexLeft = { ladderpay: 16 };
+  b.hexList = ['ladderpay']; b.hexLeft = { ladderpay: 13 };
   b.hex = { growCash: 200, growStep: 40, growEvery: 6, growCap: 400 };
   a.hexList = []; a.hexLeft = {}; a.hex = {};
   r.grantProject(a, 'mirrorhex');
   ok(a.hexList.includes('mirrorhex') && a.hexList.includes('ladderpay'), '学术镜像把目标项目并入自己的 hexList');
-  ok(a.hexLeft.ladderpay === 16 && a.hex.growCash === 200 && a.hex.growCap === 400, '复制来的项目带全新合约与完整 mods');
+  ok(a.hexLeft.ladderpay === 13 && a.hex.growCash === 200 && a.hex.growCap === 400, '复制来的项目带全新合约与完整 mods');
   // 无人可复制 → 补偿
   const r2 = mkRoom(2, { hex: false });
   const a2 = r2.players[0];
@@ -343,9 +343,9 @@ section(6, 'hexSpendMods：同一张卡在一次结算里最多扣 1 点合约')
   const r = mkRoom(2, { hex: false }); const a = r.players[0];
   a.hexList = []; a.hexLeft = {}; a.hex = {};
   r.grantProject(a, 'highjump');   // 掷出 ≥9 点 +380 / 双数再 +180，同一张卡两个 mods
-  ok(a.hexLeft.highjump === 12, '竞技状态合约 12 次');
+  ok(a.hexLeft.highjump === 10, '竞技状态合约 10 次');
   r.hexSpendMods(a, ['highRollCash', 'doubleCash']);
-  ok(a.hexLeft.highjump === 11, `双 mods 命中一次只扣 1 点（剩 ${a.hexLeft.highjump}）`);
+  ok(a.hexLeft.highjump === 9, `双 mods 命中一次只扣 1 点（剩 ${a.hexLeft.highjump}）`);
   a.hexLeft.highjump = 1;
   r.hexSpendMods(a, ['highRollCash']);
   ok(a.hexLeft.highjump === 0 && a.hex.highRollCash === undefined && a.hex.doubleCash === undefined, '合约归零后 mods 被完整移除');
@@ -354,25 +354,25 @@ section(6, 'hexSpendMods：同一张卡在一次结算里最多扣 1 点合约')
 // ================= [7] 强度护栏 =================
 section(7, '强度护栏：47 张新卡整局资金影响上界（amount × charges）落在档位预算内');
 {
-  // 档位预算（整局硬顶，含未触发的余量）：银 4200 / 金 9700 / 彩 12100
-  const BUDGET = { silver: 4200, gold: 9700, prism: 12100 };
-  // 每张新卡的「单次触发上限 × 合约次数」；概率型按期望折算，纯功能型记 0
+  // 档位预算（整局硬顶，含未触发的余量）：银 3000 / 金 7000 / 彩 10500（v7.5 次数下调后重算）
+  const BUDGET = { silver: 3000, gold: 7000, prism: 10500 };
+  // 每张新卡的「单次触发上限 × 合约次数」；概率型按期望折算，纯功能型记 0（v7.5 合约次数）
   const BOUND = {
     // 银
-    tahelp: 0,            sevenrun: 200 * 14,   commute: 150 * 16,   boxer: 0,
-    couponback: 130 * 14, landlord: 110 * 20,   sparestax: 0,        nightguard: 180 * 14,
-    expressline: 90 * 16, scooter: 120 * 16,    handout: 110 * 20,   coinbox: 260 * 12,
-    bulkbuy: 120 * 12,    toolbox: 140 * 12,    raincoat: 260 * 14,  brightside: 220 * 12,
+    tahelp: 0,            sevenrun: 200 * 11,   commute: 150 * 13,   boxer: 0,
+    couponback: 130 * 11, landlord: 80 * 14,    sparestax: 0,        nightguard: 180 * 11,
+    expressline: 90 * 13, scooter: 120 * 13,    handout: 110 * 16,   coinbox: 220 * 10,
+    bulkbuy: 120 * 10,    toolbox: 140 * 10,    raincoat: 260 * 11,  brightside: 220 * 10,
     // 金
-    ladderpay: 400 * 16,  longterm: 1300 * 3,   detective: 320 * 12, comeback: 620 * 14,
-    allin: 6600,          coinflip: 2600 * 0.22 * 14, cramnight: 520 * 14, coinvest: 520 * 14,
-    alleyboss: 260 * 14,  combomaster: 0,       marknote: 380 * 14,  sniperent: 1522 * 0.20 * 14,
-    taxplan: 260 * 12,    ticketpack: 0,        sponsor2: 70 * 14,   refund2: 2600,
+    ladderpay: 400 * 13,  longterm: 1300 * 3,   detective: 320 * 10, comeback: 620 * 11,
+    allin: 6600,          coinflip: 2200 * 0.22 * 11, cramnight: 520 * 11, coinvest: 520 * 11,
+    alleyboss: 260 * 11,  combomaster: 0,       marknote: 330 * 11,  sniperent: 1522 * 0.20 * 11,
+    taxplan: 260 * 10,    ticketpack: 0,        sponsor2: 70 * 11,   refund2: 2600,
     // 彩
-    tenured: 1000 * 12,   rentcompound: 1522 * 0.22 * 16, decayguard: 0, jokersupply: 0,
-    reflectshield: 360 * 14, negotiator: 1522 * 0.28 * 14, mortgage80: 0, estateking: 70 * 12,
-    mirrorhex: 0,         secondwind: 0,        windfall: 4200 * 0.12 * 14, hegemony: 4500 + 420 * 12,
-    cardstorm: 0,         usury: 900 * 12,      alumninet2: 620 * 12,
+    tenured: 1000 * 10,   rentcompound: 1522 * 0.22 * 13, decayguard: 0, jokersupply: 0,
+    reflectshield: 360 * 11, negotiator: 1522 * 0.28 * 11, mortgage80: 0, estateking: 70 * 10,
+    mirrorhex: 0,         secondwind: 0,        windfall: 4200 * 0.12 * 11, hegemony: 4500 + 420 * 10,
+    cardstorm: 0,         usury: 900 * 10,      alumninet2: 620 * 10,
   };
   const over = [];
   for (const k in BOUND) {
@@ -395,8 +395,8 @@ section(7, '强度护栏：47 张新卡整局资金影响上界（amount × char
   ok(worst <= 16, `同档内最高 / 最低上界比 ≤ 16（实为 ${worst.toFixed(1)}，纯功能型卡不计入）`);
 
   // 限次卡硬顶与 desc 一致性（防止改数值忘改描述）
-  ok(G.PROJECTS.ladderpay.charges === 16 && G.PROJECTS.raincoat.charges === 14 && G.PROJECTS.tenured.charges === 12,
-    '代表卡合约次数与设计一致（阶梯津贴 16 / 雨衣常备 14 / 终身教职 12）');
+  ok(G.PROJECTS.ladderpay.charges === 13 && G.PROJECTS.raincoat.charges === 11 && G.PROJECTS.tenured.charges === 10,
+    '代表卡合约次数与设计一致（阶梯津贴 13 / 雨衣常备 11 / 终身教职 10）');
 }
 
 console.log('\n========================================');

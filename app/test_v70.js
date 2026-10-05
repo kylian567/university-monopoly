@@ -73,6 +73,7 @@ section(3, '重投价格：首价 800 + 个人次数 ×70，第 6 轮起每 2 �
 {
   const r = mkRoom(2);
   const p = r.players[0];
+  p.skillLeft = 0;   // v7.5：隔离 —— 随机专业里有一个「重投免费」，会让基础价断言偶发为 0
   r.round = 1; p.rerollCount = 0;
   ok(r.rerollCostFor(p) === 800, `第 1 轮首投 ¥800（实际 ${r.rerollCostFor(p)}）`);
   p.rerollCount = 3;
@@ -170,11 +171,11 @@ section(5, '经济：盖房价小幅上调（四舍五入到 10）· 有建筑�
 }
 
 // ================= [6] 海克斯触发轮 = 12 次 =================
-section(6, '海克斯触发轮：2/8/15/23/32/41/51/62/74/86/98/110（共 12 次）');
+section(6, '海克斯触发轮：2/8/15/23/32/40/50/62/74/86/98/110（共 12 次）');
 {
   ok(G.HEX_TRIGGERS.length === 12, `触发轮共 12 次（实际 ${G.HEX_TRIGGERS.length}）`);
-  ok(JSON.stringify(G.HEX_TRIGGERS) === JSON.stringify([2, 8, 15, 23, 32, 41, 51, 62, 74, 86, 98, 110]),
-    '触发轮数值与需求一致（v7.4 = 12 次）');
+  ok(JSON.stringify(G.HEX_TRIGGERS) === JSON.stringify([2, 8, 15, 23, 32, 40, 50, 62, 74, 86, 98, 110]),
+    '触发轮数值与需求一致（v7.5 = 12 次）');
   ok(G.HEX_TRIGGERS.every((v, i, a) => i === 0 || v > a[i - 1]), '触发轮严格递增');
   ok(JSON.stringify(G.HEX_TRIGGERS_EARLY) === JSON.stringify([2, 6, 12, 19, 27, 35, 44, 54, 65, 77, 89, 101]),
     'v7.4 时光之城提前表 = 2/6/12/19/27/35/44/54/65/77/89/101（12 次全部提前）');

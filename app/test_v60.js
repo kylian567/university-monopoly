@@ -43,8 +43,8 @@ section(1, 'v6.0 常量：初始资金 26666 / 触发轮重排 / 统一概率 / 
 {
   ok(START_CASH === 26666, `初始资金 = ¥${START_CASH}（原 30000）`);
   ok(REROLL_COST === 800, `重投基准价 = ¥${REROLL_COST}（原 1200）`);
-  ok(JSON.stringify(HEX_TRIGGERS) === JSON.stringify([2, 8, 15, 23, 32, 41, 51, 62, 74, 86, 98, 110]),
-    'v7.4 触发轮 = 2/8/15/23/32/41/51/62/74/86/98/110（共 12 次）');
+  ok(JSON.stringify(HEX_TRIGGERS) === JSON.stringify([2, 8, 15, 23, 32, 40, 50, 62, 74, 86, 98, 110]),
+    'v7.5 触发轮 = 2/8/15/23/32/40/50/62/74/86/98/110（共 12 次）');
   ok(JSON.stringify(HEX_TRIGGERS_EARLY) === JSON.stringify([2, 6, 12, 19, 27, 35, 44, 54, 65, 77, 89, 101]),
     'v7.4 提前表（时光之城）= 2/6/12/19/27/35/44/54/65/77/89/101（12 次全部提前）');
   ok(HEX_TIER_P.length === 1 && HEX_TIER_P[0][0] === 0.43 && HEX_TIER_P[0][1] === 0.32 && HEX_TIER_P[0][2] === 0.25,

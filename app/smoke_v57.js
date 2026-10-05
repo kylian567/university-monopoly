@@ -184,7 +184,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
       closeBtn: !!document.getElementById('hxpClose'),
     }));
     ok(viewer.open, '查看浮层已打开');
-    ok(viewer.secs.length === 3 && /研究项目/.test(viewer.secs[0]) && /技能卡/.test(viewer.secs[1]) && /资产/.test(viewer.secs[2]), `三个分区：${viewer.secs.join(' / ')}`);
+    ok(viewer.secs.length === 4 && /研究项目/.test(viewer.secs[0]) && /专业与技能/.test(viewer.secs[1]) && /效果卡/.test(viewer.secs[2]) && /资产/.test(viewer.secs[3]), `四个分区（v7.5 起「效果卡」独立成区）：${viewer.secs.join(' / ')}`);
     ok(viewer.chips >= 1, `项目/技能胶囊 ${viewer.chips} 枚`);
     await shot('03-viewer.png');
     await page.click('#hxpClose'); await sleep(500);

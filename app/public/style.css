@@ -850,6 +850,14 @@ body {
 /* 中央徽章落位 */
 #facBadge { transform-box:fill-box; transform-origin:center; }
 #facBadge.fac-land { animation:facLand 1.08s cubic-bezier(.2,1.5,.35,1); }
+/* v7.5：突变中的中央城邦徽章 —— 紫绿脉冲 + 抖动，一眼看出「这座城邦变异了」 */
+#facBadge.fac-mut { animation:facMutPulse 3.4s ease-in-out infinite; }
+#facBadge.fac-mut.fac-land { animation:facLand 1.08s cubic-bezier(.2,1.5,.35,1), facMutPulse 3.4s ease-in-out .9s infinite; }
+@keyframes facMutPulse {
+  0%,100% { filter:drop-shadow(0 0 0 rgba(150,60,220,0)) saturate(1); }
+  38%     { filter:drop-shadow(0 0 9px rgba(158,74,226,.75)) saturate(1.35) hue-rotate(-10deg); }
+  62%     { filter:drop-shadow(0 0 5px rgba(70,200,140,.6)) saturate(1.2); }
+}
 @keyframes facLand { 0%{ transform:scale(.3); opacity:0; } 45%{ transform:scale(1.14); opacity:1; } 72%{ transform:scale(.97); } 100%{ transform:scale(1); } }
 
 /* 徽章详情浮层 */
@@ -1421,8 +1429,10 @@ body.rotmode .hxp-assets { max-height:36%; }
 .cfx-negate .ng-shield { position:relative; font-size:86px; filter:drop-shadow(0 0 18px rgba(90,169,230,.9)); animation:cfxSpin 6s linear infinite; }
 
 /* ---- ② 三张翻面卡 ---- */
+/* v7.5 修复：这两层挂在 #fxLayer（pointer-events:none）下，必须显式打开 auto，
+   否则 pointer-events 被继承为 none → 浮层看得见、点不动（三张翻面卡 / 无懈可击响应框） */
 .cd-layer { position:fixed; inset:0; z-index:9999; display:flex; align-items:center; justify-content:center;
-  opacity:0; transition:opacity .34s ease; }
+  opacity:0; transition:opacity .34s ease; pointer-events:auto; }
 .cd-layer.show { opacity:1; }
 .cd-dim { position:absolute; inset:0; background:radial-gradient(circle at 50% 44%, rgba(28,20,10,.5), rgba(18,14,8,.82)); }
 .cd-panel { position:relative; width:min(720px,94vw); border-radius:20px; padding:20px 22px 18px;
@@ -1473,6 +1483,10 @@ body.rotmode .hxp-assets { max-height:36%; }
   background:linear-gradient(170deg,#fffdf7,#f6efe0); border:1.5px solid var(--rc,#8A847A);
   box-shadow:0 2px 0 #ddd2b8; display:flex; flex-direction:column; gap:2px; transition:.14s; }
 .cardp-card:hover { transform:translateY(-3px); box-shadow:0 6px 14px rgba(60,45,20,.24); }
+/* v7.5：当前没有合法目标的手动卡 —— 仍然显示（一定会询问），但置灰并标注 */
+.cardp-card.dim { opacity:.5; filter:grayscale(.55); cursor:not-allowed; }
+.cardp-card.dim:hover { transform:none; box-shadow:0 2px 0 #ddd2b8; }
+.cp-no { font-size:9px; color:#b0533f; font-weight:700; }
 .cp-rar { font-size:9px; font-weight:800; color:#fff; background:var(--rc,#8A847A); border-radius:5px; padding:0 5px; align-self:flex-start; }
 .cp-icon { font-size:20px; }
 .cp-name { font-size:11.5px; font-weight:800; color:#3a3630; }
@@ -1495,7 +1509,7 @@ body.rotmode .hxp-assets { max-height:36%; }
 
 /* ---- ④ 无懈可击响应框 ---- */
 .ng-layer { position:fixed; inset:0; z-index:9999; display:flex; align-items:center; justify-content:center;
-  background:rgba(20,16,10,.42); opacity:0; transition:opacity .24s; }
+  background:rgba(20,16,10,.42); opacity:0; transition:opacity .24s; pointer-events:auto; }
 .ng-layer.show { opacity:1; }
 .ng-box { width:min(460px,92vw); border-radius:18px; padding:18px 20px; text-align:center;
   background:linear-gradient(180deg,#f7fbff,#e6f0fa); border:2px solid #9ed0ef; box-shadow:0 18px 48px rgba(10,30,50,.4);

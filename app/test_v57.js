@@ -57,7 +57,7 @@ section(1, 'PROJECTS / HEX_TIERS 镜像一致 + 表完整性');
   ok(keysOK, 'PROJECT_KEYS 三档分组完整');
   // 同档内效果幅度一致（平衡约束抽查：同名修正在不同项目里的量纲统一）
   ok(G.HEX_TIER_P.length === 1 && G.HEX_TIER_P.every(r => Math.abs(r[0] + r[1] + r[2] - 1) < 1e-9), 'v6.0：所有立项统一一行档位概率且归一（银 43 / 金 32 / 彩 25）');
-  ok(JSON.stringify(G.HEX_TRIGGERS) === JSON.stringify([2, 8, 15, 23, 32, 41, 51, 62, 74, 86, 98, 110]), '触发轮次 v7.4：2/8/15/23/32/41/51/62/74/86/98/110（共 12 次）');
+  ok(JSON.stringify(G.HEX_TRIGGERS) === JSON.stringify([2, 8, 15, 23, 32, 40, 50, 62, 74, 86, 98, 110]), '触发轮次 v7.5：2/8/15/23/32/40/50/62/74/86/98/110（共 12 次）');
 }
 
 // ================= [2] maybeProject 流程与发牌 =================
@@ -114,16 +114,16 @@ section(3, '档位概率：v6.0 所有立项统一 银 43 / 金 32 / 彩 25');
   const tot = count.silver + count.gold + count.prism;
   ok(Math.abs(count.silver / tot - 0.43) < 0.07 && Math.abs(count.gold / tot - 0.32) < 0.07 && Math.abs(count.prism / tot - 0.25) < 0.07,
     `分布贴近 43/32/25（实得 ${(count.silver / tot * 100).toFixed(1)}/${(count.gold / tot * 100).toFixed(1)}/${(count.prism / tot * 100).toFixed(1)}）`);
-  // 第 7 次立项（第 51 轮）与第 1 次用同一行概率，长期分布应基本一致
+  // 第 7 次立项（第 50 轮）与第 1 次用同一行概率，长期分布应基本一致
   const cnt8 = { silver: 0, gold: 0, prism: 0 };
   for (let i = 0; i < N; i++) {
     const room = mkRoom(2);
     room.start(); room.clearTimer(); room.clearAiTimers();
-    room.round = 51; room.maybeProject();
+    room.round = 50; room.maybeProject();
     cnt8[room.project.tier]++;
     room.clearTimer(); room.clearAiTimers();
   }
-  ok(cnt8.silver > cnt8.prism && Math.abs(cnt8.prism / N - count.prism / N) < 0.08, `第 51 轮立项同样走统一概率（彩 ${(cnt8.prism / N * 100).toFixed(1)}% vs 第 1 次 ${(count.prism / N * 100).toFixed(1)}%）`);
+  ok(cnt8.silver > cnt8.prism && Math.abs(cnt8.prism / N - count.prism / N) < 0.08, `第 50 轮立项同样走统一概率（彩 ${(cnt8.prism / N * 100).toFixed(1)}% vs 第 1 次 ${(count.prism / N * 100).toFixed(1)}%）`);
 }
 
 // ================= [4] 选择与结算闭环 =================

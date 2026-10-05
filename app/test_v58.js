@@ -243,14 +243,14 @@ section(8, '裸地 ×1.3 / 垄断裸地 ×2 / 机场 800/1600/3500/5500（v5.9�
 // ================= [9] 海克斯：第 4 次触发 + 削弱抽查 =================
 section(9, '海克斯：第 32 轮第四次立项 + 全池削弱抽查 + 镜像一致');
 {
-  ok(JSON.stringify(G.HEX_TRIGGERS) === JSON.stringify([2, 8, 15, 23, 32, 41, 51, 62, 74, 86, 98, 110]), '触发轮 v7.4：2/8/15/23/32/41/51/62/74/86/98/110（共 12 次）');
+  ok(JSON.stringify(G.HEX_TRIGGERS) === JSON.stringify([2, 8, 15, 23, 32, 40, 50, 62, 74, 86, 98, 110]), '触发轮 v7.5：2/8/15/23/32/40/50/62/74/86/98/110（共 12 次）');
   ok(G.HEX_TIER_P.length === 1 && G.HEX_TIER_P[0][0] === 0.43 && G.HEX_TIER_P[0][1] === 0.32 && G.HEX_TIER_P[0][2] === 0.25, 'v6.0：所有立项统一 43/32/25');
   ok(G.HEX_PICK_MS === 70000, `海克斯选择时长 70s（v5.12）`);
   ok(G.FACULTY_VOTE_MS === 60000, `风貌投票时长 60s（v5.12）`);
-  ok(G.PROJECTS.stipend.mods.goCash === 320, '勤工俭学 320（v5.14 合约补偿）');
+  ok(G.PROJECTS.stipend.mods.goCash === 250, '勤工俭学 250（v7.5 同档平衡）');
   ok(G.PROJECTS.seize.pct === 0.12 && G.PROJECTS.seize.amt === 3600, 'v6.0 彩卡增强：强取豪夺 12%/3600');
   ok(G.PROJECTS.aegis.mods.immuneCharges === 3, 'v6.0：绝对防御 3 次（与描述一致）');
-  ok(G.PROJECTS.salaryx2.mods.salaryX2 === 1 && G.PROJECTS.salaryx2.mods.goCash === 800 && G.PROJECTS.salaryx2.charges === 12, 'v6.0：双倍工资 salaryX2 + 过起点 +¥800（限 12 次）');
+  ok(G.PROJECTS.salaryx2.mods.salaryX2 === 1 && G.PROJECTS.salaryx2.mods.goCash === 500 && G.PROJECTS.salaryx2.charges === 3, 'v7.5：双倍工资 salaryX2 + 过起点 +¥500（限 3 次，削弱超标）');
   // 第 30 轮能开
   const r = mkRoom(2);
   r.round = 32; r.hexDoneRounds = [];
@@ -365,8 +365,8 @@ section(13, 'v5.9 海克斯平衡：停发工资后工资类项目不再出现')
     r.phase = 'roll'; r.project = null;
     return offs;
   };
-  // 第 32/41/51 轮立项（停薪 15 轮之后）：不应出现工资类项目（v7.4 触发轮表）
-  for (const round of [32, 41, 51]) {
+  // 第 32/40/50 轮立项（停薪 15 轮之后）：不应出现工资类项目（v7.5 触发轮表）
+  for (const round of [32, 40, 50]) {
     const offs = check(round);
     ok(!offs.some(k => DEAD.includes(k)), `第 ${round} 轮立项不含工资类项目（共 ${offs.length} 张候选）`);
   }

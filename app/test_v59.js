@@ -13,6 +13,11 @@ function mkRoom(n = 2, opts) {
   const room = new G.Room('t' + Math.floor(Math.random() * 1e6), Object.assign({ hex: true, faculty: true }, opts || {}));
   for (let i = 0; i < n; i++) room.join('P' + (i + 1), i > 0);
   room.start(); room.clearTimer(); room.clearAiTimers();
+  // v7.5：测试隔离 —— applyFacultyRound() 会在「第 5 轮」随机触发中期突变（maybeMutation），
+  //        与本文件要验证的城邦每轮结算无关，会让「第 6 轮不再缴」这类断言偶发失败。
+  //        放一个空 ops 的占位突变即可让 maybeMutation() 提前返回（mut() 恒为 {}）。
+  room.mutation = { kind: 'general', facId: null, id: '_isolation', name: '（测试隔离）', desc: '', ops: {} };
+  room.mutRoll = null;
   room.phase = 'roll';
   return room;
 }
@@ -196,7 +201,7 @@ section(4, '定调城邦：前三次强制档位 / 仅 3 次 / 提前触发');
   {
     const r = mkRoom(3);
     r.round = 5; r.phase = 'roll';
-    ok(r.maybeProject() === false, '普通局第 5 轮不触发（v7.4 触发轮：2/8/15/23/32/41/51/62/74/86/98/110）');
+    ok(r.maybeProject() === false, '普通局第 5 轮不触发（v7.5 触发轮：2/8/15/23/32/40/50/62/74/86/98/110）');
   }
 }
 
@@ -422,7 +427,7 @@ section(9, 'v5.11：换届只在轮次刚开始触发 / 每次立项都有刷新
 
   // ⑥ 全局削弱抽查
   ok(G.PROJECTS.seize.pct === 0.12 && G.PROJECTS.seize.amt === 3600, '⑥ v6.0 彩卡增强：强取豪夺 12%/3600');
-  ok(G.PROJECTS.stipend.mods.goCash === 320, '⑥ 勤工俭学 320（v5.14 合约补偿）');
+  ok(G.PROJECTS.stipend.mods.goCash === 250, '⑥ 勤工俭学 250（v7.5 过起点数额随合约次数下调）');
   ok(G.PROJECTS.nirvana.mods.nirvanaCash === 6000 && G.PROJECTS.phoenix2.mods.nirvanaCash === 5200,
     '⑥ v6.0：涅槃 6000 / 浴火重生 5200（复活金额入表）');
   ok(G.MAJORS.mech.desc.includes('+¥1350'), '⑥ 机械 精益制造 1350');
@@ -467,22 +472,22 @@ section(10, 'v5.13：海克斯限次（合约期）/ 抽取降彩升银 / 描述
   // ③ 每轮类限次：allowance 12 轮后 turnCash 被移除
   const r = mkRoom(2); const a = r.players[0];
   r.grantProject(a, 'allowance');
-  ok(a.hexLeft.allowance === 16 && a.hex.turnCash === 250, '③ 立项登记 16 轮合约 + turnCash 250（v5.14 合约延长）');
+  ok(a.hexLeft.allowance === 13 && a.hex.turnCash === 220, '③ 立项登记 13 轮合约 + turnCash 220（v7.5 次数下调）');
   const cashBefore = a.cash;
-  for (let i = 0; i < 16; i++) r.applyHexPassives(a);
-  ok(a.hexLeft.allowance === 0 && a.hex.turnCash === undefined, '③ 满 16 轮后合约到期，turnCash 修正被移除');
+  for (let i = 0; i < 13; i++) r.applyHexPassives(a);
+  ok(a.hexLeft.allowance === 0 && a.hex.turnCash === undefined, '③ 满 13 轮后合约到期，turnCash 修正被移除');
   ok(a.cash >= cashBefore, '③ 合约到期按档位发放结项经费（现金不回退）');
 
   // ④ 收费站 / 车水马龙 按次计
   const t = mkRoom(2); const tb = t.players[0];
   t.grantProject(tb, 'tollbooth');
-  ok(tb.hexLeft.tollbooth === 12 && tb.hex.tollBooth === 260 && tb.hex.tollBoothCap === 880,
-    '④ 收费站 12 次 + tollBooth 260（v6.0 封顶 880）');
-  for (let i = 0; i < 12; i++) t.hexSpend(tb, t.hexKeyWith(tb, 'tollBooth'));
-  ok(tb.hex.tollBooth === undefined && t.hexKeyWith(tb, 'tollBooth') === null, '④ 收费站 12 次收完即止');
+  ok(tb.hexLeft.tollbooth === 10 && tb.hex.tollBooth === 260 && tb.hex.tollBoothCap === 880,
+    '④ 收费站 10 次 + tollBooth 260（v6.0 封顶 880）');
+  for (let i = 0; i < 10; i++) t.hexSpend(tb, t.hexKeyWith(tb, 'tollBooth'));
+  ok(tb.hex.tollBooth === undefined && t.hexKeyWith(tb, 'tollBooth') === null, '④ 收费站 10 次收完即止');
   const tk = mkRoom(2); const tc = tk.players[0]; tk.grantProject(tc, 'tollking');
-  ok(tc.hexLeft.tollking === 12 && tc.hex.tollBooth === 390 && tc.hex.tollBoothCap === 1180 && tc.hex.rentFlat === 120,
-    '④ v6.0 车水马龙 12 次 + 390/1180 + 收租 +120');
+  ok(tc.hexLeft.tollking === 10 && tc.hex.tollBooth === 390 && tc.hex.tollBoothCap === 1180 && tc.hex.rentFlat === 120,
+    '④ v6.0 车水马龙 10 次 + 390/1180 + 收租 +120');
 
   // ⑤ floor 取最大值聚合 + 到期重算
   const f = mkRoom(2); const fp = f.players[0];
@@ -501,9 +506,9 @@ section(10, 'v5.13：海克斯限次（合约期）/ 抽取降彩升银 / 描述
   const gc = mkRoom(2); const gp = gc.players[0];
   gc.grantProject(gp, 'grants');
   const gc0 = gp.cash;
-  for (let i = 0; i < 14; i++) gc.applyHexPassives(gp);
-  ok(gp.hexLeft.grants === 0 && gp.cash - gc0 === 480 * 14 + G.EXPIRY_STIPEND.gold,
-    `⑤ 金级「科研津贴」14 轮到期：14×¥480 + 结项经费 ¥${G.EXPIRY_STIPEND.gold}`);
+  for (let i = 0; i < 12; i++) gc.applyHexPassives(gp);
+  ok(gp.hexLeft.grants === 0 && gp.cash - gc0 === 420 * 12 + G.EXPIRY_STIPEND.gold,
+    `⑤ 金级「科研津贴」12 轮到期：12×¥420 + 结项经费 ¥${G.EXPIRY_STIPEND.gold}`);
 
   // ⑥ 描述校准 + 数值微调
   ok(!/补到 ¥1650/.test(G.PROJECTS.safety.desc) && G.PROJECTS.safety.desc.includes('¥2400')
@@ -532,8 +537,8 @@ section(10, 'v5.13：海克斯限次（合约期）/ 抽取降彩升银 / 描述
 section(11, 'v5.14：海克斯合约再平衡（数值 + 机制）/ 彩卡上调 / 第 32 轮第四次 / 手机竖屏与公告常驻按钮');
 {
   // ① 触发轮改为 v7.0 的 15 次表
-  ok(JSON.stringify(G.HEX_TRIGGERS) === JSON.stringify([2, 8, 15, 23, 32, 41, 51, 62, 74, 86, 98, 110]),
-    '① v7.4 触发轮 = 2/8/15/23/32/41/51/62/74/86/98/110（共 12 次）');
+  ok(JSON.stringify(G.HEX_TRIGGERS) === JSON.stringify([2, 8, 15, 23, 32, 40, 50, 62, 74, 86, 98, 110]),
+    '① v7.5 触发轮 = 2/8/15/23/32/40/50/62/74/86/98/110（共 12 次）');
   const rr = mkRoom(2);
   rr.round = 30; rr.hexDoneRounds = [];
   rr.phase = 'roll'; rr.project = null; rr.clearTimer(); rr.clearAiTimers();
@@ -542,24 +547,25 @@ section(11, 'v5.14：海克斯合约再平衡（数值 + 机制）/ 彩卡上调
   ok(rr.maybeProject() === true, '① 第 32 轮正常开启三选一');
   rr.clearTimer(); rr.clearAiTimers();
 
-  // ② 「每轮生效型」合约一律 ≥12 轮（原先最短 8 轮，中盘就断供）
+  // ② 「每轮生效型」合约一律 ≥8 轮（v7.5：立项次数上调后全局下调次数，阈值由 12 放宽到 8）
   const ROUND_MODS = ['turnCash', 'poorCash', 'noLandCash', 'interestPct', 'weatherCash', 'sunCash', 'landmark', 'legacy', 'floor', 'shieldEach', 'freeReroll',
     'growCash', 'richDrain', 'comeback', 'roundPay', 'coinCash', 'taxLevelCut', 'taxCut'];
   const roundType = Object.keys(G.PROJECTS).filter(k => {
     const m = G.PROJECTS[k].mods || {};
     return G.PROJECTS[k].charges && ROUND_MODS.some(mk => m[mk] !== undefined);
   });
-  const shortRound = roundType.filter(k => G.PROJECTS[k].charges < 12);
+  const shortRound = roundType.filter(k => G.PROJECTS[k].charges < 8);
   ok(roundType.length >= 24 && shortRound.length === 0,
-    `② 每轮生效型限次项目 ${roundType.length} 个，合约全部 ≥12 轮${shortRound.length ? '（过短：' + shortRound.join('/') + '）' : ''}`);
+    `② 每轮生效型限次项目 ${roundType.length} 个，合约全部 ≥8 轮${shortRound.length ? '（过短：' + shortRound.join('/') + '）' : ''}`);
 
-  // ③ 「事件触发型」（过起点 / 过路费 / 收租加成 / 基金抽成）合约 ≥12 次
+  // ③ 「事件触发型」（过起点 / 过路费 / 收租加成 / 基金抽成）合约 ≥8 次（双倍工资超模定向削到 3 次除外）
   const evType = Object.keys(G.PROJECTS).filter(k => {
     const m = G.PROJECTS[k].mods || {};
     return G.PROJECTS[k].charges && ['goCash', 'tollBooth', 'rentFlat', 'fundKick'].some(mk => m[mk] !== undefined);
   });
-  ok(evType.length >= 6 && evType.every(k => G.PROJECTS[k].charges >= 12),
-    `③ 事件触发型限次项目 ${evType.length} 个（${evType.join('/')}）合约全部 ≥12 次`);
+  const evShort = evType.filter(k => G.PROJECTS[k].charges < 8 && k !== 'salaryx2');
+  ok(evType.length >= 6 && evShort.length === 0,
+    `③ 事件触发型限次项目 ${evType.length} 个（${evType.join('/')}）合约全部 ≥8 次${evShort.length ? '（过短：' + evShort.join('/') + '）' : '（双倍工资 3 次为定向削弱）'}`);
 
   // ④ 每张限次卡的 desc 里的「限 N 轮/次」必须与 charges 数字一致（防止改数值忘改描述）
   const mismatch = [];
@@ -575,12 +581,12 @@ section(11, 'v5.14：海克斯合约再平衡（数值 + 机制）/ 彩卡上调
   ok(G.EXPIRY_STIPEND.silver === 300 && G.EXPIRY_STIPEND.gold === 650 && G.EXPIRY_STIPEND.prism === 1300,
     '⑤ 结项经费常量：银 300 / 金 650 / 彩 1300');
   const se = mkRoom(2); const pe = se.players[0];
-  se.grantProject(pe, 'waterfree');          // 银：turnCash 185，16 轮
+  se.grantProject(pe, 'waterfree');          // 银：turnCash 185，13 轮（v7.5 下调）
   const c0 = pe.cash;
   for (let i = 0; i < 16; i++) se.applyHexPassives(pe);
-  // 逐轮 16 次给过 185（约 2960）+ 结项经费 300，扣除无关技能波动只看「至少拿到结项经费」
-  ok(pe.hexLeft.waterfree === 0 && pe.hex.turnCash === undefined && pe.cash - c0 >= 300 + 185 * 16 * 0.9,
-    `⑤ 免费开水 16 轮到期 + 结项经费入账（净增 ¥${pe.cash - c0}）`);
+  // 逐轮给过 185 × 13 + 结项经费 300 = 2705；超出 13 轮后合约已到期，不再有 turnCash
+  ok(pe.hexLeft.waterfree === 0 && pe.hex.turnCash === undefined && pe.cash - c0 >= 300 + 185 * 13 * 0.9,
+    `⑤ 免费开水 13 轮到期 + 结项经费入账（净增 ¥${pe.cash - c0}）`);
   const se2 = mkRoom(2); const pe2 = se2.players[0];
   const evs = [];
   se2.ev = (e) => { evs.push(e); };
@@ -590,8 +596,8 @@ section(11, 'v5.14：海克斯合约再平衡（数值 + 机制）/ 彩卡上调
   ok(expEv && expEv.key === 'headstart' && expEv.stipend === 1300, '⑤ hex_expire 事件带上 stipend=1300（供前端播报）');
 
   // ⑥ 双倍工资不再是一张「停薪后即死」的卡
-  ok(G.PROJECTS.salaryx2.mods.salaryX2 === 1 && G.PROJECTS.salaryx2.mods.goCash === 800 && G.PROJECTS.salaryx2.charges === 12,
-    '⑥ v6.0：双倍工资 = 工资 ×2 + 过起点 +¥800（限 12 次）');
+  ok(G.PROJECTS.salaryx2.mods.salaryX2 === 1 && G.PROJECTS.salaryx2.mods.goCash === 500 && G.PROJECTS.salaryx2.charges === 3,
+    '⑥ v7.5：双倍工资 = 工资 ×2 + 过起点 +¥500（超模定向削弱至限 3 次）');
   const wd = mkRoom(2, { hex: true });
   wd.round = 23; wd.hexDoneRounds = [];   // 23 轮在 v7.4 触发表内，且已在停薪线（15 轮）之后
   wd.maybeProject(); wd.clearTimer(); wd.clearAiTimers();
