@@ -78,20 +78,20 @@ console.log('\n[2] 开局投票 + 随机抽取（照搬"幸运儿"机制，非�
 }
 
 // ---------------- [3] 都市校区 ----------------
-console.log('\n[3] 都市校区：工资 ¥2250 / 地价 +3%');
+console.log('\n[3] 都市校区：工资 ¥2500 / 地价 +4%（v7.2 激进）');
 {
   const r = mkRoom(2, ['agri', 'agri'], 'urban');
-  ok(r.wageOf() === SALARY + 250, `起点工资 ¥${r.wageOf()}（基准 ¥${SALARY}）`);
+  ok(r.wageOf() === SALARY + 500, `起点工资 ¥${r.wageOf()}（基准 ¥${SALARY}）`);
   const g = landOf('general', 10000), u = landOf('urban', 10000);
-  ok(Math.abs(u - g * 1.03) <= 1, `地价 +3%：¥${g} → ¥${u}`);
+  ok(Math.abs(u - g * 1.04) <= 1, `地价 +4%：¥${g} → ¥${u}`);
 }
 
 // ---------------- [4] 园林校区 ----------------
-console.log('\n[4] 园林校区：地价 −4% / 工资 ¥1800');
+console.log('\n[4] 园林校区：地价 −7% / 工资 ¥1800（v7.2 温和）');
 {
   const r = mkRoom(2, ['agri', 'agri'], 'garden');
   const g = landOf('general', 10000), v = landOf('garden', 10000);
-  ok(Math.abs(v - g * 0.96) <= 1, `地价 −4%：¥${g} → ¥${v}`);
+  ok(Math.abs(v - g * 0.93) <= 1, `地价 −7%：¥${g} → ¥${v}`);
   ok(r.wageOf() === 1800, `起点工资 ¥${r.wageOf()}`);
 }
 
@@ -105,7 +105,7 @@ console.log('\n[5] 百年学府：每 3 轮 ¥450 捐款 / 前 3 轮租金 ×0.9
   r.round = 3;
   const before = r.players.map(p => p.cash);
   r.applyFacultyRound();
-  ok(r.players.every((p, i) => p.cash === before[i] + 450), '第 3 轮校友捐款到账：全场 +¥450（v7.0）');
+  ok(r.players.every((p, i) => p.cash === before[i] + 600), '第 3 轮校友捐款到账：全场 +¥600（v7.2 温和）');
   const b2 = r.players.map(p => p.cash);
   r.round = 4; r.applyFacultyRound();
   ok(r.players.every((p, i) => p.cash === b2[i]), '第 4 轮不发捐款（每 3 轮一次）');
@@ -115,17 +115,17 @@ console.log('\n[5] 百年学府：每 3 轮 ¥450 捐款 / 前 3 轮租金 ×0.9
 console.log('\n[6] 理工校区：升级费 −8% / 卡牌收益 −7%');
 {
   const r = mkRoom(2, ['agri', 'agri'], 'tech');
-  ok(r.facBuildMul() === 0.92, '建筑升级费 ×0.92');
+  ok(r.facBuildMul() === 0.88, '建筑升级费 ×0.88（v7.2 温和）');
   ok(r.facCardMoney(1000, 'chance') === 930, `机会卡 ¥1000 → ¥${r.facCardMoney(1000, 'chance')}（−7%）`);
   ok(r.facCardMoney(-1000, 'fate') === -930, `命运卡 −¥1000 → ¥${r.facCardMoney(-1000, 'fate')}（少损 7%）`);
 }
 
 // ---------------- [7] 综合校区 ----------------
-console.log('\n[7] 综合校区：正面卡 +¥200 / 负面卡少损 ¥200');
+console.log('\n[7] 综合校区：正面卡 +¥450 / 负面卡少损 ¥450（v7.2 激进）');
 {
   const r = mkRoom(2, ['agri', 'agri'], 'general');
-  ok(r.facCardMoney(1000, 'chance') === 1200, `正面卡 ¥1000 → ¥${r.facCardMoney(1000, 'chance')}`);
-  ok(r.facCardMoney(-1000, 'fate') === -800, `负面卡 −¥1000 → ¥${r.facCardMoney(-1000, 'fate')}`);
+  ok(r.facCardMoney(1000, 'chance') === 1450, `正面卡 ¥1000 → ¥${r.facCardMoney(1000, 'chance')}`);
+  ok(r.facCardMoney(-1000, 'fate') === -550, `负面卡 −¥1000 → ¥${r.facCardMoney(-1000, 'fate')}`);
   ok(r.facCardMoney(-100, 'fate') === 0, '小额负面卡最多减免到 0（不会倒赚）');
 }
 
@@ -139,19 +139,19 @@ console.log('\n[8] 商科校区：抵押 58% / 赎回 +8% 手续费');
   r.phase = 'raise'; r.raise = { pid: p.id, need: 999999, creditor: null, toPool: false };
   const c0 = p.cash; r.mortgage(p, ci);
   const got = p.cash - c0;
-  ok(got === Math.floor(price(ci) * 0.58), `抵押得 ¥${got}（地价 ${price(ci)} × 58%）`);
+  ok(got === Math.floor(price(ci) * 0.62), `抵押得 ¥${got}（地价 ${price(ci)} × 62%，v7.2 温和）`);
   r.round = 3;   // 熬过两轮赎回锁
   const c1 = p.cash; r.redeem(p, ci);
   const paid = c1 - p.cash;
-  ok(paid === Math.round(Math.floor(price(ci) * 0.58) * 1.08), `赎回付 ¥${paid}（含 8% 手续费）`);
+  ok(paid === Math.round(Math.floor(price(ci) * 0.62) * 1.06), `赎回付 ¥${paid}（含 6% 手续费，v7.2 温和）`);
   ok(r.cells[ci].mortgaged === false, '赎回后抵押状态解除');
 }
 
 // ---------------- [9] 国际校区 ----------------
-console.log('\n[9] 国际校区：岔路奖励 ×1.12 / 长廊门槛降到 1 块地');
+console.log('\n[9] 国际校区：岔路奖励 ×1.25 +¥300 / 长廊门槛降到 1 块地（v7.2 温和）');
 {
   const r = mkRoom(1, ['agri'], 'intl');
-  ok(r.facBranch(1000) === 1120, `岔路奖励 ¥1000 → ¥${r.facBranch(1000)}`);
+  ok(r.facBranch(1000) === 1550, `岔路奖励 ¥1000 → ¥${r.facBranch(1000)}（×1.25 +¥300）`);
   const p = cur(r);
   r.cells[firstProp()].own = p.id;   // 只有 1 块地
   p.pos = BOARD.findIndex(c => c.type === 'junction');
@@ -212,7 +212,7 @@ console.log('\n[12] 改革校区：每轮 +¥450 / 租金 ×1.05');
 }
 
 // ---------------- [13] 医学校区 ----------------
-console.log('\n[13] 医学校区：大额租金减免 15%（≥¥1200）/ 罚款类 +20%');
+console.log('\n[13] 医学校区：大额租金减免 20%（≥¥1000）/ 罚款类 +20%（v7.2 温和）');
 {
   const r = mkRoom(2, ['agri', 'agri'], 'med');
   ok(r.facFine(1200) === 1440, `补考费 ¥1200 → ¥${r.facFine(1200)}`);
@@ -227,7 +227,7 @@ console.log('\n[13] 医学校区：大额租金减免 15%（≥¥1200）/ 罚款
   const c0 = pay.cash;
   r.resolveCell(pay);
   const paid = c0 - pay.cash;
-  ok(raw >= 1200 ? paid === Math.round(raw * 0.85) : paid === raw, `被收租 ¥${raw} → 实付 ¥${paid}（减免 15%，v7.0）`);
+  ok(raw >= 1000 ? paid === Math.round(raw * 0.80) : paid === raw, `被收租 ¥${raw} → 实付 ¥${paid}（减免 20%，v7.2）`);
 }
 
 // ---------------- [14] 农业校区 ----------------
@@ -239,7 +239,7 @@ console.log('\n[14] 农业校区：过起点额外 +¥450 / 升级费 +3%');
 }
 
 // ---------------- [15] 艺术校区 ----------------
-console.log('\n[15] 艺术校区：效果卡多抽 2 张 / 地价 +4%');
+console.log('\n[15] 艺术校区：效果卡多抽 2 张（必出 SR）/ 地价 +5%（v7.2）');
 {
   const r = mkRoom(1, ['agri'], 'art');
   const p = cur(r);
@@ -249,18 +249,18 @@ console.log('\n[15] 艺术校区：效果卡多抽 2 张 / 地价 +4%');
   const ev = r.events.find(e => e.t === 'draw');
   ok(ev && ev.n >= 3, `校园商城盲盒抽到 ${ev && ev.n} 张（基准 1~3 张，艺术校区 +2，v7.0）`);
   const g = landOf('general', 10000), a = landOf('art', 10000);
-  ok(Math.abs(a - g * 1.04) <= 1, `地价 +4%：¥${g} → ¥${a}`);
+  ok(Math.abs(a - g * 1.05) <= 1, `地价 +5%：¥${g} → ¥${a}`);
 }
 
 // ---------------- [16] 科技园区 ----------------
-console.log('\n[16] 科技园区：科研返还 +20% / 机会卡 −10%');
+console.log('\n[16] 科技园区：科研返还 +50%（1 轮结题）/ 机会卡 −10%（v7.2 温和）');
 {
   const r = mkRoom(1, ['agri'], 'park');
   const p = cur(r); p.cash = 30000;
   p.pos = BOARD.findIndex(c => c.type === 'invest');
   r.phase = 'resolving';
   r.resolveCell(p);
-  ok(r.pendingInvest && r.pendingInvest.back === 4050, `科研立项 2 轮后返还 ¥${r.pendingInvest && r.pendingInvest.back}（基准 ¥3000，v7.0 +35%）`);
+  ok(r.pendingInvest && r.pendingInvest.back === 4500 && r.pendingInvest.rounds === 1, `科研立项 1 轮后返还 ¥${r.pendingInvest && r.pendingInvest.back}（基准 ¥3000，v7.2 +50%）`);
   r.clearTimer();
   ok(r.facCardMoney(1000, 'chance') === 900, `机会卡 ¥1000 → ¥${r.facCardMoney(1000, 'chance')}（−10%）`);
   ok(r.facCardMoney(1000, 'fate') === 1000, '命运卡收益不受影响（只砍机会卡）');
@@ -288,7 +288,7 @@ console.log('\n[17] 师范校区：每 8 轮发免停留卡 / 免停留卡抵消
 }
 
 // ---------------- [18] 书香校区 ----------------
-console.log('\n[18] 书香校区：机会卡 +¥400 / 命运卡负面 +15%');
+console.log('\n[18] 书香校区：机会卡 +¥450 / 命运卡负面 +15%（v7.2 温和）');
 {
   const r = mkRoom(1, ['agri'], 'book');
   const p = cur(r);
@@ -296,11 +296,11 @@ console.log('\n[18] 书香校区：机会卡 +¥400 / 命运卡负面 +15%');
   r.events = [];
   r.drawCard(p, CHANCE, 'chance');
   const bonus = r.events.filter(e => e.t === 'money' && e.reason === '书香校区').reduce((s, e) => s + e.amount, 0);
-  ok(bonus === 400, `抽到机会卡额外 +¥${bonus}（v7.0：250→400）`);
+  ok(bonus === 450, `抽到机会卡额外 +¥${bonus}（v7.2：400→450）`);
 }
 
 // ---------------- [19] 生活区校区 ----------------
-console.log('\n[19] 生活区校区：公用事业/机场 ×0.92 / 地价 +3%');
+console.log('\n[19] 生活区校区：公用事业/机场 ×0.80 / 地价 +3%（v7.2 温和）');
 {
   const r = mkRoom(2, ['agri', 'agri'], 'life');
   const owner = r.players[0];
@@ -308,9 +308,9 @@ console.log('\n[19] 生活区校区：公用事业/机场 ×0.92 / 地价 +3%');
   const ti = BOARD.findIndex(c => c.type === 'transport');
   r.cells[ui].own = owner.id; r.cells[ti].own = owner.id;
   const utilRent = r.calcRent(ui, [3, 4]);
-  ok(utilRent === Math.round(7 * 100 * 0.87), `公用事业租金（1 家 ×100）= ¥${utilRent}（已 ×0.87，v7.0）`);
+  ok(utilRent === Math.round(7 * 100 * 0.80), `公用事业租金（1 家 ×100）= ¥${utilRent}（已 ×0.80，v7.2）`);
   const trRent = r.calcRent(ti, [3, 4]);
-  ok(trRent === Math.round(800 * 0.87), `机场路费（1 座 ¥800，v5.9）= ¥${trRent}（已 ×0.87，v7.0）`);
+  ok(trRent === Math.round(800 * 0.80), `机场路费（1 座 ¥800，v5.9）= ¥${trRent}（已 ×0.80，v7.2）`);
   const g = landOf('general', 10000), l = landOf('life', 10000);
   ok(Math.abs(l - g * 1.03) <= 1, `地价 +3%：¥${g} → ¥${l}`);
   // 对照：普通风貌下不加成
@@ -402,12 +402,12 @@ console.log('\n[24] 免费轮校区：随机 2 轮买地、盖楼免费');
 }
 
 // ---------------- [25] 免租轮校区 ----------------
-console.log('\n[25] 免租轮校区：随机 5 轮全场免租');
+console.log('\n[25] 免租轮校区：随机 4 轮全场免租（v7.2）');
 {
   const r = mkRoom(2, ['agri', 'agri'], 'freeRent');
-  ok(r.freeRentRounds.length === 5, `抽中 5 个免租轮：第 ${r.freeRentRounds.join(' / ')} 轮`);
-  ok(new Set(r.freeRentRounds).size === 5, '5 个免租轮互不重复');
-  ok(r.freeRentRounds.every(x => x >= 1 && x <= 10), '免租轮都落在首届窗口第 1~10 轮之间（v7.0 抽 5 轮）');
+  ok(r.freeRentRounds.length === 4, `抽中 4 个免租轮：第 ${r.freeRentRounds.join(' / ')} 轮`);
+  ok(new Set(r.freeRentRounds).size === 4, '4 个免租轮互不重复');
+  ok(r.freeRentRounds.every(x => x >= 1 && x <= 10), '免租轮都落在首届窗口第 1~10 轮之间（v7.2 抽 4 轮）');
   ok(r.facRentMul() === 1.08, '代价：其余轮次租金 ×1.08（v7.0）');
   const owner = r.players[0], pay = r.players[1];
   pay.cash = 20000;

@@ -57,9 +57,9 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
     await page.goto(BASE, { waitUntil: 'domcontentloaded' });
     await sleep(800);
     const ann = await page.evaluate(() => (document.querySelector('#intro .announce-logo') || {}).textContent || '');
-    ok(/v7\.1/.test(ann), `开局公告标题：${ann.trim()}`);
+    ok(/v7\.[12]/.test(ann), `开局公告标题：${ann.trim()}`);
     const sub = await page.evaluate(() => (document.querySelector('.announce-sub') || {}).textContent || '');
-    ok(/v7\.1/.test(sub), `副标题版本号：${sub.trim()}`);
+    ok(/v7\.[12]/.test(sub), `副标题版本号：${sub.trim()}`);
 
     const mir = await page.evaluate(() => {
       const F = (typeof FACULTY !== 'undefined') ? FACULTY.hexEarly : null;
@@ -73,7 +73,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
     const src = fs.readFileSync(path.join(__dirname, 'public/client.js'), 'utf8');
     const css = fs.readFileSync(path.join(__dirname, 'public/style.css'), 'utf8');
     const html = fs.readFileSync(path.join(__dirname, 'public/index.html'), 'utf8');
-    ok(/v7\.1/.test(html), 'index.html 已更新到 v7.1');
+    ok(/v7\.[12]/.test(html), 'index.html 已更新到 v7.x');
     ok(/hx-rays/.test(src) && /hx-orbit/.test(src) && /hx-badge/.test(src), 'client.js 已渲染光轴/光环/徽章');
     ok(/hxBadge/.test(css) && /hxStamp/.test(css) && /hxPillar/.test(css) && /hxSeal/.test(css), 'CSS 四个关键 keyframes 齐备');
     await shot(page, '10-lobby.png');

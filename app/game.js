@@ -568,71 +568,71 @@ const FATE = [
 // 结构：每个风貌 = 1 个主效果（lead）+ 1 个代价（cost），无一纯赚；
 //   全局幅度控制在「整局 ±¥3000~6000」（约一局总资产的 5%），且不在既有租金乘数上叠新系数。
 const FACULTY = {
-  urban:    { name: '都市校区',   icon: '🏙️', color: '#4A90D9', lead: '经过起点工资 ¥2250（+250）',           cost: '所有地皮买入价 +3%',              tag: '钱来得快，地也贵' },
-  garden:   { name: '园林校区',   icon: '🌳', color: '#6FAE3F', lead: '所有地皮买入价 −4%',                  cost: '经过起点工资 ¥1800（−200）',       tag: '便宜是便宜，就是远' },
-  ancient:  { name: '百年学府',   icon: '🏛️', color: '#C8941F', terms: [1, 1], lead: '每 3 轮全场各领 ¥450 校友捐款',         cost: '本届前 3 轮全场租金 ×0.93',         tag: '底蕴要慢慢显（只在第一轮城邦出现）' },
-  tech:     { name: '理工校区',   icon: '🔬', color: '#2E7BC4', lead: '全场建筑升级费 −8%',                  cost: '机会 / 命运卡的金钱收益 −7%',       tag: '自己动手，丰衣足食' },
-  general:  { name: '综合校区',   icon: '🎓', color: '#9A968C', lead: '正面卡 +¥200、负面卡少损失 ¥200',       cost: '无——但也没有爆发点',              tag: '什么都有点，什么都不极致' },
-  biz:      { name: '商科校区',   icon: '💼', color: '#A9682B', lead: '抵押可拿地价 58%（基准 50%）',          cost: '赎回时多付 8% 手续费',             tag: '银行永远在你身边，也永远在收你的钱' },
-  intl:     { name: '国际校区',   icon: '🌏', color: '#1FA37A', lead: '岔路奖励 ×1.12、长廊入口门槛降到 1 块地', cost: '主路机会卡的收益 −15%',            tag: '世界那么大，出去看看' },
+  urban:    { name: '都市校区',   icon: '🏙️', color: '#4A90D9', lead: '经过起点工资 ¥2500（+500），且每轮现金 <¥3000 者再领 ¥400 通勤补助', cost: '所有地皮买入价 +4%',              tag: '钱来得快，地也贵' },
+  garden:   { name: '园林校区',   icon: '🌳', color: '#6FAE3F', lead: '所有地皮买入价 −7%，且买地时 20% 概率返还 15% 地价',                  cost: '经过起点工资 ¥1800（−200）',       tag: '便宜是便宜，就是远' },
+  ancient:  { name: '百年学府',   icon: '🏛️', color: '#C8941F', terms: [1, 1], lead: '每 3 轮全场各领 ¥600 校友捐款；第 6 轮起每 3 轮再抽 1 人得 ¥1200 校友礼包',         cost: '本届前 3 轮全场租金 ×0.93',         tag: '底蕴要慢慢显（只在第一轮城邦出现）' },
+  tech:     { name: '理工校区',   icon: '🔬', color: '#2E7BC4', lead: '全场建筑升级费 −12%，且盖房时 30% 概率返还 20% 工程款',                  cost: '机会 / 命运卡的金钱收益 −7%',       tag: '自己动手，丰衣足食' },
+  general:  { name: '综合校区',   icon: '🎓', color: '#9A968C', lead: '正面卡 +¥450、负面卡少损失 ¥450，且每抽一张卡有 25% 概率额外再抽 1 张',       cost: '无——但也没有爆发点',              tag: '什么都有点，什么都不极致' },
+  biz:      { name: '商科校区',   icon: '💼', color: '#A9682B', lead: '抵押可拿地价 62%（基准 50%）',          cost: '赎回时多付 6% 手续费',             tag: '银行永远在你身边，也永远在收你的钱' },
+  intl:     { name: '国际校区',   icon: '🌏', color: '#1FA37A', lead: '岔路奖励 ×1.25 且每次额外 +¥300、长廊入口门槛降到 1 块地', cost: '主路机会卡的收益 −15%',            tag: '世界那么大，出去看看' },
   sports:   { name: '文体校区',   icon: '🎪', color: '#E2564F', lead: '擂台/运动会赌注 ×1.35、每轮首次重投 7 折', cost: '全场租金 ×0.96',                  tag: '打球要花钱，打架要命' },
-  finance:  { name: '金融校区',   icon: '🏦', color: '#D9A32B', lead: '基金池上限 ¥32000、每轮注入 ¥800',      cost: '物业税起征门槛降低 1',              tag: '池子大了，谁都想跳进去' },
+  finance:  { name: '金融校区',   icon: '🏦', color: '#D9A32B', lead: '基金池上限 ¥32000、每轮注入 ¥800，溢出均分时最穷者拿 1.5 份',      cost: '物业税起征门槛降低 1（建筑与地皮各 −1）',              tag: '池子大了，谁都想跳进去' },
   reform:   { name: '改革校区',   icon: '⚡', color: '#E07A45', lead: '全场每轮开局 +¥450',                  cost: '全场租金 ×1.05',                    tag: '速战速决，谁都别想慢慢发育' },
-  med:      { name: '医学校区',   icon: '🩺', color: '#D9648F', lead: '单笔被收租 ≥¥1200 时减免 15%',         cost: '罚款类支出 +20%',                   tag: '治得了大病，治不了穷' },
+  med:      { name: '医学校区',   icon: '🩺', color: '#D9648F', lead: '单笔被收租 ≥¥1000 时减免 20%，每届还有 1 次「急救」（现金归零补到 ¥2000）',         cost: '罚款类支出 +20%',                   tag: '治得了大病，治不了穷' },
   agri:     { name: '农业校区',   icon: '🌾', color: '#8FC24F', lead: '经过起点额外领 ¥450',                 cost: '建筑升级费 +3%',                    tag: '春种秋收，急不来' },
-  art:      { name: '艺术校区',   icon: '🎨', color: '#8E86E0', lead: '效果卡盲盒每次多抽 2 张',               cost: '地皮买入价 +4%',                    tag: '灵感多，钱少' },
-  park:     { name: '科技园区',   icon: '🚀', color: '#6B60C9', lead: '科研基金会返还 +35%（净赚 ¥2050）',     cost: '机会卡的收益 −10%',                 tag: '立项要靠硬实力' },
+  art:      { name: '艺术校区',   icon: '🎨', color: '#8E86E0', lead: '效果卡盲盒每次多抽 2 张，且必出 SR 及以上',               cost: '地皮买入价 +5%',                    tag: '灵感多，钱少' },
+  park:     { name: '科技园区',   icon: '🚀', color: '#6B60C9', lead: '科研基金会返还 ¥4500（+50%），且立项 1 轮即结题',     cost: '机会卡的收益 −10%',                 tag: '立项要靠硬实力' },
   normal:   { name: '师范校区',   icon: '🎯', color: '#2BB88C', lead: '每过 8 轮全场各得 1 张「免停留卡」',    cost: '全场租金 ×0.97',                    tag: '老师总是手下留情' },
-  book:     { name: '书香校区',   icon: '📚', color: '#B04B2C', lead: '每抽到一张机会卡 +¥400',               cost: '命运卡的负面金额 +10%',             tag: '书中自有黄金屋，也有催款单' },
-  life:     { name: '生活区校区', icon: '🍜', color: '#E88A6F', lead: '文印店/快递租金、机场路费 ×0.87',       cost: '地皮买入价 +3%',                    tag: '生活便利，就是有点挤' },
+  book:     { name: '书香校区',   icon: '📚', color: '#B04B2C', lead: '每抽到一张机会卡 +¥450，每累计 3 张再送 1 张效果卡盲盒',               cost: '命运卡的负面金额 +15%',             tag: '书中自有黄金屋，也有催款单' },
+  life:     { name: '生活区校区', icon: '🍜', color: '#E88A6F', lead: '文印店/快递租金、机场路费 ×0.80，踩到公用事业再补 ¥250',       cost: '地皮买入价 +3%',                    tag: '生活便利，就是有点挤' },
   austerity:{ name: '紧缩校区',   icon: '⏰', color: '#6E6C66', terms: [1, 2], lead: '本届免征物业税',                    cost: '银行提前 5 轮停发工资（第 10 轮起）', tag: '勒紧腰带过日子' },
   boom:     { name: '繁荣校区',   icon: '🌇', color: '#C99A3F', terms: [1, 2], lead: '停发工资推迟 6 轮、过起点额外 +¥320',   cost: '所有地皮买入价 +6%',                tag: '日子还长，先涨个价' },
   nofund:   { name: '限薪校区',   icon: '🏚️', color: '#9B3A3A', terms: [1, 2], lead: '全场地价 −15%、升级费 −13%',           cost: '本届起停发起点工资',                tag: '没有工资，全凭本事' },
   retrain:  { name: '进修校区',   icon: '📖', color: '#5548B0', lead: '当选时全场技能次数 +2',                 cost: '所有地皮买入价 +3%',                tag: '多学一门手艺' },
   freeRound:{ name: '免费轮校区', icon: '🎟️', color: '#4E9B2A', lead: '随机 2 轮全场买地、盖楼完全免费',       cost: '全场租金 ×1.08',                    tag: '那一轮，随便花' },
-  freeRent: { name: '免租轮校区', icon: '🕊️', color: '#3FBF9E', lead: '随机 5 轮全场所有人免交租金',           cost: '其余轮次全场租金 ×1.08',            tag: '这五轮，谁也别想收租' },
+  freeRent: { name: '免租轮校区', icon: '🕊️', color: '#3FBF9E', lead: '随机 4 轮全场所有人免交租金',           cost: '其余轮次全场租金 ×1.08',            tag: '这四轮，谁也别想收租' },
   // ===== v5.10 新增：「海克斯定调」六城（只在第一轮城邦推选出现，且候选权重更高） =====
-  hxPrism:  { name: '彩霞之城',   icon: '🌈', color: '#B76CE8', hexTheme: 1, terms: [1, 1], lead: '本局海克斯前三次必出国家级（棱彩）',  cost: '全场租金 ×1.05',                    tag: '天降紫雨，只下前三发' },
-  hxSilver: { name: '白银学城',   icon: '⚪', color: '#8FA6BF', hexTheme: 1, terms: [1, 1], lead: '本局海克斯前三次必出校级（银）',      cost: '所有地皮买入价 +3%',                tag: '稳扎稳打，从不惊喜' },
-  hxGold:   { name: '黄金学府',   icon: '🟡', color: '#E8B04B', hexTheme: 1, terms: [1, 1], lead: '本局海克斯前三次必出省级（金）',      cost: '全场租金 ×1.04',                    tag: '含金量直接拉满' },
-  hxMix:    { name: '极光之城',   icon: '🌌', color: '#7B68EE', hexTheme: 1, terms: [1, 1], lead: '本局海克斯前三次必为银/金/彩各一个',  cost: '物业税起征门槛降低 1',              tag: '雨露均沾，档档来一遍' },
+  hxPrism:  { name: '彩霞之城',   icon: '🌈', color: '#B76CE8', hexTheme: 1, terms: [1, 1], lead: '本局海克斯前四次必出国家级（棱彩）',  cost: '全场租金 ×1.06',                    tag: '天降紫雨，只下前四发' },
+  hxSilver: { name: '白银学城',   icon: '⚪', color: '#8FA6BF', hexTheme: 1, terms: [1, 1], lead: '本局海克斯前四次必出校级（银），且每次额外送 1 张 R 效果卡',      cost: '所有地皮买入价 +3%',                tag: '稳扎稳打，从不惊喜' },
+  hxGold:   { name: '黄金学府',   icon: '🟡', color: '#E8B04B', hexTheme: 1, terms: [1, 1], lead: '本局海克斯前四次必出省级（金）',      cost: '全场租金 ×1.05',                    tag: '含金量直接拉满' },
+  hxMix:    { name: '极光之城',   icon: '🌌', color: '#7B68EE', hexTheme: 1, terms: [1, 1], lead: '本局海克斯前四次必为银/金/彩各一，第四次随机金或彩',  cost: '物业税起征门槛降低 1',              tag: '雨露均沾，档档来一遍' },
   hex3:     { name: '精研之城',   icon: '🧭', color: '#3FBF9E', hexTheme: 1, terms: [1, 1], lead: '本局海克斯只有 3 次（第 2/8/16 轮）', cost: '此后所有立项机会全部取消——选卡时记得用刷新', tag: '少即是多，张张要紧' },
   hexEarly: { name: '时光之城',   icon: '⏳', color: '#E07A45', hexTheme: 1, terms: [1, 1], lead: '15 次立项全部提前：第 2/6/12/19/26/33/40/47/54/61/68/75/82/88/94 轮', cost: '第 94 轮后就再也没有立项机会',      tag: '早起的鸟儿有项目吃' },
   // ===== v5.10 新增：30 个娱乐城邦（一利一弊，幅度克制，主打好玩） =====
-  lantern:  { name: '灯会校区',   icon: '🏮', color: '#E8A23F', lead: '每轮开场全场 +¥220 灯会补贴',           cost: '全场租金 ×1.03',                    tag: '张灯结彩，人人有份' },
+  lantern:  { name: '灯会校区',   icon: '🏮', color: '#E8A23F', lead: '每轮开场全场 +¥300 灯会补贴，每 5 轮再抽 1 名「灯王」独得 ¥1500',           cost: '全场租金 ×1.03',                    tag: '张灯结彩，人人有份' },
   midterm:  { name: '期中周校区', icon: '📝', color: '#8E86E0', lead: '每 5 轮全场各缴 ¥520 助学捐款',         cost: '躲不掉——人人有份，直接进基金池',     tag: '谁也别想逃' },
-  lottery:  { name: '抽奖校区',   icon: '🎰', color: '#D9437A', lead: '每 3 轮随机 1 人独中 ¥1600',            cost: '其余人各付 ¥150 参与费',            tag: '一夜暴富的梦想还是要有的' },
+  lottery:  { name: '抽奖校区',   icon: '🎰', color: '#D9437A', lead: '每 3 轮随机 1 人独中 ¥2400（10% 概率头奖翻倍）',            cost: '其余人各付 ¥200 参与费',            tag: '一夜暴富的梦想还是要有的' },
   oldbook:  { name: '旧书集校区', icon: '📦', color: '#A9682B', lead: '每 3 轮按名下地皮数 ×¥180 摆摊收益',    cost: '基金池上限 −15%',                   tag: '书摊支起来，地越多越赚' },
-  nightowl: { name: '夜猫校区',   icon: '🌙', color: '#5548B0', lead: '每轮开场现金最少者 +¥900',              cost: '现金最多者缴 ¥450 进基金池',         tag: '熬夜的人有补贴' },
-  shuffle:  { name: '洗牌校区',   icon: '🔀', color: '#2E9BC4', lead: '每 6 轮全场所有玩家随机互换现金（也可能换了个寂寞）', cost: '全场租金 ×1.02',               tag: '钱在谁手里，全看天意' },
-  stampede: { name: '早八校区',   icon: '🌅', color: '#F2B33D', lead: '掷出 7 点 +¥450（准时到教室）',         cost: '掷出 ≤3 点 −¥220（起晚了）',        tag: '早八人的悲欢并不相通' },
+  nightowl: { name: '夜猫校区',   icon: '🌙', color: '#5548B0', lead: '每轮开场现金最少者 +¥1500',              cost: '现金最多者缴 ¥800 进基金池',         tag: '熬夜的人有补贴' },
+  shuffle:  { name: '洗牌校区',   icon: '🔀', color: '#2E9BC4', lead: '每 4 轮全场所有玩家随机互换现金（也可能换了个寂寞）', cost: '全场租金 ×1.02',               tag: '钱在谁手里，全看天意' },
+  stampede: { name: '早八校区',   icon: '🌅', color: '#F2B33D', lead: '掷出 7 点 +¥750（准时到教室）',         cost: '掷出 ≤3 点 −¥400（起晚了）',        tag: '早八人的悲欢并不相通' },
   carnival: { name: '嘉年华校区', icon: '🎡', color: '#E2569F', lead: '每轮首次重投打 7 折（v6.0 修好：旧版重投没效果）', cost: '全场租金 ×1.05',                    tag: '今天全场都是游乐场' },
-  liberal:  { name: '通识校区',   icon: '🎭', color: '#6FAE3F', lead: '每抽一张命运卡 +¥250',                  cost: '机会卡的收益 −8%',                  tag: '命运的馈赠暗中标好了价' },
-  dorm:     { name: '宿舍校区',   icon: '🛏️', color: '#B04B2C', lead: '被罚停留时 +¥1200 休整补贴',             cost: '所有地皮买入价 +4%',                tag: '躺平也有躺平的收入' },
+  liberal:  { name: '通识校区',   icon: '🎭', color: '#6FAE3F', lead: '每抽一张命运卡 +¥400',                  cost: '机会卡的收益 −10%',                  tag: '命运的馈赠暗中标好了价' },
+  dorm:     { name: '宿舍校区',   icon: '🛏️', color: '#B04B2C', lead: '被罚停留时 +¥1600 休整补贴，且 30% 概率直接放行',             cost: '所有地皮买入价 +4%',                tag: '躺平也有躺平的收入' },
   runner:   { name: '校车站校区', icon: '🚌', color: '#3F8FBF', lead: '掷出双数时 +¥400（班来得巧）',          cost: '所有地皮买入价 +3%',                tag: '等车的时间也是钱' },
-  cafe:     { name: '咖啡校区',   icon: '☕', color: '#8B5A3C', lead: '每 3 轮全场各领 ¥400 咖啡补贴',         cost: '罚款类支出 +10%',                   tag: '续命水，学院报销一半' },
-  silent:   { name: '自习校区',   icon: '🤫', color: '#7A8B99', lead: '全场租金 ×0.92',                        cost: '卡牌收益 −12%',                     tag: '安静，但安静得有点穷' },
-  gala:     { name: '校友日校区', icon: '🎗️', color: '#C99A3F', lead: '每 5 轮总资产最高者捐 ¥1400 进基金池',   cost: '全场租金 ×1.02',                    tag: '成功人士该表示表示了' },
+  cafe:     { name: '咖啡校区',   icon: '☕', color: '#8B5A3C', lead: '每 2 轮全场各领 ¥300 咖啡补贴',         cost: '罚款类支出 +10%',                   tag: '续命水，学院报销一半' },
+  silent:   { name: '自习校区',   icon: '🤫', color: '#7A8B99', lead: '全场租金 ×0.85',                        cost: '卡牌收益 −18%，且每轮现金最多者额外缴 ¥400',                     tag: '安静，但安静得有点穷' },
+  gala:     { name: '校友日校区', icon: '🎗️', color: '#C99A3F', lead: '每 3 轮总资产最高者捐 ¥1200 进基金池',   cost: '全场租金 ×1.04',                    tag: '成功人士该表示表示了' },
   spring:   { name: '创业热土校区', icon: '🌱', color: '#4E9B2A', lead: '全场建筑升级费 −9%',                  cost: '全场租金 ×1.03',                    tag: '万物生长，施工不停' },
-  artfest:  { name: '艺术节校区', icon: '🎪', color: '#9B59B6', lead: '效果卡盲盒每次多抽 2 张',               cost: '基金池上限 −10%',                   tag: '艺术无价，池子有价' },
-  metro:    { name: '地铁校区',   icon: '🚇', color: '#2E7BC4', lead: '机场路费 ×0.80',                        cost: '文印店/快递租金 ×1.15',             tag: '机场快了，驿站贵了' },
-  scholar:  { name: '讲座校区',   icon: '🎤', color: '#1FA37A', lead: '每 2 轮随机 1 人技能次数 +1',           cost: '其余人各付 ¥200 讲座门票',          tag: '听讲座也能涨本事' },
-  market:   { name: '市集校区',   icon: '🧺', color: '#D98E2B', lead: '每 4 轮全场各领 ¥350 摊位分红',         cost: '所有地皮买入价 +2%',                tag: '摆摊的自由，买地的代价' },
-  snowville:{ name: '冰雪校区',   icon: '❄️', color: '#7FB3D9', lead: '雨/雾/雪/台风天全场各 +¥400',           cost: '晴/烈日天全场各 −¥250',             tag: '怕冷的来，怕热的绕道' },
-  veteran:  { name: '老生校区',   icon: '🎓', color: '#6B8E23', lead: '当选时全场各领 1 张免租金卡 + ¥600',           cost: '所有地皮买入价 +5%',                tag: '学长学姐的传家宝' },
-  freshman: { name: '新生校区',   icon: '🍼', color: '#F4A460', lead: '当选时全场各领 ¥2000 迎新红包',         cost: '第 10 轮起每 3 轮各缴 ¥300 社团费',  tag: '先甜后苦，年轻的代价' },
-  dicegod:  { name: '骰神校区',   icon: '🎲', color: '#E67E22', lead: '每轮开场随机 1 人移动 +3 步',           cost: '被选中者当场付 ¥420 车马费',         tag: '被骰神摸过头' },
-  charity:  { name: '公益校区',   icon: '🤲', color: '#E74C3C', lead: '每 5 轮最富者向最穷者转 ¥1100',          cost: '全场租金 ×1.02',                    tag: '先富带后富' },
+  artfest:  { name: '艺术节校区', icon: '🎪', color: '#9B59B6', lead: '效果卡盲盒每次多抽 2 张，且必出 R 及以上',               cost: '基金池上限 −10%',                   tag: '艺术无价，池子有价' },
+  metro:    { name: '地铁校区',   icon: '🚇', color: '#2E7BC4', lead: '机场路费 ×0.70，且每次经过机场补 ¥300',                        cost: '文印店/快递租金 ×1.20',             tag: '机场快了，驿站贵了' },
+  scholar:  { name: '讲座校区',   icon: '🎤', color: '#1FA37A', lead: '每 2 轮随机 1 人技能次数 +1，本人再得 ¥300',           cost: '其余人各付 ¥200 讲座门票',          tag: '听讲座也能涨本事' },
+  market:   { name: '市集校区',   icon: '🧺', color: '#D98E2B', lead: '每 3 轮全场各领 ¥400 摊位分红',         cost: '所有地皮买入价 +2%',                tag: '摆摊的自由，买地的代价' },
+  snowville:{ name: '冰雪校区',   icon: '❄️', color: '#7FB3D9', lead: '雨/雾/雪/台风天全场各 +¥500（台风天翻倍）',           cost: '晴/烈日天全场各 −¥350',             tag: '怕冷的来，怕热的绕道' },
+  veteran:  { name: '老生校区',   icon: '🎓', color: '#6B8E23', lead: '当选时全场各领 1 张免租金卡 + ¥600',           cost: '所有地皮买入价 +4%',                tag: '学长学姐的传家宝' },
+  freshman: { name: '新生校区',   icon: '🍼', color: '#F4A460', lead: '当选时全场各领 ¥2400 迎新红包',         cost: '第 10 轮起每 3 轮各缴 ¥350 社团费',  tag: '先甜后苦，年轻的代价' },
+  dicegod:  { name: '骰神校区',   icon: '🎲', color: '#E67E22', lead: '每轮开场随机 1 人移动 +3 步或 −2 步（各 50%）',           cost: '被选中者当场付 ¥420 车马费',         tag: '被骰神摸过头' },
+  charity:  { name: '公益校区',   icon: '🤲', color: '#E74C3C', lead: '每 5 轮最富者向最穷者转 ¥1800',          cost: '最富者额外缴 ¥600 进基金池、全场租金 ×1.02',                    tag: '先富带后富' },
   professor:{ name: '名师校区',   icon: '👨‍🏫', color: '#34495E', lead: '每 2 轮随机 1 人免费盖一栋房',         cost: '全场租金 ×1.04',                    tag: '名师亲自监工' },
   cram:     { name: '补习街校区', icon: '📐', color: '#16A085', lead: '机会卡的负面金额 −22%',                 cost: '机会卡的正面收益 −8%',              tag: '补课补不出暴富' },
-  reunion:  { name: '聚餐校区',   icon: '🍲', color: '#C0392B', lead: '每 4 轮随机 1 人请全场吃饭（每人 +¥240）', cost: '请客的人当场放血 ¥150×人数',        tag: 'AA 是不可能 AA 的' },
-  observatory:{ name: '观星校区', icon: '🔭', color: '#2C3E94', lead: '掷出 ≥10 点 +¥600（星象大吉）',        cost: '掷出 ≤4 点 −¥300（乌云蔽月）',      tag: '夜观天象，日进斗金' },
+  reunion:  { name: '聚餐校区',   icon: '🍲', color: '#C0392B', lead: '每 4 轮随机 1 人请全场吃饭（每人 +¥300）', cost: '请客的人当场放血 ¥300×人数（本轮收租 ×1.2）',        tag: 'AA 是不可能 AA 的' },
+  observatory:{ name: '观星校区', icon: '🔭', color: '#2C3E94', lead: '掷出 ≥10 点 +¥800（星象大吉）',        cost: '掷出 ≤4 点 −¥400（乌云蔽月）',      tag: '夜观天象，日进斗金' },
   green:    { name: '环保校区',   icon: '♻️', color: '#27AE60', lead: '全场建筑升级费 −10%',                    cost: '经过起点工资 ¥1850（−150）',        tag: '绿化好了，工资少了' },
-  gamble:   { name: '博弈校区',   icon: '🃏', color: '#8E44AD', lead: '擂台/运动会赌注 ×1.4',                 cost: '全场租金 ×1.03',                    tag: '富贵险中求' },
+  gamble:   { name: '博弈校区',   icon: '🃏', color: '#8E44AD', lead: '擂台赌注 ×1.6、运动会赌注 ×1.5',                 cost: '全场租金 ×1.03',                    tag: '富贵险中求' },
   redevelop:{ name: '拆迁校区',   icon: '🏗️', color: '#B0563A', lead: '每 2 轮随机拆掉场上的一栋楼（旅馆按 4 层算）', cost: '全场租金 ×1.03',                 tag: '旧的不去，新的不来' },
 };
 const FACULTY_KEYS = Object.keys(FACULTY);
-const FACULTY_VOTE_MS = 60000;   // 开局/换届风貌投票时长（v5.12 由 40s 拉长到 60s：59 个城邦的说明更厚，看清楚再投）
+const FACULTY_VOTE_MS = 60000;   // 开局/换届风貌投票时长（v5.12 由 40s 拉长到 60s：60 个城邦的说明更厚，看清楚再投）
 const FACULTY_MAX_RARE = 0;      // 本版无稀有风貌（原「变数校区」已按要求删去）
 
 // ---------- v5.7：海克斯 · 研究项目（校级=银 / 省级=金 / 国家级=棱彩） ----------
@@ -784,10 +784,16 @@ const DRAFT_MS = 30000;          // v7.0：海克斯奖励卡「三张翻面卡�
 const rnd = (a, b) => a + Math.random() * (b - a);
 const pick = arr => arr[Math.floor(Math.random() * arr.length)];
 // v7.0：按品级权重抽一张效果卡（SSR 15 / SR 25 / R 35 / N 25）；exclude 为需排除的 id 数组
-function drawEffectCard(exclude) {
+function drawEffectCard(exclude, minRare) {
   const ex = exclude || [];
-  const pool = EFFECT_CARDS.filter(c => !ex.includes(c.id));
+  let pool = EFFECT_CARDS.filter(c => !ex.includes(c.id));
   if (!pool.length) return pick(EFFECT_CARDS);
+  // v7.2：minRare —— 只在「不低于该品级」的卡里抽（艺术校区必出 SR / 艺术节必出 R）
+  if (minRare) {
+    const ok = CARD_RARITY_ORDER.slice(0, CARD_RARITY_ORDER.indexOf(minRare) + 1);
+    const sub = pool.filter(c => ok.includes(c.rare));
+    if (sub.length) pool = sub;
+  }
   // 按档位聚合（某档被排空时把权重让给其它档）
   const byTier = {};
   for (const c of pool) (byTier[c.rare] = byTier[c.rare] || []).push(c);
@@ -802,9 +808,13 @@ function drawEffectCard(exclude) {
   return pick(pool);
 }
 // v7.0：抽 n 张「不重复」的效果卡（同一批盲盒不出现同款）
-function drawEffectCards(n, exclude) {
+function drawEffectCards(n, exclude, minRare) {
   const got = [], ex = (exclude || []).slice();
-  for (let i = 0; i < n; i++) { const c = drawEffectCard(ex); got.push(c); ex.push(c.id); }
+  // v7.2：minRare —— 这一批里至少要有一张不低于该品级的卡（第一张按此下限抽，其余正常抽）
+  for (let i = 0; i < n; i++) {
+    const c = drawEffectCard(ex, (i === 0 && minRare) ? minRare : null);
+    got.push(c); ex.push(c.id);
+  }
   return got;
 }
 
@@ -941,11 +951,19 @@ class Room {
     if (overflow > 0) {
       const alive = this.alive();
       if (alive.length) {
-        const share = Math.floor(overflow / alive.length);
-        if (share > 0) {
-          for (const q of alive) { if (q.fundBanned) continue; q.cash += share; this.ev({ t: 'money', pid: q.id, amount: share, reason: '基金溢出均分' }); }
-          this.addLog(`💰 教育基金突破上限 ¥${cap}，溢出部分均分：每人 +¥${share}`);
+        // v7.2 金融校区：溢出均分时最穷者拿 1.5 份
+        let poor = null;
+        if (this.facIs('finance') && alive.length >= 2) poor = alive.slice().sort((a, b) => a.cash - b.cash)[0];
+        const totalW = alive.length + (poor ? 0.5 : 0);
+        let sum = 0;
+        for (const q of alive) {
+          if (q.fundBanned) continue;
+          const share = Math.floor(overflow * (q === poor ? 1.5 : 1) / totalW);
+          if (share <= 0) continue;
+          q.cash += share; sum += share;
+          this.ev({ t: 'money', pid: q.id, amount: share, reason: '基金溢出均分' });
         }
+        if (sum > 0) this.addLog(`💰 教育基金突破上限 ¥${cap}，溢出部分均分${poor ? '（金融校区：最穷者 1.5 份）' : ''}：合计 ¥${sum}`);
       }
     }
   }
@@ -1054,7 +1072,7 @@ class Room {
   // v5.1：效果卡抽取（校园商城 / 校庆礼品屋共用）；v7.0：按品级权重抽取
   grantCards(p, idx, n, label, opts) {
     const o = opts || {};
-    const drawn = drawEffectCards(n, o.exclude);
+    const drawn = drawEffectCards(n, o.exclude, o.minRare);   // v7.2：minRare = 最低品级下限（如 'SR' / 'R'）
     for (const card of drawn) this.applyEffectCard(p, card);
     if (!o.silent) {
       const names = drawn.map(c => `${c.icon}${c.name}${c.rare ? '·' + c.rare : ''}`).join('、');
@@ -1201,6 +1219,7 @@ class Room {
     const key = this.facultyVotes[lucky.id];
     this.faculty = key;
     this.facultyLucky = lucky.id;
+    this.resetFacultyFlags();   // v7.2：换届时重置城邦相关的一次性标记
     this.applyFacultySetup(key);
     const f = FACULTY[key];
     this.addLog(`🏫 抽中 ${lucky.name} 的选票 → 第 ${Math.floor((this.facTermStart - 1) / 10) + 1} 届校园风貌【${f.name}】（第 ${this.facTermStart}~${this.facTermStart + 9} 轮生效）：${f.lead}｜代价：${f.cost}`);
@@ -1237,7 +1256,7 @@ class Room {
       const pool = [];
       for (let r = this.facTermStart; r < this.facTermStart + 10; r++) pool.push(r);   // v5.9：免租轮只在本届窗口内抽
       const got = [];
-      while (got.length < 5 && pool.length) got.push(pool.splice(Math.floor(Math.random() * pool.length), 1)[0]);   // v7.0：4 → 5 轮
+      while (got.length < 4 && pool.length) got.push(pool.splice(Math.floor(Math.random() * pool.length), 1)[0]);   // v7.2：5 → 4 轮
       this.freeRentRounds = got.sort((a, b) => a - b);
       this.addLog(`🕊️ 【免租轮校区】已抽定免租轮：第 ${this.freeRentRounds.join(' / ')} 轮，这些轮次全场踩到谁的地都不用付租金`);
       this.ev({ t: 'faculty_draw', kind: 'freeRent', rounds: this.freeRentRounds.slice() });   // v5.6：大屏抽签动画
@@ -1257,12 +1276,16 @@ class Room {
     }
     if (key === 'freshman') {
       const items = [];
-      for (const q of this.alive()) { q.cash += 2000; items.push({ pid: q.id, amount: 2000 }); }
-      if (items.length) this.ev({ t: 'faculty_wave', icon: '🍼', name: '迎新红包', gain: true, items, total: 2000 * items.length });
-      this.addLog('🍼 【新生校区】迎新红包到账：全体 +¥2000');
+      for (const q of this.alive()) { q.cash += 2400; items.push({ pid: q.id, amount: 2400 }); }   // v7.2 新生校区（温和）：2000 → 2400
+      if (items.length) this.ev({ t: 'faculty_wave', icon: '🍼', name: '迎新红包', gain: true, items, total: 2400 * items.length });
+      this.addLog('🍼 【新生校区】迎新红包到账：全体 +¥2400');
     }
   }
   facIs(k) { return this.faculty === k; }
+  // v7.2：城邦当选时的字段清理（医学校区「急救」每届限一次）
+  resetFacultyFlags() {
+    for (const q of this.players) { q.medRescued = false; q.bookChance = 0; }
+  }
   isFreeRound() { return this.facIs('freeRound') && this.freeRounds.includes(this.round); }
   isFreeRentRound() { return this.facIs('freeRent') && this.freeRentRounds.includes(this.round); }
 
@@ -1283,10 +1306,11 @@ class Room {
     const r = Math.random();
     let tier = r < ps ? 'silver' : (r < ps + pg ? 'gold' : 'prism');
     // v5.10：定调城邦 —— 前三次立项强制档位（彩霞/白银/黄金必出；极光之城银金彩各一）
-    if (this.hexForce && this.hexDoneRounds.length <= 3) {
+    if (this.hexForce && this.hexDoneRounds.length <= 4) {   // v7.2：前三次 → 前四次
       if (this.hexForce === 'mix') {
         const left = ['silver', 'gold', 'prism'].filter(t => !this.hexTiers.includes(t));
         if (left.length) tier = pick(left);
+        else tier = Math.random() < 0.5 ? 'gold' : 'prism';   // v7.2 极光之城：第四次随机金或彩
       } else tier = this.hexForce;
     }
     this.hexTiers.push(tier);
@@ -1310,6 +1334,14 @@ class Room {
       cards.forEach(k => used.add(k));
     }
     for (const p of this.alive()) p.hexRefreshLeft = 1;   // v5.11：每次立项三选一都给一次刷新（原 v5.10 为整局一次）
+    // v7.2 白银学城（温和）：前四次立项，每位玩家额外获赠 1 张 R 效果卡
+    if (this.facIs('hxSilver') && this.hexDoneRounds.length <= 4) {
+      for (const p of this.alive()) {
+        const got = this.grantCards(p, null, 1, '白银学城·配套经费', { minRare: 'R', silent: true });
+        if (got && got.length) this.ev({ t: 'facfx', pid: p.id, kind: 'hxSilver', name: '白银学城', detail: `配套经费：${got[0].icon}${got[0].name}` });
+      }
+      this.addLog('⚪ 【白银学城】配套经费到账：全场各领 1 张 R 效果卡');
+    }
     this.phase = 'project';
     this.project = { round: this.round, tier, offers, picks: {} };
     this.addLog(`🧪 第 ${this.round} 轮 · 「${HEX_TIERS[tier].name}」立项：每位玩家三选一（${HEX_PICK_MS / 1000} 秒）`);
@@ -1722,6 +1754,15 @@ class Room {
       this.addLog(`🕊️ 【免租轮校区】第 ${r} 轮 —— 免租轮！踩到谁的地都不用付租金（本局还剩 ${left} 轮）`);
       this.ev({ t: 'faculty_round', kind: 'freeRent', round: r, title: '免租轮', sub: '这一轮全场踩到别人的地都不用付租金', left });
     }
+    // v7.2 都市校区（激进）：每轮现金 <¥3000 者领 ¥400 通勤补助
+    if (this.facIs('urban')) {
+      const items = [];
+      for (const q of this.alive()) if (q.cash < 3000) { q.cash += 400; items.push({ pid: q.id, amount: 400 }); }
+      if (items.length) {
+        this.ev({ t: 'faculty_wave', icon: '🏙️', name: '通勤补助', gain: true, items, total: 400 * items.length });
+        this.addLog(`🏙️ 【都市校区】通勤补助到账：${items.length} 位现金 <¥3000 的玩家各 +¥400`);
+      }
+    }
     // 金融：银行每轮向教育基金池自动注资
     if (this.facIs('finance')) {
       this.addToFund(800);
@@ -1737,9 +1778,19 @@ class Room {
     // 百年学府：每 3 轮（与校历同刻）发校友捐款
     if (this.facIs('ancient') && r > 1 && r % 3 === 0) {
       const items = [];
-      for (const q of this.alive()) { q.cash += 450; items.push({ pid: q.id, amount: 450 }); }
-      if (items.length) this.ev({ t: 'faculty_wave', icon: '🏛️', name: '校友捐款', gain: true, items, total: 450 * items.length });
-      this.addLog(`🏛️ 【百年学府】校友捐款到账：全体 +¥450`);
+      for (const q of this.alive()) { q.cash += 600; items.push({ pid: q.id, amount: 600 }); }   // v7.2 百年学府（温和）：450 → 600
+      if (items.length) this.ev({ t: 'faculty_wave', icon: '🏛️', name: '校友捐款', gain: true, items, total: 600 * items.length });
+      this.addLog(`🏛️ 【百年学府】校友捐款到账：全体 +¥600`);
+      // v7.2 百年学府（温和）：第 6 轮起每 3 轮追加「校友礼包」，随机 1 人独得 ¥1200
+      if (r >= 6) {
+        const lucky = pick(this.alive());
+        if (lucky) {
+          lucky.cash += 1200;
+          this.addLog(`🏛️ 【百年学府】校友礼包：${lucky.name} 独得 ¥1200`);
+          this.ev({ t: 'money', pid: lucky.id, amount: 1200, reason: '百年学府·校友礼包' });
+          this.ev({ t: 'facfx', pid: lucky.id, kind: 'ancient', name: '百年学府', detail: '校友礼包 +¥1200' });
+        }
+      }
     }
     // 师范：每过 10 轮全场各得 1 张「免停留卡」
     if (this.facIs('normal') && r % 8 === 0) {
@@ -1761,35 +1812,59 @@ class Room {
       }
       if (items.length) this.ev({ t: 'faculty_wave', icon, name, gain: false, items, total: -items.reduce((s, x) => s + x.amount, 0) });
     };
-    if (this.facIs('lantern')) wave('🏮', '灯会补贴', () => 220);
-    if (this.facIs('cafe') && r % 3 === 0) wave('☕', '咖啡补贴', () => 400);
-    if (this.facIs('market') && r % 4 === 0) wave('🧺', '摊位分红', () => 350);
+    if (this.facIs('lantern')) {
+      wave('🏮', '灯会补贴', () => 300);   // v7.2 灯会校区（温和）：220 → 300
+      if (r % 5 === 0) {   // v7.2：每 5 轮抽一名「灯王」独得 ¥1500
+        const king = pick(this.alive());
+        if (king) {
+          king.cash += 1500;
+          this.addLog(`🏮 【灯会校区】第 ${r} 轮灯王：${king.name} 独得 ¥1500`);
+          this.ev({ t: 'money', pid: king.id, amount: 1500, reason: '灯会校区·灯王' });
+          this.ev({ t: 'facfx', pid: king.id, kind: 'lantern', name: '灯会校区', detail: '灯王 +¥1500' });
+        }
+      }
+    }
+    if (this.facIs('cafe') && r % 2 === 0) wave('☕', '咖啡补贴', () => 300);   // v7.2 咖啡校区（温和）：每 3 轮 ¥400 → 每 2 轮 ¥300
+    if (this.facIs('market') && r % 3 === 0) wave('🧺', '摊位分红', () => 400);   // v7.2 市集校区（温和）：每 4 轮 ¥350 → 每 3 轮 ¥400
     if (this.facIs('midterm') && r % 5 === 0) {
       waveOut('📝', '期中周·助学捐款', () => 520);
       this.addLog(`📝 【期中周校区】全场各缴 ¥520 助学捐款（进教育基金池）`);
     }
     if (this.facIs('lottery') && r % 3 === 0 && this.alive().length >= 2) {
       const win = pick(this.alive());
-      win.cash += 1600;
-      this.ev({ t: 'money', pid: win.id, amount: 1600, reason: '抽奖校区·独中头奖' });
-      this.ev({ t: 'facfx', pid: win.id, kind: 'lottery', name: '抽奖校区', detail: '独中 ¥1600！' });
+      const dbl = Math.random() < 0.10;                       // v7.2 抽奖校区（温和）：10% 概率头奖翻倍
+      const prize = dbl ? 4800 : 2400;
+      win.cash += prize;
+      this.ev({ t: 'money', pid: win.id, amount: prize, reason: '抽奖校区·独中头奖' });
+      this.ev({ t: 'facfx', pid: win.id, kind: 'lottery', name: '抽奖校区', detail: dbl ? '头奖翻倍！独中 ¥4800！' : '独中 ¥2400！' });
       const items = [];
-      for (const q of this.alive()) if (q !== win) { const pay = Math.min(q.cash, 150); q.cash -= pay; items.push({ pid: q.id, amount: -pay }); this.ev({ t: 'paid', pid: q.id, amount: pay, creditor: null, toPool: true }); this.addToFund(pay); }
-      this.addLog(`🎰 【抽奖校区】${win.name} 独中 ¥1600！其余玩家各付 ¥150 参与费`);
+      for (const q of this.alive()) if (q !== win) { const pay = Math.min(q.cash, 200); q.cash -= pay; items.push({ pid: q.id, amount: -pay }); this.ev({ t: 'paid', pid: q.id, amount: pay, creditor: null, toPool: true }); this.addToFund(pay); }
+      this.addLog(`🎰 【抽奖校区】${win.name} 独中 ¥${prize}${dbl ? '（头奖翻倍！）' : ''}！其余玩家各付 ¥200 参与费`);
     }
     if (this.facIs('oldbook') && r % 3 === 0) wave('📦', '旧书集摆摊收益', q => Math.min(4000, this.propCells(q).length * 180));
+    // v7.2 自习校区（激进）：每轮现金最多者额外缴 ¥400 自习费
+    if (this.facIs('silent') && this.alive().length >= 2) {
+      const rich = this.alive().slice().sort((a, b) => b.cash - a.cash)[0];
+      const pay = Math.min(rich.cash, 400);
+      if (pay > 0) {
+        rich.cash -= pay; rich.combo = 0; this.addToFund(pay);
+        this.ev({ t: 'paid', pid: rich.id, amount: pay, creditor: null, toPool: true });
+        this.ev({ t: 'facfx', pid: rich.id, kind: 'silent', name: '自习校区', detail: `自习费 −¥${pay}` });
+        this.addLog(`🤫 【自习校区】${rich.name} 缴自习费 ¥${pay}（进教育基金池）`);
+      }
+    }
     if (this.facIs('nightowl')) {
       const list = this.alive().slice().sort((a, b) => a.cash - b.cash);
       if (list.length >= 2) {
         const poor = list[0], rich = list[list.length - 1];
-        poor.cash += 900;
-        this.ev({ t: 'money', pid: poor.id, amount: 900, reason: '夜猫校区·熬夜补贴' });
-        this.ev({ t: 'facfx', pid: poor.id, kind: 'nightowl', name: '夜猫校区', detail: `熬夜补贴 +¥900` });
-        const pay = Math.min(rich.cash, 450);
+        poor.cash += 1500;
+        this.ev({ t: 'money', pid: poor.id, amount: 1500, reason: '夜猫校区·熬夜补贴' });
+        this.ev({ t: 'facfx', pid: poor.id, kind: 'nightowl', name: '夜猫校区', detail: `熬夜补贴 +¥1500` });
+        const pay = Math.min(rich.cash, 800);
         if (pay > 0) { rich.cash -= pay; this.addToFund(pay); this.ev({ t: 'facfx', pid: rich.id, kind: 'nightowl', name: '夜猫校区', detail: `夜宵钱 −¥${pay}` }); this.ev({ t: 'paid', pid: rich.id, amount: pay, creditor: null, toPool: true }); }
       }
     }
-    if (this.facIs('shuffle') && r % 6 === 0) {
+    if (this.facIs('shuffle') && r % 4 === 0) {   // v7.2 洗牌校区（温和）：每 6 轮 → 每 4 轮
       // v6.0：改为「所有玩家随机互换现金」——每人被随机指派一个对象（可能是自己），直接对调现金
       const list = this.alive();
       if (list.length >= 2) {
@@ -1809,19 +1884,21 @@ class Room {
         this.ev({ t: 'faculty_round', kind: 'shuffle', round: r, title: '洗牌校区 · 现金互换', sub: '第 6 轮结算：所有人随机互换了一次现金', shuffle: true });
       }
     }
-    if (this.facIs('gala') && r % 5 === 0) {
+    if (this.facIs('gala') && r % 3 === 0) {   // v7.2 校友日校区：每 5 轮 ¥1400 → 每 3 轮 ¥1200
       const list = this.alive();
       if (list.length) {
         let rich = list[0];
         for (const q of list) if (this.netWorth(q) > this.netWorth(rich)) rich = q;
-        const pay = Math.min(rich.cash, 1400);
+        const pay = Math.min(rich.cash, 1200);
         if (pay > 0) { rich.cash -= pay; this.addToFund(pay); this.addLog(`🎗️ 【校友日校区】${rich.name} 捐款 ¥${pay}（进教育基金池）`); this.ev({ t: 'facfx', pid: rich.id, kind: 'gala', name: '校友日校区', detail: `校友捐款 −¥${pay}` }); this.ev({ t: 'paid', pid: rich.id, amount: pay, creditor: null, toPool: true }); }
       }
     }
     if (this.facIs('scholar') && r % 2 === 0 && this.alive().length >= 2) {
       const t = pick(this.alive());
       t.skillLeft = (t.skillLeft || 0) + 1;
-      this.addLog(`🎤 【讲座校区】${t.name} 听讲座入迷，技能次数 +1`);
+      t.cash += 300;   // v7.2 讲座校区（温和）：本人再得 ¥300
+      this.ev({ t: 'money', pid: t.id, amount: 300, reason: '讲座校区·助教津贴' });
+      this.addLog(`🎤 【讲座校区】${t.name} 听讲座入迷，技能次数 +1，另得 ¥300 助教津贴`);
       this.ev({ t: 'facfx', pid: t.id, kind: 'scholar', name: '讲座校区', detail: '技能次数 +1' });
       for (const q of this.alive()) if (q !== t) {
         const pay = Math.min(q.cash, 200);
@@ -1829,30 +1906,35 @@ class Room {
       }
     }
     if (this.facIs('snowville')) {
-      if (['rain', 'fog', 'snow', 'storm'].includes(this.weather)) wave('❄️', '恶劣天气补贴', () => 400);
+      if (['rain', 'fog', 'snow', 'storm'].includes(this.weather)) wave('❄️', '恶劣天气补贴', () => (this.weather === 'storm' ? 1000 : 500));   // v7.2 冰雪校区（温和）：400 → 500，台风天翻倍至 1000
       else if (['sun', 'heat'].includes(this.weather)) {
-        waveOut('☀️', '冰雪校区·避暑费', () => 250);
-        this.addLog('☀️ 【冰雪校区】艳阳天实在受不了，全场各付 ¥250 避暑费');
+        waveOut('☀️', '冰雪校区·避暑费', () => 350);
+        this.addLog('☀️ 【冰雪校区】艳阳天实在受不了，全场各付 ¥350 避暑费');
       }
     }
     if (this.facIs('freshman') && r > 10 && r % 3 === 0) {
-      waveOut('🍼', '新生校区·社团费', () => 300);
-      this.addLog(`🍼 【新生校区】社团费到缴：全场各缴 ¥300`);
+      waveOut('🍼', '新生校区·社团费', () => 350);
+      this.addLog(`🍼 【新生校区】社团费到缴：全场各缴 ¥350`);
     }
     if (this.facIs('dicegod')) {
       const t = pick(this.alive());
-      t.stepBuffs = (t.stepBuffs || []).concat([3]);
+      // v7.2 骰神校区（温和）：由「必定 +3 步」改为 +3 步 / −2 步 各 50%
+      const good = Math.random() < 0.5;
+      t.stepBuffs = (t.stepBuffs || []).concat([good ? 3 : -2]);
       const pay = Math.min(t.cash, 420);
       if (pay > 0) t.cash -= pay;
-      this.addLog(`🎲 【骰神校区】${t.name} 被骰神摸了头：下次移动 +3 步${pay ? `（车马费 ¥${pay}）` : ''}`);
-      this.ev({ t: 'facfx', pid: t.id, kind: 'dicegod', name: '骰神校区', detail: '下次移动 +3 步' });
+      this.addLog(`🎲 【骰神校区】${t.name} 被骰神摸了头：下次移动 ${good ? '+3' : '−2'} 步${pay ? `（车马费 ¥${pay}）` : ''}`);
+      this.ev({ t: 'facfx', pid: t.id, kind: 'dicegod', name: '骰神校区', detail: `下次移动 ${good ? '+3' : '−2'} 步` });
     }
     if (this.facIs('charity') && r % 5 === 0) {
       const list = this.alive().slice().sort((a, b) => this.netWorth(b) - this.netWorth(a));
       if (list.length >= 2) {
         const rich = list[0], poor = list[list.length - 1];
-        const pay = Math.min(rich.cash, 1100);
+        const pay = Math.min(rich.cash, 1800);   // v7.2 公益校区（激进）：1100 → 1800
         if (pay > 0) { rich.cash -= pay; poor.cash += pay; this.addLog(`🤲 【公益校区】${rich.name} 向 ${poor.name} 转账 ¥${pay}`); this.ev({ t: 'facfx', pid: rich.id, kind: 'charity', name: '公益校区', detail: `向 ${poor.name} 转出 ¥${pay}` }); this.ev({ t: 'money', pid: poor.id, amount: pay, reason: '公益校区·先富带后富' }); }
+        // v7.2 公益校区（激进）：最富者再向基金池缴 ¥600
+        const extra = Math.min(rich.cash, 600);
+        if (extra > 0) { rich.cash -= extra; rich.combo = 0; this.addToFund(extra); this.ev({ t: 'paid', pid: rich.id, amount: extra, creditor: null, toPool: true }); this.addLog(`🤲 【公益校区】${rich.name} 另向教育基金池缴 ¥${extra}`); }
       }
     }
     if (this.facIs('professor') && r % 2 === 0) {
@@ -1884,11 +1966,12 @@ class Room {
     if (this.facIs('reunion') && r % 4 === 0 && this.alive().length >= 2) {
       const t = pick(this.alive());
       const n = this.alive().length - 1;
-      const pay = Math.min(t.cash, 240 * n);
+      const pay = Math.min(t.cash, 300 * n);   // v7.2 聚餐校区（温和）：每人 240 → 300
       if (pay > 0) t.cash -= pay;
       const items = [];
-      for (const q of this.alive()) if (q !== t) { q.cash += 240; items.push({ pid: q.id, amount: 240 }); }
-      if (items.length) this.ev({ t: 'faculty_wave', icon: '🍲', name: '聚餐校区', gain: true, items, total: 240 * items.length });
+      for (const q of this.alive()) if (q !== t) { q.cash += 300; items.push({ pid: q.id, amount: 300 }); }
+      if (items.length) this.ev({ t: 'faculty_wave', icon: '🍲', name: '聚餐校区', gain: true, items, total: 300 * items.length });
+      t.reunionRentX12Round = r;   // v7.2：请客者本轮收租 ×1.2 回血（按轮次标记，避免被自己回合开始重置）
       if (pay > 0) this.ev({ t: 'facfx', pid: t.id, kind: 'reunion', name: '聚餐校区', detail: `请全场吃饭 −¥${pay}` });
       this.addLog(`🍲 【聚餐校区】${t.name} 请全场吃饭（花了 ¥${pay}），大家吃得都很开心`);
       this.aiChat(t, pick(['🍲 我请客！', '这顿算我的']), true);
@@ -2039,9 +2122,10 @@ class Room {
       hold++; if (BOARD[i].type === 'prop') bld += cs.level;
     });
     const thr = (this.facIs('finance') || this.facIs('hxMix')) ? 5 : 6;
+    const landThr = this.facIs('finance') ? 9 : 10;   // v7.2 金融校区：地皮税门槛同样 −1（10 → 9）
     const seg = (n, a, b, rate) => { const hi = Math.min(n, b); if (hi < a) return 0; return (hi - a + 1) * rate; };
     let tax = seg(bld, thr, 10, 130) + seg(bld, 11, 15, 170) + Math.max(0, bld - 15) * 200;
-    tax += Math.max(0, hold - 10) * 130;
+    tax += Math.max(0, hold - landThr) * 130;
     return { tax, hold, bld };
   }
   collectTax() {
@@ -2808,7 +2892,15 @@ class Room {
     this.phase = 'roll';
     this.dice = null;
     this.pendingBuy = null; this.pendingBuild = null; this.pendingReroll = null; this.pendingBranch = null; this.pendingInvest = null; this.pendingSkill = null; this.pendingCard = null; this.pendingNegate = null; this.raise = null; this.auction = null; this.vote = null;
-    if (p.skipNext || (p.skipTurns || 0) > 0) {
+    const _skipping = p.skipNext || (p.skipTurns || 0) > 0;
+    // v7.2 宿舍校区（温和）：被罚停留时 30% 概率「宿管放行」——免除本次停留，仍领补贴，本回合正常继续
+    if (_skipping && this.facIs('dorm') && Math.random() < 0.30) {
+      if (p.skipNext) p.skipNext = false; else p.skipTurns--;
+      p.cash += 1600;
+      this.addLog('🛏️ 【宿舍校区】宿管查寝放行：本次停留免除，仍领休整补贴 +¥1600');
+      this.ev({ t: 'money', pid: p.id, amount: 1600, reason: '宿舍校区·查寝放行' });
+      this.ev({ t: 'facfx', pid: p.id, kind: 'dorm', name: '宿舍校区', detail: '查寝放行 +¥1600' });
+    } else if (_skipping) {
       if (p.skipNext) p.skipNext = false; else p.skipTurns--;
       const left = p.skipTurns || 0;
       this.addLog(`${p.name} 停留一回合，原地休整${left > 0 ? `（还要停留 ${left} 回合）` : ''}`);
@@ -2822,9 +2914,9 @@ class Room {
       }
       // v5.10：宿舍校区 —— 被罚停留休整补贴
       if (this.facIs('dorm')) {
-        p.cash += 1200;
-        this.addLog('🛏️ 【宿舍校区】休整补贴 +¥1200');
-        this.ev({ t: 'money', pid: p.id, amount: 1200, reason: '宿舍校区补贴' });
+        p.cash += 1600;   // v7.2 宿舍校区（温和）：1200 → 1600
+        this.addLog('🛏️ 【宿舍校区】休整补贴 +¥1600');
+        this.ev({ t: 'money', pid: p.id, amount: 1600, reason: '宿舍校区补贴' });
       }
       // v5.10：研究项目的停留补贴（通宵补习 / 弹性学制）
       if (p.hex && p.hex.stayCash) {
@@ -3239,7 +3331,7 @@ class Room {
   }
   // v5.2：起点工资（受校园风貌影响）
   wageOf() {
-    if (this.facIs('urban'))  return SALARY + 250;
+    if (this.facIs('urban'))  return SALARY + 500;   // v7.2 都市校区（激进）：+250 → +500
     if (this.facIs('garden')) return 1800;
     if (this.facIs('boom'))   return SALARY + 320;
     if (this.facIs('agri'))   return SALARY + 450;
@@ -3257,10 +3349,11 @@ class Room {
   // v5.2：风貌对地价 / 升级费 / 租金 / 基金池上限 / 罚款 / 岔路奖励 / 重投费用的影响，集中读表，避免散落 if
   facLandMul() {
     switch (this.faculty) {
-      case 'garden': return 0.96;
+      case 'garden': return 0.93;   // v7.2 园林校区（温和）：−4% → −7%
       case 'nofund': return 0.85;
-      case 'urban': case 'life': case 'retrain': return 1.03;
-      case 'art':    return 1.04;
+      case 'life': case 'retrain': return 1.03;
+      case 'urban':  return 1.04;   // v7.2 都市校区（激进）：+3% → +4%
+      case 'art':    return 1.05;   // v7.2 艺术校区：+4% → +5%
       case 'boom':   return 1.06;
       // v5.10 新城邦
       case 'hxSilver': case 'runner': return 1.03;
@@ -3271,7 +3364,7 @@ class Room {
   }
   facBuildMul() {
     switch (this.faculty) {
-      case 'tech':   return 0.92;
+      case 'tech':   return 0.88;   // v7.2 理工校区（温和）：−8% → −12%
       case 'nofund': return 0.87;
       case 'agri':   return 1.03;
       // v5.10 新城邦
@@ -3289,10 +3382,12 @@ class Room {
       case 'freeRound': m *= 1.08; break;
       case 'freeRent':  m *= 1.08; break;
       // v5.10 新城邦
-      case 'silent':    m *= 0.92; break;
+      case 'silent':    m *= 0.85; break;   // v7.2 自习校区（激进）：×0.92 → ×0.85
       case 'lantern': case 'hxSilver': m *= 1.03; break;
-      case 'shuffle': case 'gala': case 'charity': m *= 1.02; break;
-      case 'carnival': case 'hxPrism': case 'hxGold': m *= 1.05; break;
+      case 'shuffle': case 'charity': m *= 1.02; break;
+      case 'gala':    m *= 1.04; break;    // v7.2 校友日校区：×1.02 → ×1.04
+      case 'carnival': case 'hxGold': m *= 1.05; break;
+      case 'hxPrism':  m *= 1.06; break;   // v7.2 彩霞之城（温和）：×1.05 → ×1.06
       case 'spring': case 'gamble': m *= 1.03; break;
       case 'professor': m *= 1.04; break;
       default: break;
@@ -3303,20 +3398,20 @@ class Room {
   fundCap() {
     if (this.facIs('finance')) return 32000;
     if (this.facIs('oldbook')) return Math.round(FUND_CAP * 0.85);  // v7.0 旧书集：基金池 −15%
-    if (this.facIs('artfest')) return Math.round(FUND_CAP * 0.92);  // v7.0 艺术节：基金池 −8%
+    if (this.facIs('artfest')) return Math.round(FUND_CAP * 0.90);  // v7.2 艺术节（温和）：基金池 −8% → −10%（与文案一致）
     return FUND_CAP;
   }
   facFine(amt) { return this.facIs('med') ? Math.round(amt * 1.2) : (this.facIs('cafe') ? Math.round(amt * 1.1) : amt); }   // 医学 +20% / v5.10 咖啡 +10%
-  facBranch(amt) { return this.facIs('intl') ? Math.round(amt * 1.12) : amt; }    // 国际：岔路奖励 ×1.12
+  facBranch(amt) { return this.facIs('intl') ? Math.round(amt * 1.25) + 300 : amt; }    // v7.2 国际校区（温和）：岔路奖励 ×1.12 → ×1.25，且每次额外 +¥300
   // v5.10：城邦的点数类修正（早八 / 观星 / 校车站）—— 在掷骰结算点调用
   facRollFx(p, raw, isDouble) {
     if (this.facIs('stampede')) {
-      if (raw === 7) { p.cash += 450; this.ev({ t: 'money', pid: p.id, amount: 450, reason: '早八校区·准时到教室' }); this.ev({ t: 'facfx', pid: p.id, kind: 'stampede', name: '早八校区', detail: '7 点准时 +¥450' }); }
-      else if (raw <= 3) { const pay = Math.min(p.cash, 220); if (pay > 0) { p.cash -= pay; this.ev({ t: 'facfx', pid: p.id, kind: 'stampede', name: '早八校区', detail: `起晚了 −¥${pay}` }); this.ev({ t: 'paid', pid: p.id, amount: pay, creditor: null, toPool: true }); this.addToFund(pay); } }
+      if (raw === 7) { p.cash += 750; this.ev({ t: 'money', pid: p.id, amount: 750, reason: '早八校区·准时到教室' }); this.ev({ t: 'facfx', pid: p.id, kind: 'stampede', name: '早八校区', detail: '7 点准时 +¥750' }); }
+      else if (raw <= 3) { const pay = Math.min(p.cash, 400); if (pay > 0) { p.cash -= pay; this.ev({ t: 'facfx', pid: p.id, kind: 'stampede', name: '早八校区', detail: `起晚了 −¥${pay}` }); this.ev({ t: 'paid', pid: p.id, amount: pay, creditor: null, toPool: true }); this.addToFund(pay); } }
     }
     if (this.facIs('observatory')) {
-      if (raw >= 10) { p.cash += 600; this.ev({ t: 'money', pid: p.id, amount: 600, reason: '观星校区·星象大吉' }); this.ev({ t: 'facfx', pid: p.id, kind: 'observatory', name: '观星校区', detail: '星象大吉 +¥600' }); }
-      else if (raw <= 4) { const pay = Math.min(p.cash, 300); if (pay > 0) { p.cash -= pay; this.ev({ t: 'facfx', pid: p.id, kind: 'observatory', name: '观星校区', detail: `乌云蔽月 −¥${pay}` }); this.ev({ t: 'paid', pid: p.id, amount: pay, creditor: null, toPool: true }); this.addToFund(pay); } }
+      if (raw >= 10) { p.cash += 800; this.ev({ t: 'money', pid: p.id, amount: 800, reason: '观星校区·星象大吉' }); this.ev({ t: 'facfx', pid: p.id, kind: 'observatory', name: '观星校区', detail: '星象大吉 +¥800' }); }
+      else if (raw <= 4) { const pay = Math.min(p.cash, 400); if (pay > 0) { p.cash -= pay; this.ev({ t: 'facfx', pid: p.id, kind: 'observatory', name: '观星校区', detail: `乌云蔽月 −¥${pay}` }); this.ev({ t: 'paid', pid: p.id, amount: pay, creditor: null, toPool: true }); this.addToFund(pay); } }
     }
     if (this.facIs('runner') && isDouble) { p.cash += 400; this.ev({ t: 'money', pid: p.id, amount: 400, reason: '校车站校区·班来得巧' }); }
   }
@@ -3375,16 +3470,16 @@ class Room {
       if (this.facIs('tech')) v = Math.round(v * 0.93);
       if (this.facIs('park') && type === 'chance') v = Math.round(v * 0.9);
       if (this.facIs('intl') && type === 'chance') v = Math.round(v * 0.85);
-      if (this.facIs('general')) v += 200;
-      if (this.facIs('liberal') && type === 'fate') v += 250;                 // v7.0 通识：命运卡 +250
-      if (this.facIs('liberal') && type === 'chance') v = Math.round(v * 0.92);   // v5.10 通识：机会卡 −8%
-      if (this.facIs('silent')) v = Math.round(v * 0.88);                     // v7.0 自习：卡牌经济 −12%
+      if (this.facIs('general')) v += 450;                                 // v7.2 综合校区（激进）：+200 → +450
+      if (this.facIs('liberal') && type === 'fate') v += 400;                 // v7.2 通识校区（激进）：命运卡 +250 → +400
+      if (this.facIs('liberal') && type === 'chance') v = Math.round(v * 0.90);   // v7.2 通识校区（激进）：机会卡 −8% → −10%
+      if (this.facIs('silent')) v = Math.round(v * 0.82);                     // v7.2 自习校区（激进）：卡牌经济 −12% → −18%
       if (this.facIs('cram') && type === 'chance') v = v > 0 ? Math.round(v * 0.92) : Math.round(v * 0.78);   // v7.0 补习街：负面 −22%
     } else {
       if (this.facIs('tech')) v = Math.round(v * 0.93);
-      if (this.facIs('general')) v = Math.min(0, v + 200);
+      if (this.facIs('general')) v = Math.min(0, v + 450);   // v7.2 综合校区（激进）：负面少损 200 → 450
       if (this.facIs('book') && type === 'fate') v = Math.round(v * 1.15);
-      if (this.facIs('silent')) v = Math.round(v * 0.88);                     // v7.0 自习：负面损失也按同一口径收窄（整体 −12%）
+      if (this.facIs('silent')) v = Math.round(v * 0.82);                     // v7.2 自习：负面损失同口径收窄（整体 −18%）
       if (this.facIs('cram') && type === 'chance') v = Math.round(v * 0.78);   // v7.0 补习街：机会卡负面 −22%
     }
     return v;
@@ -3610,8 +3705,8 @@ class Room {
           this.ev({ t: 'skill', pid: p.id, major: p.major, name: '对症下药', detail: `-${saved}`, active: true });
         }
         // v5.2 医学校区：单笔被收租 ≥¥1500 时减免 10%
-        if (this.facIs('med') && rent >= 1200) {
-          const saved = Math.round(rent * 0.15); rent -= saved;
+        if (this.facIs('med') && rent >= 1000) {   // v7.2 医学校区（温和）：阈值 ¥1200→¥1000、减免 15%→20%
+          const saved = Math.round(rent * 0.20); rent -= saved;
           this.addLog(`🩺 【医学校区】大额住院费兜底，减免 ¥${saved}`);
           this.ev({ t: 'facfx', pid: p.id, kind: 'med', name: '医学校区', detail: `大额租金减免 ¥${saved}` });
         }
@@ -3652,14 +3747,36 @@ class Room {
         if (rent >= 10000) this.giveAch(owner, 'rent10k');
         this.addLog(`${p.name} 踩到 ${owner.name} 的「${cell.name}」，应付租金 ¥${rent}`);
         this.charge(p, rent, owner, `租金·${cell.name}`, idx);
+        // v7.2 医学校区（温和）：每届 1 次「急救」——付租金后现金不足 ¥2000 时补到 ¥2000
+        if (this.facIs('med') && p.alive && p.cash < 2000 && !p.medRescued) {
+          p.medRescued = true;
+          const aid = 2000 - p.cash;
+          p.cash += aid;
+          this.addLog(`🩺 【医学校区】${p.name} 触发急救，现金补到 ¥2000（+¥${aid}）`);
+          this.ev({ t: 'money', pid: p.id, amount: aid, reason: '医学校区·急救' });
+          this.ev({ t: 'facfx', pid: p.id, kind: 'med', name: '医学校区', detail: `急救 +¥${aid}` });
+        }
+        // v7.2 生活区校区（温和）：踩到公用事业再补 ¥250；地铁校区（温和）：经过机场补 ¥300
+        if (this.facIs('life') && c.type === 'util') {
+          p.cash += 250;
+          this.ev({ t: 'money', pid: p.id, amount: 250, reason: '生活区校区·便民补贴' });
+          this.ev({ t: 'facfx', pid: p.id, kind: 'life', name: '生活区校区', detail: '便民补贴 +¥250' });
+        }
+        if (this.facIs('metro') && c.type === 'transport') {
+          p.cash += 300;
+          this.ev({ t: 'money', pid: p.id, amount: 300, reason: '地铁校区·通勤补贴' });
+          this.ev({ t: 'facfx', pid: p.id, kind: 'metro', name: '地铁校区', detail: '通勤补贴 +¥300' });
+        }
         return;
       }
       case 'jail': {
         // 校园商城（v5.1）：随机抽 1 张（35% 概率抽到 2 张）效果卡，卡池含「免租金卡 / 免租券 / 技能次数 +1」等
         // v5.2 艺术校区：盲盒每次多抽 1 张
-        const n = this.rollCardCount() + ((this.facIs('art') || this.facIs('artfest')) ? 2 : 0);
-        this.addLog(`🛍️ ${p.name} 走进校园商城，店员塞给他 ${n} 张效果卡盲盒${this.facIs('art') ? '（艺术校区多送 2 张）' : ''}`);
-        this.grantCards(p, idx, n, '校园商城');
+        let n = this.rollCardCount() + ((this.facIs('art') || this.facIs('artfest')) ? 2 : 0);
+        if (this.facIs('general') && Math.random() < 0.25) n += 1;   // v7.2 综合校区（激进）：25% 概率额外再抽 1 张
+        const minRare = this.facIs('art') ? 'SR' : (this.facIs('artfest') ? 'R' : null);   // v7.2 艺术必出 SR / 艺术节必出 R
+        this.addLog(`🛍️ ${p.name} 走进校园商城，店员塞给他 ${n} 张效果卡盲盒${this.facIs('art') ? '（艺术校区多送 2 张，且必出 SR 及以上）' : (this.facIs('artfest') ? '（艺术节校区多送 2 张，且必出 R 及以上）' : '')}`);
+        this.grantCards(p, idx, n, '校园商城', { minRare });
         this.afterResolve(p, false); return;
       }
       case 'tax': {
@@ -3735,7 +3852,7 @@ class Room {
           this.afterResolve(p, false); return;
         }
         const winner = a > b ? p : opp, loser = a > b ? opp : p;
-        const stake = Math.round(1500 * (this.facIs('sports') ? 1.35 : (this.facIs('gamble') ? 1.4 : 1)));   // v7.0 文体 ×1.35 / 博弈 ×1.4
+        const stake = Math.round(1500 * (this.facIs('sports') ? 1.35 : (this.facIs('gamble') ? 1.6 : 1)));   // v7.2 博弈（温和）：×1.4 → ×1.6
         const amount = Math.min(stake, loser.cash);
         this.addLog(`⚔️ 擂台！${p.name}(${a}) vs ${opp.name}(${b}) → ${winner.name} 胜，${loser.name} 付 ¥${amount}`);
         this.ev({ t: 'duel', pid: p.id, opp: opp.id, a, b, label: '辩论擂台', winner: winner.id, amount });
@@ -3796,10 +3913,11 @@ class Room {
         // 科研基金处（v5.1：投 ¥2000，2 轮后结题返还 ¥3000 —— 净赚从 ¥1600 降到 ¥1000）
         if (p.invest) { this.addLog(`${p.name} 已有一笔投资在途（第 ${p.invest.due} 轮返还 ¥${p.invest.back}）`); this.afterResolve(p, false); return; }
         if (p.cash < 2000) { this.addLog(`${p.name} 现金不足，错过科研投资`); this.afterResolve(p, false); return; }
-        const back = this.facIs('park') ? 4050 : 3000;   // v7.0 科技园区：返还 +35%
+        const back = this.facIs('park') ? 4500 : 3000;   // v7.2 科技园区（温和）：返还 +35% → +50%
+        const pkRound = this.facIs('park') ? 1 : 2;      // v7.2 科技园区（温和）：结题 2 轮 → 1 轮
         this.phase = 'invest';
-        this.pendingInvest = { pid: p.id, cost: 2000, back, rounds: 2 };
-        this.addLog(`🔬 ${p.name} 来到科研基金处：花 ¥2000 立项，2 轮后结题返还 ¥${back}${this.facIs('park') ? '（科技园区 +35%）' : ''}`);
+        this.pendingInvest = { pid: p.id, cost: 2000, back, rounds: pkRound };
+        this.addLog(`🔬 ${p.name} 来到科研基金处：花 ¥2000 立项，${pkRound} 轮后结题返还 ¥${back}${this.facIs('park') ? '（科技园区 +50%，1 轮结题）' : ''}`);
         this.ev({ t: 'ask_invest', pid: p.id, cell: idx });
         this.setTimer(TURN_MS, () => this.declineInvest(this.curp()));
         if (p.isAI) this.aiTimers.push(setTimeout(() => this.aiInvest(p), rnd(3000, 6000)));
@@ -3822,9 +3940,11 @@ class Room {
       case 'shop': {
         // 校庆礼品屋（v5.1）：与校园商城同款，随机抽 1~2 张效果卡（含「技能次数 +1」）
         // v5.2 艺术校区：盲盒每次多抽 1 张
-        const n = this.rollCardCount() + ((this.facIs('art') || this.facIs('artfest')) ? 2 : 0);
-        this.addLog(`🎁 ${p.name} 走进校庆礼品屋，工作人员送出 ${n} 张效果卡盲盒${this.facIs('art') ? '（艺术校区多送 2 张）' : ''}`);
-        this.grantCards(p, idx, n, '校庆礼品屋');
+        let n = this.rollCardCount() + ((this.facIs('art') || this.facIs('artfest')) ? 2 : 0);
+        if (this.facIs('general') && Math.random() < 0.25) n += 1;   // v7.2 综合校区（激进）：25% 概率额外再抽 1 张
+        const minRare = this.facIs('art') ? 'SR' : (this.facIs('artfest') ? 'R' : null);
+        this.addLog(`🎁 ${p.name} 走进校庆礼品屋，工作人员送出 ${n} 张效果卡盲盒${this.facIs('art') ? '（艺术校区多送 2 张，且必出 SR 及以上）' : (this.facIs('artfest') ? '（艺术节校区多送 2 张，且必出 R 及以上）' : '')}`);
+        this.grantCards(p, idx, n, '校庆礼品屋', { minRare });
         this.afterResolve(p, false); return;
       }
       case 'ginkgo': {
@@ -4000,7 +4120,7 @@ class Room {
           this.ev({ t: 'duel', pid: p.id, opp: rich.id, a, b, label: '校园运动会', winner: null, amount: 0 });
           this.afterResolve(p, false); return;
         }
-        const pct = this.facIs('sports') ? 0.35 : 0.25;   // v7.0 文体校区：运动会赌注 ×1.4（25% → 35%）
+        const pct = this.facIs('sports') ? 0.35 : (this.facIs('gamble') ? 0.375 : 0.25);   // v7.2 博弈（温和）：运动会也生效（25% → 37.5%）
         if (a > b) {
           const take = Math.max(0, Math.floor(rich.cash * pct));
           rich.cash -= take; p.cash += take; rich.combo = 0;
@@ -4100,6 +4220,14 @@ class Room {
       }
     }
     p.cash -= price;   // v5.9：买地不打断连击
+    // v7.2 园林校区（温和）：买地 20% 概率返还 15% 地价（绿化补贴）
+    if (this.facIs('garden') && !mortgageBuy && price > 0 && Math.random() < 0.20) {
+      const rebate = Math.round(price * 0.15);
+      p.cash += rebate;
+      this.addLog(`🌳 【园林校区】绿化补贴：${p.name} 买地返还 ¥${rebate}`);
+      this.ev({ t: 'money', pid: p.id, amount: rebate, reason: '园林校区·绿化补贴' });
+      this.ev({ t: 'facfx', pid: p.id, kind: 'garden', name: '园林校区', detail: `买地返还 ¥${rebate}` });
+    }
     p.boughtThisTurn = true;   // v5.10：计入本轮限购额度
     cs.own = p.id; cs.mortgaged = false; cs.mortgageAt = 0;
     if (p.discount) p.discount = false;
@@ -4241,6 +4369,14 @@ class Room {
         for (const [, , actv] of usedCuts) if (!actv) p.skillLeft--;
       }
       p.cash -= price; cs.level++;   // v5.9：盖房不打断连击
+      // v7.2 理工校区（温和）：盖房 30% 概率返还 20% 工程款
+      if (this.facIs('tech') && price > 0 && Math.random() < 0.30) {
+        const rebate = Math.round(price * 0.20);
+        p.cash += rebate;
+        this.addLog(`🔬 【理工校区】技术攻关返款：${p.name} 盖房返还 ¥${rebate}`);
+        this.ev({ t: 'money', pid: p.id, amount: rebate, reason: '理工校区·工程款返还' });
+        this.ev({ t: 'facfx', pid: p.id, kind: 'tech', name: '理工校区', detail: `工程款返还 ¥${rebate}` });
+      }
       // v5.7：研究项目的盖房返现（盖房返现）
       if (p.hex && p.hex.buildCash && price > 0) {
         p.cash += p.hex.buildCash;
@@ -4320,11 +4456,13 @@ class Room {
     // v5.8：收租连击 —— 三连 ×1.15、四连及以上 ×1.3（封顶 1.3）；扣钱即断（重投/免罚符购买除外）
     if (owner && owner.combo >= 2) mul *= owner.combo === 2 ? 1.15 : 1.3;
     mul *= this.facRentMul();   // v5.2：校园风貌（幅度控制在 ±8% 以内）
+    // v7.2 聚餐校区（温和）：本轮请客的人收租 ×1.2
+    if (owner && this.facIs('reunion') && owner.reunionRentX12Round === this.round) mul *= 1.2;
     // v5.2 生活区校区：只减免「公用事业（文印店/快递驿站）」与「机场路费」，不碰学生宿舍地皮租金
-    if (this.facIs('life') && (c.type === 'util' || c.type === 'transport')) mul *= 0.87;
+    if (this.facIs('life') && (c.type === 'util' || c.type === 'transport')) mul *= 0.80;   // v7.2 生活区（温和）：×0.87 → ×0.80
     // v5.10 地铁校区：机场便宜，驿站变贵
-    if (this.facIs('metro') && c.type === 'transport') mul *= 0.80;
-    if (this.facIs('metro') && c.type === 'util') mul *= 1.15;
+    if (this.facIs('metro') && c.type === 'transport') mul *= 0.70;   // v7.2 地铁（温和）：×0.80 → ×0.70
+    if (this.facIs('metro') && c.type === 'util') mul *= 1.20;         // v7.2 地铁（温和）：×1.15 → ×1.20
     // v7.0 路过租金小幅上调；v7.1 修正口径：只作用于「有建筑的租金」（1~3 栋房 / 旅馆），
     // 裸地（地皮）租金维持 v6.0 原值不变；机场 / 公用事业不受影响
     if (c.type === 'prop' && cs.level > 0) mul *= RENT_MUL_V7;
@@ -4437,7 +4575,7 @@ class Room {
       p.cash += back;
       this.addLog(`${p.name} 将「${c.name}」的建筑回售给银行，回收 ¥${back}`);
     }
-    let mp = Math.floor(c.price * (this.facIs('biz') ? 0.58 : 0.5));   // v5.2 商科校区：抵押可拿地价 58%
+    let mp = Math.floor(c.price * (this.facIs('biz') ? 0.62 : 0.5));   // v7.2 商科校区（温和）：抵押可拿地价 58% → 62%
     // 专业：金融 · 杠杆操作（抵押多拿 30%）
     if (p.major === 'fin' && p.skillLeft > 0) {
       const bonus = Math.round(mp * 0.3);
@@ -4487,13 +4625,13 @@ class Room {
       this.addLog(`🔒 ${p.name} 想赎回「${c.name}」，但它还在抵押锁定期（第 ${this.redeemUnlockRound(cs)} 轮起才能赎回）`);
       return;
     }
-    let mp = Math.floor(c.price * (this.facIs('biz') ? 0.58 : 0.5));
-    if (this.facIs('biz')) mp = Math.round(mp * 1.08);   // v5.2 商科校区：赎回额外付 8% 手续费
+    let mp = Math.floor(c.price * (this.facIs('biz') ? 0.62 : 0.5));
+    if (this.facIs('biz')) mp = Math.round(mp * 1.06);   // v7.2 商科校区（温和）：赎回手续费 8% → 6%
     // v5.10：二手好价 / 金库钥匙 / 银行白名单 —— 赎回优惠
     if (p.hex && p.hex.redeemCut) { const sv = Math.round(mp * p.hex.redeemCut); if (sv > 0) { mp -= sv; this.hexFx(p, 'pawnshop', `赎回优惠 −¥${sv}`); } }
     if (p.cash < mp) return;
     p.cash -= mp; p.combo = 0; cs.mortgaged = false; cs.mortgageAt = 0;   // v5.8：扣钱断连击
-    this.addLog(`${p.name} 花 ¥${mp} 赎回「${c.name}」${this.facIs('biz') ? '（含 8% 手续费）' : ''}`);
+    this.addLog(`${p.name} 花 ¥${mp} 赎回「${c.name}」${this.facIs('biz') ? '（含 6% 手续费）' : ''}`);
     this.ev({ t: 'redeem', pid: p.id, cell });
     if (this.phase === 'raise' && this.raise && this.raise.pid === p.id) this.settleRaise();
   }
@@ -4664,9 +4802,15 @@ class Room {
     }
     // v5.2 书香校区：每抽到一张机会卡额外 +¥400（v7.0 由 250 上调）
     if (this.facIs('book') && type === 'chance') {
-      p.cash += 400;
-      this.addLog(`📚 【书香校区】${p.name} 抽到机会卡，额外 +¥400`);
-      this.ev({ t: 'money', pid: p.id, amount: 400, reason: '书香校区' });
+      p.cash += 450;
+      this.addLog(`📚 【书香校区】${p.name} 抽到机会卡，额外 +¥450`);
+      this.ev({ t: 'money', pid: p.id, amount: 450, reason: '书香校区' });
+      // v7.2 书香校区（温和）：每累计 3 张机会卡再送 1 张效果卡盲盒
+      p.bookChance = (p.bookChance || 0) + 1;
+      if (p.bookChance % 3 === 0) {
+        this.addLog(`📚 【书香校区】${p.name} 累计抽满 3 张机会卡，额外获赠 1 张效果卡盲盒`);
+        this.grantCards(p, null, 1, '书香校区·读书奖励', { silent: true });
+      }
     }
     // v5.3：通用被动 —— 抽卡收益（cardAny 任意卡；cardPos 仅正面机会卡）
     {

@@ -187,26 +187,26 @@ section(7, '城邦加强：数值上调 + 机制提高频率');
 {
   const r = mkRoom(3);
   const F = G.FACULTY;
-  ok(F.lantern.lead.includes('220'), '灯会校区 150 → 220');
+  ok(F.lantern.lead.includes('300'), '灯会校区 220 → 300（v7.2 温和）');
   ok(F.midterm.lead.includes('520'), '期中周校区 400 → 520');
   ok(F.professor.lead.includes('每 2 轮'), '名师校区 每 3 轮 → 每 2 轮');
-  ok(F.freshman.lead.includes('2000'), '新生校区 1500 → 2000');
-  ok(F.stampede.lead.includes('450') && F.stampede.cost.includes('220'), '早八校区 300/−150 → 450/−220');
-  ok(F.observatory.lead.includes('600') && F.observatory.cost.includes('300'), '观星校区 400/−220 → 600/−300');
+  ok(F.freshman.lead.includes('2400'), '新生校区 2000 → 2400（v7.2 温和）');
+  ok(F.stampede.lead.includes('750') && F.stampede.cost.includes('400'), '早八校区 450/−220 → 750/−400（v7.2 激进）');
+  ok(F.observatory.lead.includes('800') && F.observatory.cost.includes('400'), '观星校区 600/−300 → 800/−400（v7.2 温和）');
   ok(F.runner.lead.includes('400'), '校车站校区 250 → 400');
-  ok(F.metro.lead.includes('0.80'), '地铁校区 机场 ×0.85 → ×0.80');
+  ok(F.metro.lead.includes('0.70'), '地铁校区 机场 ×0.80 → ×0.70（v7.2 温和）');
   // 实际结算
   const q = r.players[0];
   r.faculty = 'lantern';
   for (const x of r.players) x.cash = 10000;
   r.applyFacultyRound();
-  ok(r.players.every(x => x.cash === 10220), '灯会实际结算 +¥220');
+  ok(r.players.every(x => x.cash === 10300), '灯会实际结算 +¥300（v7.2）');
   r.faculty = 'stampede'; q.cash = 10000;
   r.facRollFx(q, 7, false);
-  ok(q.cash === 10450, '早八 7 点实际 +¥450');
+  ok(q.cash === 10750, '早八 7 点实际 +¥750（v7.2）');
   r.faculty = 'runner';
   r.facRollFx(q, 4, true);
-  ok(q.cash === 10850, '校车站双数实际 +¥400');
+  ok(q.cash === 11150, '校车站双数实际 +¥400');
 }
 
 // ================= [8] 大厅准备 =================

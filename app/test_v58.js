@@ -346,7 +346,7 @@ section(12, 'v5.9 城邦 10 轮一届：换届触发 / 届次限池 / 抽签窗�
     r.applyFacultySetup('freeRound');
     ok(r.freeRounds.length === 2 && r.freeRounds.every(x => x >= 11 && x <= 20), `第 2 届免费轮落在本届窗口（${r.freeRounds.join('/')}）`);
     r.applyFacultySetup('freeRent');
-    ok(r.freeRentRounds.every(x => x >= 11 && x <= 20) && new Set(r.freeRentRounds).size === 5, `第 2 届免租轮全部落在本届窗口（${r.freeRentRounds.join('/')}）`);
+    ok(r.freeRentRounds.every(x => x >= 11 && x <= 20) && new Set(r.freeRentRounds).size === 4 && r.freeRentRounds.length === 4, `第 2 届免租轮全部落在本届窗口（${r.freeRentRounds.join('/')}）`);
   }
 }
 

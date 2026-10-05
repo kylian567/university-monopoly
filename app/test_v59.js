@@ -320,7 +320,7 @@ section(8, '娱乐城邦每轮结算：灯会 / 期中周 / 名师 / 老生 / �
     r.faculty = 'lantern';
     for (const q of r.players) q.cash = 10000;
     r.applyFacultyRound();
-    ok(r.players.every(q => q.cash === 10220), '灯会校区：每轮开场全场 +¥220');
+    ok(r.players.every(q => q.cash === 10300), '灯会校区：每轮开场全场 +¥300（v7.2 温和）');
   }
   // 期中周：每 5 轮全场各缴 400 进池
   {
@@ -353,7 +353,7 @@ section(8, '娱乐城邦每轮结算：灯会 / 期中周 / 名师 / 老生 / �
     ok(r.players.every(q => q.medal >= 1), '老生校区：当选时全场各领 1 张免租金卡');
     for (const q of r.players) q.cash = 10000;
     r.applyFacultySetup('freshman');
-    ok(r.players.every(q => q.cash === 12000), '新生校区：当选时全场各领 ¥2000');
+    ok(r.players.every(q => q.cash === 12400), '新生校区：当选时全场各领 ¥2400（v7.2 温和）');
   }
   // 早八 / 观星点数结算
   {
@@ -361,15 +361,15 @@ section(8, '娱乐城邦每轮结算：灯会 / 期中周 / 名师 / 老生 / �
     r.faculty = 'stampede';
     const a = r.players[0]; a.cash = 10000;
     r.facRollFx(a, 7, false);
-    ok(a.cash === 10450, '早八校区：7 点 +¥450');
+    ok(a.cash === 10750, '早八校区：7 点 +¥750（v7.2 激进）');
     r.facRollFx(a, 3, false);
-    ok(a.cash === 10230, '早八校区：≤3 点 −¥220');
+    ok(a.cash === 10350, '早八校区：≤3 点 −¥400（v7.2 激进）');
     r.faculty = 'observatory';
     r.facRollFx(a, 11, false);
-    ok(a.cash === 10830, '观星校区：≥10 点 +¥600');
+    ok(a.cash === 11150, '观星校区：≥10 点 +¥800（v7.2 温和）');
     r.faculty = 'runner';
     r.facRollFx(a, 4, true);
-    ok(a.cash === 11230, '校车站校区：双数 +¥400');
+    ok(a.cash === 11550, '校车站校区：双数 +¥400');
   }
   // 地铁：机场便宜 / 驿站贵
   {
@@ -380,7 +380,7 @@ section(8, '娱乐城邦每轮结算：灯会 / 期中周 / 名师 / 老生 / �
     const base = r.calcRent(tIdx, [2, 5]);
     r.faculty = 'metro';
     const m = r.calcRent(tIdx, [2, 5]);
-    ok(Math.abs(m - Math.round(base * 0.80)) <= 1, `地铁校区：机场租金 ${base} → ${m}（×0.80）`);
+    ok(Math.abs(m - Math.round(base * 0.70)) <= 1, `地铁校区：机场租金 ${base} → ${m}（×0.70，v7.2 温和）`);
   }
 }
 
