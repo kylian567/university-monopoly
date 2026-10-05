@@ -1,6 +1,6 @@
 'use strict';
 // v7.1 浏览器实机验收：
-//   [1] 公告/HTML 版本 v7.1 + 客户端 FACULTY 时光之城镜像（15 次全部提前）
+//   [1] 公告/HTML 版本 v7.1 + 客户端 FACULTY 时光之城镜像（全部提前）
 //   [2] 海克斯选择流程：放射光轴 / 三层光环 / 档位徽章 / 候选序号 / 扫光 / 悬停光晕
 //   [3] 档位差异：银 10 轴 / 金 14 轴 / 彩 20 轴 + 徽章 t-prism
 //   [4] 点击立项：光柱落下 → 印章盖下 → 其余卡置灰
@@ -57,9 +57,9 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
     await page.goto(BASE, { waitUntil: 'domcontentloaded' });
     await sleep(800);
     const ann = await page.evaluate(() => (document.querySelector('#intro .announce-logo') || {}).textContent || '');
-    ok(/v7\.[123]/.test(ann), `开局公告标题：${ann.trim()}`);
+    ok(/v7\.[1-4]/.test(ann), `开局公告标题：${ann.trim()}`);
     const sub = await page.evaluate(() => (document.querySelector('.announce-sub') || {}).textContent || '');
-    ok(/v7\.[123]/.test(sub), `副标题版本号：${sub.trim()}`);
+    ok(/v7\.[1-4]/.test(sub), `副标题版本号：${sub.trim()}`);
 
     const mir = await page.evaluate(() => {
       const F = (typeof FACULTY !== 'undefined') ? FACULTY.hexEarly : null;
@@ -67,13 +67,13 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
     });
     ok(mir.name === '时光之城', `客户端镜像到 ${mir.name}`);
     ok(/全部提前/.test(mir.lead || ''), `lead 写明「全部提前」：${(mir.lead || '').slice(0, 30)}…`);
-    ok(/2\/6\/12/.test(mir.lead || '') && /88\/94/.test(mir.lead || ''), 'lead 列出完整 15 个提前轮次');
-    ok(/94/.test(mir.cost || ''), `cost 随动为第 94 轮后无立项：${mir.cost}`);
+    ok(/2\/6\/12/.test(mir.lead || '') && /89\/101/.test(mir.lead || ''), 'lead 列出完整 12 个提前轮次（v7.4）');
+    ok(/101/.test(mir.cost || ''), `cost 随动为第 101 轮后无立项：${mir.cost}`);
 
     const src = fs.readFileSync(path.join(__dirname, 'public/client.js'), 'utf8');
     const css = fs.readFileSync(path.join(__dirname, 'public/style.css'), 'utf8');
     const html = fs.readFileSync(path.join(__dirname, 'public/index.html'), 'utf8');
-    ok(/v7\.[12]/.test(html), 'index.html 已更新到 v7.x');
+    ok(/v7\.[1-4]/.test(html), 'index.html 已更新到 v7.x');
     ok(/hx-rays/.test(src) && /hx-orbit/.test(src) && /hx-badge/.test(src), 'client.js 已渲染光轴/光环/徽章');
     ok(/hxBadge/.test(css) && /hxStamp/.test(css) && /hxPillar/.test(css) && /hxSeal/.test(css), 'CSS 四个关键 keyframes 齐备');
     await shot(page, '10-lobby.png');

@@ -411,7 +411,7 @@ section(5, '不改的 21 个城邦：数值维持 v7.1');
     ['retrain', r => true, '进修：技能 +2（一次性结算）'],
     ['freeRound', r => r.facRentMul() === 1.08, '免费轮：租金 ×1.08'],
     ['hex3', r => true, '精研之城：只有 3 次'],
-    ['hexEarly', r => true, '时光之城：15 次提前'],
+    ['hexEarly', r => true, '时光之城：12 次提前'],
     ['midterm', r => true, '期中周：每 5 轮 ¥520'],
     ['oldbook', r => r.fundCap() === Math.round(G.FUND_CAP * 0.85), '旧书集：基金池 −15%'],
     ['carnival', r => r.facRentMul() === 1.05, '嘉年华：租金 ×1.05'],

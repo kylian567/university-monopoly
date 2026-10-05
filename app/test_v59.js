@@ -19,7 +19,7 @@ function mkRoom(n = 2, opts) {
 const unownedProp = r => G.BOARD.findIndex((c, i) => c.type === 'prop' && r.cells[i].own === null);
 
 // ================= [1] 表完整性与镜像 =================
-section(1, '城邦 60 / 海克斯 105 / 镜像一致 / 提前触发表');
+section(1, '城邦 74 / 海克斯 152 / 镜像一致 / 提前触发表');
 {
   ok(G.FACULTY_KEYS.length === 74, `城邦共 ${G.FACULTY_KEYS.length} 个（预期 74 = 60 + v7.3 新增 14）`);
   const themes = G.FACULTY_KEYS.filter(k => G.FACULTY[k].hexTheme);
@@ -29,9 +29,9 @@ section(1, '城邦 60 / 海克斯 105 / 镜像一致 / 提前触发表');
   const cnt = { silver: 0, gold: 0, prism: 0 };
   for (const k in G.PROJECTS) cnt[G.PROJECTS[k].tier]++;
   const total = Object.keys(G.PROJECTS).length;
-  ok(total === 105 && cnt.silver === 40 && cnt.gold === 35 && cnt.prism === 30,
+  ok(total === 152 && cnt.silver === 56 && cnt.gold === 51 && cnt.prism === 45,
     `海克斯共 ${total} 个（银 ${cnt.silver} / 金 ${cnt.gold} / 彩 ${cnt.prism}）`);
-  ok(JSON.stringify(G.HEX_TRIGGERS_EARLY) === JSON.stringify([2, 6, 12, 19, 26, 33, 40, 47, 54, 61, 68, 75, 82, 88, 94]), 'HEX_TRIGGERS_EARLY v7.1 = 2/6/12/19/26/33/40/47/54/61/68/75/82/88/94（15 次全部提前）');
+  ok(JSON.stringify(G.HEX_TRIGGERS_EARLY) === JSON.stringify([2, 6, 12, 19, 27, 35, 44, 54, 65, 77, 89, 101]), 'HEX_TRIGGERS_EARLY v7.4 = 2/6/12/19/27/35/44/54/65/77/89/101（12 次全部提前）');
   // 客户端镜像逐字一致
   const game = fs.readFileSync(path.join(__dirname, 'game.js'), 'utf8');
   const cli = fs.readFileSync(path.join(__dirname, 'public/client.js'), 'utf8');
@@ -159,7 +159,7 @@ section(4, '定调城邦：前三次强制档位 / 仅 3 次 / 提前触发');
     r.applyFacultySetup('hxMix');
     r.hexDoneRounds = []; r.hexTiers = [];
     const got = [];
-    for (const rd of [2, 16, 25]) {
+    for (const rd of [2, 15, 23]) {
       r.round = rd; r.phase = 'roll';
       r.maybeProject();
       got.push(r.project.tier);
@@ -175,11 +175,11 @@ section(4, '定调城邦：前三次强制档位 / 仅 3 次 / 提前触发');
     r.applyFacultySetup('hex3');
     r.hexDoneRounds = []; r.hexTiers = [];
     ok(r.hexMaxCount === 3, '【精研之城】hexMaxCount = 3');
-    for (const rd of [2, 16, 25]) { r.round = rd; r.phase = 'roll'; r.maybeProject(); r.project = null; r.phase = 'roll'; r.clearTimer(); r.clearAiTimers(); }
-    r.round = 40; r.phase = 'roll';
-    ok(r.maybeProject() === false, '第 4 次立项被取消（第 40 轮不再触发）');
+    for (const rd of [2, 15, 23]) { r.round = rd; r.phase = 'roll'; r.maybeProject(); r.project = null; r.phase = 'roll'; r.clearTimer(); r.clearAiTimers(); }
+    r.round = 32; r.phase = 'roll';
+    ok(r.maybeProject() === false, '第 4 次立项被取消（第 32 轮不再触发）');
   }
-  // v7.1 时光之城：15 次立项全部提前（第 6 轮即第二次立项；常规表要等到第 8 轮）
+  // v7.4 时光之城：12 次立项全部提前（第 6 轮即第二次立项；常规表要等到第 8 轮）
   {
     const r = mkRoom(3);
     r.applyFacultySetup('hexEarly');
@@ -189,14 +189,14 @@ section(4, '定调城邦：前三次强制档位 / 仅 3 次 / 提前触发');
     r.clearTimer(); r.clearAiTimers();
     // 逐项校验：15 次提前轮次都严格早于常规表（首轮同为第 2 轮，游戏从第 1 轮开始无法更早）
     ok(G.HEX_TRIGGERS_EARLY.every((v, i) => i === 0 ? v === G.HEX_TRIGGERS[0] : v < G.HEX_TRIGGERS[i]),
-      '提前表 15 项逐项早于常规表（第 1 次同为第 2 轮）');
+      '提前表 12 项逐项早于常规表（第 1 次同为第 2 轮）');
     ok(G.HEX_TRIGGERS_EARLY.every((v, i, a) => i === 0 || v > a[i - 1]), '提前表严格递增');
   }
   // 普通局不受影响
   {
     const r = mkRoom(3);
     r.round = 5; r.phase = 'roll';
-    ok(r.maybeProject() === false, '普通局第 5 轮不触发（v7.0 触发轮：2/8/16/25/32/40/49/55/62/70/77/85/91/100/110）');
+    ok(r.maybeProject() === false, '普通局第 5 轮不触发（v7.4 触发轮：2/8/15/23/32/41/51/62/74/86/98/110）');
   }
 }
 
@@ -410,7 +410,7 @@ section(9, 'v5.11：换届只在轮次刚开始触发 / 每次立项都有刷新
   // ④ 每次立项三选一都重置刷新机会（原 v5.10 为整局一次）
   const r4 = mkRoom(2);
   r4.players[0].hexRefreshLeft = 0; r4.players[1].hexRefreshLeft = 0;
-  r4.hexDoneRounds = []; r4.round = 16; r4.phase = 'roll';
+  r4.hexDoneRounds = []; r4.round = 15; r4.phase = 'roll';
   const opened = r4.maybeProject();
   r4.clearTimer(); r4.clearAiTimers();
   ok(opened && r4.players.every(p => p.hexRefreshLeft === 1),
@@ -459,8 +459,8 @@ section(10, 'v5.13：海克斯限次（合约期）/ 抽取降彩升银 / 描述
   // ② charges 字段：34 个项目带合约期，desc 与 charges 一并写入
   const charged = Object.keys(G.PROJECTS).filter(k => G.PROJECTS[k].charges);
   const cntTier = t => charged.filter(k => G.PROJECTS[k].tier === t).length;
-  ok(charged.length === 34 && cntTier('silver') === 11 && cntTier('gold') === 6 && cntTier('prism') === 17,
-    `② 34 个项目带合约期（银 ${cntTier('silver')} / 金 ${cntTier('gold')} / 彩 ${cntTier('prism')}）`);
+  ok(charged.length === 90 && cntTier('silver') === 33 && cntTier('gold') === 29 && cntTier('prism') === 28,
+    `② 90 个项目带合约期（银 ${cntTier('silver')} / 金 ${cntTier('gold')} / 彩 ${cntTier('prism')}）`);
   ok(charged.every(k => G.PROJECTS[k].charges > 0 && /限 \d+ (轮|次)/.test(G.PROJECTS[k].desc)),
     '② 每个限次项目 desc 都写明「限 N 轮/次」');
 
@@ -532,8 +532,8 @@ section(10, 'v5.13：海克斯限次（合约期）/ 抽取降彩升银 / 描述
 section(11, 'v5.14：海克斯合约再平衡（数值 + 机制）/ 彩卡上调 / 第 32 轮第四次 / 手机竖屏与公告常驻按钮');
 {
   // ① 触发轮改为 v7.0 的 15 次表
-  ok(JSON.stringify(G.HEX_TRIGGERS) === JSON.stringify([2, 8, 16, 25, 32, 40, 49, 55, 62, 70, 77, 85, 91, 100, 110]),
-    '① v7.0 触发轮 = 2/8/16/25/32/40/49/55/62/70/77/85/91/100/110（共 15 次）');
+  ok(JSON.stringify(G.HEX_TRIGGERS) === JSON.stringify([2, 8, 15, 23, 32, 41, 51, 62, 74, 86, 98, 110]),
+    '① v7.4 触发轮 = 2/8/15/23/32/41/51/62/74/86/98/110（共 12 次）');
   const rr = mkRoom(2);
   rr.round = 30; rr.hexDoneRounds = [];
   rr.phase = 'roll'; rr.project = null; rr.clearTimer(); rr.clearAiTimers();
@@ -543,7 +543,8 @@ section(11, 'v5.14：海克斯合约再平衡（数值 + 机制）/ 彩卡上调
   rr.clearTimer(); rr.clearAiTimers();
 
   // ② 「每轮生效型」合约一律 ≥12 轮（原先最短 8 轮，中盘就断供）
-  const ROUND_MODS = ['turnCash', 'poorCash', 'noLandCash', 'interestPct', 'weatherCash', 'sunCash', 'landmark', 'legacy', 'floor', 'shieldEach', 'freeReroll'];
+  const ROUND_MODS = ['turnCash', 'poorCash', 'noLandCash', 'interestPct', 'weatherCash', 'sunCash', 'landmark', 'legacy', 'floor', 'shieldEach', 'freeReroll',
+    'growCash', 'richDrain', 'comeback', 'roundPay', 'coinCash', 'taxLevelCut', 'taxCut'];
   const roundType = Object.keys(G.PROJECTS).filter(k => {
     const m = G.PROJECTS[k].mods || {};
     return G.PROJECTS[k].charges && ROUND_MODS.some(mk => m[mk] !== undefined);
@@ -592,7 +593,7 @@ section(11, 'v5.14：海克斯合约再平衡（数值 + 机制）/ 彩卡上调
   ok(G.PROJECTS.salaryx2.mods.salaryX2 === 1 && G.PROJECTS.salaryx2.mods.goCash === 800 && G.PROJECTS.salaryx2.charges === 12,
     '⑥ v6.0：双倍工资 = 工资 ×2 + 过起点 +¥800（限 12 次）');
   const wd = mkRoom(2, { hex: true });
-  wd.round = 25; wd.hexDoneRounds = [];   // 25 轮在 v7.0 触发表内，且已在停薪线（15 轮）之后
+  wd.round = 23; wd.hexDoneRounds = [];   // 23 轮在 v7.4 触发表内，且已在停薪线（15 轮）之后
   wd.maybeProject(); wd.clearTimer(); wd.clearAiTimers();
   const offs = Object.values(wd.project.offers).flat();
   ok(!offs.includes('salaryx2'), `⑥ 停薪后候选池不含双倍工资（含 goCash 会被剔除），共 ${offs.length} 张`);

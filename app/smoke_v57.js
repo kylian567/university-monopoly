@@ -46,9 +46,9 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
       hexSfx: ['hexRise', 'hexFlip', 'hexPick', 'hexHit', 'hexPrism'].every(k => typeof SFX[k] === 'function'),
       viewer: typeof window.openPlayerViewer,
     }));
-    ok(mir.projects === 105, `PROJECTS 镜像 ${mir.projects} 项（v6.0 新增棱彩「攻守互换」= 105）`);
-    ok(mir.tiers === 3 && `${mir.silver}/${mir.gold}/${mir.prism}` === '40/35/30', `三档项目数 ${mir.silver}/${mir.gold}/${mir.prism}（v6.0 彩档 +1「攻守互换」；抽取概率 43/32/25 见 test_v60）`);
-    ok(mir.charged === 34, `限次（合约期）项目 ${mir.charged} 个（v5.14 预期 34）`);
+    ok(mir.projects === 152, `PROJECTS 镜像 ${mir.projects} 项（v7.4 扩池 = 152）`);
+    ok(mir.tiers === 3 && `${mir.silver}/${mir.gold}/${mir.prism}` === '56/51/45', `三档项目数 ${mir.silver}/${mir.gold}/${mir.prism}（v7.4 扩池；抽取概率 43/32/25 见 test_v60）`);
+    ok(mir.charged === 90, `限次（合约期）项目 ${mir.charged} 个（v7.4 预期 90）`);
     ok(mir.hexSfx, '5 个海克斯音效已挂载');
     ok(mir.viewer === 'function', 'openPlayerViewer 已挂到 window');
 

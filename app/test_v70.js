@@ -169,17 +169,17 @@ section(5, '经济：盖房价小幅上调（四舍五入到 10）· 有建筑�
   ok(r.calcRent(uIdx, [2, 5]) === 700, `公用事业（持 1 家、点数 7）租金 ¥700 不受 1.06 影响`);
 }
 
-// ================= [6] 海克斯触发轮 = 15 次 =================
-section(6, '海克斯触发轮：2/8/16/25/32/40/49/55/62/70/77/85/91/100/110（共 15 次）');
+// ================= [6] 海克斯触发轮 = 12 次 =================
+section(6, '海克斯触发轮：2/8/15/23/32/41/51/62/74/86/98/110（共 12 次）');
 {
-  ok(G.HEX_TRIGGERS.length === 15, `触发轮共 15 次（实际 ${G.HEX_TRIGGERS.length}）`);
-  ok(JSON.stringify(G.HEX_TRIGGERS) === JSON.stringify([2, 8, 16, 25, 32, 40, 49, 55, 62, 70, 77, 85, 91, 100, 110]),
-    '触发轮数值与需求一致');
+  ok(G.HEX_TRIGGERS.length === 12, `触发轮共 12 次（实际 ${G.HEX_TRIGGERS.length}）`);
+  ok(JSON.stringify(G.HEX_TRIGGERS) === JSON.stringify([2, 8, 15, 23, 32, 41, 51, 62, 74, 86, 98, 110]),
+    '触发轮数值与需求一致（v7.4 = 12 次）');
   ok(G.HEX_TRIGGERS.every((v, i, a) => i === 0 || v > a[i - 1]), '触发轮严格递增');
-  ok(JSON.stringify(G.HEX_TRIGGERS_EARLY) === JSON.stringify([2, 6, 12, 19, 26, 33, 40, 47, 54, 61, 68, 75, 82, 88, 94]),
-    'v7.1 时光之城提前表 = 2/6/12/19/26/33/40/47/54/61/68/75/82/88/94（15 次全部提前）');
+  ok(JSON.stringify(G.HEX_TRIGGERS_EARLY) === JSON.stringify([2, 6, 12, 19, 27, 35, 44, 54, 65, 77, 89, 101]),
+    'v7.4 时光之城提前表 = 2/6/12/19/27/35/44/54/65/77/89/101（12 次全部提前）');
   ok(G.HEX_TRIGGERS_EARLY.every((v, i) => i === 0 ? v === G.HEX_TRIGGERS[0] : v < G.HEX_TRIGGERS[i]),
-    '提前表 15 项逐项早于常规表');
+    '提前表 12 项逐项早于常规表');
 }
 
 // ================= [7] 城邦影响加强抽查 =================
@@ -324,8 +324,8 @@ section(10, '响应：进攻卡给目标一次「万能卡 / 无懈可击卡」�
 section(11, '海克斯奖励卡：每位存活玩家三张翻面卡随机抽一张');
 {
   const r = mkRoom(3);
-  r.round = 16; r.hexDoneRounds = []; r.phase = 'roll'; r.project = null;
-  ok(r.maybeProject() === true, '第 16 轮开启立项');
+  r.round = 15; r.hexDoneRounds = []; r.phase = 'roll'; r.project = null;
+  ok(r.maybeProject() === true, '第 15 轮开启立项');
   for (const p of r.players) r.pickProject(p, r.project.offers[p.id][0]);
   ok(r.phase === 'carddraft' && !!r.draft, '立项结算后进入 carddraft 阶段（附赠奖励卡）');
   const alive = r.alive();
@@ -353,7 +353,7 @@ section(11, '海克斯奖励卡：每位存活玩家三张翻面卡随机抽一�
   r2.clearTimer(); r2.clearAiTimers();
   // 超时兜底不卡死
   const r3 = mkRoom(3);
-  r3.round = 16; r3.hexDoneRounds = []; r3.phase = 'roll'; r3.project = null;
+  r3.round = 15; r3.hexDoneRounds = []; r3.phase = 'roll'; r3.project = null;
   r3.maybeProject();
   for (const p of r3.players) r3.pickProject(p, r3.project.offers[p.id][0]);
   ok(r3.phase === 'carddraft', '进入奖励卡阶段');
@@ -468,7 +468,7 @@ section(16, '兼容：未开 draft 的房局 settleProject 直接回到掷骰');
   const r = new G.Room('v70off', { hex: true, faculty: true });   // 不带 draft
   r.join('A', false); r.join('B', true);
   r.start(); r.clearTimer(); r.clearAiTimers();
-  r.round = 16; r.hexDoneRounds = []; r.phase = 'roll'; r.project = null;
+  r.round = 15; r.hexDoneRounds = []; r.phase = 'roll'; r.project = null;
   r.maybeProject();
   for (const p of r.players) r.pickProject(p, r.project.offers[p.id][0]);
   ok(r.phase !== 'carddraft' && r.draft === null, '未开启 draft → 不进入 carddraft（旧测试行为不变）');
@@ -477,7 +477,7 @@ section(16, '兼容：未开 draft 的房局 settleProject 直接回到掷骰');
   const r2 = new G.Room('v70off2', { draft: true });
   r2.join('A', false); r2.join('B', true);
   r2.start(); r2.clearTimer(); r2.clearAiTimers();
-  r2.round = 16; r2.phase = 'roll';
+  r2.round = 15; r2.phase = 'roll';
   ok(r2.maybeProject() === false && r2.draft === null, '未开 hex → 立项与奖励卡都不触发');
   r2.clearTimer(); r2.clearAiTimers();
 }

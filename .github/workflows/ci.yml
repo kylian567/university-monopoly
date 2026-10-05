@@ -16,11 +16,11 @@ jobs:
         with:
           node-version: 20
 
-      - name: 引擎单测（v4.x ~ v7.3 共 1224 项）
+      - name: 引擎单测（v4.x ~ v7.4 共 1281 项）
         working-directory: app
         run: |
           set -e
-          for t in test_v73 test_v72 test_v71 test_v70 test_v60 test_v59 test_v58 test_v57 test_v55 test_v54 test_v53 test_v52 test_v51 test_v50 test_v40 test_majors; do
+          for t in test_v74 test_v73 test_v72 test_v71 test_v70 test_v60 test_v59 test_v58 test_v57 test_v55 test_v54 test_v53 test_v52 test_v51 test_v50 test_v40 test_majors; do
             echo "▶ node $t.js"
             node "$t.js"
           done
