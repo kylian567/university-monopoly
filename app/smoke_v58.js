@@ -33,7 +33,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
     const ann = await page.evaluate(() => (document.querySelector('#intro .announce-logo') || {}).textContent || '');
     ok(/v(?:5\.(?:14|13|12)|6\.\d+|7\.\d+)/.test(ann), `开局公告标题：${ann}`);
     const annSub = await page.evaluate(() => (document.querySelector('.announce-sub') || {}).textContent || '');
-    ok(/v7\.0/.test(annSub), `作者公告版本号：${annSub.trim()}`);
+    ok(/v7\.[01]/.test(annSub), `作者公告版本号：${annSub.trim()}`);
     await page.click('#btnAnnounce'); await sleep(240);
     await page.click('#btnIntro'); await sleep(240);
     await page.click('#btnRulesClose').catch(() => {});

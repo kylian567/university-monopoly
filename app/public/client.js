@@ -187,7 +187,7 @@ const FACULTY = {
   hxGold:   { name: '黄金学府',   icon: '🟡', color: '#E8B04B', hexTheme: 1, terms: [1, 1], lead: '本局海克斯前三次必出省级（金）',      cost: '全场租金 ×1.04',                    tag: '含金量直接拉满' },
   hxMix:    { name: '极光之城',   icon: '🌌', color: '#7B68EE', hexTheme: 1, terms: [1, 1], lead: '本局海克斯前三次必为银/金/彩各一个',  cost: '物业税起征门槛降低 1',              tag: '雨露均沾，档档来一遍' },
   hex3:     { name: '精研之城',   icon: '🧭', color: '#3FBF9E', hexTheme: 1, terms: [1, 1], lead: '本局海克斯只有 3 次（第 2/8/16 轮）', cost: '此后所有立项机会全部取消——选卡时记得用刷新', tag: '少即是多，张张要紧' },
-  hexEarly: { name: '时光之城',   icon: '⏳', color: '#E07A45', hexTheme: 1, terms: [1, 1], lead: '海克斯提前触发：第 2/5/10/16/25/32/40/49/55 轮起更密集', cost: '第 100 轮后就再也没有立项机会',      tag: '早起的鸟儿有项目吃' },
+  hexEarly: { name: '时光之城',   icon: '⏳', color: '#E07A45', hexTheme: 1, terms: [1, 1], lead: '15 次立项全部提前：第 2/6/12/19/26/33/40/47/54/61/68/75/82/88/94 轮', cost: '第 94 轮后就再也没有立项机会',      tag: '早起的鸟儿有项目吃' },
   // ===== v5.10 新增：30 个娱乐城邦（一利一弊，幅度克制，主打好玩） =====
   lantern:  { name: '灯会校区',   icon: '🏮', color: '#E8A23F', lead: '每轮开场全场 +¥220 灯会补贴',           cost: '全场租金 ×1.03',                    tag: '张灯结彩，人人有份' },
   midterm:  { name: '期中周校区', icon: '📝', color: '#8E86E0', lead: '每 5 轮全场各缴 ¥520 助学捐款',         cost: '躲不掉——人人有份，直接进基金池',     tag: '谁也别想逃' },
@@ -2208,10 +2208,13 @@ function facultyDrawAnim(e) {
 let hexPickEl = null, hexPickClock = null, hexPickSig = '', hexMyPick = null;
 let hexMine = [], hexCanRefresh = false, hexPickTier = 'silver', hexPickRound = 0;   // v5.10：刷新相关显示态
 
+// v7.1：卡面重做 —— 候选序号徽章 + 全档位扫光 + 悬停光晕 + 立项印章/光柱（点击时点亮）
 function hexCardHtml(key, i, tier, canRefresh) {
   const pr = PROJECTS[key] || {};
   const T = HEX_TIERS[tier] || {};
   return `<div class="hx-card t-${tier}" data-key="${key}" style="--hc:${T.color || '#999'};animation-delay:${(0.65 + i * 0.45).toFixed(2)}s">
+      <div class="hx-aura"></div><div class="hx-sheen"></div><div class="hx-pillar"></div>
+      <div class="hx-cand">候选 ${i + 1}</div>
       <div class="hx-ico">${pr.icon || '🧪'}</div>
       <div class="hx-name">${esc(pr.name || key)}</div>
       <div class="hx-desc">${esc(pr.desc || '')}</div>
@@ -2219,6 +2222,7 @@ function hexCardHtml(key, i, tier, canRefresh) {
       <div class="hx-voters"></div>
       ${canRefresh ? `<button class="hx-refresh" title="刷新：把这张换成同档随机新卡（每次立项一次）">🔁</button>` : ''}
       <div class="hx-picked">✔ 已立项</div>
+      <div class="hx-stamp"></div>
     </div>`;
 }
 
@@ -2240,9 +2244,16 @@ function projectOpenPick(e) {
   const T = HEX_TIERS[tier] || {};
   const d = document.createElement('div');
   d.className = 'hx-layer';
+  // v7.1：背景放射光轴（银 10 / 金 14 / 彩 20 条）+ 三层旋转光环 + 档位徽章爆开
+  const RAY_N = { silver: 10, gold: 14, prism: 20 }[tier] || 10;
+  const rays = Array.from({ length: RAY_N }, (_, i) =>
+    `<i class="hx-ray" style="--a:${(360 / RAY_N * i).toFixed(1)}deg;--d:${(i % 5) * 220}ms"></i>`).join('');
   d.innerHTML = `<div class="hx-panel t-${tier}">
+      <div class="hx-rays">${rays}</div>
+      <div class="hx-orbit"><i class="o1"></i><i class="o2"></i><i class="o3"></i></div>
       <div class="hx-glow"></div><div class="hx-beam"></div><i class="hx-mote m1"></i><i class="hx-mote m2"></i><i class="hx-mote m3"></i><i class="hx-mote m4"></i><i class="hx-mote m5"></i><i class="hx-mote m6"></i>
       <div class="hx-plaque"><div class="hx-plaque-in">
+        <div class="hx-badge t-${tier}">${T.icon || '🧪'}</div>
         <div class="hx-kicker">第 ${e.round} 轮 · 研 究 项 目 立 项</div>
         <div class="hx-big hx-tier-txt t-${tier}">${T.icon || ''} ${esc(T.name || '研究项目')}</div>
         <div class="hx-hint">每 位 玩 家 三 选 一 · 全 场 同 档 · 各 自 抽 卡<br>立 项 即 生 效 · 贯 穿 整 局</div>
@@ -2291,6 +2302,10 @@ function bindHexCards(d, tier) {
       if (!hexMine.includes(key)) return;
       hexMyPick = key;
       card.classList.add('picked');
+      // v7.1：光柱落下 → 印章盖下
+      const pil = card.querySelector('.hx-pillar'); if (pil) pil.classList.add('on');
+      setTimeout(() => { const st2 = card.querySelector('.hx-stamp'); if (st2) st2.classList.add('on'); }, sp(180));
+      if (tier === 'prism') confettiBurst(46);
       SFX.hexPick();
       fxBurst(cellCenter(0), { kind: 'spark', n: 10, speed: 2.2, size: 2.8, life: 28, color: [(HEX_TIERS[tier] || {}).color || '#B76CE8', '#ffffff'] });
       send({ action: { type: 'pickProject', key } });
@@ -2357,7 +2372,14 @@ async function projectGrantFx(e) {
   else SFX.hexHit();
   skillBeam(color);
   fxBurst(playerCell(e.pid), { kind: 'star', n: 18, speed: 3.6, size: 4.6, life: 48, color: [color, '#ffffff', '#f5e1ff'], wave: { r: 78, color, life: 44 } });
-  await announce(`${T.icon || '🧪'} <span class="who">${esc(ownerName(e.pid))}</span> 立项 <b style="color:${color}">【${esc(pr.name || e.key)}】</b><br><span style="font-size:13.5px;opacity:.9">${esc(e.detail || pr.desc || '')}</span>`, e.tier === 'prism' ? 2600 : 2100);
+  // v7.1：结算横幅内嵌一张「立项卡面」（图标 / 名称 / 档位 + 红色印章）
+  const grantCard = `<div class="hx-grant t-${e.tier}" style="--hc:${color}">
+      <div class="hg-ico">${pr.icon || '🧪'}</div>
+      <div class="hg-mid"><div class="hg-name">${esc(pr.name || e.key)}</div>
+        <div class="hg-tier">${T.icon || ''} ${esc(T.short || T.name || '')}</div></div>
+      <div class="hg-seal">立项</div>
+    </div>`;
+  await announce(`${T.icon || '🧪'} <span class="who">${esc(ownerName(e.pid))}</span> 立项 <b style="color:${color}">【${esc(pr.name || e.key)}】</b>${grantCard}<span style="font-size:13.5px;opacity:.9">${esc(e.detail || pr.desc || '')}</span>`, e.tier === 'prism' ? 2600 : 2100);
 }
 
 // 发动特效（小横幅 + 玩家位置星光）——被动效果每次触发时播

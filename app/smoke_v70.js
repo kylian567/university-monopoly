@@ -40,7 +40,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
     await page.goto(BASE, { waitUntil: 'domcontentloaded' });
     await sleep(800);
     const ann = await page.evaluate(() => (document.querySelector('#intro .announce-logo') || {}).textContent || '');
-    ok(/v7\.0/.test(ann), `开局公告标题：${ann.trim()}`);
+    ok(/v7\.[01]/.test(ann), `开局公告标题：${ann.trim()}`);
     const marks = await page.evaluate(() => ({
       cards: (typeof EFFECT_CARDS !== 'undefined') ? EFFECT_CARDS.length : null,
       ssr: (typeof EFFECT_CARDS !== 'undefined') ? EFFECT_CARDS.filter(c => c.rare === 'SSR').length : null,
@@ -65,7 +65,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
     ok(!/mj-tier/.test(src), '选专业界面已去掉 ★ 档位');
     ok(/const EFFECT_CARDS = \[/.test(src), 'client 镜像了 EFFECT_CARDS 表');
     ok(/\.cd-slot\.flipped/.test(css) && /cfx-ray/.test(css) && /\.ready-bar/.test(css), '翻卡 / 光轴 / 准备栏样式齐备');
-    ok(/v7\.0/.test(html), 'index.html 已更新到 v7.0 公告');
+    ok(/v7\.[01]/.test(html), 'index.html 已更新到 v7.x 公告');
     await shot(page, '10-desktop.png');
     await page.close();
 

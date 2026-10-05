@@ -1096,6 +1096,82 @@ body {
 .hx-timer.urgent em { animation:hxUrgent .5s ease-in-out infinite; }
 @keyframes hxUrgent { 0%,100% { transform:scale(1); } 50% { transform:scale(1.28); } }
 
+/* ---------- v7.1：选择海克斯流程 · 特效与动画全面美化 ---------- */
+/* ① 背景放射光轴（银 10 / 金 14 / 彩 20 条）—— 从档位徽章中心向外辐射 */
+.hx-rays { position:absolute; inset:0; pointer-events:none; overflow:hidden; border-radius:22px; }
+.hx-rays .hx-ray { position:absolute; left:50%; top:44%; width:2px; height:58%; opacity:.16;
+  transform-origin:50% 0; transform:rotate(var(--a,0deg));
+  background:linear-gradient(180deg, color-mix(in srgb, var(--hx,#8FA6BF) 80%, transparent), transparent 70%);
+  animation:hxRay 3.4s ease-in-out var(--d,0ms) infinite; }
+@keyframes hxRay { 0%,100% { opacity:.10; } 50% { opacity:.42; } }
+/* ② 三层旋转光环（档位色，虚线不等边，转速不同） */
+.hx-orbit { position:absolute; left:50%; top:40%; width:0; height:0; pointer-events:none; }
+.hx-orbit i { position:absolute; left:0; top:0; border-radius:50%; opacity:0;
+  border:2px solid color-mix(in srgb, var(--hx,#8FA6BF) 55%, transparent);
+  animation-name:hxOrbit, hxFadeIn; animation-timing-function:linear, ease; animation-iteration-count:infinite, 1;
+  animation-fill-mode:none, forwards; }
+.hx-orbit .o1 { width:200px; height:200px; border-top-color:transparent; border-bottom-color:transparent;
+  animation-duration:9s, .8s; animation-delay:0s, .18s; }
+.hx-orbit .o2 { width:320px; height:320px; border-left-color:transparent; border-right-color:transparent;
+  border-width:1.5px; animation-duration:14s, .9s; animation-delay:0s, .32s; animation-direction:reverse, normal; }
+.hx-orbit .o3 { width:440px; height:440px; border-style:dashed; border-width:1.5px; opacity:0;
+  animation-duration:22s, 1s; animation-delay:0s, .46s; }
+@keyframes hxOrbit { from { transform:translate(-50%,-50%) rotate(0deg); } to { transform:translate(-50%,-50%) rotate(360deg); } }
+@keyframes hxFadeIn { from { opacity:0; } to { opacity:.62; } }
+/* ③ 档位徽章：入场"爆开"回弹 */
+.hx-badge { width:62px; height:62px; margin:0 auto 6px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  font-size:30px; line-height:1; color:#fff; opacity:0; transform:scale(.3) rotate(-40deg);
+  background:radial-gradient(circle at 38% 30%, color-mix(in srgb, var(--hx,#8FA6BF) 88%, white), var(--hx,#8FA6BF));
+  box-shadow:0 0 0 4px color-mix(in srgb, var(--hx,#8FA6BF) 28%, transparent), 0 10px 26px rgba(0,0,0,.5),
+             0 0 34px color-mix(in srgb, var(--hx,#8FA6BF) 62%, transparent);
+  animation:hxBadge .74s cubic-bezier(.2,1.6,.4,1) .18s forwards; }
+@keyframes hxBadge { to { opacity:1; transform:scale(1) rotate(0deg); } }
+.hx-badge.t-prism { background:conic-gradient(#B76CE8,#4FC3F7,#4ade80,#E8B04B,#ef6b93,#B76CE8);
+  animation:hxBadge .74s cubic-bezier(.2,1.6,.4,1) .18s forwards, hxSpin 4.4s linear .92s infinite; }
+/* ④ 卡面：全档位扫光 + 悬停光晕 + 候选序号徽章 */
+.hx-sheen { position:absolute; inset:3px; border-radius:14px; pointer-events:none; z-index:0; opacity:.5;
+  background:linear-gradient(115deg, transparent 40%, rgba(255,255,255,.62) 50%, transparent 60%);
+  background-size:260% 100%; animation:hxSheen 3.4s linear infinite; }
+.hx-aura { position:absolute; inset:-16px; border-radius:26px; pointer-events:none; z-index:-1; opacity:0;
+  background:radial-gradient(circle at 50% 42%, color-mix(in srgb, var(--hc,#8FA6BF) 62%, transparent), transparent 66%);
+  transition:opacity .26s ease; }
+.hx-card:hover .hx-aura { opacity:.9; }
+.hx-card > .hx-ico, .hx-card > .hx-name, .hx-card > .hx-desc, .hx-card > .hx-tier,
+.hx-card > .hx-voters, .hx-card > .hx-picked { position:relative; z-index:1; }
+.hx-cand { position:absolute; top:-12px; left:-12px; width:34px; height:34px; border-radius:50%; z-index:3;
+  display:flex; align-items:center; justify-content:center; font-size:9.5px; font-weight:900; color:#fff;
+  background:var(--hc,#8FA6BF); box-shadow:0 4px 12px rgba(0,0,0,.45), 0 0 0 3px rgba(255,255,255,.92); }
+/* ⑤ 点击立项：光柱落下 + 印章盖下 */
+.hx-pillar { position:absolute; left:50%; top:-45%; width:130px; height:190%; margin-left:-65px; pointer-events:none;
+  z-index:2; opacity:0; filter:blur(11px);
+  background:linear-gradient(180deg, transparent, color-mix(in srgb, var(--hc,#8FA6BF) 72%, white), transparent); }
+.hx-pillar.on { animation:hxPillar .92s ease-out forwards; }
+@keyframes hxPillar { 0% { opacity:0; transform:scaleX(.28) translateY(-34%); }
+  32% { opacity:.95; transform:scaleX(1) translateY(0); } 100% { opacity:0; transform:scaleX(1.3) translateY(12%); } }
+.hx-stamp { position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  pointer-events:none; z-index:4; opacity:0; }
+.hx-stamp::before { content:'✔ 已 立 项'; padding:7px 16px; border-radius:12px; border:4px solid #1d6b40;
+  background:rgba(255,255,255,.84); color:#1d6b40; font-size:23px; font-weight:900; letter-spacing:4px;
+  box-shadow:0 8px 22px rgba(0,0,0,.4), inset 0 0 0 2px rgba(29,107,64,.22); }
+.hx-stamp.on { animation:hxStamp .7s cubic-bezier(.2,1.5,.4,1) forwards; }
+@keyframes hxStamp { 0% { opacity:0; transform:scale(2.5) rotate(-26deg); }
+  55% { opacity:1; transform:scale(1) rotate(-9deg); } 100% { opacity:1; transform:scale(1) rotate(-9deg); } }
+/* ⑥ 结算横幅内嵌「立项卡面」 */
+.hx-grant { display:flex; align-items:center; gap:12px; justify-content:center; margin:10px auto 4px;
+  padding:8px 14px; width:min(430px,88%); border-radius:14px;
+  background:linear-gradient(180deg, rgba(255,255,255,.11), rgba(255,255,255,.03));
+  border:2px solid color-mix(in srgb, var(--hc,#8FA6BF) 60%, transparent);
+  box-shadow:0 10px 28px rgba(0,0,0,.45), 0 0 26px color-mix(in srgb, var(--hc,#8FA6BF) 34%, transparent);
+  animation:hxGrantIn .52s cubic-bezier(.2,1.4,.4,1) both; }
+.hg-ico { font-size:30px; line-height:1; }
+.hg-mid { flex:1; text-align:left; }
+.hg-name { font-size:16px; font-weight:900; color:#fff; letter-spacing:1px; }
+.hg-tier { font-size:11px; font-weight:800; letter-spacing:2px; color:var(--hc,#8FA6BF); }
+.hg-seal { flex:none; padding:4px 10px; border-radius:8px; border:2px solid #2f9c5c; color:#43c07c; font-weight:900;
+  font-size:12px; letter-spacing:2px; transform:rotate(-8deg); animation:hxSeal .5s cubic-bezier(.2,1.6,.4,1) .26s both; }
+@keyframes hxGrantIn { from { opacity:0; transform:translateY(16px) scale(.94); } to { opacity:1; transform:none; } }
+@keyframes hxSeal { from { opacity:0; transform:rotate(-8deg) scale(2.3); } to { opacity:1; transform:rotate(-8deg) scale(1); } }
+
 /* ---------- 玩家查看浮层（点击右侧玩家名） ---------- */
 .hxp-layer { position:fixed; inset:0; z-index:160; display:flex; align-items:center; justify-content:center; pointer-events:auto;
   padding:16px; opacity:0; transition:opacity .26s ease;

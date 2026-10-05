@@ -115,7 +115,8 @@ const REROLL_ROUND_FROM = 6;   // 从第 6 轮开始生效
 const REROLL_ROUND_EVERY = 2;  // 每 2 轮一档
 const REROLL_ROUND_STEP = 55;  // 每档 +¥55
 const REROLL_COST = REROLL_BASE;   // 兼容旧引用（文案 / 老测试），等价于首次价
-// v7.0：经济微调 —— 路过租金（地皮类）小幅上调 6%，盖房价格小幅上调 5%
+// v7.0：经济微调 —— 盖房价格小幅上调 5%；路过租金小幅上调 6%
+// v7.1 修正：租金上调只对「已建有房子的地皮」生效（1~3 栋房 / 旅馆），裸地（地皮）租金回到 v6.0 原值
 const RENT_MUL_V7  = 1.06;   // （盖房价直接写进 GROUPS.build：×1.05，四舍五入到 10）
 const FUND_SHARE = 1 / 3;      // v5.0：重掷/免罚符的花费有 1/3 进入教育基金池
 
@@ -596,7 +597,7 @@ const FACULTY = {
   hxGold:   { name: '黄金学府',   icon: '🟡', color: '#E8B04B', hexTheme: 1, terms: [1, 1], lead: '本局海克斯前三次必出省级（金）',      cost: '全场租金 ×1.04',                    tag: '含金量直接拉满' },
   hxMix:    { name: '极光之城',   icon: '🌌', color: '#7B68EE', hexTheme: 1, terms: [1, 1], lead: '本局海克斯前三次必为银/金/彩各一个',  cost: '物业税起征门槛降低 1',              tag: '雨露均沾，档档来一遍' },
   hex3:     { name: '精研之城',   icon: '🧭', color: '#3FBF9E', hexTheme: 1, terms: [1, 1], lead: '本局海克斯只有 3 次（第 2/8/16 轮）', cost: '此后所有立项机会全部取消——选卡时记得用刷新', tag: '少即是多，张张要紧' },
-  hexEarly: { name: '时光之城',   icon: '⏳', color: '#E07A45', hexTheme: 1, terms: [1, 1], lead: '海克斯提前触发：第 2/5/10/16/25/32/40/49/55 轮起更密集', cost: '第 100 轮后就再也没有立项机会',      tag: '早起的鸟儿有项目吃' },
+  hexEarly: { name: '时光之城',   icon: '⏳', color: '#E07A45', hexTheme: 1, terms: [1, 1], lead: '15 次立项全部提前：第 2/6/12/19/26/33/40/47/54/61/68/75/82/88/94 轮', cost: '第 94 轮后就再也没有立项机会',      tag: '早起的鸟儿有项目吃' },
   // ===== v5.10 新增：30 个娱乐城邦（一利一弊，幅度克制，主打好玩） =====
   lantern:  { name: '灯会校区',   icon: '🏮', color: '#E8A23F', lead: '每轮开场全场 +¥220 灯会补贴',           cost: '全场租金 ×1.03',                    tag: '张灯结彩，人人有份' },
   midterm:  { name: '期中周校区', icon: '📝', color: '#8E86E0', lead: '每 5 轮全场各缴 ¥520 助学捐款',         cost: '躲不掉——人人有份，直接进基金池',     tag: '谁也别想逃' },
@@ -762,7 +763,7 @@ const PROJECT_KEYS = { silver: [], gold: [], prism: [] };
 for (const k in PROJECTS) PROJECT_KEYS[PROJECTS[k].tier].push(k);
 // 四次立项的档位概率（银/金/彩）——完全随机，不是按顺序升档（v5.14：第四次改到第 32 轮）
 const HEX_TRIGGERS = [2, 8, 16, 25, 32, 40, 49, 55, 62, 70, 77, 85, 91, 100, 110];   // v7.0：重排为 15 次（前期密、中后期每 7~10 轮一次）
-const HEX_TRIGGERS_EARLY = [2, 5, 10, 16, 25, 32, 40, 49, 55, 62, 70, 77, 85, 91, 100];   // v7.0「早慧学堂」：海克斯整体提前（与 v7.0 触发轮表同步）
+const HEX_TRIGGERS_EARLY = [2, 6, 12, 19, 26, 33, 40, 47, 54, 61, 68, 75, 82, 88, 94];   // v7.1「时光之城」：15 次立项**全部**提前（常规表 2/8/16/25/32/40/49/55/62/70/77/85/91/100/110）
 // v5.14：彩（国家级）概率整体上调回一档（六次平均 ≈19%），金略降、银仍为单次最大盘；各行仍严格归一
 //       六次 = 80/12/8 · 50/32/18 · 42/34/24 · 46/32/22 ×3（平均 银 51.7% / 金 29.0% / 彩 19.3%）
 // v6.0：取消「第几次立项用哪一行概率」的差异 —— 所有立项统一 银 43% / 金 32% / 彩 25%
@@ -861,7 +862,7 @@ class Room {
     this.hexTiers = [];           // 本局每次立项抽到的档位（供「极光之城」银金彩各一用）
     this.hexForce = null;         // 'prism'|'silver'|'gold'|'mix'——前三次立项强制档位（彩霞/白银/黄金/极光之城）
     this.hexMaxCount = 0;         // 本局立项次数上限（精研之城 = 3；0 = 不限）
-    this.hexEarly = false;        // 时光之城：触发轮改为 2/5/16/25/32
+    this.hexEarly = false;        // v7.1 时光之城：15 次立项全部提前（2/6/12/19/26/33/40/47/54/61/68/75/82/88/94）
     // ---------- v7.0：海克斯奖励卡「三张翻面卡」抽取 ----------
     // 由服务端显式开启（new Room(code, {hex:true, draft:true})）；未开启时 settleProject 直接回到掷骰，
     // 既有测试 / simulate 行为与 v6.0 一致。
@@ -1247,7 +1248,7 @@ class Room {
     if (key === 'hxGold') { this.hexForce = 'gold'; this.addLog('🟡 【黄金学府】本局海克斯前三次必出省级（金）'); }
     if (key === 'hxMix') { this.hexForce = 'mix'; this.addLog('🌌 【极光之城】本局海克斯前三次必为银 / 金 / 彩各一个'); }
     if (key === 'hex3') { this.hexMaxCount = 3; this.addLog('🧭 【精研之城】本局海克斯只有 3 次（第 2/8/16 轮）——选卡时记得用刷新！'); }
-    if (key === 'hexEarly') { this.hexEarly = true; this.addLog('⏳ 【时光之城】海克斯提前触发：第 2/5/10/16/25/32/40/49/55 轮'); }
+    if (key === 'hexEarly') { this.hexEarly = true; this.addLog('⏳ 【时光之城】15 次立项全部提前：第 2/6/12/19/26/33/40/47/54/61/68/75/82/88/94 轮'); }
     if (key === 'veteran') {
       const items = [];
       for (const q of this.players) { q.medal = (q.medal || 0) + 1; q.cash += 600; items.push({ pid: q.id, amount: 600 }); this.ev({ t: 'medalGain', pid: q.id, n: q.medal }); }
@@ -4324,8 +4325,9 @@ class Room {
     // v5.10 地铁校区：机场便宜，驿站变贵
     if (this.facIs('metro') && c.type === 'transport') mul *= 0.80;
     if (this.facIs('metro') && c.type === 'util') mul *= 1.15;
-    // v7.0：路过租金小幅上调（仅地皮类，机场 / 公用事业不受影响）
-    if (c.type === 'prop') mul *= RENT_MUL_V7;
+    // v7.0 路过租金小幅上调；v7.1 修正口径：只作用于「有建筑的租金」（1~3 栋房 / 旅馆），
+    // 裸地（地皮）租金维持 v6.0 原值不变；机场 / 公用事业不受影响
+    if (c.type === 'prop' && cs.level > 0) mul *= RENT_MUL_V7;
     return Math.max(0, Math.round(base * mul));
   }
 

@@ -31,7 +31,7 @@ section(1, '城邦 60 / 海克斯 105 / 镜像一致 / 提前触发表');
   const total = Object.keys(G.PROJECTS).length;
   ok(total === 105 && cnt.silver === 40 && cnt.gold === 35 && cnt.prism === 30,
     `海克斯共 ${total} 个（银 ${cnt.silver} / 金 ${cnt.gold} / 彩 ${cnt.prism}）`);
-  ok(JSON.stringify(G.HEX_TRIGGERS_EARLY) === JSON.stringify([2, 5, 10, 16, 25, 32, 40, 49, 55, 62, 70, 77, 85, 91, 100]), 'HEX_TRIGGERS_EARLY v7.0 = 2/5/10/16/25/32/40/49/55/62/70/77/85/91/100');
+  ok(JSON.stringify(G.HEX_TRIGGERS_EARLY) === JSON.stringify([2, 6, 12, 19, 26, 33, 40, 47, 54, 61, 68, 75, 82, 88, 94]), 'HEX_TRIGGERS_EARLY v7.1 = 2/6/12/19/26/33/40/47/54/61/68/75/82/88/94（15 次全部提前）');
   // 客户端镜像逐字一致
   const game = fs.readFileSync(path.join(__dirname, 'game.js'), 'utf8');
   const cli = fs.readFileSync(path.join(__dirname, 'public/client.js'), 'utf8');
@@ -179,14 +179,18 @@ section(4, '定调城邦：前三次强制档位 / 仅 3 次 / 提前触发');
     r.round = 40; r.phase = 'roll';
     ok(r.maybeProject() === false, '第 4 次立项被取消（第 40 轮不再触发）');
   }
-  // 时光之城：第 5 轮即触发
+  // v7.1 时光之城：15 次立项全部提前（第 6 轮即第二次立项；常规表要等到第 8 轮）
   {
     const r = mkRoom(3);
     r.applyFacultySetup('hexEarly');
     r.hexDoneRounds = []; r.hexTiers = [];
-    r.round = 5; r.phase = 'roll';
-    ok(r.maybeProject() === true, '【时光之城】第 5 轮触发立项');
+    r.round = 6; r.phase = 'roll';
+    ok(r.maybeProject() === true, '【时光之城】第 6 轮触发立项（早于常规的第 8 轮）');
     r.clearTimer(); r.clearAiTimers();
+    // 逐项校验：15 次提前轮次都严格早于常规表（首轮同为第 2 轮，游戏从第 1 轮开始无法更早）
+    ok(G.HEX_TRIGGERS_EARLY.every((v, i) => i === 0 ? v === G.HEX_TRIGGERS[0] : v < G.HEX_TRIGGERS[i]),
+      '提前表 15 项逐项早于常规表（第 1 次同为第 2 轮）');
+    ok(G.HEX_TRIGGERS_EARLY.every((v, i, a) => i === 0 || v > a[i - 1]), '提前表严格递增');
   }
   // 普通局不受影响
   {

@@ -128,7 +128,7 @@ section(4, '物业税：建筑 130/170/200 分档 · 地皮超 10 块每块 +130
 }
 
 // ================= [5] 经济微调：盖房价 ×1.05 / 地皮租金 ×1.06 =================
-section(5, '经济：盖房价小幅上调（四舍五入到 10）· 地皮类路过租金 ×1.06');
+section(5, '经济：盖房价小幅上调（四舍五入到 10）· 有建筑的租金 ×1.06（v7.1：裸地不上调）');
 {
   ok(G.GROUPS.g1.build === 890 && G.GROUPS.g5.build === 2310 && G.GROUPS.g10.build === 4310,
     `盖房价上调：g1 850→890 / g5 2200→2310 / g10 4100→4310`);
@@ -137,18 +137,36 @@ section(5, '经济：盖房价小幅上调（四舍五入到 10）· 地皮类�
   const a = r.players[0], b = r.players[1];
   r.cells[propIdx].own = a.id; r.cells[propIdx].level = 0;
   r.faculty = null; r.season = 'mid'; r.weather = 'cloud'; r.calEvent = null;
-  // 裸地租金 = 地皮基础租金 ×1.3（裸地加成）× 季节/天气/风貌 ×1.06（v7.0 上调）
+  // v7.1 修正：裸地（地皮）租金**不**上调 —— 维持 v6.0 的「基础租金 ×1.3」
   const base = G.BOARD[propIdx].rent;
   const got = r.calcRent(propIdx, [2, 5]);
-  const want = Math.round(base * 1.3 * 1.06);
-  ok(Math.abs(got - want) <= 1, `地皮裸地租金 ${base}×1.3×1.06 → ${got}（期望 ${want}）`);
-  ok(got > Math.round(base * 1.3), '相比 v6.0 同条件租金确实上调了 6%');
+  const want = Math.round(base * 1.3);
+  ok(Math.abs(got - want) <= 1, `地皮裸地租金 ${base}×1.3 → ${got}（v7.1 不再 ×1.06，期望 ${want}）`);
+  ok(got === Math.round(base * 1.3), '裸地租金与 v6.0 完全一致（本次上调不含裸地）');
+  // v7.1：上调只作用于「有建筑的租金」—— 1~3 栋房 / 旅馆
+  const gp = G.GROUPS[G.BOARD[propIdx].g], scl = base / gp.refRent;
+  const b1 = Math.round(gp.rents[0] * scl), b3 = Math.round(gp.rents[2] * scl), b4 = Math.round(gp.rents[3] * scl);
+  r.cells[propIdx].level = 1;
+  const r1 = r.calcRent(propIdx, [2, 5]);
+  ok(Math.abs(r1 - Math.round(b1 * 1.06)) <= 1, `1 栋房租金 ${b1}×1.06 → ${r1}（期望 ${Math.round(b1 * 1.06)}）`);
+  r.cells[propIdx].level = 3;
+  const r3 = r.calcRent(propIdx, [2, 5]);
+  ok(Math.abs(r3 - Math.round(b3 * 1.06)) <= 1, `3 栋房租金 ${b3}×1.06 → ${r3}（期望 ${Math.round(b3 * 1.06)}）`);
+  r.cells[propIdx].level = 4;
+  const r4 = r.calcRent(propIdx, [2, 5]);
+  ok(Math.abs(r4 - Math.round(b4 * 1.06)) <= 1, `旅馆租金 ${b4}×1.06 → ${r4}（期望 ${Math.round(b4 * 1.06)}）`);
+  r.cells[propIdx].level = 0;
   // 非地皮类（机场）不加乘子
   const tIdx = G.BOARD.findIndex(c => c.type === 'transport');
   r.cells.forEach((cs, i) => { if (G.BOARD[i].type === 'transport') cs.own = null; });
   r.cells[tIdx].own = a.id;
   const tv = r.calcRent(tIdx, [2, 5]);
   ok(tv === 800, `机场（仅持 1 座）租金不受 1.06 影响（${tv}）`);
+  // 公用事业同样不受影响
+  const uIdx = G.BOARD.findIndex(c => c.type === 'util');
+  r.cells.forEach((cs, i) => { if (G.BOARD[i].type === 'util') cs.own = null; });
+  r.cells[uIdx].own = a.id;
+  ok(r.calcRent(uIdx, [2, 5]) === 700, `公用事业（持 1 家、点数 7）租金 ¥700 不受 1.06 影响`);
 }
 
 // ================= [6] 海克斯触发轮 = 15 次 =================
@@ -158,8 +176,10 @@ section(6, '海克斯触发轮：2/8/16/25/32/40/49/55/62/70/77/85/91/100/110（
   ok(JSON.stringify(G.HEX_TRIGGERS) === JSON.stringify([2, 8, 16, 25, 32, 40, 49, 55, 62, 70, 77, 85, 91, 100, 110]),
     '触发轮数值与需求一致');
   ok(G.HEX_TRIGGERS.every((v, i, a) => i === 0 || v > a[i - 1]), '触发轮严格递增');
-  ok(G.HEX_TRIGGERS_EARLY.length === 15 && G.HEX_TRIGGERS_EARLY[0] === 2 && G.HEX_TRIGGERS_EARLY[1] === 5 && G.HEX_TRIGGERS_EARLY[2] === 10,
-    '早慧学堂表同步（2/5/10/...）');
+  ok(JSON.stringify(G.HEX_TRIGGERS_EARLY) === JSON.stringify([2, 6, 12, 19, 26, 33, 40, 47, 54, 61, 68, 75, 82, 88, 94]),
+    'v7.1 时光之城提前表 = 2/6/12/19/26/33/40/47/54/61/68/75/82/88/94（15 次全部提前）');
+  ok(G.HEX_TRIGGERS_EARLY.every((v, i) => i === 0 ? v === G.HEX_TRIGGERS[0] : v < G.HEX_TRIGGERS[i]),
+    '提前表 15 项逐项早于常规表');
 }
 
 // ================= [7] 城邦影响加强抽查 =================

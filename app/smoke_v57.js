@@ -160,6 +160,13 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
         await sleep(2600);
         continue;
       }
+      // v7.0：翻面卡若抽到「手动发动」类卡，回合开始会停在 phase='card' 询问 —— 选择跳过
+      if (st.phase === 'card') {
+        const isMine = await page.evaluate(() => !!(S.pendingCard && S.pendingCard.pid === myPid));
+        if (isMine) await page.evaluate(() => { try { act({ type: 'skipCard' }); } catch (e) {} });
+        await sleep(700);
+        continue;
+      }
       if ((st.phase === 'roll' || st.phase === 'skill') && st.mine.length === 1 && st.ai.length === 1 && !st.overlay) { ok(true, `结算完成：双方各立项 1 个，回到 ${st.phase}（我=${JSON.stringify(st.mine)}）`); break; }
       await sleep(700);
       if (Date.now() - t0 > 28000) ok(false, `结算未完成：phase=${st.phase} hexList=${JSON.stringify(st.mine)}/${JSON.stringify(st.ai)}`);
