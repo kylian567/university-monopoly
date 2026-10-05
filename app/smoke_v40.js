@@ -19,6 +19,8 @@ const { chromium } = require('playwright');
   }));
   console.log('ANNOUNCE:', JSON.stringify(ann));
   await page.click('#btnAnnounce');
+  await page.waitForTimeout(250);
+  await page.click('#btnIntro').catch(() => {});   // v7.3：作者公告之后还有版本更新弹窗，必须关掉
   await page.waitForTimeout(300);
   const annClosed = await page.evaluate(() => document.getElementById('announce').style.display === 'none');
   console.log('ANNOUNCE_CLOSED:', annClosed);
@@ -26,6 +28,8 @@ const { chromium } = require('playwright');
   await page.click('#btnCreate');
   await page.waitForTimeout(800);
   for (let i = 0; i < 3; i++) { await page.click('#btnAddAI'); await page.waitForTimeout(300); }
+  await page.evaluate(() => { const b = document.querySelector('#btnReady'); if (b && !b.classList.contains('on')) b.click(); });
+  await page.waitForTimeout(400);
   await page.click('#btnStart');
   await page.waitForTimeout(3000);
 

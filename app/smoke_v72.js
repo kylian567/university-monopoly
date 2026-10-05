@@ -65,7 +65,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
       };
     });
     ok(!!F, '客户端 FACULTY 已加载');
-    ok(F && F.n === 60, `城邦总数 ${F ? F.n : 0} 个（期望 60）`);
+    ok(F && F.n === 74, `城邦总数 ${F ? F.n : 0} 个（v7.3 期望 74）`);
 
     // 激进档（1/5/34/36/38/42/53）
     ok(/\+500/.test(F.urban) && /¥400/.test(F.urban), `① 都市：${F.urban.slice(0, 46)}…`);

@@ -40,7 +40,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
     await page.goto(BASE, { waitUntil: 'domcontentloaded' });
     await sleep(800);
     const ann = await page.evaluate(() => (document.querySelector('#intro .announce-logo') || {}).textContent || '');
-    ok(/v7\.[012]/.test(ann), `开局公告标题：${ann.trim()}`);
+    ok(/v7\.[0123]/.test(ann), `开局公告标题：${ann.trim()}`);
     const marks = await page.evaluate(() => ({
       cards: (typeof EFFECT_CARDS !== 'undefined') ? EFFECT_CARDS.length : null,
       ssr: (typeof EFFECT_CARDS !== 'undefined') ? EFFECT_CARDS.filter(c => c.rare === 'SSR').length : null,

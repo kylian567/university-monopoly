@@ -21,7 +21,7 @@ const unownedProp = r => G.BOARD.findIndex((c, i) => c.type === 'prop' && r.cell
 // ================= [1] 表完整性与镜像 =================
 section(1, '城邦 60 / 海克斯 105 / 镜像一致 / 提前触发表');
 {
-  ok(G.FACULTY_KEYS.length === 60, `城邦共 ${G.FACULTY_KEYS.length} 个（预期 60 = 59 + 新增「拆迁校区」）`);
+  ok(G.FACULTY_KEYS.length === 74, `城邦共 ${G.FACULTY_KEYS.length} 个（预期 74 = 60 + v7.3 新增 14）`);
   const themes = G.FACULTY_KEYS.filter(k => G.FACULTY[k].hexTheme);
   ok(themes.length === 6 && themes.every(k => JSON.stringify(G.FACULTY[k].terms) === '[1,1]'),
     `海克斯定调六城 ${themes.join('/')}，terms 全为 [1,1]`);

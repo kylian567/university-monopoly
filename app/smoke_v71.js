@@ -57,9 +57,9 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
     await page.goto(BASE, { waitUntil: 'domcontentloaded' });
     await sleep(800);
     const ann = await page.evaluate(() => (document.querySelector('#intro .announce-logo') || {}).textContent || '');
-    ok(/v7\.[12]/.test(ann), `开局公告标题：${ann.trim()}`);
+    ok(/v7\.[123]/.test(ann), `开局公告标题：${ann.trim()}`);
     const sub = await page.evaluate(() => (document.querySelector('.announce-sub') || {}).textContent || '');
-    ok(/v7\.[12]/.test(sub), `副标题版本号：${sub.trim()}`);
+    ok(/v7\.[123]/.test(sub), `副标题版本号：${sub.trim()}`);
 
     const mir = await page.evaluate(() => {
       const F = (typeof FACULTY !== 'undefined') ? FACULTY.hexEarly : null;

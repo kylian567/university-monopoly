@@ -312,8 +312,8 @@ console.log('\n[4] 平衡边界');
 {
   const badTier = MAJOR_KEYS.filter(k => ![1, 2, 3].includes(MAJORS[k].tier));
   ok(badTier.length === 0, 'tier 只取 1 / 2 / 3');
-  const badUses = MAJOR_KEYS.filter(k => !(MAJORS[k].uses >= 1 && MAJORS[k].uses <= 4));
-  ok(badUses.length === 0, `每局技能次数都在 1~4 之间${badUses.length ? '（越界 ' + badUses.join(',') + '）' : ''}`);
+  const badUses = MAJOR_KEYS.filter(k => !(MAJORS[k].uses >= 1 && MAJORS[k].uses <= 6));
+  ok(badUses.length === 0, `每局技能次数都在 1~6 之间（v7.3 整体上调）${badUses.length ? '（越界 ' + badUses.join(',') + '）' : ''}`);
   const badFx = MAJOR_KEYS.filter(k => !/^#[0-9a-fA-F]{6}$/.test(MAJORS[k].fx));
   ok(badFx.length === 0, '每个专业都有合法的主题色（#RRGGBB）');
   const tier1 = MAJOR_KEYS.filter(k => MAJORS[k].tier === 1);

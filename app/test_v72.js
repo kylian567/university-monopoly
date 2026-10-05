@@ -220,7 +220,7 @@ section(2, '温和档 28 个城邦的关键数值');
     const amt = r.events.filter(e => e.t === 'money' && /宿舍校区/.test(e.reason || '')).reduce((s, e) => s + e.amount, 0);
     ok(amt === 1600, `宿舍：被罚停留补贴 ¥1600（实测 ¥${amt}）`);
     const src = fs.readFileSync(__dirname + '/game.js', 'utf8');
-    ok((src.match(/p\.cash \+= 1600/g) || []).length === 2, '宿舍：正常停留与「30% 放行」两条分支都给 ¥1600');
+    ok((src.match(/p\.cash \+= dA2?;/g) || []).length === 2, '宿舍：正常停留与「30% 放行」两条分支都给休整补贴（默认 ¥1600，可被突变覆盖）');
     ok(/facIs\('dorm'\) && Math\.random\(\) < 0\.30/.test(src), '宿舍：30% 概率宿管放行');
   }
 
@@ -441,7 +441,7 @@ section(6, 'game.js 与 public/client.js 的 FACULTY 逐字一致');
     return s.slice(a, b).split('\n').filter(l => /^  [A-Za-z][A-Za-z0-9]*:\s*\{/.test(l)).map(l => l.trim());
   };
   const A = grab(gsrc), B = grab(csrc);
-  ok(A.length === 60 && B.length === 60, `城邦总数：服务端 ${A.length} / 客户端 ${B.length}（应为 60）`);
+  ok(A.length === 74 && B.length === 74, `城邦总数：服务端 ${A.length} / 客户端 ${B.length}（v7.3 应为 74）`);
   let diff = 0, firstDiff = '';
   for (let i = 0; i < Math.min(A.length, B.length); i++) if (A[i] !== B[i]) { diff++; if (!firstDiff) firstDiff = A[i].slice(0, 60); }
   ok(diff === 0, `逐行比对完全一致${diff ? `（${diff} 处不同，首处：${firstDiff}）` : ''}`);
@@ -456,7 +456,7 @@ section(7, '文案 / 实现一致性（v7.2 顺手修）');
   ok(F.book.cost.includes('15%'), 'book：文案「命运卡负面 +15%」与实现 ×1.15 一致');
   ok(F.finance.cost.includes('建筑与地皮各 −1'), 'finance：文案写明建筑与地皮门槛各 −1');
   const gsrc = fs.readFileSync(__dirname + '/game.js', 'utf8');
-  ok(gsrc.includes('60 个城邦的说明更厚'), '注释：城邦数量 59 → 60');
+  ok(gsrc.includes('74 个城邦的说明更厚'), '注释：城邦数量 → 74（v7.3）');
 }
 
 console.log('\n========================================');

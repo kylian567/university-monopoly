@@ -96,7 +96,7 @@ section(3, '校区风貌：嘉年华与文体首次重投 8 折（修复「重�
 
   ok(!!FACULTY.redevelop && FACULTY.redevelop.icon && FACULTY.redevelop.color && FACULTY.redevelop.lead && FACULTY.redevelop.cost,
     '新增「拆迁校区」字段齐全');
-  ok(FACULTY_KEYS.length === 60, `城邦总数 = ${FACULTY_KEYS.length}`);
+  ok(FACULTY_KEYS.length === 74, `城邦总数 = ${FACULTY_KEYS.length}`);
   ok(/旅馆/.test(FACULTY.redevelop.lead), '拆迁校区说明里写明「旅馆按 4 层算」');
 
   // 每 3 轮拆一栋楼（旅馆 4 → 3）

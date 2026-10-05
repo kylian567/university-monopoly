@@ -28,6 +28,8 @@ const ok = (cond, msg) => { if (cond) { pass++; console.log('  ✓', msg); } els
     await page.click('#btnCreate');
     await page.waitForTimeout(400);
     for (let i = 0; i < 3; i++) { await page.click('#btnAddAI'); await page.waitForTimeout(220); }
+  await page.evaluate(() => { const b = document.querySelector('#btnReady'); if (b && !b.classList.contains('on')) b.click(); });
+    await page.waitForTimeout(400);
     await page.click('#btnStart');
     await page.waitForTimeout(1400);
     const started = await page.evaluate(() => ({

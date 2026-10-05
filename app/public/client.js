@@ -92,68 +92,68 @@ const WEATHER = {
   wind:  { key:'wind',  name:'大风', icon:'💨', diceMod: 1,  rentMul: 0.95, buildMul: 1.1, desc:'顺风 +1 步，租金 ×0.95，盖房 ×1.1' },
 };
 const MAJORS = {
-  mech: { id:'mech', name:'机械', icon:'⚙️', skill:'精益制造', mode:'active', uses:4, fx:'#e8734a', tier:1, desc:'发动后本回合盖房 −46% 并立刻 +¥1350；常驻盖房 −9%' },
-  newe: { id:'newe', name:'新能源材料与器件', icon:'🔋', skill:'储能放大', mode:'active', uses:3, fx:'#2fb87a', tier:1, desc:'发动后 +现金 11%（≤¥3650），本轮收租 +36%；常驻过起点 +¥900' },
-  fin:  { id:'fin',  name:'金融', icon:'💰', skill:'杠杆操作', mode:'passive', uses:4, fx:'#d8a531', tier:1, desc:'抵押地产时多拿 46% 现金' },
-  cs:   { id:'cs',   name:'计算机', icon:'💻', skill:'算法优化', mode:'passive', uses:3, fx:'#4a90d9', tier:1, desc:'掷骰不足 7 点时自动重掷取更优' },
-  econ: { id:'econ', name:'经管', icon:'📈', skill:'资本运作', mode:'passive', uses:3, fx:'#c9a227', tier:2, desc:'单笔收租 ≥¥1500 时 +46%' },
-  med:  { id:'med',  name:'医学', icon:'🩺', skill:'妙手回春', mode:'passive', uses:3, fx:'#e05a71', tier:2, desc:'被收租 ≥¥1000 时减免 36%' },
-  pharm:{ id:'pharm',name:'药学', icon:'💊', skill:'对症下药', mode:'active', uses:3, fx:'#57c1a0', tier:2, desc:'发动后 +¥550，本轮内被收租减免 55%' },
-  law:  { id:'law',  name:'法学', icon:'⚖️', skill:'法律援助', mode:'passive', uses:3, fx:'#8a6fd1', tier:2, desc:'免疫 3 次不利判定' },
-  arch: { id:'arch', name:'建筑', icon:'🏗️', skill:'造价管理', mode:'passive', uses:3, fx:'#d08531', tier:2, desc:'升级房产时费用 −32%' },
-  chem: { id:'chem', name:'化学', icon:'🧪', skill:'催化加成', mode:'passive', uses:3, fx:'#7bbf3f', tier:2, desc:'单笔收租 ≥¥1000 时 +36%' },
-  auto: { id:'auto', name:'自动化', icon:'🤖', skill:'流水线', mode:'active', uses:3, fx:'#5a7fd6', tier:2, desc:'发动后本回合移动 +2 步；落在自己地产再 +¥820' },
-  ee:   { id:'ee',   name:'微电子', icon:'🔌', skill:'信号增益', mode:'passive', uses:4, fx:'#00a8b5', tier:2, desc:'每次经过起点 +¥1250' },
-  math: { id:'math', name:'数学', icon:'📐', skill:'精算砍价', mode:'passive', uses:3, fx:'#5f9ea0', tier:2, desc:'买入地产时 8.2 折' },
-  agri: { id:'agri', name:'农学', icon:'🌾', skill:'春华秋实', mode:'passive', uses:3, fx:'#8fbf4a', tier:2, desc:'每次经过起点 +¥1350' },
-  stat: { id:'stat', name:'统计', icon:'📊', skill:'数据洞察', mode:'passive', uses:4, fx:'#4f9ad1', tier:2, desc:'掷骰点数 ≤5 时 +¥730' },
-  pe:   { id:'pe',   name:'体育', icon:'🏀', skill:'体能优势', mode:'passive', uses:4, fx:'#e0803f', tier:2, desc:'掷骰点数 ≤5 时多走 2 步并 +¥360' },
-  phil: { id:'phil', name:'哲学', icon:'🏛️', skill:'批判思维', mode:'passive', uses:3, fx:'#8a7f9a', tier:2, desc:'免疫 3 次不利判定' },
-  mil:  { id:'mil',  name:'军事', icon:'🎖️', skill:'战术压制', mode:'passive', uses:3, fx:'#7d8a3a', tier:2, desc:'擂台点数 +1；获胜再 +¥460' },
-  phys: { id:'phys', name:'物理', icon:'⚛️', skill:'守恒定律', mode:'passive', uses:3, fx:'#3f7fd6', tier:2, desc:'被收租 ≥¥1200 时减免 32%' },
-  lang: { id:'lang', name:'外国语', icon:'🌍', skill:'多语种优势', mode:'passive', uses:3, fx:'#c86a3f', tier:2, desc:'抽到正面机会卡时 +¥820' },
-  art:  { id:'art',  name:'艺术', icon:'🎨', skill:'灵感迸发', mode:'passive', uses:3, fx:'#d1568f', tier:2, desc:'抽到正面机会卡时 +¥730' },
-  mse:  { id:'mse',  name:'材料科学', icon:'🧱', skill:'相变强化', mode:'active', uses:3, fx:'#9a7b5a', tier:2, desc:'发动后本轮自己地产收租 +55%' },
-  env:  { id:'env',  name:'环境科学', icon:'♻️', skill:'循环利用', mode:'passive', uses:4, fx:'#3fa76a', tier:2, desc:'每次被收租都减免 13%（无门槛）' },
-  civil:{ id:'civil',name:'土木工程', icon:'🏗️', skill:'基建加固', mode:'passive', uses:3, fx:'#a8823f', tier:2, desc:'自己的地产免于被拆除；盖房 −18%' },
-  geol: { id:'geol', name:'地质', icon:'🗺️', skill:'勘探评估', mode:'passive', uses:3, fx:'#8a7b52', tier:3, desc:'买入无主地产时 9.1 折' },
-  aero: { id:'aero', name:'航天', icon:'🛰️', skill:'一飞冲天', mode:'passive', uses:3, fx:'#5468a8', tier:3, desc:'进入岔路时 +¥900' },
-  bio:  { id:'bio',  name:'生命科学', icon:'🧬', skill:'细胞增殖', mode:'passive', uses:4, fx:'#5aa9d6', tier:3, desc:'回合开始时现金 +3.5%' },
-  drama:{ id:'drama',name:'戏剧', icon:'🎭', skill:'全场入戏', mode:'passive', uses:3, fx:'#b04a9a', tier:3, desc:'抽到任意机会/命运卡时 +¥460' },
-  music:{ id:'music',name:'音乐', icon:'🎵', skill:'共鸣演出', mode:'active', uses:3, fx:'#d1619a', tier:3, desc:'发动后 +¥900，其他玩家各付你 ¥270' },
-  psych:{ id:'psych',name:'心理学', icon:'🧠', skill:'读心术', mode:'active', uses:3, fx:'#7a5fc1', tier:3, desc:'发动后从总资产最高者处抽走 ¥1100' },
-  news: { id:'news', name:'新闻', icon:'📰', skill:'独家爆料', mode:'passive', uses:3, fx:'#8a8f96', tier:3, desc:'抽到负面卡时自动重抽一次' },
-  food: { id:'food', name:'食品科学', icon:'🍜', skill:'能量补给', mode:'passive', uses:4, fx:'#d1873f', tier:3, desc:'每次被罚停留休整时 +¥640' },
-  marine:{id:'marine',name:'海洋科学', icon:'🌊', skill:'深海资源', mode:'passive', uses:3, fx:'#2f8fbf', tier:3, desc:'每次经过起点 +¥1100' },
+  mech: { id:'mech', name:'机械', icon:'⚙️', skill:'精益制造', mode:'active', uses:6, fx:'#e8734a', tier:1, desc:'发动后本回合盖房 −46% 并立刻 +¥1350；常驻盖房 −9%' },
+  newe: { id:'newe', name:'新能源材料与器件', icon:'🔋', skill:'储能放大', mode:'active', uses:5, fx:'#2fb87a', tier:1, desc:'发动后 +现金 11%（≤¥3650），本轮收租 +36%；常驻过起点 +¥900' },
+  fin:  { id:'fin',  name:'金融', icon:'💰', skill:'杠杆操作', mode:'passive', uses:6, fx:'#d8a531', tier:1, desc:'抵押地产时多拿 46% 现金' },
+  cs:   { id:'cs',   name:'计算机', icon:'💻', skill:'算法优化', mode:'passive', uses:5, fx:'#4a90d9', tier:1, desc:'掷骰不足 7 点时自动重掷取更优' },
+  econ: { id:'econ', name:'经管', icon:'📈', skill:'资本运作', mode:'passive', uses:5, fx:'#c9a227', tier:2, desc:'单笔收租 ≥¥1500 时 +46%' },
+  med:  { id:'med',  name:'医学', icon:'🩺', skill:'妙手回春', mode:'passive', uses:5, fx:'#e05a71', tier:2, desc:'被收租 ≥¥1000 时减免 36%' },
+  pharm:{ id:'pharm',name:'药学', icon:'💊', skill:'对症下药', mode:'active', uses:5, fx:'#57c1a0', tier:2, desc:'发动后 +¥550，本轮内被收租减免 55%' },
+  law:  { id:'law',  name:'法学', icon:'⚖️', skill:'法律援助', mode:'passive', uses:5, fx:'#8a6fd1', tier:2, desc:'免疫 3 次不利判定' },
+  arch: { id:'arch', name:'建筑', icon:'🏗️', skill:'造价管理', mode:'passive', uses:5, fx:'#d08531', tier:2, desc:'升级房产时费用 −32%' },
+  chem: { id:'chem', name:'化学', icon:'🧪', skill:'催化加成', mode:'passive', uses:5, fx:'#7bbf3f', tier:2, desc:'单笔收租 ≥¥1000 时 +36%' },
+  auto: { id:'auto', name:'自动化', icon:'🤖', skill:'流水线', mode:'active', uses:5, fx:'#5a7fd6', tier:2, desc:'发动后本回合移动 +2 步；落在自己地产再 +¥820' },
+  ee:   { id:'ee',   name:'微电子', icon:'🔌', skill:'信号增益', mode:'passive', uses:6, fx:'#00a8b5', tier:2, desc:'每次经过起点 +¥1250' },
+  math: { id:'math', name:'数学', icon:'📐', skill:'精算砍价', mode:'passive', uses:5, fx:'#5f9ea0', tier:2, desc:'买入地产时 8.2 折' },
+  agri: { id:'agri', name:'农学', icon:'🌾', skill:'春华秋实', mode:'passive', uses:5, fx:'#8fbf4a', tier:2, desc:'每次经过起点 +¥1350' },
+  stat: { id:'stat', name:'统计', icon:'📊', skill:'数据洞察', mode:'passive', uses:6, fx:'#4f9ad1', tier:2, desc:'掷骰点数 ≤5 时 +¥730' },
+  pe:   { id:'pe',   name:'体育', icon:'🏀', skill:'体能优势', mode:'passive', uses:6, fx:'#e0803f', tier:2, desc:'掷骰点数 ≤5 时多走 2 步并 +¥360' },
+  phil: { id:'phil', name:'哲学', icon:'🏛️', skill:'批判思维', mode:'passive', uses:5, fx:'#8a7f9a', tier:2, desc:'免疫 3 次不利判定' },
+  mil:  { id:'mil',  name:'军事', icon:'🎖️', skill:'战术压制', mode:'passive', uses:5, fx:'#7d8a3a', tier:2, desc:'擂台点数 +1；获胜再 +¥460' },
+  phys: { id:'phys', name:'物理', icon:'⚛️', skill:'守恒定律', mode:'passive', uses:5, fx:'#3f7fd6', tier:2, desc:'被收租 ≥¥1200 时减免 32%' },
+  lang: { id:'lang', name:'外国语', icon:'🌍', skill:'多语种优势', mode:'passive', uses:5, fx:'#c86a3f', tier:2, desc:'抽到正面机会卡时 +¥820' },
+  art:  { id:'art',  name:'艺术', icon:'🎨', skill:'灵感迸发', mode:'passive', uses:5, fx:'#d1568f', tier:2, desc:'抽到正面机会卡时 +¥730' },
+  mse:  { id:'mse',  name:'材料科学', icon:'🧱', skill:'相变强化', mode:'active', uses:5, fx:'#9a7b5a', tier:2, desc:'发动后本轮自己地产收租 +55%' },
+  env:  { id:'env',  name:'环境科学', icon:'♻️', skill:'循环利用', mode:'passive', uses:6, fx:'#3fa76a', tier:2, desc:'每次被收租都减免 13%（无门槛）' },
+  civil:{ id:'civil',name:'土木工程', icon:'🏗️', skill:'基建加固', mode:'passive', uses:5, fx:'#a8823f', tier:2, desc:'自己的地产免于被拆除；盖房 −18%' },
+  geol: { id:'geol', name:'地质', icon:'🗺️', skill:'勘探评估', mode:'passive', uses:5, fx:'#8a7b52', tier:3, desc:'买入无主地产时 9.1 折' },
+  aero: { id:'aero', name:'航天', icon:'🛰️', skill:'一飞冲天', mode:'passive', uses:5, fx:'#5468a8', tier:3, desc:'进入岔路时 +¥900' },
+  bio:  { id:'bio',  name:'生命科学', icon:'🧬', skill:'细胞增殖', mode:'passive', uses:6, fx:'#5aa9d6', tier:3, desc:'回合开始时现金 +3.5%' },
+  drama:{ id:'drama',name:'戏剧', icon:'🎭', skill:'全场入戏', mode:'passive', uses:5, fx:'#b04a9a', tier:3, desc:'抽到任意机会/命运卡时 +¥460' },
+  music:{ id:'music',name:'音乐', icon:'🎵', skill:'共鸣演出', mode:'active', uses:5, fx:'#d1619a', tier:3, desc:'发动后 +¥900，其他玩家各付你 ¥270' },
+  psych:{ id:'psych',name:'心理学', icon:'🧠', skill:'读心术', mode:'active', uses:5, fx:'#7a5fc1', tier:3, desc:'发动后从总资产最高者处抽走 ¥1100' },
+  news: { id:'news', name:'新闻', icon:'📰', skill:'独家爆料', mode:'passive', uses:5, fx:'#8a8f96', tier:3, desc:'抽到负面卡时自动重抽一次' },
+  food: { id:'food', name:'食品科学', icon:'🍜', skill:'能量补给', mode:'passive', uses:6, fx:'#d1873f', tier:3, desc:'每次被罚停留休整时 +¥640' },
+  marine:{id:'marine',name:'海洋科学', icon:'🌊', skill:'深海资源', mode:'passive', uses:5, fx:'#2f8fbf', tier:3, desc:'每次经过起点 +¥1100' },
   // ===== v5.3 新增 27 个专业（覆盖面更广：工科 / 理科 / 医农生 / 人文社科 / 艺术设计）=====
   // 与服务端 game.js 的 MAJORS 逐字同步；test_v53.js 会做镜像一致性校验
-  elec:  { id:'elec', name:'电气工程', icon:'⚡', skill:'峰谷套利', mode:'active', uses:3, fx:'#f0b429', tier:2, desc:'发动后立刻 +¥1150，本回合买地 6.4 折' },
-  comm:  { id:'comm', name:'通信工程', icon:'📡', skill:'信号覆盖', mode:'passive', uses:4, fx:'#3aa0d8', tier:2, desc:'每次经过起点 +¥1100；每抽到任意卡 +¥270' },
-  ctrl:  { id:'ctrl', name:'控制科学', icon:'🎛️', skill:'闭环调节', mode:'passive', uses:3, fx:'#5b7fd1', tier:2, desc:'单笔收租 ≥¥1200 时 +27%；被收租 ≥¥1200 时减免 23%' },
-  robot: { id:'robot', name:'机器人工程', icon:'🦾', skill:'机械臂协作', mode:'active', uses:3, fx:'#e2663f', tier:2, desc:'发动后本回合盖房 −55%，并立刻 +¥900' },
-  se:    { id:'se', name:'软件工程', icon:'⌨️', skill:'敏捷迭代', mode:'passive', uses:4, fx:'#4a90d9', tier:2, desc:'每局 4 次免费重投骰子（不用付 ¥1200）' },
-  ai:    { id:'ai', name:'人工智能', icon:'🧠', skill:'模型推理', mode:'active', uses:3, fx:'#7a5fc1', tier:2, desc:'发动后本轮收租 +32%，并从总资产最高者处取 ¥730' },
-  imes:  { id:'imes', name:'智能制造', icon:'🏭', skill:'柔性产线', mode:'passive', uses:3, fx:'#7b8fa8', tier:2, desc:'升级房产 −23%；每次升级成功再 +¥460' },
-  power: { id:'power', name:'能源与动力', icon:'🔥', skill:'热机循环', mode:'passive', uses:4, fx:'#e07a3f', tier:2, desc:'每轮开局 +¥360；每次经过起点 +¥730' },
-  astro: { id:'astro', name:'天文学', icon:'🔭', skill:'眺望星河', mode:'passive', uses:3, fx:'#5468a8', tier:2, desc:'掷骰点数 ≥9 时自动 +¥1000' },
-  meteo: { id:'meteo', name:'气象学', icon:'🌦️', skill:'预报风向', mode:'passive', uses:4, fx:'#4f9ad1', tier:2, desc:'恶劣天气（雨/台风/雪/雾）里自己回合开始 +¥640' },
-  geop:  { id:'geop', name:'地球物理', icon:'🌏', skill:'地层探测', mode:'passive', uses:3, fx:'#8a7b52', tier:2, desc:'买入无主地产 8.7 折；每买下一块地再 +¥360' },
-  or:    { id:'or', name:'运筹学', icon:'🧮', skill:'资源调度', mode:'active', uses:3, fx:'#5f9ea0', tier:2, desc:'发动后立刻 +¥820，本回合移动 +3 步' },
-  nurs:  { id:'nurs', name:'护理学', icon:'💉', skill:'悉心看护', mode:'passive', uses:4, fx:'#e05a9a', tier:2, desc:'被收租 ≥¥800 时自动减免 32%' },
-  dent:  { id:'dent', name:'口腔医学', icon:'🦷', skill:'牙科门诊', mode:'passive', uses:3, fx:'#57c1c0', tier:2, desc:'单笔收租 ≥¥1200 时自动 +41%' },
-  vet:   { id:'vet', name:'兽医学', icon:'🐾', skill:'牲畜保险', mode:'passive', uses:3, fx:'#8fbf4a', tier:2, desc:'自己的地产免于被拆除；每次被收租减免 11%' },
-  hort:  { id:'hort', name:'园艺学', icon:'🌷', skill:'嫁接育种', mode:'passive', uses:3, fx:'#d1568f', tier:3, desc:'每次经过起点 +¥1000；升级房产 −11%' },
-  forest:{ id:'forest', name:'林学', icon:'🌲', skill:'封山育林', mode:'passive', uses:3, fx:'#3fa76a', tier:3, desc:'每轮开局 +¥320；被罚停留休整时 +¥550' },
-  acc:   { id:'acc', name:'会计学', icon:'🧾', skill:'精算审计', mode:'passive', uses:3, fx:'#c9a227', tier:2, desc:'买入地产 8.7 折；被收租 ≥¥1000 时减免 23%' },
-  trade: { id:'trade', name:'国际贸易', icon:'🚢', skill:'跨境套利', mode:'passive', uses:4, fx:'#2f8fbf', tier:2, desc:'每次经过起点 +¥900；每抽到任意卡 +¥320' },
-  mkt:   { id:'mkt', name:'市场营销', icon:'📣', skill:'带货直播', mode:'active', uses:3, fx:'#e0803f', tier:2, desc:'发动后立刻 +¥1100，其他每位玩家再各付你 ¥230' },
-  hr:    { id:'hr', name:'人力资源管理', icon:'🧑‍💼', skill:'团队激励', mode:'passive', uses:3, fx:'#a8823f', tier:3, desc:'回合开始时现金 +2.5%；被罚停留休整时 +¥640' },
-  tourism:{ id:'tourism', name:'旅游管理', icon:'🧳', skill:'导游外快', mode:'passive', uses:3, fx:'#c86a3f', tier:3, desc:'进入岔路时 +¥820；每次经过起点 +¥640' },
-  edu:   { id:'edu', name:'教育学', icon:'📚', skill:'因材施教', mode:'passive', uses:4, fx:'#9a7b5a', tier:3, desc:'每轮开局 +¥320；抽到负面卡时自动重抽（4 次）' },
-  hist:  { id:'hist', name:'历史学', icon:'🏺', skill:'考古发现', mode:'passive', uses:3, fx:'#a8823f', tier:3, desc:'掷骰点数 ≤4 时发掘出文物 +¥820；买入无主地产 9.1 折' },
-  soc:   { id:'soc', name:'社会学', icon:'🧑‍🤝‍🧑', skill:'田野调查', mode:'passive', uses:3, fx:'#8a7f9a', tier:3, desc:'每抽到一张机会 / 命运卡 +¥410' },
-  design:{ id:'design', name:'工业设计', icon:'🖌️', skill:'人机工学', mode:'passive', uses:3, fx:'#d1619a', tier:3, desc:'升级房产 −16%；买入地产 −7%' },
-  film:  { id:'film', name:'影视传媒', icon:'🎬', skill:'院线首映', mode:'active', uses:3, fx:'#b04a9a', tier:2, desc:'发动后立刻 +¥1350，本轮自己收租 +23%' },
+  elec:  { id:'elec', name:'电气工程', icon:'⚡', skill:'峰谷套利', mode:'active', uses:5, fx:'#f0b429', tier:2, desc:'发动后立刻 +¥1150，本回合买地 6.4 折' },
+  comm:  { id:'comm', name:'通信工程', icon:'📡', skill:'信号覆盖', mode:'passive', uses:6, fx:'#3aa0d8', tier:2, desc:'每次经过起点 +¥1100；每抽到任意卡 +¥270' },
+  ctrl:  { id:'ctrl', name:'控制科学', icon:'🎛️', skill:'闭环调节', mode:'passive', uses:5, fx:'#5b7fd1', tier:2, desc:'单笔收租 ≥¥1200 时 +27%；被收租 ≥¥1200 时减免 23%' },
+  robot: { id:'robot', name:'机器人工程', icon:'🦾', skill:'机械臂协作', mode:'active', uses:5, fx:'#e2663f', tier:2, desc:'发动后本回合盖房 −55%，并立刻 +¥900' },
+  se:    { id:'se', name:'软件工程', icon:'⌨️', skill:'敏捷迭代', mode:'passive', uses:6, fx:'#4a90d9', tier:2, desc:'每局 4 次免费重投骰子（不用付 ¥1200）' },
+  ai:    { id:'ai', name:'人工智能', icon:'🧠', skill:'模型推理', mode:'active', uses:5, fx:'#7a5fc1', tier:2, desc:'发动后本轮收租 +32%，并从总资产最高者处取 ¥730' },
+  imes:  { id:'imes', name:'智能制造', icon:'🏭', skill:'柔性产线', mode:'passive', uses:5, fx:'#7b8fa8', tier:2, desc:'升级房产 −23%；每次升级成功再 +¥460' },
+  power: { id:'power', name:'能源与动力', icon:'🔥', skill:'热机循环', mode:'passive', uses:6, fx:'#e07a3f', tier:2, desc:'每轮开局 +¥360；每次经过起点 +¥730' },
+  astro: { id:'astro', name:'天文学', icon:'🔭', skill:'眺望星河', mode:'passive', uses:5, fx:'#5468a8', tier:2, desc:'掷骰点数 ≥9 时自动 +¥1000' },
+  meteo: { id:'meteo', name:'气象学', icon:'🌦️', skill:'预报风向', mode:'passive', uses:6, fx:'#4f9ad1', tier:2, desc:'恶劣天气（雨/台风/雪/雾）里自己回合开始 +¥640' },
+  geop:  { id:'geop', name:'地球物理', icon:'🌏', skill:'地层探测', mode:'passive', uses:5, fx:'#8a7b52', tier:2, desc:'买入无主地产 8.7 折；每买下一块地再 +¥360' },
+  or:    { id:'or', name:'运筹学', icon:'🧮', skill:'资源调度', mode:'active', uses:5, fx:'#5f9ea0', tier:2, desc:'发动后立刻 +¥820，本回合移动 +3 步' },
+  nurs:  { id:'nurs', name:'护理学', icon:'💉', skill:'悉心看护', mode:'passive', uses:6, fx:'#e05a9a', tier:2, desc:'被收租 ≥¥800 时自动减免 32%' },
+  dent:  { id:'dent', name:'口腔医学', icon:'🦷', skill:'牙科门诊', mode:'passive', uses:5, fx:'#57c1c0', tier:2, desc:'单笔收租 ≥¥1200 时自动 +41%' },
+  vet:   { id:'vet', name:'兽医学', icon:'🐾', skill:'牲畜保险', mode:'passive', uses:5, fx:'#8fbf4a', tier:2, desc:'自己的地产免于被拆除；每次被收租减免 11%' },
+  hort:  { id:'hort', name:'园艺学', icon:'🌷', skill:'嫁接育种', mode:'passive', uses:5, fx:'#d1568f', tier:3, desc:'每次经过起点 +¥1000；升级房产 −11%' },
+  forest:{ id:'forest', name:'林学', icon:'🌲', skill:'封山育林', mode:'passive', uses:5, fx:'#3fa76a', tier:3, desc:'每轮开局 +¥320；被罚停留休整时 +¥550' },
+  acc:   { id:'acc', name:'会计学', icon:'🧾', skill:'精算审计', mode:'passive', uses:5, fx:'#c9a227', tier:2, desc:'买入地产 8.7 折；被收租 ≥¥1000 时减免 23%' },
+  trade: { id:'trade', name:'国际贸易', icon:'🚢', skill:'跨境套利', mode:'passive', uses:6, fx:'#2f8fbf', tier:2, desc:'每次经过起点 +¥900；每抽到任意卡 +¥320' },
+  mkt:   { id:'mkt', name:'市场营销', icon:'📣', skill:'带货直播', mode:'active', uses:5, fx:'#e0803f', tier:2, desc:'发动后立刻 +¥1100，其他每位玩家再各付你 ¥230' },
+  hr:    { id:'hr', name:'人力资源管理', icon:'🧑‍💼', skill:'团队激励', mode:'passive', uses:5, fx:'#a8823f', tier:3, desc:'回合开始时现金 +2.5%；被罚停留休整时 +¥640' },
+  tourism:{ id:'tourism', name:'旅游管理', icon:'🧳', skill:'导游外快', mode:'passive', uses:5, fx:'#c86a3f', tier:3, desc:'进入岔路时 +¥820；每次经过起点 +¥640' },
+  edu:   { id:'edu', name:'教育学', icon:'📚', skill:'因材施教', mode:'passive', uses:6, fx:'#9a7b5a', tier:3, desc:'每轮开局 +¥320；抽到负面卡时自动重抽（4 次）' },
+  hist:  { id:'hist', name:'历史学', icon:'🏺', skill:'考古发现', mode:'passive', uses:5, fx:'#a8823f', tier:3, desc:'掷骰点数 ≤4 时发掘出文物 +¥820；买入无主地产 9.1 折' },
+  soc:   { id:'soc', name:'社会学', icon:'🧑‍🤝‍🧑', skill:'田野调查', mode:'passive', uses:5, fx:'#8a7f9a', tier:3, desc:'每抽到一张机会 / 命运卡 +¥410' },
+  design:{ id:'design', name:'工业设计', icon:'🖌️', skill:'人机工学', mode:'passive', uses:5, fx:'#d1619a', tier:3, desc:'升级房产 −16%；买入地产 −7%' },
+  film:  { id:'film', name:'影视传媒', icon:'🎬', skill:'院线首映', mode:'active', uses:5, fx:'#b04a9a', tier:2, desc:'发动后立刻 +¥1350，本轮自己收租 +23%' },
 };
 // ---------- v5.2：校园风貌（与服务端 game.js 的 FACULTY 表逐字同步，改一边必须改另一边） ----------
 // 开场随机 3 候选 → 全体投票 → 随机抽一名玩家，他的那一票成为本局风貌，全场共享、贯穿整局。
@@ -220,9 +220,24 @@ const FACULTY = {
   green:    { name: '环保校区',   icon: '♻️', color: '#27AE60', lead: '全场建筑升级费 −10%',                    cost: '经过起点工资 ¥1850（−150）',        tag: '绿化好了，工资少了' },
   gamble:   { name: '博弈校区',   icon: '🃏', color: '#8E44AD', lead: '擂台赌注 ×1.6、运动会赌注 ×1.5',                 cost: '全场租金 ×1.03',                    tag: '富贵险中求' },
   redevelop:{ name: '拆迁校区',   icon: '🏗️', color: '#B0563A', lead: '每 2 轮随机拆掉场上的一栋楼（旅馆按 4 层算）', cost: '全场租金 ×1.03',                 tag: '旧的不去，新的不来' },
+  // ===== v7.3 新增：14 个城邦（原 N1~N16，去掉 N2 强制拍卖 / N11 时间静止） =====
+  roulette:  { name: '轮盘校区',   icon: '🌀', color: '#E0653F', lead: '每轮开场全场一起转一次轮盘（8 格等概率，全员命中同一格）', cost: '结果不可控——可能是大红包，也可能是全场罚款', tag: '每轮都有一次心跳' },
+  jackpot:   { name: '大乐透校区', icon: '🎰', color: '#C2185B', lead: '每轮全场各扣 ¥100 进奖池，本届最后一轮 1 人独吞全部奖池', cost: '每轮都在流血，中奖率只有 1/人数', tag: '最后一轮见分晓' },
+  blackswan: { name: '黑天鹅校区', icon: '🦢', color: '#4A4A5A', lead: '第 6 轮随机一半玩家各 −¥1500、另一半各 +¥1000', cost: '完全随机分配，无法预判也无法规避', tag: '财富一夜重排' },
+  phantom:   { name: '幻影校区',   icon: '🕳️', color: '#6E7B87', lead: '每轮随机 1 块产业幻影化：本轮踩到它不用付租金', cost: '幻影地块本轮不可买卖/盖楼，是自己的也白收不到租', tag: '地图上那块灰色的地' },
+  inflation: { name: '通胀校区',   icon: '📈', color: '#E23B3B', lead: '每轮全场 +¥300，地价与租金每轮累积 +1.5%', cost: '本届结束时全场现金 −10%（货币贬值）', tag: '越往后越疯' },
+  deflation: { name: '通缩校区',   icon: '📉', color: '#2E86C1', lead: '地价与租金每轮累积 −1.5%（越往后越便宜）', cost: '过起点工资每轮 −¥100，且每 3 轮全场现金 −5%', tag: '屯现金，后手收割' },
+  league:    { name: '联赛校区',   icon: '🥊', color: '#B03A2E', lead: '每 3 轮强制全场两两配对打一次擂台（赌注 ¥1500，赢者翻倍）', cost: '强制参加不能弃权，打不赢就得掏钱', tag: '擂台变常驻节目' },
+  bounty:    { name: '悬赏校区',   icon: '🎯', color: '#A93226', lead: '总资产最高者当选「校霸」：收租 ×1.2，别人踩他的地额外 +¥600 举报奖励', cost: '校霸被收租时 ×1.4（人人针对他）', tag: '全场公敌' },
+  chain:     { name: '连锁校区',   icon: '⛓️', color: '#5D6D7E', lead: '凑齐同色组后该色组租金 ×1.35（地皮与房子一起涨）', cost: '未垄断的散地租金 ×0.9（地皮与房子一起跌）', tag: '垄断才是正道' },
+  credit:    { name: '借贷校区',   icon: '💳', color: '#1ABC9C', lead: '本届内可向银行低息借款，最多累计 ¥5000，每轮还 10%（无利息）', cost: '借款超 ¥3000 后过起点工资 ×0.7（信用受损）', tag: '差一口气就垄断？借！' },
+  shopping:  { name: '购物节校区', icon: '🛒', color: '#E67E22', lead: '每 4 轮「全场大促」：买地 7 折、盖楼 7 折、商城卡买一送一', cost: '大促轮全场现金 −5%（忍不住剁手）', tag: '剁手一时爽' },
+  mimic:     { name: '模仿校区',   icon: '🦜', color: '#9B59B6', lead: '本届开局复制上一届城邦的效果（强度 70%）', cost: '完全活在上一届的影子里，自己没有主题', tag: '上届的余韵' },
+  weatherlab:{ name: '天气工厂校区', icon: '🌪️', color: '#5D8AA8', lead: '天气改为按轮次强制循环（晴→雨→雾→雪→台风→烈日），恶劣天气全场各 +¥600', cost: '台风天租金 ×1.2、烈日天建筑费 ×1.3，躲不掉', tag: '可预测的极端天气' },
+  mutant:    { name: '变异体校区', icon: '🧬', color: '#8E44AD', lead: '本届内每 3 轮随机更换一次城邦（效果 100%）', cost: '完全无法做长期规划', tag: '一届体验四个城邦' },
 };
 const FACULTY_KEYS = Object.keys(FACULTY);
-const FACULTY_VOTE_MS = 60000;   // v5.12：与服务端同步拉长到 60s（59 个城邦说明更厚，看清楚再投）
+const FACULTY_VOTE_MS = 60000;   // v5.12：与服务端同步拉长到 60s（74 个城邦说明更厚，看清楚再投）
 
 // ---------- v7.0：效果卡表（与服务端 game.js 的 EFFECT_CARDS 逐字同步，改一边必须改另一边） ----------
 // 服务端只在事件里携带卡面数据；手牌（手动发动）在快照里只给 id，所以客户端需要这张镜像表才能渲染。
@@ -1748,6 +1763,15 @@ async function handleAnim(e) {
       await announce(`${(FACULTY[(S && S.faculty)] || {}).icon || '🏫'} <b>${esc(e.name || '校园风貌')}</b><br>${esc(e.detail || '')}`, isShuffle || isRedevel ? 1900 : 1550);
       break;
     }
+    // ===== v7.3：中期突变 / 新城邦大屏演出 =====
+    case 'mutation': { await mutationDrawAnim(e); break; }        // 三风格抽卡（通用 / 强化 / 反转）
+    case 'faculty_mutate': { await facultyMutateAnim(e); break; } // 变异体校区换城邦
+    case 'roulette': { await rouletteAnim(e); break; }            // 轮盘校区 8 格
+    case 'blackswan': { await blackswanAnim(e); break; }          // 黑天鹅事件
+    case 'jackpot': { await jackpotAnim(e); break; }              // 大乐透开奖
+    case 'phantom': { phantomAnim(e); break; }                    // 幻影地块（轻量）
+    case 'hand_full': { handFullAnim(e); break; }                 // 手牌上限（轻量）
+    case 'loan': { loanAnim(e); break; }                          // 借贷校区（轻量）
     case 'skill': { await skillFx(e); break; }
     case 'combo': { SFX.combo(e.n); comboPop(e.pid, e.n); break; }
     case 'chat': {
@@ -1879,8 +1903,8 @@ function drawCardsAnim(e) {
     setTimeout(() => { wrap.remove(); res(); }, sp(hold) + 420);
   });
 }
-const ownerName = pid => (S.players.find(p => p.id === pid) || {}).name || '?';
-const playerCell = pid => (S.players.find(p => p.id === pid) || {}).pos ?? 0;
+const ownerName = pid => ((S && S.players) ? (S.players.find(p => p.id === pid) || {}).name : '') || '?';
+const playerCell = pid => (((S && S.players) ? S.players.find(p => p.id === pid) : null) || {}).pos ?? 0;
 
 // ---------- 新机制特效 ----------
 function shade(hex, amt) {
@@ -2202,6 +2226,295 @@ function facultyDrawAnim(e) {
     setTimeout(() => d.remove(), 620);
     res();
   });
+}
+
+// =================== v7.3：中期突变 · 三风格抽卡大屏演出 ===================
+// 用户要求：抽卡过程要有动态动画；通用池 / 专属反转 / 专属强化 三种特效各不相同、更精美、大屏可见、节奏稍慢。
+const MUT_STYLE = {
+  general: { kind: 'general', label: '通用池',   sub: '世界级随机事件',  col: '#7B5CFF', col2: '#3ED2FF', icon: '🌀', mark: '◆' },
+  buff:    { kind: 'buff',    label: '专属强化', sub: '本届城邦 · 强化', col: '#E8B04B', col2: '#FFE9A8', icon: '⬆️', mark: '▲' },
+  nerf:    { kind: 'nerf',    label: '专属反转', sub: '本届城邦 · 反转', col: '#E2453F', col2: '#FF9C86', icon: '⬇️', mark: '▼' },
+};
+function screenQuake(ms = 520) {
+  const el = document.getElementById('game') || document.body;
+  el.classList.add('quake');
+  setTimeout(() => el.classList.remove('quake'), sp(ms));
+}
+function mutationDrawAnim(e) {
+  return new Promise(async res => {
+    const kinds = ['general', 'buff', 'nerf'];
+    const opts = e.options || [];
+    const winKind = kinds[e.path] || 'general';
+    const W = MUT_STYLE[winKind];
+    const d = document.createElement('div');
+    d.className = 'mut-layer';
+    d.style.setProperty('--mc', W.col);
+    d.style.setProperty('--mc2', W.col2);
+    d.innerHTML = `
+      <div class="mut-bg"></div>
+      <div class="mut-stars">${Array.from({ length: 28 }, (_, i) => `<i style="left:${(i * 37) % 100}%;top:${(i * 61) % 100}%;animation-delay:${(i * 0.11).toFixed(2)}s"></i>`).join('')}</div>
+      <div class="mut-panel">
+        <div class="mut-kicker">中期突变 · 降临</div>
+        <div class="mut-title">三 路 抽 取</div>
+        <div class="mut-sub">每届第 5 轮触发 · 通用池 / 专属强化 / 专属反转 各 1/3 概率</div>
+        <div class="mut-stage">
+          <div class="mut-cards">
+            ${kinds.map((k, i) => {
+              const M = MUT_STYLE[k], o = opts[i] || {};
+              return `<div class="mut-card c-${k}" data-kind="${k}" style="--cc:${M.col};--cc2:${M.col2}">
+                <div class="mc-halo"></div><div class="mc-ring"></div><div class="mc-beam"></div>
+                <div class="mc-mark">${M.mark}</div>
+                <div class="mc-icon">${M.icon}</div>
+                <div class="mc-label">${esc(o.label || M.label)}</div>
+                <div class="mc-sub">${esc(o.sub || M.sub)}</div>
+                <div class="mc-arrows">${Array.from({ length: 5 }, () => `<span></span>`).join('')}</div>
+              </div>`;
+            }).join('')}
+          </div>
+          <div class="mut-scanner"></div>
+        </div>
+        <div class="mut-result">
+          <div class="mr-kind"></div>
+          <div class="mr-name"></div>
+          <div class="mr-desc"></div>
+        </div>
+      </div>`;
+    $('fxLayer').appendChild(d);
+    requestAnimationFrame(() => requestAnimationFrame(() => d.classList.add('show')));
+    try { SFX.facAlarm(); SFX.drumroll(); } catch (err) {}
+    await sleep(1000);
+
+    // ① 三张路径卡依次点亮（预热）
+    const cards = [...d.querySelectorAll('.mut-card')];
+    for (const c of cards) {
+      c.classList.add('pre');
+      try { SFX.tick(); } catch (err) {}
+      await sleep(430);
+    }
+    await sleep(200);
+
+    // ② 扫描指针在三条路径间高速来回（抽卡过程可视化）
+    const scanner = d.querySelector('.mut-scanner');
+    const total = 18 + Math.floor(Math.random() * 5);
+    const target = kinds.indexOf(winKind);
+    for (let i = 0; i < total; i++) {
+      const cur = i % 3;
+      cards.forEach((c, j) => c.classList.toggle('hot', j === cur));
+      scanner.style.setProperty('--i', cur);
+      try { SFX.facRoll(); } catch (err) {}
+      await sleep(i >= total - 5 ? 124 + (i - (total - 5)) * 66 : 64);
+    }
+    // ③ 落定
+    cards.forEach((c, j) => c.classList.toggle('hot', j === target));
+    scanner.style.setProperty('--i', target);
+    await sleep(460);
+    const winCard = cards[target];
+    winCard.classList.add('win');
+    d.classList.add('landed');
+    if (winKind === 'buff') {
+      try { SFX.fanfare(); SFX.facCrown(); } catch (err) {}
+      confettiBurst(130); fxCoinRain(42);
+      flashScreen('radial-gradient(circle at 50% 46%, rgba(255,214,90,.55), rgba(255,214,90,0) 70%)', 950);
+      try { const _pt = playerCell(myPid); if (_pt) fxBurst(_pt, { kind: 'star', n: 18, speed: 3.4, size: 5, life: 48, color: ['#ffd76a', '#fff1c2', '#e8b04b'], lift: 0.8 }); } catch (err) {}
+    } else if (winKind === 'nerf') {
+      try { SFX.clash(); SFX.buzzer(); SFX.thud(); } catch (err) {}
+      flashScreen('radial-gradient(circle at 50% 46%, rgba(226,69,63,.55), rgba(226,69,63,0) 70%)', 950);
+      screenQuake(620);
+    } else {
+      try { SFX.sparkle(); SFX.gift(); } catch (err) {}
+      confettiBurst(80);
+      flashScreen('radial-gradient(circle at 50% 46%, rgba(123,92,255,.5), rgba(62,210,255,0) 70%)', 950);
+    }
+    await sleep(760);
+    d.querySelector('.mr-kind').textContent = `${W.icon} ${winCard.querySelector('.mc-label').textContent}`;
+    d.querySelector('.mr-name').textContent = e.name || '';
+    d.querySelector('.mr-desc').textContent = e.desc || '';
+    d.querySelector('.mut-result').classList.add('show');
+    await sleep(2600);
+    d.classList.remove('show');
+    setTimeout(() => d.remove(), 660);
+    res();
+  });
+}
+
+// =================== v7.3：变异体校区 —— 基因突变换城邦 ===================
+function facultyMutateAnim(e) {
+  return new Promise(async res => {
+    const col = e.color || '#8E44AD';
+    const d = document.createElement('div');
+    d.className = 'fmut-layer';
+    d.style.setProperty('--fc', col);
+    d.innerHTML = `
+      <div class="fmut-bg"></div>
+      <div class="fm-helices">${Array.from({ length: 11 }, (_, i) => `<span style="--i:${i}"></span>`).join('')}</div>
+      <div class="fm-panel">
+        <div class="fm-kick">变异体校区</div>
+        <div class="fm-t">基 因 突 变</div>
+        <div class="fm-sub">本届城邦临时更换（效果 100%）</div>
+        <div class="fm-badge"><span class="fm-icon">${e.icon || '🏫'}</span></div>
+        <div class="fm-name">${esc(e.name || '')}</div>
+        <div class="fm-note">第 ${e.round} 轮 · 生效至本届结束</div>
+      </div>`;
+    $('fxLayer').appendChild(d);
+    requestAnimationFrame(() => requestAnimationFrame(() => d.classList.add('show')));
+    try { SFX.whoosh(); SFX.facRise(); } catch (err) {}
+    await sleep(700);
+    for (let i = 0; i < 9; i++) {
+      flashScreen(`radial-gradient(circle at 50% 50%, ${hexA(col, .3)}, ${hexA(col, 0)} 62%)`, 200);
+      try { SFX.tick(); } catch (err) {}
+      await sleep(125);
+    }
+    try { SFX.facCrown(); } catch (err) {}
+    confettiBurst(95); fxCoinRain(24);
+    await sleep(2200);
+    d.classList.remove('show');
+    setTimeout(() => d.remove(), 620);
+    res();
+  });
+}
+
+// =================== v7.3：轮盘校区 —— 8 格大屏轮盘 ===================
+function rouletteAnim(e) {
+  return new Promise(async res => {
+    const slots = e.slots || [];
+    const N = slots.length || 8;
+    const strip = [];
+    for (let copy = 0; copy < 3; copy++) for (const sl of slots) strip.push(sl);
+    const d = document.createElement('div');
+    d.className = 'rl-layer';
+    d.innerHTML = `
+      <div class="rl-panel">
+        <div class="rl-kick">轮盘校区</div>
+        <div class="rl-t">全 场 同 转</div>
+        <div class="rl-sub">8 格等概率 · 所有人命中同一格</div>
+        <div class="rl-wrap">
+          <div class="rl-reel">${strip.map(s => `<div class="rl-slot"><div class="rl-ico">${s.icon}</div><div class="rl-nm">${esc(s.name)}</div><div class="rl-ds">${esc(s.desc)}</div></div>`).join('')}</div>
+          <div class="rl-mark">▼</div>
+          <div class="rl-edge l"></div><div class="rl-edge r"></div>
+        </div>
+      </div>`;
+    $('fxLayer').appendChild(d);
+    requestAnimationFrame(() => requestAnimationFrame(() => d.classList.add('show')));
+    try { SFX.drumroll(); } catch (err) {}
+    await sleep(500);
+    const wrap = d.querySelector('.rl-wrap');
+    const reel = d.querySelector('.rl-reel');
+    const slotW = wrap.clientWidth / 5;
+    const total = N * 2 + (e.idx || 0);
+    const put = k => { reel.style.transform = `translateX(${-((k + 2) * slotW)}px)`; };
+    put(0);
+    for (let k = 1; k <= total; k++) {
+      put(k);
+      try { SFX.facRoll(); } catch (err) {}
+      await sleep(k >= total - 5 ? 118 + (k - (total - 5)) * 62 : 62);
+    }
+    const win = slots[e.idx] || { icon: '🌀', name: '—', desc: '' };
+    const done = d.querySelectorAll('.rl-slot')[total % N];
+    if (done) done.classList.add('hit');
+    try { SFX.facBadge(); SFX.sparkle(); } catch (err) {}
+    flashScreen(`radial-gradient(circle at 50% 50%, ${hexA('#E0653F', .4)}, ${hexA('#E0653F', 0)} 66%)`, 800);
+    await sleep(1500);
+    announce(`🌀 <b>轮盘定格</b>：${win.icon} <b>${esc(win.name)}</b><br>${esc(win.desc || '')}`, 1900);
+    await sleep(2100);
+    d.classList.remove('show');
+    setTimeout(() => d.remove(), 620);
+    res();
+  });
+}
+
+// =================== v7.3：黑天鹅事件 —— 财富一夜重排 ===================
+function blackswanAnim(e) {
+  return new Promise(async res => {
+    const L = e.losers || [], Wn = e.winners || [];
+    const d = document.createElement('div');
+    d.className = 'bs-layer';
+    d.innerHTML = `
+      <div class="bs-fly">🦢</div>
+      <div class="bs-panel">
+        <div class="bs-t">黑 天 鹅 事 件</div>
+        <div class="bs-sub">第 ${e.round} 轮 · 财富一夜重排</div>
+        <div class="bs-split">
+          <div class="bs-side bs-lose"><div class="bs-h">📉 被收割</div>${L.map(x => `<div class="bs-row">${esc(x.name)}<b>−¥1500</b></div>`).join('') || '<div class="bs-row">—</div>'}</div>
+          <div class="bs-side bs-win"><div class="bs-h">📈 暴富</div>${Wn.map(x => `<div class="bs-row">${esc(x.name)}<b>+¥1000</b></div>`).join('') || '<div class="bs-row">—</div>'}</div>
+        </div>
+      </div>`;
+    $('fxLayer').appendChild(d);
+    requestAnimationFrame(() => requestAnimationFrame(() => d.classList.add('show')));
+    try { SFX.whoosh(); SFX.drumroll(); } catch (err) {}
+    await sleep(1500);
+    d.classList.add('split');
+    try { SFX.thud(); SFX.gain(); SFX.clash(); } catch (err) {}
+    flashScreen('linear-gradient(90deg, rgba(226,69,63,.42) 0%, rgba(226,69,63,0) 46%, rgba(255,214,90,0) 54%, rgba(255,214,90,.42) 100%)', 950);
+    confettiBurst(60);
+    screenQuake(480);
+    await sleep(2400);
+    d.classList.remove('show');
+    setTimeout(() => d.remove(), 620);
+    res();
+  });
+}
+
+// =================== v7.3：大乐透开奖 ===================
+function jackpotAnim(e) {
+  return new Promise(async res => {
+    const d = document.createElement('div');
+    d.className = 'jp-layer';
+    d.innerHTML = `
+      <div class="jp-panel">
+        <div class="jp-kick">大乐透校区</div>
+        <div class="jp-t">本 届 开 奖</div>
+        <div class="jp-reels"><div class="jp-reel">🎰</div><div class="jp-reel">🎰</div><div class="jp-reel">🎰</div></div>
+        <div class="jp-name">${esc(ownerName(e.pid))}</div>
+        <div class="jp-amt">独吞奖池 ¥${e.amount}</div>
+      </div>`;
+    $('fxLayer').appendChild(d);
+    requestAnimationFrame(() => requestAnimationFrame(() => d.classList.add('show')));
+    try { SFX.drumroll(); } catch (err) {}
+    const reels = [...d.querySelectorAll('.jp-reel')];
+    const faces = ['🎰', '💰', '🎉', '🪙', '🏆', '⭐', '💎'];
+    for (let i = 0; i < 24; i++) {
+      reels.forEach(r => { r.textContent = faces[Math.floor(Math.random() * faces.length)]; });
+      try { SFX.facRoll(); } catch (err) {}
+      await sleep(i >= 19 ? 112 + (i - 19) * 52 : 58);
+    }
+    reels.forEach((r, j) => { r.textContent = ['🎰', '💰', '🎉'][j]; r.classList.add('win'); });
+    try { SFX.jackpot(); SFX.fanfare(); SFX.coinRain(); } catch (err) {}
+    confettiBurst(150); fxCoinRain(54);
+    flashScreen('radial-gradient(circle at 50% 50%, rgba(255,214,90,.58), rgba(255,214,90,0) 68%)', 950);
+    await sleep(2600);
+    d.classList.remove('show');
+    setTimeout(() => d.remove(), 640);
+    res();
+  });
+}
+
+// =================== v7.3：幻影地块（轻量，不阻塞队列） ===================
+function phantomAnim(e) {
+  try { SFX.whoosh(); } catch (err) {}
+  for (const ci of (e.cells || [])) {
+    pulseCell(ci, '#6E7B87');
+    fxBurst(ci, { kind: 'petal', n: 13, speed: 1.9, size: 4.8, life: 56, color: ['#9aa7b2', '#c9d3db', '#6E7B87'], lift: 1.1, gravity: -0.02, wave: { r: 58, color: '#6E7B87' } });
+  }
+  const nm = (e.names || []).join('、');
+  if (nm) announce(`🕳️ <b>幻影校区</b>：${esc(nm)} 本轮幻影化<br>踩到不用付租，也不能买卖 / 盖楼`, 1700);
+}
+
+// =================== v7.3：手牌上限（轻量） ===================
+function handFullAnim(e) {
+  try { SFX.buzzer(); } catch (err) {}
+  fxAt(playerCell(e.pid), `<div class="floaty warn">📦 手牌已满</div>`);
+  announce(`📦 <span class="who">${esc(ownerName(e.pid))}</span> 手牌已满（最多 ${e.cap} 张）<br>『${esc(e.name || '')}』被退回`, 1500);
+}
+
+// =================== v7.3：借贷校区（轻量） ===================
+function loanAnim(e) {
+  try { SFX.coin(); } catch (err) {}
+  if (e.borrow) {
+    fxAt(playerCell(e.pid), `<div class="floaty plus">🏦 借款 +¥${e.borrow}</div>`);
+    announce(`🏦 <span class="who">${esc(ownerName(e.pid))}</span> 向银行借款 <span class="amt">¥${e.borrow}</span>（累计 ¥${e.total}）`, 1500);
+  } else if (e.repay) {
+    fxAt(playerCell(e.pid), `<div class="floaty minus">🏦 还款 −¥${e.repay}</div>`);
+  }
 }
 
 // ---------- v5.7：海克斯 · 研究项目（三选一大屏演出 + 发动特效 + 他人资产查看） ----------
@@ -2715,11 +3028,28 @@ function renderFacultyBadge(landing) {
     <text x="${bx + 42}" y="${cy + 8.5}" text-anchor="middle" font-size="23">${f.icon || '🏫'}</text>
     <text x="${bx + 78}" y="${by + 21}" font-size="10.5" fill="#a3946f" letter-spacing="2">本届校园风貌 · 全场共享</text>
     <text x="${bx + 78}" y="${by + 42}" font-size="19" font-weight="800" fill="${shade(col, -58)}">${esc(f.name)}</text>
-    <text x="${bx + 78}" y="${by + 56.5}" font-size="12" fill="#7a6a52">▸ ${esc(f.lead)}　｜　代价：${esc(f.cost)}</text>
+    <text class="fac-badge-line" x="${bx + 78}" y="${by + 56.5}" font-size="12" fill="#7a6a52">▸ ${esc(f.lead)}　｜　代价：${esc(f.cost)}</text>
     <rect x="${bx + bw - 62}" y="${by + 6}" width="52" height="17" rx="8.5" fill="${hexA(col, .18)}" stroke="${hexA(col, .45)}" stroke-width="1"/>
     <text x="${bx + bw - 36}" y="${by + 18.5}" text-anchor="middle" font-size="10.5" font-weight="700" fill="${shade(col, -58)}">详情</text>`;
   g.style.cursor = 'pointer';
   if (!g.dataset.bound) { g.dataset.bound = '1'; g.addEventListener('click', openFacDetail); }
+  // v7.3：长文案防溢出 —— 按可用宽度自适应缩小字号，仍放不下则逐字截断加省略号，
+  // 保证徽章始终完整落在中央看板内（新增城邦含大乐透 / 购物节等长描述）。
+  const lineEl = g.querySelector('.fac-badge-line');
+  if (lineEl && lineEl.getComputedTextLength) {
+    const avail = (bx + bw - 76) - (bx + 78);   // 右侧给「详情」胶囊留 76px
+    let fs = 12;
+    for (let i = 0; i < 8 && lineEl.getComputedTextLength() > avail && fs > 8.5; i++) {
+      fs -= 0.5; lineEl.setAttribute('font-size', fs);
+    }
+    if (lineEl.getComputedTextLength() > avail) {
+      const full = lineEl.textContent;
+      for (let n = full.length - 1; n > 4; n--) {
+        lineEl.textContent = full.slice(0, n) + '…';
+        if (lineEl.getComputedTextLength() <= avail) break;
+      }
+    }
+  }
   if (landing) {
     g.style.transformBox = 'fill-box';
     g.style.transformOrigin = 'center';
@@ -2731,7 +3061,7 @@ function renderFacultyBadge(landing) {
   }
 }
 
-// 点击徽章：展开浮层 —— 本局风貌详情 + 全部 23 个风貌一览
+// 点击徽章：展开浮层 —— 本局风貌详情 + 全部 74 个风貌一览
 function openFacDetail() {
   if (!S || !S.faculty || !FACULTY[S.faculty]) return;
   SFX.click();
@@ -2751,7 +3081,7 @@ function openFacDetail() {
       </div>
       ${S.freeRound ? `<div class="fd-note">🎟️ 已抽定免费轮：<b>第 ${S.freeRound} 轮</b>（买地皮、盖楼完全免费）</div>` : ''}
       ${(S.freeRentRounds && S.freeRentRounds.length) ? `<div class="fd-note">🕊️ 已抽定免租轮：<b>第 ${S.freeRentRounds.join(' / ')} 轮</b>（踩到谁的地都不用付租金）</div>` : ''}
-      <div class="fd-sub">本局共有 23 种校园风貌，开局随机抽 3 个候选、随机抽一位玩家定夺</div>
+      <div class="fd-sub">本局共有 ${FACULTY_KEYS.length} 种校园风貌，开局随机抽 3 个候选、随机抽一位玩家定夺</div>
       <div class="fd-grid">${FACULTY_KEYS.map(k => {
         const q = FACULTY[k];
         return `<div class="fd-cell${k === cur ? ' on' : ''}" style="--fc:${q.color}">

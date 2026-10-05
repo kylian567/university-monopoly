@@ -36,7 +36,7 @@ console.log('========================================');
 // ---------------- [1] 风貌表 ----------------
 console.log('\n[1] 风貌表完整性 + 客户端镜像一致性');
 {
-  ok(FACULTY_KEYS.length === 60, `共 ${FACULTY_KEYS.length} 个校园风貌（预期 60 = 23 老 + 6 定调 + 30 娱乐 + 1 拆迁）`);
+  ok(FACULTY_KEYS.length === 74, `共 ${FACULTY_KEYS.length} 个校园风貌（v7.3：60 + 14 新增）`);
   const bad = FACULTY_KEYS.filter(k => !FACULTY[k].name || !FACULTY[k].icon || !FACULTY[k].color || !FACULTY[k].lead || !FACULTY[k].cost);
   ok(bad.length === 0, '每个风貌都有 name / icon / color / lead(主效果) / cost(代价)');
   const dupName = FACULTY_KEYS.map(k => FACULTY[k].name).filter((v, i, a) => a.indexOf(v) !== i);

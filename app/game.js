@@ -180,73 +180,73 @@ const CALEVENTS = [
 //   fx: 客户端技能大特效的主题色（全场可见）；tier: 强度档位（仅用于 UI 排序与平衡参考）
 const MAJORS = {
   // ===== 第一梯队（v5.1 强度上调：机械 / 新能源 / 金融 / 计算机）=====
-  mech: { id: 'mech', name: '机械', icon: '⚙️', skill: '精益制造', mode: 'active', uses: 4, fx: '#e8734a', tier: 1,
+  mech: { id: 'mech', name: '机械', icon: '⚙️', skill: '精益制造', mode: 'active', uses: 6, fx: '#e8734a', tier: 1,
           desc: '发动后本回合盖房费 −46% 并立刻 +¥1350；常驻盖房永久 −9%' },
-  newe: { id: 'newe', name: '新能源材料与器件', icon: '🔋', skill: '储能放大', mode: 'active', uses: 3, fx: '#2fb87a', tier: 1,
+  newe: { id: 'newe', name: '新能源材料与器件', icon: '🔋', skill: '储能放大', mode: 'active', uses: 5, fx: '#2fb87a', tier: 1,
           desc: '发动后立刻 +现金 11%（上限 ¥3650），本轮收租 +36%；常驻每次经过起点 +¥900' },
-  fin:  { id: 'fin',  name: '金融', icon: '💰', skill: '杠杆操作', mode: 'passive', uses: 4, fx: '#d8a531', tier: 1,
+  fin:  { id: 'fin',  name: '金融', icon: '💰', skill: '杠杆操作', mode: 'passive', uses: 6, fx: '#d8a531', tier: 1,
           desc: '抵押地产时自动多拿 46% 现金' },
-  cs:   { id: 'cs',   name: '计算机', icon: '💻', skill: '算法优化', mode: 'passive', uses: 3, fx: '#4a90d9', tier: 1,
+  cs:   { id: 'cs',   name: '计算机', icon: '💻', skill: '算法优化', mode: 'passive', uses: 5, fx: '#4a90d9', tier: 1,
           desc: '掷骰不足 7 点时自动重掷取更优' },
   // ===== 第二梯队（主流强度，各有专业特色）=====
-  econ:  { id: 'econ',  name: '经管',   icon: '📈', skill: '资本运作', mode: 'passive', uses: 3, fx: '#c9a227', tier: 2,
+  econ:  { id: 'econ',  name: '经管',   icon: '📈', skill: '资本运作', mode: 'passive', uses: 5, fx: '#c9a227', tier: 2,
            desc: '单笔收租 ≥¥1500 时自动 +46%' },
-  med:   { id: 'med',   name: '医学',   icon: '🩺', skill: '妙手回春', mode: 'passive', uses: 3, fx: '#e05a71', tier: 2,
+  med:   { id: 'med',   name: '医学',   icon: '🩺', skill: '妙手回春', mode: 'passive', uses: 5, fx: '#e05a71', tier: 2,
            desc: '被收租 ≥¥1000 时自动减免 36%' },
-  pharm: { id: 'pharm', name: '药学',   icon: '💊', skill: '对症下药', mode: 'active', uses: 3, fx: '#57c1a0', tier: 2,
+  pharm: { id: 'pharm', name: '药学',   icon: '💊', skill: '对症下药', mode: 'active', uses: 5, fx: '#57c1a0', tier: 2,
            desc: '发动后立刻 +¥550，本轮内被收租减免 55%' },
-  law:   { id: 'law',   name: '法学',   icon: '⚖️', skill: '法律援助', mode: 'passive', uses: 3, fx: '#8a6fd1', tier: 2,
+  law:   { id: 'law',   name: '法学',   icon: '⚖️', skill: '法律援助', mode: 'passive', uses: 5, fx: '#8a6fd1', tier: 2,
            desc: '免疫 3 次不利判定（被拆地 / 拆房 / 损失地皮 / 留级 / 陷害）' },
-  arch:  { id: 'arch',  name: '建筑',   icon: '🏗️', skill: '造价管理', mode: 'passive', uses: 3, fx: '#d08531', tier: 2,
+  arch:  { id: 'arch',  name: '建筑',   icon: '🏗️', skill: '造价管理', mode: 'passive', uses: 5, fx: '#d08531', tier: 2,
            desc: '升级房产时费用自动 −32%' },
-  chem:  { id: 'chem',  name: '化学',   icon: '🧪', skill: '催化加成', mode: 'passive', uses: 3, fx: '#7bbf3f', tier: 2,
+  chem:  { id: 'chem',  name: '化学',   icon: '🧪', skill: '催化加成', mode: 'passive', uses: 5, fx: '#7bbf3f', tier: 2,
            desc: '单笔收租 ≥¥1000 时自动 +36%' },
-  auto:  { id: 'auto',  name: '自动化', icon: '🤖', skill: '流水线', mode: 'active', uses: 3, fx: '#5a7fd6', tier: 2,
+  auto:  { id: 'auto',  name: '自动化', icon: '🤖', skill: '流水线', mode: 'active', uses: 5, fx: '#5a7fd6', tier: 2,
            desc: '发动后本回合移动 +2 步；若落在自己的地产上再 +¥820' },
-  ee:    { id: 'ee',    name: '微电子', icon: '🔌', skill: '信号增益', mode: 'passive', uses: 4, fx: '#00a8b5', tier: 2,
+  ee:    { id: 'ee',    name: '微电子', icon: '🔌', skill: '信号增益', mode: 'passive', uses: 6, fx: '#00a8b5', tier: 2,
            desc: '每次经过起点自动 +¥1250' },
-  math:  { id: 'math',  name: '数学',   icon: '📐', skill: '精算砍价', mode: 'passive', uses: 3, fx: '#5f9ea0', tier: 2,
+  math:  { id: 'math',  name: '数学',   icon: '📐', skill: '精算砍价', mode: 'passive', uses: 5, fx: '#5f9ea0', tier: 2,
            desc: '买入地产时自动 8.2 折' },
-  agri:  { id: 'agri',  name: '农学',   icon: '🌾', skill: '春华秋实', mode: 'passive', uses: 3, fx: '#8fbf4a', tier: 2,
+  agri:  { id: 'agri',  name: '农学',   icon: '🌾', skill: '春华秋实', mode: 'passive', uses: 5, fx: '#8fbf4a', tier: 2,
            desc: '每次经过起点自动 +¥1350' },
-  stat:  { id: 'stat',  name: '统计',   icon: '📊', skill: '数据洞察', mode: 'passive', uses: 4, fx: '#4f9ad1', tier: 2,
+  stat:  { id: 'stat',  name: '统计',   icon: '📊', skill: '数据洞察', mode: 'passive', uses: 6, fx: '#4f9ad1', tier: 2,
            desc: '掷骰点数 ≤5 时自动 +¥730' },
-  pe:    { id: 'pe',    name: '体育',   icon: '🏀', skill: '体能优势', mode: 'passive', uses: 4, fx: '#e0803f', tier: 2,
+  pe:    { id: 'pe',    name: '体育',   icon: '🏀', skill: '体能优势', mode: 'passive', uses: 6, fx: '#e0803f', tier: 2,
            desc: '掷骰点数 ≤5 时自动多走 2 步，并额外 +¥360' },
-  phil:  { id: 'phil',  name: '哲学',   icon: '🏛️', skill: '批判思维', mode: 'passive', uses: 3, fx: '#8a7f9a', tier: 2,
+  phil:  { id: 'phil',  name: '哲学',   icon: '🏛️', skill: '批判思维', mode: 'passive', uses: 5, fx: '#8a7f9a', tier: 2,
            desc: '免疫 3 次不利判定（被拆地 / 拆房 / 损失地皮 / 留级 / 陷害）' },
-  mil:   { id: 'mil',   name: '军事',   icon: '🎖️', skill: '战术压制', mode: 'passive', uses: 3, fx: '#7d8a3a', tier: 2,
+  mil:   { id: 'mil',   name: '军事',   icon: '🎖️', skill: '战术压制', mode: 'passive', uses: 5, fx: '#7d8a3a', tier: 2,
            desc: '擂台对决时点数 +1；获胜再额外 +¥460' },
-  phys:  { id: 'phys',  name: '物理',   icon: '⚛️', skill: '守恒定律', mode: 'passive', uses: 3, fx: '#3f7fd6', tier: 2,
+  phys:  { id: 'phys',  name: '物理',   icon: '⚛️', skill: '守恒定律', mode: 'passive', uses: 5, fx: '#3f7fd6', tier: 2,
            desc: '被收租 ≥¥1200 时自动减免 32%' },
-  lang:  { id: 'lang',  name: '外国语', icon: '🌍', skill: '多语种优势', mode: 'passive', uses: 3, fx: '#c86a3f', tier: 2,
+  lang:  { id: 'lang',  name: '外国语', icon: '🌍', skill: '多语种优势', mode: 'passive', uses: 5, fx: '#c86a3f', tier: 2,
            desc: '抽到正面机会卡时自动 +¥820' },
-  art:   { id: 'art',   name: '艺术',   icon: '🎨', skill: '灵感迸发', mode: 'passive', uses: 3, fx: '#d1568f', tier: 2,
+  art:   { id: 'art',   name: '艺术',   icon: '🎨', skill: '灵感迸发', mode: 'passive', uses: 5, fx: '#d1568f', tier: 2,
            desc: '抽到正面机会卡时自动 +¥730' },
-  mse:   { id: 'mse',   name: '材料科学', icon: '🧱', skill: '相变强化', mode: 'active', uses: 3, fx: '#9a7b5a', tier: 2,
+  mse:   { id: 'mse',   name: '材料科学', icon: '🧱', skill: '相变强化', mode: 'active', uses: 5, fx: '#9a7b5a', tier: 2,
            desc: '发动后本轮内自己所有地产的收租 +55%' },
-  env:   { id: 'env',   name: '环境科学', icon: '♻️', skill: '循环利用', mode: 'passive', uses: 4, fx: '#3fa76a', tier: 2,
+  env:   { id: 'env',   name: '环境科学', icon: '♻️', skill: '循环利用', mode: 'passive', uses: 6, fx: '#3fa76a', tier: 2,
            desc: '每次被收租都自动减免 13%（无门槛）' },
-  civil: { id: 'civil', name: '土木工程', icon: '🏗️', skill: '基建加固', mode: 'passive', uses: 3, fx: '#a8823f', tier: 2,
+  civil: { id: 'civil', name: '土木工程', icon: '🏗️', skill: '基建加固', mode: 'passive', uses: 5, fx: '#a8823f', tier: 2,
            desc: '自己的地产免于被拆除；升级房产费用 −18%' },
   // ===== 第三梯队（特色向 / 小额高频）=====
-  geol:  { id: 'geol',  name: '地质',   icon: '🗺️', skill: '勘探评估', mode: 'passive', uses: 3, fx: '#8a7b52', tier: 3,
+  geol:  { id: 'geol',  name: '地质',   icon: '🗺️', skill: '勘探评估', mode: 'passive', uses: 5, fx: '#8a7b52', tier: 3,
            desc: '买入无主地产时自动 9.1 折' },
-  aero:  { id: 'aero',  name: '航天',   icon: '🛰️', skill: '一飞冲天', mode: 'passive', uses: 3, fx: '#5468a8', tier: 3,
+  aero:  { id: 'aero',  name: '航天',   icon: '🛰️', skill: '一飞冲天', mode: 'passive', uses: 5, fx: '#5468a8', tier: 3,
            desc: '进入岔路时自动 +¥900' },
-  bio:   { id: 'bio',   name: '生命科学', icon: '🧬', skill: '细胞增殖', mode: 'passive', uses: 4, fx: '#5aa9d6', tier: 3,
+  bio:   { id: 'bio',   name: '生命科学', icon: '🧬', skill: '细胞增殖', mode: 'passive', uses: 6, fx: '#5aa9d6', tier: 3,
            desc: '自己回合开始时现金 +3.5%' },
-  drama: { id: 'drama', name: '戏剧',   icon: '🎭', skill: '全场入戏', mode: 'passive', uses: 3, fx: '#b04a9a', tier: 3,
+  drama: { id: 'drama', name: '戏剧',   icon: '🎭', skill: '全场入戏', mode: 'passive', uses: 5, fx: '#b04a9a', tier: 3,
            desc: '抽到任意机会 / 命运卡时自动 +¥460' },
-  music: { id: 'music', name: '音乐',   icon: '🎵', skill: '共鸣演出', mode: 'active', uses: 3, fx: '#d1619a', tier: 3,
+  music: { id: 'music', name: '音乐',   icon: '🎵', skill: '共鸣演出', mode: 'active', uses: 5, fx: '#d1619a', tier: 3,
            desc: '发动后立刻 +¥900，其他每位玩家各付你 ¥270 出场费' },
-  psych: { id: 'psych', name: '心理学', icon: '🧠', skill: '读心术', mode: 'active', uses: 3, fx: '#7a5fc1', tier: 3,
+  psych: { id: 'psych', name: '心理学', icon: '🧠', skill: '读心术', mode: 'active', uses: 5, fx: '#7a5fc1', tier: 3,
            desc: '发动后从总资产最高的玩家处抽走 ¥1100' },
-  news:  { id: 'news',  name: '新闻',   icon: '📰', skill: '独家爆料', mode: 'passive', uses: 3, fx: '#8a8f96', tier: 3,
+  news:  { id: 'news',  name: '新闻',   icon: '📰', skill: '独家爆料', mode: 'passive', uses: 5, fx: '#8a8f96', tier: 3,
            desc: '抽到负面卡时自动重抽一次' },
-  food:  { id: 'food',  name: '食品科学', icon: '🍜', skill: '能量补给', mode: 'passive', uses: 4, fx: '#d1873f', tier: 3,
+  food:  { id: 'food',  name: '食品科学', icon: '🍜', skill: '能量补给', mode: 'passive', uses: 6, fx: '#d1873f', tier: 3,
            desc: '每次被罚停留休整时自动 +¥640' },
-  marine:{ id: 'marine',name: '海洋科学', icon: '🌊', skill: '深海资源', mode: 'passive', uses: 3, fx: '#2f8fbf', tier: 3,
+  marine:{ id: 'marine',name: '海洋科学', icon: '🌊', skill: '深海资源', mode: 'passive', uses: 5, fx: '#2f8fbf', tier: 3,
            desc: '每次经过起点自动 +¥1100' },
 
   // ==================== v5.3 新增 27 个专业（覆盖面更广） ====================
@@ -256,84 +256,84 @@ const MAJORS = {
   // immuneN / weather / rerollFree / noDemolish …）。老专业走原来的硬编码分支不动，
   // 新专业只填表 + 通用层统一读取，互不干扰。
   // ===== 工科 / 信息技术 =====
-  elec:  { id: 'elec',  name: '电气工程',   icon: '⚡', skill: '峰谷套利', mode: 'active', uses: 3, fx: '#f0b429', tier: 2,
+  elec:  { id: 'elec',  name: '电气工程',   icon: '⚡', skill: '峰谷套利', mode: 'active', uses: 5, fx: '#f0b429', tier: 2,
            desc: '发动后立刻 +¥1150，本回合买地 6.4 折' },
-  comm:  { id: 'comm',  name: '通信工程',   icon: '📡', skill: '信号覆盖', mode: 'passive', uses: 4, fx: '#3aa0d8', tier: 2,
+  comm:  { id: 'comm',  name: '通信工程',   icon: '📡', skill: '信号覆盖', mode: 'passive', uses: 6, fx: '#3aa0d8', tier: 2,
            desc: '每次经过起点 +¥1100；每抽到任意卡 +¥270',
            salary: { amt: 1100, use: true }, cardAny: 270 },
-  ctrl:  { id: 'ctrl',  name: '控制科学',   icon: '🎛️', skill: '闭环调节', mode: 'passive', uses: 3, fx: '#5b7fd1', tier: 2,
+  ctrl:  { id: 'ctrl',  name: '控制科学',   icon: '🎛️', skill: '闭环调节', mode: 'passive', uses: 5, fx: '#5b7fd1', tier: 2,
            desc: '单笔收租 ≥¥1200 时 +27%；被收租 ≥¥1200 时减免 23%',
            rentGain: { min: 1200, pct: 0.27 }, tollCut: { min: 1200, pct: 0.23 } },
-  robot: { id: 'robot', name: '机器人工程', icon: '🦾', skill: '机械臂协作', mode: 'active', uses: 3, fx: '#e2663f', tier: 2,
+  robot: { id: 'robot', name: '机器人工程', icon: '🦾', skill: '机械臂协作', mode: 'active', uses: 5, fx: '#e2663f', tier: 2,
            desc: '发动后本回合盖房 −55%，并立刻 +¥900' },
-  se:    { id: 'se',    name: '软件工程',   icon: '⌨️', skill: '敏捷迭代', mode: 'passive', uses: 4, fx: '#4a90d9', tier: 2,
+  se:    { id: 'se',    name: '软件工程',   icon: '⌨️', skill: '敏捷迭代', mode: 'passive', uses: 6, fx: '#4a90d9', tier: 2,
            desc: '每局 4 次免费重投骰子（不用付 ¥1200）',
            rerollFree: true },
-  ai:    { id: 'ai',    name: '人工智能',   icon: '🧠', skill: '模型推理', mode: 'active', uses: 3, fx: '#7a5fc1', tier: 2,
+  ai:    { id: 'ai',    name: '人工智能',   icon: '🧠', skill: '模型推理', mode: 'active', uses: 5, fx: '#7a5fc1', tier: 2,
            desc: '发动后本轮收租 +32%，并从总资产最高者处取 ¥730' },
-  imes:  { id: 'imes',  name: '智能制造',   icon: '🏭', skill: '柔性产线', mode: 'passive', uses: 3, fx: '#7b8fa8', tier: 2,
+  imes:  { id: 'imes',  name: '智能制造',   icon: '🏭', skill: '柔性产线', mode: 'passive', uses: 5, fx: '#7b8fa8', tier: 2,
            desc: '升级房产 −23%；每次升级成功再 +¥460',
            buildCut: 0.23, buildCash: 460 },
-  power: { id: 'power', name: '能源与动力', icon: '🔥', skill: '热机循环', mode: 'passive', uses: 4, fx: '#e07a3f', tier: 2,
+  power: { id: 'power', name: '能源与动力', icon: '🔥', skill: '热机循环', mode: 'passive', uses: 6, fx: '#e07a3f', tier: 2,
            desc: '每轮开局 +¥360；每次经过起点 +¥730',
            turnCash: 360, salary: { amt: 730, use: true } },
   // ===== 理科 / 地球科学 =====
-  astro: { id: 'astro', name: '天文学',     icon: '🔭', skill: '眺望星河', mode: 'passive', uses: 3, fx: '#5468a8', tier: 2,
+  astro: { id: 'astro', name: '天文学',     icon: '🔭', skill: '眺望星河', mode: 'passive', uses: 5, fx: '#5468a8', tier: 2,
            desc: '掷骰点数 ≥9 时自动 +¥1000',
            highRoll: { min: 9, amt: 1000 } },
-  meteo: { id: 'meteo', name: '气象学',     icon: '🌦️', skill: '预报风向', mode: 'passive', uses: 4, fx: '#4f9ad1', tier: 2,
+  meteo: { id: 'meteo', name: '气象学',     icon: '🌦️', skill: '预报风向', mode: 'passive', uses: 6, fx: '#4f9ad1', tier: 2,
            desc: '恶劣天气（雨/台风/雪/雾）里自己回合开始 +¥640',
            weather: { kinds: ['rain', 'storm', 'snow', 'fog'], amt: 640 } },
-  geop:  { id: 'geop',  name: '地球物理',   icon: '🌏', skill: '地层探测', mode: 'passive', uses: 3, fx: '#8a7b52', tier: 2,
+  geop:  { id: 'geop',  name: '地球物理',   icon: '🌏', skill: '地层探测', mode: 'passive', uses: 5, fx: '#8a7b52', tier: 2,
            desc: '买入无主地产 8.7 折；每买下一块地再 +¥360',
            buyCut: 0.13, buyCash: 360 },
-  or:    { id: 'or',    name: '运筹学',     icon: '🧮', skill: '资源调度', mode: 'active', uses: 3, fx: '#5f9ea0', tier: 2,
+  or:    { id: 'or',    name: '运筹学',     icon: '🧮', skill: '资源调度', mode: 'active', uses: 5, fx: '#5f9ea0', tier: 2,
            desc: '发动后立刻 +¥820，本回合移动 +3 步' },
   // ===== 医农生 =====
-  nurs:  { id: 'nurs',  name: '护理学',     icon: '💉', skill: '悉心看护', mode: 'passive', uses: 4, fx: '#e05a9a', tier: 2,
+  nurs:  { id: 'nurs',  name: '护理学',     icon: '💉', skill: '悉心看护', mode: 'passive', uses: 6, fx: '#e05a9a', tier: 2,
            desc: '被收租 ≥¥800 时自动减免 32%',
            tollCut: { min: 800, pct: 0.32 } },
-  dent:  { id: 'dent',  name: '口腔医学',   icon: '🦷', skill: '牙科门诊', mode: 'passive', uses: 3, fx: '#57c1c0', tier: 2,
+  dent:  { id: 'dent',  name: '口腔医学',   icon: '🦷', skill: '牙科门诊', mode: 'passive', uses: 5, fx: '#57c1c0', tier: 2,
            desc: '单笔收租 ≥¥1200 时自动 +41%',
            rentGain: { min: 1200, pct: 0.41 } },
-  vet:   { id: 'vet',   name: '兽医学',     icon: '🐾', skill: '牲畜保险', mode: 'passive', uses: 3, fx: '#8fbf4a', tier: 2,
+  vet:   { id: 'vet',   name: '兽医学',     icon: '🐾', skill: '牲畜保险', mode: 'passive', uses: 5, fx: '#8fbf4a', tier: 2,
            desc: '自己的地产免于被拆除；每次被收租减免 11%',
            noDemolish: true, tollCut: { min: 0, pct: 0.11 } },
-  hort:  { id: 'hort',  name: '园艺学',     icon: '🌷', skill: '嫁接育种', mode: 'passive', uses: 3, fx: '#d1568f', tier: 3,
+  hort:  { id: 'hort',  name: '园艺学',     icon: '🌷', skill: '嫁接育种', mode: 'passive', uses: 5, fx: '#d1568f', tier: 3,
            desc: '每次经过起点 +¥1000；升级房产 −11%',
            salary: { amt: 1000, use: true }, buildCut: 0.11 },
-  forest:{ id: 'forest',name: '林学',       icon: '🌲', skill: '封山育林', mode: 'passive', uses: 3, fx: '#3fa76a', tier: 3,
+  forest:{ id: 'forest',name: '林学',       icon: '🌲', skill: '封山育林', mode: 'passive', uses: 5, fx: '#3fa76a', tier: 3,
            desc: '每轮开局 +¥320；被罚停留休整时 +¥550',
            turnCash: 320, stayCash: 550 },
   // ===== 人文社科 / 管理 =====
-  acc:   { id: 'acc',   name: '会计学',     icon: '🧾', skill: '精算审计', mode: 'passive', uses: 3, fx: '#c9a227', tier: 2,
+  acc:   { id: 'acc',   name: '会计学',     icon: '🧾', skill: '精算审计', mode: 'passive', uses: 5, fx: '#c9a227', tier: 2,
            desc: '买入地产 8.7 折；被收租 ≥¥1000 时减免 23%',
            buyCut: 0.13, tollCut: { min: 1000, pct: 0.23 } },
-  trade: { id: 'trade', name: '国际贸易',   icon: '🚢', skill: '跨境套利', mode: 'passive', uses: 4, fx: '#2f8fbf', tier: 2,
+  trade: { id: 'trade', name: '国际贸易',   icon: '🚢', skill: '跨境套利', mode: 'passive', uses: 6, fx: '#2f8fbf', tier: 2,
            desc: '每次经过起点 +¥900；每抽到任意卡 +¥320',
            salary: { amt: 900, use: true }, cardAny: 320 },
-  mkt:   { id: 'mkt',   name: '市场营销',   icon: '📣', skill: '带货直播', mode: 'active', uses: 3, fx: '#e0803f', tier: 2,
+  mkt:   { id: 'mkt',   name: '市场营销',   icon: '📣', skill: '带货直播', mode: 'active', uses: 5, fx: '#e0803f', tier: 2,
            desc: '发动后立刻 +¥1100，其他每位玩家再各付你 ¥230' },
-  hr:    { id: 'hr',    name: '人力资源管理', icon: '🧑‍💼', skill: '团队激励', mode: 'passive', uses: 3, fx: '#a8823f', tier: 3,
+  hr:    { id: 'hr',    name: '人力资源管理', icon: '🧑‍💼', skill: '团队激励', mode: 'passive', uses: 5, fx: '#a8823f', tier: 3,
            desc: '回合开始时现金 +2.5%；被罚停留休整时 +¥640',
            turnPct: 0.025, stayCash: 640 },
-  tourism:{ id: 'tourism', name: '旅游管理', icon: '🧳', skill: '导游外快', mode: 'passive', uses: 3, fx: '#c86a3f', tier: 3,
+  tourism:{ id: 'tourism', name: '旅游管理', icon: '🧳', skill: '导游外快', mode: 'passive', uses: 5, fx: '#c86a3f', tier: 3,
            desc: '进入岔路时 +¥820；每次经过起点 +¥640',
            branch: 820, salary: { amt: 640, use: true } },
-  edu:   { id: 'edu',   name: '教育学',     icon: '📚', skill: '因材施教', mode: 'passive', uses: 4, fx: '#9a7b5a', tier: 3,
+  edu:   { id: 'edu',   name: '教育学',     icon: '📚', skill: '因材施教', mode: 'passive', uses: 6, fx: '#9a7b5a', tier: 3,
            desc: '每轮开局 +¥320；抽到负面卡时自动重抽（4 次）',
            turnCash: 320, negReroll: true },
-  hist:  { id: 'hist',  name: '历史学',     icon: '🏺', skill: '考古发现', mode: 'passive', uses: 3, fx: '#a8823f', tier: 3,
+  hist:  { id: 'hist',  name: '历史学',     icon: '🏺', skill: '考古发现', mode: 'passive', uses: 5, fx: '#a8823f', tier: 3,
            desc: '掷骰点数 ≤4 时发掘出文物 +¥820；买入无主地产 9.1 折',
            lowRoll: { max: 4, amt: 820 }, buyCut: 0.09 },
-  soc:   { id: 'soc',   name: '社会学',     icon: '🧑‍🤝‍🧑', skill: '田野调查', mode: 'passive', uses: 3, fx: '#8a7f9a', tier: 3,
+  soc:   { id: 'soc',   name: '社会学',     icon: '🧑‍🤝‍🧑', skill: '田野调查', mode: 'passive', uses: 5, fx: '#8a7f9a', tier: 3,
            desc: '每抽到一张机会 / 命运卡 +¥410',
            cardAny: 410 },
   // ===== 艺术 / 设计 / 传媒 =====
-  design:{ id: 'design',name: '工业设计',   icon: '🖌️', skill: '人机工学', mode: 'passive', uses: 3, fx: '#d1619a', tier: 3,
+  design:{ id: 'design',name: '工业设计',   icon: '🖌️', skill: '人机工学', mode: 'passive', uses: 5, fx: '#d1619a', tier: 3,
            desc: '升级房产 −16%；买入地产 −7%',
            buildCut: 0.16, buyCut: 0.07 },
-  film:  { id: 'film',  name: '影视传媒',   icon: '🎬', skill: '院线首映', mode: 'active', uses: 3, fx: '#b04a9a', tier: 2,
+  film:  { id: 'film',  name: '影视传媒',   icon: '🎬', skill: '院线首映', mode: 'active', uses: 5, fx: '#b04a9a', tier: 2,
            desc: '发动后立刻 +¥1350，本轮自己收租 +23%' },
 };
 const MAJOR_KEYS = [
@@ -630,9 +630,130 @@ const FACULTY = {
   green:    { name: '环保校区',   icon: '♻️', color: '#27AE60', lead: '全场建筑升级费 −10%',                    cost: '经过起点工资 ¥1850（−150）',        tag: '绿化好了，工资少了' },
   gamble:   { name: '博弈校区',   icon: '🃏', color: '#8E44AD', lead: '擂台赌注 ×1.6、运动会赌注 ×1.5',                 cost: '全场租金 ×1.03',                    tag: '富贵险中求' },
   redevelop:{ name: '拆迁校区',   icon: '🏗️', color: '#B0563A', lead: '每 2 轮随机拆掉场上的一栋楼（旅馆按 4 层算）', cost: '全场租金 ×1.03',                 tag: '旧的不去，新的不来' },
+  // ===== v7.3 新增：14 个城邦（原 N1~N16，去掉 N2 强制拍卖 / N11 时间静止） =====
+  roulette:  { name: '轮盘校区',   icon: '🌀', color: '#E0653F', lead: '每轮开场全场一起转一次轮盘（8 格等概率，全员命中同一格）', cost: '结果不可控——可能是大红包，也可能是全场罚款', tag: '每轮都有一次心跳' },
+  jackpot:   { name: '大乐透校区', icon: '🎰', color: '#C2185B', lead: '每轮全场各扣 ¥100 进奖池，本届最后一轮 1 人独吞全部奖池', cost: '每轮都在流血，中奖率只有 1/人数', tag: '最后一轮见分晓' },
+  blackswan: { name: '黑天鹅校区', icon: '🦢', color: '#4A4A5A', lead: '第 6 轮随机一半玩家各 −¥1500、另一半各 +¥1000', cost: '完全随机分配，无法预判也无法规避', tag: '财富一夜重排' },
+  phantom:   { name: '幻影校区',   icon: '🕳️', color: '#6E7B87', lead: '每轮随机 1 块产业幻影化：本轮踩到它不用付租金', cost: '幻影地块本轮不可买卖/盖楼，是自己的也白收不到租', tag: '地图上那块灰色的地' },
+  inflation: { name: '通胀校区',   icon: '📈', color: '#E23B3B', lead: '每轮全场 +¥300，地价与租金每轮累积 +1.5%', cost: '本届结束时全场现金 −10%（货币贬值）', tag: '越往后越疯' },
+  deflation: { name: '通缩校区',   icon: '📉', color: '#2E86C1', lead: '地价与租金每轮累积 −1.5%（越往后越便宜）', cost: '过起点工资每轮 −¥100，且每 3 轮全场现金 −5%', tag: '屯现金，后手收割' },
+  league:    { name: '联赛校区',   icon: '🥊', color: '#B03A2E', lead: '每 3 轮强制全场两两配对打一次擂台（赌注 ¥1500，赢者翻倍）', cost: '强制参加不能弃权，打不赢就得掏钱', tag: '擂台变常驻节目' },
+  bounty:    { name: '悬赏校区',   icon: '🎯', color: '#A93226', lead: '总资产最高者当选「校霸」：收租 ×1.2，别人踩他的地额外 +¥600 举报奖励', cost: '校霸被收租时 ×1.4（人人针对他）', tag: '全场公敌' },
+  chain:     { name: '连锁校区',   icon: '⛓️', color: '#5D6D7E', lead: '凑齐同色组后该色组租金 ×1.35（地皮与房子一起涨）', cost: '未垄断的散地租金 ×0.9（地皮与房子一起跌）', tag: '垄断才是正道' },
+  credit:    { name: '借贷校区',   icon: '💳', color: '#1ABC9C', lead: '本届内可向银行低息借款，最多累计 ¥5000，每轮还 10%（无利息）', cost: '借款超 ¥3000 后过起点工资 ×0.7（信用受损）', tag: '差一口气就垄断？借！' },
+  shopping:  { name: '购物节校区', icon: '🛒', color: '#E67E22', lead: '每 4 轮「全场大促」：买地 7 折、盖楼 7 折、商城卡买一送一', cost: '大促轮全场现金 −5%（忍不住剁手）', tag: '剁手一时爽' },
+  mimic:     { name: '模仿校区',   icon: '🦜', color: '#9B59B6', lead: '本届开局复制上一届城邦的效果（强度 70%）', cost: '完全活在上一届的影子里，自己没有主题', tag: '上届的余韵' },
+  weatherlab:{ name: '天气工厂校区', icon: '🌪️', color: '#5D8AA8', lead: '天气改为按轮次强制循环（晴→雨→雾→雪→台风→烈日），恶劣天气全场各 +¥600', cost: '台风天租金 ×1.2、烈日天建筑费 ×1.3，躲不掉', tag: '可预测的极端天气' },
+  mutant:    { name: '变异体校区', icon: '🧬', color: '#8E44AD', lead: '本届内每 3 轮随机更换一次城邦（效果 100%）', cost: '完全无法做长期规划', tag: '一届体验四个城邦' },
 };
 const FACULTY_KEYS = Object.keys(FACULTY);
-const FACULTY_VOTE_MS = 60000;   // 开局/换届风貌投票时长（v5.12 由 40s 拉长到 60s：60 个城邦的说明更厚，看清楚再投）
+
+// ---------- v7.3：效果卡手牌上限 ----------
+const HAND_CAP = 6;   // v7.3：每个玩家手上最多 6 张效果卡，超过后不再获得新的（自动型卡立即结算、不进手牌）
+// ---------- v7.3：天气工厂校区的强制天气循环 ----------
+const WEATHER_CYCLE = ['sun', 'rain', 'fog', 'snow', 'storm', 'heat'];
+
+// ---------- v7.3：中期突变（M1） ----------
+// 每届第 5 轮开场触发一次，三路等概率：通用池 1/3 · 专属强化 1/3 · 专属反转 1/3，持续到本届结束。
+// ops 词汇（全部为「本届剩余轮次内生效」的累积修正；下列词表均已接线，见 applyFacultyRound / 各读表函数）：
+//   rentMul/landMul/buildMul 租金/地价/建筑费乘数 · vacantLandMul 无主地价乘数
+//   wageMul/wageSet/wageFlat 工资 · taxFree 免税 · noBuild 禁建 · fundCapSet 基金池上限
+//   roundCash 每轮全场 ±（负数进池） · every/everyAmt 每 N 轮全场 ±
+//   onceCash 触发时全场 + · demolish 每轮拆 n 栋 · luckyDice 每轮 n 人 +3 步
+//   giftMedal/giftMedalAll 送免租金卡 · rerollFree 重投免费 · skillBonus 技能次数
+//   freeRentAdd/freeRentVoid 免租轮增删 · freeRoundAdd/freeRoundVoid 免费轮增删
+//   fineMul 罚款 · branchMul 岔路 · cardMul/cardFlat 卡牌 · cardExtraDraw 盲盒多抽
+//   duelOff 关闭擂台 · rollPay 每次掷骰扣 · rouge/roundCashPick 等见实现
+const MUT_GENERAL = [
+  { id: 'G1',  n: '通胀风暴', d: '全场租金 ×1.15', o: { rentMul: 1.15 } },
+  { id: 'G2',  n: '通缩寒潮', d: '全场租金 ×0.85', o: { rentMul: 0.85 } },
+  { id: 'G3',  n: '地王令',   d: '无主地价 ×1.3，买下即赠 1 张免租金卡', o: { vacantLandMul: 1.3, giftMedal: 1 } },
+  { id: 'G4',  n: '拆迁令',   d: '本届剩余每轮随机拆 1 栋楼', o: { demolish: 1 } },
+  { id: 'G5',  n: '奖学金',   d: '每轮全场 +¥400', o: { roundCash: 400 } },
+  { id: 'G6',  n: '紧缩令',   d: '每轮全场 −¥350（进基金池）', o: { roundCash: -350 } },
+  { id: 'G7',  n: '双倍工资', d: '过起点工资 ×2', o: { wageMul: 2 } },
+  { id: 'G8',  n: '禁建令',   d: '本届不能盖楼，但建筑费 −30%', o: { noBuild: 1, buildMul: 0.7 } },
+  { id: 'G9',  n: '免税期',   d: '免征物业税', o: { taxFree: 1 } },
+  { id: 'G10', n: '幸运骰',   d: '每轮随机 1 人移动 +3 步', o: { luckyDice: 1 } },
+];
+const MUT_SPECIAL = {
+  urban: [{n:'通勤高峰',d:'每轮全场再 +¥200',o:{roundCash: 200}},{n:'房租暴涨',d:'工资回到 ¥2000，地价 ×1.08',o:{wageSet: 2000, landMul: 1.08}}],
+  garden: [{n:'绿化补贴',d:'买地再 −5%',o:{landMul: 0.95}},{n:'开发商进场',d:'地价 ×1.05，工资回到 ¥1800',o:{landMul: 1.05, wageSet: 1800}}],
+  ancient: [{n:'校庆年',d:'每轮全场再 +¥250',o:{roundCash: 250}},{n:'经费冻结',d:'捐款停发，每 3 轮各缴 ¥400',o:{every: 3, everyAmt: -400}}],
+  tech: [{n:'技术突破',d:'建筑费再 −8%',o:{buildMul: 0.92}},{n:'设备检修',d:'建筑费 ×1.1，卡牌收益恢复 100%',o:{buildMul: 1.1, cardMul: 1.075}}],
+  general: [{n:'通才',d:'卡牌收益再 +¥150',o:{cardFlat: 150}},{n:'偏科',d:'负面卡全额承担，全场租金 ×1.08',o:{rentMul: 1.08}}],
+  biz: [{n:'银根宽松',d:'抵押再 +8%',o:{mortgageUp: 0.08}},{n:'抽贷',d:'抵押降到 45%，赎回手续费取消',o:{mortgageUp: -0.17}}],
+  intl: [{n:'交换季',d:'岔路奖励 ×1.4',o:{branchMul: 1.4}},{n:'签证收紧',d:'岔路关闭，机会卡收益恢复 100%',o:{branchMul: 0, cardMul: 1.176}}],
+  sports: [{n:'校运会',d:'每轮强制一场擂台（赌注 ¥1200）',o:{duelRound: 1200}},{n:'禁赛',d:'擂台关闭，但租金 ×0.9',o:{duelOff: 1, rentMul: 0.9}}],
+  finance: [{n:'量化宽松',d:'池上限 ¥42000，每轮注资 ¥1500',o:{fundCapSet: 42000, poolInject: 1500}},{n:'挤兑',d:'池上限 ¥12000，每轮不再注资',o:{fundCapSet: 12000, poolInject: -1}}],
+  reform: [{n:'加速',d:'每轮再 +¥350',o:{roundCash: 350}},{n:'急刹车',d:'补贴减半，租金 ×1.1',o:{roundCash: -225, rentMul: 1.1}}],
+  med: [{n:'公费医疗',d:'减免提到 30%，罚款回归正常',o:{fineMul: 0.833}},{n:'挂号难',d:'减免取消，罚款 +40%',o:{fineMul: 1.4}}],
+  agri: [{n:'丰收年',d:'过起点再 +¥450',o:{wageFlat: 450}},{n:'歉收',d:'过起点加成取消，建筑费 ×1.08',o:{wageSet: 2000, buildMul: 1.08}}],
+  art: [{n:'灵感爆发',d:'每次开盒再多抽 2 张',o:{cardExtraDraw: 2}},{n:'灵感枯竭',d:'多抽取消，每抽卡 −¥150',o:{cardExtraDraw: -2, cardFlat: -150}}],
+  park: [{n:'重大专项',d:'立项返还翻倍（¥8000）',o:{parkSet: 8000}},{n:'经费削减',d:'返还降到 ¥2500，机会卡恢复 100%',o:{parkSet: 2500, cardMul: 1.111}}],
+  normal: [{n:'放暑假',d:'每 3 轮发免停留卡',o:{stayCardEvery: 3}},{n:'考试周',d:'免停留卡停发，租金 ×1.05',o:{stayCardOff: 1, rentMul: 1.05}}],
+  book: [{n:'畅销书',d:'机会卡再 +¥400',o:{roundCash: 0, cardFlat: 400}},{n:'盗版',d:'机会卡加成取消，命运卡负面 ×1.3',o:{fateBadMul: 1.3}}],
+  life: [{n:'便民工程',d:'文印/快递/机场再 ×0.8',o:{lifeMul: 0.8}},{n:'涨租',d:'文印/快递/机场 ×1.1',o:{lifeMul: 1.1}}],
+  austerity: [{n:'全面紧缩',d:'每轮全场 −¥400（进池）',o:{roundCash: -400}},{n:'财政宽松',d:'恢复征物业税，停发工资推迟 5 轮',o:{taxUnfree: 1, salaryStopDelay: 5}}],
+  boom: [{n:'大牛市',d:'过起点 +¥700、地价 ×1.1',o:{wageSet: 2700, landMul: 1.1}},{n:'泡沫破裂',d:'停发工资提前，地价 ×0.95',o:{salaryStopDelay: -6, landMul: 0.95}}],
+  nofund: [{n:'低保',d:'每轮全场 +¥500',o:{roundCash: 500}},{n:'断供',d:'地价 ×0.95，建筑费 ×0.95',o:{landMul: 0.95, buildMul: 0.95}}],
+  retrain: [{n:'集训',d:'技能次数再 +2',o:{skillBonus: 2}},{n:'学制改革',d:'技能加成取消，全场各 +¥1500',o:{skillBonus: -2, onceCash: 1500}}],
+  freeRound: [{n:'再加一轮',d:'多抽 1 轮免费',o:{freeRoundAdd: 1}},{n:'预算取消',d:'剩余免费轮作废，租金 ×0.95',o:{freeRoundVoid: 1, rentMul: 0.95}}],
+  freeRent: [{n:'再加两轮',d:'多抽 2 轮免租',o:{freeRentAdd: 2}},{n:'补收',d:'剩余免租轮作废，租金 ×1.15',o:{freeRentVoid: 1, rentMul: 1.15}}],
+  hxPrism: [{n:'紫雨不断',d:'国家级经费下拨：每 3 轮全场再 +¥900',o:{every: 3, everyAmt: 900}},{n:'彩霞散去',d:'经费冻结：每轮全场 −¥300',o:{roundCash: -300}}],
+  hxSilver: [{n:'厚积薄发',d:'立刻全场 +¥1200，每轮再 +¥200',o:{onceCash: 1200, roundCash: 200}},{n:'破格录取',d:'全场租金 ×0.95，每轮再 −¥150',o:{rentMul: 0.95, roundCash: -150}}],
+  hxGold: [{n:'点石成金',d:'立刻全场 +¥1800，全员技能次数 +1',o:{onceCash: 1800, skillBonus: 1}},{n:'成色不足',d:'全场租金 ×1.08（成本转嫁）',o:{rentMul: 1.08}}],
+  hxMix: [{n:'三色齐放',d:'每次开盒再多抽 2 张',o:{cardExtraDraw: 2}},{n:'极光消失',d:'基金池上限降到 ¥12000',o:{fundCapSet: 12000}}],
+  hex3: [{n:'精品追加',d:'立刻全场 +¥1500',o:{onceCash: 1500}},{n:'项目裁撤',d:'本届不能盖楼，但建筑费 −25%',o:{noBuild: 1, buildMul: 0.75}}],
+  hexEarly: [{n:'时光加速',d:'新增 1 轮全场免租',o:{freeRentAdd: 1}},{n:'时光倒流',d:'每 3 轮全场 −¥400（进基金池）',o:{every: 3, everyAmt: -400}}],
+  lantern: [{n:'灯王争霸',d:'每 3 轮再抽一次灯王 ¥2000',o:{every: 3, everyAmt: 2000}},{n:'限电',d:'补贴减半，租金 ×1.06',o:{roundCash: -150, rentMul: 1.06}}],
+  midterm: [{n:'补考季',d:'每 3 轮再 −¥600（进池）',o:{every: 3, everyAmt: -600}},{n:'缓考',d:'捐款取消，每 5 轮全场 +¥400',o:{midtermVoid: 1, every: 5, everyAmt: 400}}],
+  lottery: [{n:'加奖池',d:'每 2 轮开奖，奖金 ¥3000',o:{lotteryEvery: 2, lotteryAmt: 3000}},{n:'彩票停售',d:'开奖取消，每 3 轮全场 +¥300',o:{lotteryOff: 1, every: 3, everyAmt: 300}}],
+  oldbook: [{n:'跳蚤市场',d:'摆摊收益 ×2',o:{oldbookMul: 2}},{n:'城管来了',d:'收益取消，每 3 轮 −¥300',o:{oldbookOff: 1, every: 3, everyAmt: -300}}],
+  nightowl: [{n:'通宵',d:'最穷 +¥1800 / 最富 −¥900',o:{nightowlUp: 1}},{n:'早睡早起',d:'改为最富 +¥600 / 最穷 −¥300',o:{nightowlFlip: 1}}],
+  shuffle: [{n:'彻底洗牌',d:'立刻再洗一次，且地产也随机互换',o:{shuffleNow: 1, shuffleProp: 1}},{n:'冻结',d:'不再洗牌，每轮全场 +¥250',o:{shuffleOff: 1, roundCash: 250}}],
+  stampede: [{n:'点名',d:'7 点 +¥900 / ≤3 点 −¥500',o:{stampedeUp: 1}},{n:'放假',d:'掷骰奖惩取消，每轮 +¥200',o:{stampedeOff: 1, roundCash: 200}}],
+  carnival: [{n:'狂欢',d:'重投完全免费',o:{rerollFree: 1}},{n:'散场',d:'重投恢复原价，租金 ×0.95',o:{carnivalOff: 1, rentMul: 0.95}}],
+  liberal: [{n:'博雅',d:'命运卡再 +¥200',o:{cardFlatFate: 200}},{n:'专精',d:'命运卡加成取消，机会卡 ×1.1',o:{cardFlatFate: -400, cardChanceMul: 1.1}}],
+  dorm: [{n:'躺平',d:'停留补贴 ¥2400',o:{dormAmt: 2400}},{n:'查寝',d:'补贴取消，停留额外 −¥500',o:{dormAmt: -500}}],
+  runner: [{n:'班车',d:'双数 +¥900',o:{runnerAmt: 900}},{n:'误点',d:'双数奖励取消，每次掷骰 −¥150',o:{runnerAmt: -400, rollPay: 150}}],
+  cafe: [{n:'续命',d:'改为每轮 +¥300',o:{cafeEvery: 1}},{n:'断咖啡',d:'补贴取消，罚款 ×1.2',o:{cafeOff: 1, fineMul: 1.2}}],
+  silent: [{n:'闭关',d:'租金再 ×0.85',o:{rentMul: 0.85}},{n:'喧闹',d:'租金 ×1.05，卡牌收益恢复 100%',o:{rentMul: 1.05, cardMul: 1.22}}],
+  gala: [{n:'校友返校',d:'每 3 轮最富捐 ¥2000',o:{galaAmt: 2000}},{n:'校友慷慨',d:'捐款取消，每 5 轮全场 +¥500',o:{galaOff: 1, every: 5, everyAmt: 500}}],
+  spring: [{n:'基建狂魔',d:'建筑费再 ×0.8',o:{buildMul: 0.8}},{n:'停工',d:'建筑费 ×1.05，租金 ×0.95',o:{buildMul: 1.05, rentMul: 0.95}}],
+  artfest: [{n:'艺术狂欢',d:'每次开盒再多抽 2 张',o:{cardExtraDraw: 2}},{n:'经费削减',d:'多抽取消，基金池恢复 100%',o:{cardExtraDraw: -2, fundCapSet: 20000}}],
+  metro: [{n:'全线通车',d:'机场路费再 ×0.5',o:{metroAirX: 0.5}},{n:'停运',d:'机场 ×1.1，文印/快递恢复 100%',o:{metroAirX: 1.571, metroUtilX: 0.833}}],
+  scholar: [{n:'大师课',d:'改为每轮随机 1 人技能 +1',o:{scholarEvery: 1}},{n:'讲座取消',d:'技能不再发，每 2 轮全场 +¥300',o:{scholarOff: 1, every: 2, everyAmt: 300}}],
+  market: [{n:'旺季',d:'每 2 轮 +¥500',o:{marketEvery: 2, marketAmt: 500}},{n:'淡季',d:'分红取消，每 3 轮 −¥250',o:{marketOff: 1, every: 3, everyAmt: -250}}],
+  snowville: [{n:'暴雪',d:'恶劣天 +¥900 / 晴热 −¥600',o:{snowUp: 1}},{n:'回暖',d:'天气奖惩取消，每轮 +¥200',o:{snowOff: 1, roundCash: 200}}],
+  veteran: [{n:'校友捐赠',d:'全场各 +¥1500 + 1 张免租卡',o:{onceCash: 1500, giftMedalAll: 1}},{n:'老生毕业',d:'后续福利取消，每 3 轮 −¥400',o:{every: 3, everyAmt: -400}}],
+  freshman: [{n:'扩招',d:'全场各再 +¥1500',o:{onceCash: 1500}},{n:'退学',d:'社团费改为每 2 轮 −¥500',o:{freshmanEvery: 2, freshmanAmt: -500}}],
+  dicegod: [{n:'骰神降临',d:'每轮 2 人被选中',o:{dicegodN: 2}},{n:'骰神沉睡',d:'不再移动，改为每轮随机 1 人 +¥400',o:{dicegodOff: 1, luckyDice: 0, roundCashPick: 400}}],
+  charity: [{n:'共同富裕',d:'每 3 轮转 ¥1800',o:{charityEvery: 3, charityAmt: 1800}},{n:'断供',d:'转账取消，每 5 轮最富 −¥800 进池',o:{charityOff: 1, richPay5: 800}}],
+  professor: [{n:'名师云集',d:'改为每轮免费盖 1 栋',o:{professorEvery: 1}},{n:'名师请假',d:'不再免费盖，建筑费 −20%',o:{professorOff: 1, buildMul: 0.8}}],
+  cram: [{n:'题海',d:'机会卡负面再 −40%',o:{cramUp: 0.4}},{n:'裸考',d:'机会卡恢复原值，正面 ×1.1',o:{cramOff: 1, cardChanceMul: 1.1}}],
+  reunion: [{n:'流水席',d:'每 2 轮请客，每人 +¥500',o:{reunionEvery: 2, reunionAmt: 500}},{n:'AA 制',d:'每 4 轮全场各 −¥400',o:{reunionOff: 1, every: 4, everyAmt: -400}}],
+  observatory: [{n:'流星雨',d:'≥10 点 +¥1200 / ≤4 点 −¥600',o:{obsUp: 1}},{n:'阴天',d:'奖惩取消，每轮 +¥200',o:{obsOff: 1, roundCash: 200}}],
+  green: [{n:'碳中和',d:'建筑费再 ×0.8，工资恢复 ¥2000',o:{buildMul: 0.8, wageSet: 2000}},{n:'污染',d:'建筑费 ×1.05，每轮全场 −¥300',o:{buildMul: 1.05, roundCash: -300}}],
+  gamble: [{n:'豪赌',d:'擂台 ×2.0、运动会 ×1.8',o:{gambleUp: 1}},{n:'封盘',d:'擂台关闭，租金 ×0.95',o:{duelOff: 1, rentMul: 0.95}}],
+  redevelop: [{n:'成片改造',d:'每轮拆 2 栋',o:{demolish: 2}},{n:'文物保护',d:'停止拆迁，租金 ×1.05',o:{redevelopOff: 1, rentMul: 1.05}}],
+  roulette: [{n:'必中红包',d:'轮盘改成全场 +¥600',o:{rouletteAll: 600}},{n:'庄家作弊',d:'轮盘改成全场 −¥500',o:{rouletteAll: -500}}],
+  jackpot: [{n:'超级奖池',d:'奖池翻倍',o:{jackpotX2: 1}},{n:'庄家跑路',d:'奖池清零，改为每 3 轮全场 +¥200',o:{jackpotOff: 1, every: 3, everyAmt: 200}}],
+  blackswan: [{n:'双倍黑天鹅',d:'第 8 轮再来一次',o:{blackswanExtra: 1}},{n:'黑天鹅飞翔',d:'取消黑天鹅，每轮全场 +¥150',o:{blackswanOff: 1, roundCash: 150}}],
+  phantom: [{n:'万籁俱寂',d:'幻影变成 3 块',o:{phantomN: 3}},{n:'幻影消散',d:'取消幻影，每轮全场 +¥150',o:{phantomOff: 1, roundCash: 150}}],
+  inflation: [{n:'恶性通胀',d:'每轮再 +¥300，累积率翻倍',o:{roundCash: 300, inflationX2: 1}},{n:'通缩急转',d:'改为每轮 −1.5% 累积，每轮 −¥150',o:{inflationFlip: 1, roundCash: -150}}],
+  deflation: [{n:'深度通缩',d:'累积率翻倍，工资不再递减',o:{deflationX2: 1, deflationWageLock: 1}},{n:'通缩转胀',d:'改为每轮 +1.5% 累积，每轮 −¥150',o:{deflationFlip: 1, roundCash: -150}}],
+  league: [{n:'周末联赛',d:'每 2 轮打一次，赌注 ¥2200',o:{leagueEvery: 2, leagueStake: 2200}},{n:'联赛停摆',d:'不再强制擂台，每轮全场 +¥200',o:{leagueOff: 1, roundCash: 200}}],
+  bounty: [{n:'悬赏加码',d:'举报奖励 ¥1200、校霸收租 ×1.5',o:{bountyUp: 1}},{n:'悬赏取消',d:'校霸身份取消，每轮全场 +¥150',o:{bountyOff: 1, roundCash: 150}}],
+  chain: [{n:'超级连锁',d:'垄断 ×1.6',o:{chainUp: 1.6}},{n:'连锁断裂',d:'垄断加成取消，散地不再打折',o:{chainOff: 1}}],
+  credit: [{n:'信用升级',d:'上限 ¥8000，还款降到 5%',o:{creditLimit: 8000, creditRepay: 0.05}},{n:'抽贷',d:'上限 ¥2000，且立即收回一半欠款',o:{creditLimit: 2000, creditCall: 0.5}}],
+  shopping: [{n:'超级大促',d:'每 2 轮一次大促',o:{shoppingEvery: 2}},{n:'促销结束',d:'大促取消，每轮全场 +¥150',o:{shoppingOff: 1, roundCash: 150}}],
+  mimic: [{n:'青出于蓝',d:'模仿强度 70% → 100%',o:{mimicStrength: 1.0}},{n:'拙劣模仿',d:'模仿全部取消，改为每轮全场 +¥150',o:{mimicOff: 1, roundCash: 150}}],
+  weatherlab: [{n:'风调雨顺',d:'恶劣天气补贴 ×2，且无烈日惩罚',o:{weatherlabUp: 1}},{n:'天灾频发',d:'天气循环不变，每轮额外全场 −¥250',o:{weatherlabDown: 1, roundCash: -250}}],
+  mutant: [{n:'加速变异',d:'每 2 轮换一次城邦',o:{mutantEvery: 2}},{n:'基因稳定',d:'不再更换城邦，每轮全场 +¥200',o:{mutantOff: 1, roundCash: 200}}],
+};
+
+const FACULTY_VOTE_MS = 60000;   // 开局/换届风貌投票时长（v5.12 由 40s 拉长到 60s：74 个城邦的说明更厚，看清楚再投）
 const FACULTY_MAX_RARE = 0;      // 本版无稀有风貌（原「变数校区」已按要求删去）
 
 // ---------- v5.7：海克斯 · 研究项目（校级=银 / 省级=金 / 国家级=棱彩） ----------
@@ -861,7 +982,20 @@ class Room {
     this.facultyVotes = {};       // pid -> key
     this.facultyLucky = null;     // 被抽中的玩家 id（他的选择成为本局风貌）
     this.freeRounds = [];         // v7.0：「免费轮」抽中的轮次（2 个，这些轮次全场买地、盖楼免费）
-    this.freeRentRounds = [];     // 「免租轮」抽中的 5 个轮次（这些轮次全场免交租金）
+    this.freeRentRounds = [];     // 「免租轮」抽中的轮次（这些轮次全场免交租金；v7.2 由 5 → 4）
+    // ---------- v7.3：新城邦 / 中期突变状态 ----------
+    this.prevFaculty = null;      // 上一届风貌 key（模仿校区 / 换届播报用）
+    this.mimicKey = null;         // 模仿校区复制的上一届 key
+    this.mutation = null;         // {kind:'general'|'buff'|'nerf', id, name, desc, ops}
+    this.mutRoll = null;          // 本届突变三选一的路径与候选（供大屏动画）
+    this.bountyPid = null;        // 悬赏校区：校霸（固定为总资产最高者）
+    this.jackpotPool = 0;         // 大乐透奖池
+    this.phantomCells = [];       // 幻影校区：本轮幻影化的地块
+    this.rouletteIdx = null;      // 轮盘校区：本轮命中的格子
+    this.rouletteRentMul = 1;     // 轮盘「房东市场」本轮租金乘数
+    this.shoppingRound = 0;       // 购物节：大促轮
+    this.creditUsed = 0;          // 借贷校区：本届已借额度
+
     // ---------- v5.7：海克斯 · 研究项目 ----------
     // 由服务端显式开启（new Room(code, {hex:true})）；未开启时整套机制不触发，
     // 既有测试 / simulate 行为与 v5.6 完全一致。
@@ -976,6 +1110,13 @@ class Room {
   // v7.0：手牌（手动发动 / 响应型效果卡）
   addHandCard(p, id) {
     if (!p.hand) p.hand = [];
+    // v7.3：手牌上限 6 张 —— 满了就不再获得新的手动 / 响应型效果卡
+    if (p.hand.length >= HAND_CAP) {
+      const cn = (EFFECT_CARDS.find(c => c.id === id) || {}).name || id;
+      this.addLog(`📦 ${p.name} 的手牌已满（${HAND_CAP}/${HAND_CAP}），【${cn}】被退回了`);
+      this.ev({ t: 'hand_full', pid: p.id, card: id, name: cn, cap: HAND_CAP });
+      return null;
+    }
     p.handSeq = (p.handSeq || 0) + 1;
     p.hand.push({ uid: p.handSeq, id });
     return p.hand[p.hand.length - 1];
@@ -1072,14 +1213,16 @@ class Room {
   // v5.1：效果卡抽取（校园商城 / 校庆礼品屋共用）；v7.0：按品级权重抽取
   grantCards(p, idx, n, label, opts) {
     const o = opts || {};
-    const drawn = drawEffectCards(n, o.exclude, o.minRare);   // v7.2：minRare = 最低品级下限（如 'SR' / 'R'）
+    const extra = this.mut().cardExtraDraw || 0;   // v7.3 突变：开盒多抽 / 少抽
+    const nReal = Math.max(1, n + extra);
+    const drawn = drawEffectCards(nReal, o.exclude, o.minRare);   // v7.2：minRare = 最低品级下限（如 'SR' / 'R'）
     for (const card of drawn) this.applyEffectCard(p, card);
     if (!o.silent) {
       const names = drawn.map(c => `${c.icon}${c.name}${c.rare ? '·' + c.rare : ''}`).join('、');
-      this.addLog(`🎁 ${p.name} 在${label}抽到 ${n} 张效果卡：${names}`);
-      this.ev({ t: 'draw', pid: p.id, cell: idx, n, label, cards: drawn.map(c => ({ id: c.id, name: c.name, icon: c.icon, desc: c.desc, rare: c.rare })) });
+      this.addLog(`🎁 ${p.name} 在${label}抽到 ${nReal} 张效果卡：${names}`);
+      this.ev({ t: 'draw', pid: p.id, cell: idx, n: nReal, label, cards: drawn.map(c => ({ id: c.id, name: c.name, icon: c.icon, desc: c.desc, rare: c.rare })) });
     } else {
-      this.addLog(`🎁 ${p.name} 在${label}抽到 ${n} 张效果卡：${drawn.map(c => `${c.icon}${c.name}`).join('、')}`);
+      this.addLog(`🎁 ${p.name} 在${label}抽到 ${nReal} 张效果卡：${drawn.map(c => `${c.icon}${c.name}`).join('、')}`);
     }
     return drawn;
   }
@@ -1178,6 +1321,7 @@ class Room {
     while (opts.length < 3 && pool.length) opts.push(pool.splice(Math.floor(Math.random() * pool.length), 1)[0]);
     this.facultyOptions = opts;
     this.facultyVotes = {};
+    if (this.faculty) this.prevFaculty = this.faculty;   // v7.3：记住上一届城邦（供「模仿校区」复制）
     this.faculty = null; this.facultyLucky = null;
     this.freeRounds = []; this.freeRentRounds = [];   // 清掉上一届的免费轮 / 免租轮
     this.phase = 'faculty';
@@ -1280,14 +1424,143 @@ class Room {
       if (items.length) this.ev({ t: 'faculty_wave', icon: '🍼', name: '迎新红包', gain: true, items, total: 2400 * items.length });
       this.addLog('🍼 【新生校区】迎新红包到账：全体 +¥2400');
     }
+    // ================= v7.3：新城邦的一次性结算 =================
+    if (key === 'mimic') {
+      this.mimicKey = this.prevFaculty || null;
+      if (this.mimicKey) {
+        const mf = FACULTY[this.mimicKey];
+        this.addLog(`🦜 【模仿校区】本届复制上一届【${mf.name}】的效果（强度 70%）`);
+        this.ev({ t: 'faculty_round', kind: 'mimic', round: this.round, title: '模仿校区 · 复制上届', sub: `复制上一届【${mf.name}】的效果（强度 70%）`, mimic: this.mimicKey, icon: '🦜' });
+      } else {
+        this.addLog('🦜 【模仿校区】上一届没有城邦可复制（首次换届），本届暂无效');
+        this.ev({ t: 'faculty_round', kind: 'mimic', round: this.round, title: '模仿校区', sub: '没有上一届可复制，本届暂时只是个普通校区', icon: '🦜' });
+      }
+    }
+    if (key === 'jackpot') { this.jackpotPool = 0; this.addLog('🎰 【大乐透校区】奖池初始化：每轮全场各扣 ¥100 注入奖池，本届最后一轮 1 人独吞全部奖池！'); }
+    if (key === 'bounty') {
+      const list = this.alive(); let rich = null;
+      for (const q of list) if (!rich || this.netWorth(q) > this.netWorth(rich)) rich = q;
+      this.bountyPid = rich ? rich.id : null;
+      if (rich) { this.addLog(`🎯 【悬赏校区】总资产最高者 ${rich.name} 当选「校霸」：收租 ×1.2（被收租时 ×1.4）`); this.ev({ t: 'facfx', pid: rich.id, kind: 'bounty', name: '悬赏校区', detail: '当选校霸（收租 ×1.2）' }); }
+    }
+    if (key === 'credit') { this.creditUsed = 0; for (const q of this.players) { q.loanBorrowed = 0; q.loanOutstanding = 0; } this.addLog('💳 【借贷校区】本届内可向银行低息借款（累计上限 ¥5000），每轮自动还 10%（无利息）'); }
+    if (key === 'roulette') { this.rouletteRentMul = 1; this.addLog('🌀 【轮盘校区】每轮开场全场一起转一次 8 格轮盘——人人命中同一格'); }
+    if (key === 'phantom') { this.phantomCells = []; this.addLog('🕳️ 【幻影校区】每轮随机 1 块产业幻影化：本轮踩到它不用付租金'); }
+    if (key === 'weatherlab') { this.addLog('🌪️ 【天气工厂校区】天气改为按轮次强制循环：晴 → 雨 → 雾 → 雪 → 台风 → 烈日'); }
+    if (key === 'mutant') { this.addLog('🧬 【变异体校区】本届每 3 轮随机更换一次城邦（效果 100%）——系好安全带！'); }
+    if (key === 'inflation') { this.addLog('📈 【通胀校区】每轮全场 +¥300，地价与租金每轮累积 +1.5%；本届结束全场现金 −10%'); }
+    if (key === 'deflation') { this.addLog('📉 【通缩校区】地价与租金每轮累积 −1.5%；过起点工资每轮 −¥100，且每 3 轮全场现金 −5%'); }
+    if (key === 'league') { this.addLog('🥊 【联赛校区】每 3 轮强制全场两两配对打一次擂台（赌注 ¥1500，赢者翻倍）'); }
+    if (key === 'shopping') { this.shoppingRound = 0; this.addLog('🛒 【购物节校区】每 4 轮「全场大促」：买地 7 折、盖楼 7 折'); }
+    if (key === 'blackswan') { this.addLog(`🦢 【黑天鹅校区】第 ${(this.facTermStart || 1) + 5} 轮财富一夜重排：随机一半玩家各 −¥1500、另一半各 +¥1000`); }
+  }
+  // v7.3：突变判定辅助
+  mutNerfOf(k) { return !!(this.mutation && this.mutation.kind === 'nerf' && this.mutation.facId === k); }
+  mutBuffOf(k) { return !!(this.mutation && this.mutation.kind === 'buff' && this.mutation.facId === k); }
+  // v7.3：每届第 5 轮的中期突变 —— 通用池 / 专属强化 / 专属反转 三路等概率
+  maybeMutation() {
+    if (this.mutation) return;
+    const start = this.facTermStart || 1;
+    if (this.round !== start + 4) return;
+    if (this.alive().length < 2) return;
+    const sp = MUT_SPECIAL[this.faculty] || null;
+    let path = Math.floor(Math.random() * 3);
+    if (!sp && path !== 0) path = 0;
+    let m = null;
+    if (path === 0) { const g = pick(MUT_GENERAL); m = { kind: 'general', facId: null, id: g.id, name: g.n, desc: g.d, ops: g.o }; }
+    else { const s2 = sp[path - 1]; m = { kind: path === 1 ? 'buff' : 'nerf', facId: this.faculty, id: this.faculty + (path === 1 ? '_B' : '_N'), name: s2.n, desc: s2.d, ops: s2.o }; }
+    this.mutation = m;
+    const f = FACULTY[this.faculty] || { name: '无' };
+    this.mutRoll = {
+      round: this.round, path, kind: m.kind, name: m.name, desc: m.desc, faculty: this.faculty, facName: f.name,
+      options: [
+        { path: 0, kind: 'general', label: '通用池', sub: '世界级随机事件', icon: '🌀' },
+        { path: 1, kind: 'buff', label: '专属强化', sub: f.name + ' · 强化', icon: '⬆️' },
+        { path: 2, kind: 'nerf', label: '专属反转', sub: f.name + ' · 反转', icon: '⬇️' },
+      ],
+    };
+    const tag = m.kind === 'general' ? '通用池' : (m.kind === 'buff' ? '专属强化' : '专属反转');
+    this.addLog(`🌀 【中期突变】第 ${this.round} 轮突变降临 —— ${tag}：${m.name}（${m.desc}）`);
+    this.ev({ t: 'mutation', round: this.round, path, kind: m.kind, name: m.name, desc: m.desc, facName: f.name, options: this.mutRoll.options });
+    this.applyMutationInstant(m);
+  }
+  // 突变中「立刻生效一次」的部分
+  applyMutationInstant(m) {
+    const o = m.ops || {};
+    const alive = this.alive();
+    if (o.onceCash) {
+      const items = [];
+      for (const q of alive) { q.cash += o.onceCash; items.push({ pid: q.id, amount: o.onceCash }); }
+      if (items.length) this.ev({ t: 'faculty_wave', icon: '🌀', name: '突变·' + m.name, gain: o.onceCash > 0, items, total: Math.abs(o.onceCash) * items.length });
+      this.addLog(`🌀 【突变·${m.name}】全场 ${o.onceCash > 0 ? '+' : '−'}¥${Math.abs(o.onceCash)}`);
+    }
+    if (o.giftMedalAll) {
+      for (const q of alive) { q.medal = (q.medal || 0) + o.giftMedalAll; this.ev({ t: 'medalGain', pid: q.id, n: q.medal }); }
+      this.addLog(`🌀 【突变·${m.name}】全场各领 ${o.giftMedalAll} 张免租金卡`);
+    }
+    if (o.skillBonus) {
+      for (const q of this.players) q.skillLeft = Math.max(0, (q.skillLeft || 0) + o.skillBonus);
+      this.addLog(`🌀 【突变·${m.name}】全员专业技能次数 ${o.skillBonus > 0 ? '+' : ''}${o.skillBonus}`);
+    }
+    if (o.freeRentAdd) {
+      const pool = []; for (let r0 = this.round + 1; r0 < (this.facTermStart || 1) + 10; r0++) if (this.freeRentRounds.indexOf(r0) < 0) pool.push(r0);
+      const got = [];
+      while (got.length < o.freeRentAdd && pool.length) got.push(pool.splice(Math.floor(Math.random() * pool.length), 1)[0]);
+      this.freeRentRounds = this.freeRentRounds.concat(got).sort((a, b) => a - b);
+      if (got.length) { this.addLog(`🌀 【突变·${m.name}】新增免租轮：第 ${got.join(' / ')} 轮`); this.ev({ t: 'faculty_draw', kind: 'freeRent', rounds: this.freeRentRounds.slice() }); }
+    }
+    if (o.freeRentVoid) { this.freeRentRounds = this.freeRentRounds.filter(x => x < this.round); this.addLog(`🌀 【突变·${m.name}】剩余免租轮全部作废`); }
+    if (o.freeRoundAdd) {
+      const pool = []; for (let r0 = this.round + 1; r0 < (this.facTermStart || 1) + 10; r0++) if (this.freeRounds.indexOf(r0) < 0) pool.push(r0);
+      const got = [];
+      while (got.length < o.freeRoundAdd && pool.length) got.push(pool.splice(Math.floor(Math.random() * pool.length), 1)[0]);
+      this.freeRounds = this.freeRounds.concat(got).sort((a, b) => a - b);
+      if (got.length) { this.addLog(`🌀 【突变·${m.name}】新增免费轮：第 ${got.join(' / ')} 轮`); this.ev({ t: 'faculty_draw', kind: 'freeRound', rounds: this.freeRounds.slice() }); }
+    }
+    if (o.freeRoundVoid) { this.freeRounds = this.freeRounds.filter(x => x < this.round); this.addLog(`🌀 【突变·${m.name}】剩余免费轮全部作废`); }
+    if (o.creditCall) {
+      for (const q of this.players) {
+        if (q.loanOutstanding > 0) { const call = Math.floor(q.loanOutstanding * o.creditCall); q.loanOutstanding -= call; const pay = Math.min(q.cash, call); q.cash -= pay; this.addLog(`🌀 【突变·${m.name}】银行抽贷：${q.name} 立即还 ¥${pay}（剩余欠款 ¥${q.loanOutstanding}）`); }
+      }
+    }
+    if (o.shuffleNow) this.mutShuffleCash(!!o.shuffleProp);
+  }
+  // 突变：立刻洗一次现金（可含地产）
+  mutShuffleCash(propToo) {
+    const list = this.alive();
+    if (list.length < 2) return;
+    const before = list.map(q => q.cash);
+    const perm = list.map((_, i) => i);
+    for (let i = perm.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); const t = perm[i]; perm[i] = perm[j]; perm[j] = t; }
+    list.forEach((q, i) => { q.cash = before[perm[i]]; this.ev({ t: 'facfx', pid: q.id, kind: 'mutation', name: '突变·洗牌', detail: `现金变为 ¥${q.cash}` }); });
+    if (propToo) {
+      const props = []; list.forEach(q => this.propCells(q).forEach(i => props.push(i)));
+      const owners = props.map(i => list.findIndex(q => q.id === this.cells[i].own)).filter(x => x >= 0);
+      if (props.length >= 2) {
+        const o2 = owners.slice();
+        for (let i = o2.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); const t = o2[i]; o2[i] = o2[j]; o2[j] = t; }
+        props.forEach((ci, i) => { if (owners[i] >= 0) this.cells[ci].own = list[o2[i]].id; });
+      }
+    }
+    this.addLog(`🌀 【突变·洗牌】全场现金随机互换${propToo ? '（地产也一起洗了）' : ''}`);
+    this.ev({ t: 'faculty_round', kind: 'shuffle', round: this.round, title: '突变 · 洗牌', sub: '所有人的现金被完全打乱', shuffle: true, icon: '🌀' });
   }
   facIs(k) { return this.faculty === k; }
   // v7.2：城邦当选时的字段清理（医学校区「急救」每届限一次）
   resetFacultyFlags() {
     for (const q of this.players) { q.medRescued = false; q.bookChance = 0; }
+    // ---------- v7.3：新城邦 / 突变的届次字段清理 ----------
+    this.mutation = null; this.mutRoll = null;
+    this.bountyPid = null;
+    this.jackpotPool = 0;
+    this.phantomCells = [];
+    this.rouletteIdx = null; this.rouletteRentMul = 1;
+    this.shoppingRound = 0;
+    this.creditUsed = 0;
+    for (const q of this.players) { q.loanBorrowed = 0; q.loanOutstanding = 0; }
   }
-  isFreeRound() { return this.facIs('freeRound') && this.freeRounds.includes(this.round); }
-  isFreeRentRound() { return this.facIs('freeRent') && this.freeRentRounds.includes(this.round); }
+  isFreeRound() { return this.facIs('freeRound') && this.freeRounds.includes(this.round) && !this.mut().freeRoundVoid; }
+  isFreeRentRound() { return this.facIs('freeRent') && this.freeRentRounds.includes(this.round) && !this.mut().freeRentVoid; }
 
   // ---------- v5.7：海克斯 · 研究项目（第 2 / 10 / 20 轮全体三选一） ----------
   hexFx(p, key, detail) { this.ev({ t: 'hexfx', pid: p.id, key, detail }); }
@@ -1744,6 +2017,21 @@ class Room {
   applyFacultyRound() {
     if (!this.faculty) return;
     const r = this.round;
+    // ---------- v7.3 变异体校区：每 3 轮随机更换一次城邦（效果 100%） ----------
+    if (this.facIs('mutant') && !this.mut().mutantOff) {
+      const every = this.mut().mutantEvery || 3;
+      const n0 = r - (this.facTermStart || 1);
+      if (n0 > 0 && n0 % every === 0) {
+        const pool = FACULTY_KEYS.filter(k => k !== 'mutant' && k !== this.faculty && !FACULTY[k].terms);
+        if (pool.length) {
+          const nk = pick(pool);
+          this.faculty = nk; this.mimicKey = null;
+          const nf = FACULTY[nk];
+          this.addLog(`🧬 【变异体校区】基因突变！城邦更换为【${nf.name}】：${nf.lead}`);
+          this.ev({ t: 'faculty_mutate', key: nk, name: nf.name, icon: nf.icon, color: nf.color, round: r });
+        }
+      }
+    }
     // 免费轮 / 免租轮：本轮开场就把整屏提醒打出来，让所有人提前知道
     if (this.isFreeRound()) {
       this.addLog(`🎟️ 【免费轮校区】第 ${r} 轮 —— 全场买地皮、盖楼完全免费！（本局还剩 ${this.freeRounds.filter(x => x >= r).length} 轮）`);
@@ -1764,7 +2052,7 @@ class Room {
       }
     }
     // 金融：银行每轮向教育基金池自动注资
-    if (this.facIs('finance')) {
+    if (this.facIs('finance') && this.mut().poolInject !== -1) {
       this.addToFund(800);
       this.addLog(`🏦 【金融校区】银行向教育基金池自动注资 ¥800`);
     }
@@ -1793,7 +2081,8 @@ class Room {
       }
     }
     // 师范：每过 10 轮全场各得 1 张「免停留卡」
-    if (this.facIs('normal') && r % 8 === 0) {
+    const nmv = this.mut();
+    if (this.facIs('normal') && !nmv.stayCardOff && r % (nmv.stayCardEvery || 8) === 0) {
       for (const q of this.alive()) { q.stayFree = (q.stayFree || 0) + 1; this.ev({ t: 'stay_free_gain', pid: q.id, count: q.stayFree }); }
       this.addLog(`🎯 【师范校区】第 ${r} 轮福利：全场各领 1 张「免停留卡」`);
     }
@@ -1813,7 +2102,7 @@ class Room {
       if (items.length) this.ev({ t: 'faculty_wave', icon, name, gain: false, items, total: -items.reduce((s, x) => s + x.amount, 0) });
     };
     if (this.facIs('lantern')) {
-      wave('🏮', '灯会补贴', () => 300);   // v7.2 灯会校区（温和）：220 → 300
+      wave('🏮', '灯会补贴', () => (this.mutNerfOf('lantern') ? 150 : 300));   // v7.2 灯会校区（温和）：220 → 300
       if (r % 5 === 0) {   // v7.2：每 5 轮抽一名「灯王」独得 ¥1500
         const king = pick(this.alive());
         if (king) {
@@ -1824,16 +2113,19 @@ class Room {
         }
       }
     }
-    if (this.facIs('cafe') && r % 2 === 0) wave('☕', '咖啡补贴', () => 300);   // v7.2 咖啡校区（温和）：每 3 轮 ¥400 → 每 2 轮 ¥300
-    if (this.facIs('market') && r % 3 === 0) wave('🧺', '摊位分红', () => 400);   // v7.2 市集校区（温和）：每 4 轮 ¥350 → 每 3 轮 ¥400
-    if (this.facIs('midterm') && r % 5 === 0) {
+    const cfm = this.mut();
+    if (this.facIs('cafe') && !cfm.cafeOff && r % (cfm.cafeEvery || 2) === 0) wave('☕', '咖啡补贴', () => 300);   // v7.2 咖啡校区（温和）：每 3 轮 ¥400 → 每 2 轮 ¥300
+    const mkm = this.mut();
+    if (this.facIs('market') && !mkm.marketOff && r % (mkm.marketEvery || 3) === 0) wave('🧺', '摊位分红', () => (mkm.marketAmt || 400));   // v7.2 市集校区（温和）：每 4 轮 ¥350 → 每 3 轮 ¥400
+    if (this.facIs('midterm') && r % 5 === 0 && !this.mut().midtermVoid) {
       waveOut('📝', '期中周·助学捐款', () => 520);
       this.addLog(`📝 【期中周校区】全场各缴 ¥520 助学捐款（进教育基金池）`);
     }
-    if (this.facIs('lottery') && r % 3 === 0 && this.alive().length >= 2) {
+    const ltm = this.mut();
+    if (this.facIs('lottery') && !ltm.lotteryOff && r % (ltm.lotteryEvery || 3) === 0 && this.alive().length >= 2) {
       const win = pick(this.alive());
       const dbl = Math.random() < 0.10;                       // v7.2 抽奖校区（温和）：10% 概率头奖翻倍
-      const prize = dbl ? 4800 : 2400;
+      const prize = (ltm.lotteryAmt || 2400) * (dbl ? 2 : 1);
       win.cash += prize;
       this.ev({ t: 'money', pid: win.id, amount: prize, reason: '抽奖校区·独中头奖' });
       this.ev({ t: 'facfx', pid: win.id, kind: 'lottery', name: '抽奖校区', detail: dbl ? '头奖翻倍！独中 ¥4800！' : '独中 ¥2400！' });
@@ -1841,7 +2133,8 @@ class Room {
       for (const q of this.alive()) if (q !== win) { const pay = Math.min(q.cash, 200); q.cash -= pay; items.push({ pid: q.id, amount: -pay }); this.ev({ t: 'paid', pid: q.id, amount: pay, creditor: null, toPool: true }); this.addToFund(pay); }
       this.addLog(`🎰 【抽奖校区】${win.name} 独中 ¥${prize}${dbl ? '（头奖翻倍！）' : ''}！其余玩家各付 ¥200 参与费`);
     }
-    if (this.facIs('oldbook') && r % 3 === 0) wave('📦', '旧书集摆摊收益', q => Math.min(4000, this.propCells(q).length * 180));
+    const obm = this.mut();
+    if (this.facIs('oldbook') && !obm.oldbookOff && r % 3 === 0) wave('📦', '旧书集摆摊收益', q => Math.round(Math.min(4000, this.propCells(q).length * 180) * (obm.oldbookMul || 1)));
     // v7.2 自习校区（激进）：每轮现金最多者额外缴 ¥400 自习费
     if (this.facIs('silent') && this.alive().length >= 2) {
       const rich = this.alive().slice().sort((a, b) => b.cash - a.cash)[0];
@@ -1854,17 +2147,28 @@ class Room {
       }
     }
     if (this.facIs('nightowl')) {
+      const nwm = this.mut();
       const list = this.alive().slice().sort((a, b) => a.cash - b.cash);
       if (list.length >= 2) {
         const poor = list[0], rich = list[list.length - 1];
-        poor.cash += 1500;
-        this.ev({ t: 'money', pid: poor.id, amount: 1500, reason: '夜猫校区·熬夜补贴' });
-        this.ev({ t: 'facfx', pid: poor.id, kind: 'nightowl', name: '夜猫校区', detail: `熬夜补贴 +¥1500` });
-        const pay = Math.min(rich.cash, 800);
-        if (pay > 0) { rich.cash -= pay; this.addToFund(pay); this.ev({ t: 'facfx', pid: rich.id, kind: 'nightowl', name: '夜猫校区', detail: `夜宵钱 −¥${pay}` }); this.ev({ t: 'paid', pid: rich.id, amount: pay, creditor: null, toPool: true }); }
+        if (nwm.nightowlFlip) {
+          // v7.3 突变·早睡早起：改为最富 +¥600 / 最穷 −¥300
+          rich.cash += 600;
+          this.ev({ t: 'money', pid: rich.id, amount: 600, reason: '突变·早睡早起' });
+          const pay = Math.min(poor.cash, 300);
+          if (pay > 0) { poor.cash -= pay; this.addToFund(pay); this.ev({ t: 'paid', pid: poor.id, amount: pay, creditor: null, toPool: true }); }
+          this.addLog(`🌙 【夜猫校区·突变】作息颠倒：${rich.name} +¥600，${poor.name} −¥300`);
+        } else {
+          const up = nwm.nightowlUp ? 1800 : 1500, dn = nwm.nightowlUp ? 900 : 800;
+          poor.cash += up;
+          this.ev({ t: 'money', pid: poor.id, amount: up, reason: '夜猫校区·熬夜补贴' });
+          this.ev({ t: 'facfx', pid: poor.id, kind: 'nightowl', name: '夜猫校区', detail: `熬夜补贴 +¥${up}` });
+          const pay = Math.min(rich.cash, dn);
+          if (pay > 0) { rich.cash -= pay; this.addToFund(pay); this.ev({ t: 'facfx', pid: rich.id, kind: 'nightowl', name: '夜猫校区', detail: `夜宵钱 −¥${pay}` }); this.ev({ t: 'paid', pid: rich.id, amount: pay, creditor: null, toPool: true }); }
+        }
       }
     }
-    if (this.facIs('shuffle') && r % 4 === 0) {   // v7.2 洗牌校区（温和）：每 6 轮 → 每 4 轮
+    if (this.facIs('shuffle') && r % 4 === 0 && !this.mut().shuffleOff) {   // v7.2 洗牌校区（温和）：每 6 轮 → 每 4 轮
       // v6.0：改为「所有玩家随机互换现金」——每人被随机指派一个对象（可能是自己），直接对调现金
       const list = this.alive();
       if (list.length >= 2) {
@@ -1884,16 +2188,17 @@ class Room {
         this.ev({ t: 'faculty_round', kind: 'shuffle', round: r, title: '洗牌校区 · 现金互换', sub: '第 6 轮结算：所有人随机互换了一次现金', shuffle: true });
       }
     }
-    if (this.facIs('gala') && r % 3 === 0) {   // v7.2 校友日校区：每 5 轮 ¥1400 → 每 3 轮 ¥1200
+    if (this.facIs('gala') && r % 3 === 0 && !this.mut().galaOff) {   // v7.2 校友日校区：每 5 轮 ¥1400 → 每 3 轮 ¥1200
       const list = this.alive();
       if (list.length) {
         let rich = list[0];
         for (const q of list) if (this.netWorth(q) > this.netWorth(rich)) rich = q;
-        const pay = Math.min(rich.cash, 1200);
+        const pay = Math.min(rich.cash, this.mut().galaAmt || 1200);
         if (pay > 0) { rich.cash -= pay; this.addToFund(pay); this.addLog(`🎗️ 【校友日校区】${rich.name} 捐款 ¥${pay}（进教育基金池）`); this.ev({ t: 'facfx', pid: rich.id, kind: 'gala', name: '校友日校区', detail: `校友捐款 −¥${pay}` }); this.ev({ t: 'paid', pid: rich.id, amount: pay, creditor: null, toPool: true }); }
       }
     }
-    if (this.facIs('scholar') && r % 2 === 0 && this.alive().length >= 2) {
+    const scm = this.mut();
+    if (this.facIs('scholar') && !scm.scholarOff && r % (scm.scholarEvery || 2) === 0 && this.alive().length >= 2) {
       const t = pick(this.alive());
       t.skillLeft = (t.skillLeft || 0) + 1;
       t.cash += 300;   // v7.2 讲座校区（温和）：本人再得 ¥300
@@ -1905,39 +2210,55 @@ class Room {
         if (pay > 0) { q.cash -= pay; q.combo = 0; this.addToFund(pay); this.ev({ t: 'paid', pid: q.id, amount: pay, creditor: null, toPool: true }); this.ev({ t: 'facfx', pid: q.id, kind: 'scholar', name: '讲座校区', detail: `讲座门票 −¥${pay}` }); }
       }
     }
-    if (this.facIs('snowville')) {
-      if (['rain', 'fog', 'snow', 'storm'].includes(this.weather)) wave('❄️', '恶劣天气补贴', () => (this.weather === 'storm' ? 1000 : 500));   // v7.2 冰雪校区（温和）：400 → 500，台风天翻倍至 1000
+    if (this.facIs('snowville') && !this.mut().snowOff) {
+      const svu = this.mut().snowUp;
+      if (['rain', 'fog', 'snow', 'storm'].includes(this.weather)) wave('❄️', '恶劣天气补贴', () => (svu ? 900 : (this.weather === 'storm' ? 1000 : 500)));   // v7.2 冰雪校区（温和）：400 → 500，台风天翻倍至 1000
       else if (['sun', 'heat'].includes(this.weather)) {
-        waveOut('☀️', '冰雪校区·避暑费', () => 350);
-        this.addLog('☀️ 【冰雪校区】艳阳天实在受不了，全场各付 ¥350 避暑费');
+        const pay = svu ? 600 : 350;
+        waveOut('☀️', '冰雪校区·避暑费', () => pay);
+        this.addLog(`☀️ 【冰雪校区】艳阳天实在受不了，全场各付 ¥${pay} 避暑费`);
       }
     }
-    if (this.facIs('freshman') && r > 10 && r % 3 === 0) {
+    const frm = this.mut();
+    if (this.facIs('freshman') && frm.freshmanEvery) {
+      if (r % frm.freshmanEvery === 0) { waveOut('🍼', '新生校区·退学费', () => Math.abs(frm.freshmanAmt || 500)); this.addLog(`🍼 【新生校区·突变】每 ${frm.freshmanEvery} 轮全场各缴 ¥${Math.abs(frm.freshmanAmt || 500)}`); }
+    } else if (this.facIs('freshman') && r > 10 && r % 3 === 0) {
       waveOut('🍼', '新生校区·社团费', () => 350);
       this.addLog(`🍼 【新生校区】社团费到缴：全场各缴 ¥350`);
     }
-    if (this.facIs('dicegod')) {
-      const t = pick(this.alive());
-      // v7.2 骰神校区（温和）：由「必定 +3 步」改为 +3 步 / −2 步 各 50%
-      const good = Math.random() < 0.5;
-      t.stepBuffs = (t.stepBuffs || []).concat([good ? 3 : -2]);
-      const pay = Math.min(t.cash, 420);
-      if (pay > 0) t.cash -= pay;
-      this.addLog(`🎲 【骰神校区】${t.name} 被骰神摸了头：下次移动 ${good ? '+3' : '−2'} 步${pay ? `（车马费 ¥${pay}）` : ''}`);
-      this.ev({ t: 'facfx', pid: t.id, kind: 'dicegod', name: '骰神校区', detail: `下次移动 ${good ? '+3' : '−2'} 步` });
+    if (this.facIs('dicegod') && !this.mut().dicegodOff) {
+      const dn2 = this.mut().dicegodN || 1;
+      for (let di = 0; di < dn2; di++) {
+        const t = pick(this.alive());
+        if (!t) break;
+        // v7.2 骰神校区（温和）：由「必定 +3 步」改为 +3 步 / −2 步 各 50%
+        const good = Math.random() < 0.5;
+        t.stepBuffs = (t.stepBuffs || []).concat([good ? 3 : -2]);
+        const pay = Math.min(t.cash, 420);
+        if (pay > 0) t.cash -= pay;
+        this.addLog(`🎲 【骰神校区】${t.name} 被骰神摸了头：下次移动 ${good ? '+3' : '−2'} 步${pay ? `（车马费 ¥${pay}）` : ''}`);
+        this.ev({ t: 'facfx', pid: t.id, kind: 'dicegod', name: '骰神校区', detail: `下次移动 ${good ? '+3' : '−2'} 步` });
+      }
     }
-    if (this.facIs('charity') && r % 5 === 0) {
+    const chm = this.mut();
+    if (this.facIs('charity') && r % (chm.charityEvery || 5) === 0 && !chm.charityOff) {
       const list = this.alive().slice().sort((a, b) => this.netWorth(b) - this.netWorth(a));
       if (list.length >= 2) {
         const rich = list[0], poor = list[list.length - 1];
-        const pay = Math.min(rich.cash, 1800);   // v7.2 公益校区（激进）：1100 → 1800
+        const pay = Math.min(rich.cash, chm.charityAmt || 1800);   // v7.2 公益校区（激进）：1100 → 1800
         if (pay > 0) { rich.cash -= pay; poor.cash += pay; this.addLog(`🤲 【公益校区】${rich.name} 向 ${poor.name} 转账 ¥${pay}`); this.ev({ t: 'facfx', pid: rich.id, kind: 'charity', name: '公益校区', detail: `向 ${poor.name} 转出 ¥${pay}` }); this.ev({ t: 'money', pid: poor.id, amount: pay, reason: '公益校区·先富带后富' }); }
         // v7.2 公益校区（激进）：最富者再向基金池缴 ¥600
         const extra = Math.min(rich.cash, 600);
         if (extra > 0) { rich.cash -= extra; rich.combo = 0; this.addToFund(extra); this.ev({ t: 'paid', pid: rich.id, amount: extra, creditor: null, toPool: true }); this.addLog(`🤲 【公益校区】${rich.name} 另向教育基金池缴 ¥${extra}`); }
       }
     }
-    if (this.facIs('professor') && r % 2 === 0) {
+    if (this.facIs('charity') && chm.charityOff && chm.richPay5 && r % 5 === 0) {
+      const list = this.alive().slice().sort((a, b) => this.netWorth(b) - this.netWorth(a));
+      const rich = list[0];
+      if (rich) { const pay = Math.min(rich.cash, chm.richPay5); if (pay > 0) { rich.cash -= pay; rich.combo = 0; this.addToFund(pay); this.ev({ t: 'paid', pid: rich.id, amount: pay, creditor: null, toPool: true }); this.addLog(`🤲 【公益校区·突变】${rich.name} 被断供，向基金池缴 ¥${pay}`); } }
+    }
+    const prm = this.mut();
+    if (this.facIs('professor') && !prm.professorOff && r % (prm.professorEvery || 2) === 0) {
       const cand = this.aliveList().filter(q => this.propCells(q).some(i => this.cells[i].level < 4));
       if (cand.length) {
         const t = pick(cand);
@@ -1948,7 +2269,7 @@ class Room {
       }
     }
     // v6.0 拆迁校区：每 3 轮随机拆掉场上的一栋楼（旅馆按 4 层算，拆一级就是 4→3）
-    if (this.facIs('redevelop') && r % 2 === 0) {
+    if (this.facIs('redevelop') && r % 2 === 0 && !this.mut().redevelopOff) {
       const cand = [];
       this.cells.forEach((cs, i) => { if (cs.own !== null && !cs.mortgaged && BOARD[i].type === 'prop' && cs.level > 0) cand.push(i); });
       if (cand.length) {
@@ -1963,19 +2284,245 @@ class Room {
         this.addLog('🏗️ 【拆迁校区】本轮场上没有可拆的楼，拆迁办白跑一趟');
       }
     }
-    if (this.facIs('reunion') && r % 4 === 0 && this.alive().length >= 2) {
+    const rum = this.mut();
+    if (this.facIs('reunion') && !rum.reunionOff && r % (rum.reunionEvery || 4) === 0 && this.alive().length >= 2) {
       const t = pick(this.alive());
       const n = this.alive().length - 1;
-      const pay = Math.min(t.cash, 300 * n);   // v7.2 聚餐校区（温和）：每人 240 → 300
+      const per = rum.reunionAmt || 300;
+      const pay = Math.min(t.cash, per * n);   // v7.2 聚餐校区（温和）：每人 240 → 300
       if (pay > 0) t.cash -= pay;
       const items = [];
-      for (const q of this.alive()) if (q !== t) { q.cash += 300; items.push({ pid: q.id, amount: 300 }); }
-      if (items.length) this.ev({ t: 'faculty_wave', icon: '🍲', name: '聚餐校区', gain: true, items, total: 300 * items.length });
+      for (const q of this.alive()) if (q !== t) { q.cash += per; items.push({ pid: q.id, amount: per }); }
+      if (items.length) this.ev({ t: 'faculty_wave', icon: '🍲', name: '聚餐校区', gain: true, items, total: per * items.length });
       t.reunionRentX12Round = r;   // v7.2：请客者本轮收租 ×1.2 回血（按轮次标记，避免被自己回合开始重置）
       if (pay > 0) this.ev({ t: 'facfx', pid: t.id, kind: 'reunion', name: '聚餐校区', detail: `请全场吃饭 −¥${pay}` });
       this.addLog(`🍲 【聚餐校区】${t.name} 请全场吃饭（花了 ¥${pay}），大家吃得都很开心`);
       this.aiChat(t, pick(['🍲 我请客！', '这顿算我的']), true);
     }
+    // ==================== v7.3：新城邦的每轮结算 ====================
+    const mo = this.mut();
+    // ---- 轮盘校区：全场一起转一次 8 格轮盘（全员命中同一格） ----
+    if (this.facIs('roulette')) {
+      this.rouletteRentMul = 1;
+      const slots = [
+        { icon: '🧧', name: '大红包',   desc: '全场每人 +¥800' },
+        { icon: '🧾', name: '罚单',     desc: '全场每人 −¥500（进基金池）' },
+        { icon: '🏠', name: '房东市场', desc: '本轮全场租金 ×1.5' },
+        { icon: '🧊', name: '租金冻结', desc: '本轮全场租金 ×0.5' },
+        { icon: '🌦️', name: '雨露均沾', desc: '全场每人 +¥400' },
+        { icon: '📉', name: '尖子生',   desc: '总资产最高者 −¥1200（进基金池）' },
+        { icon: '🎓', name: '助学金',   desc: '总资产最低者 +¥2000' },
+        { icon: '💤', name: '空转',     desc: '这一轮风平浪静' },
+      ];
+      let idx = Math.floor(Math.random() * slots.length);
+      let allAmt = null;
+      if (mo.rouletteAll) { allAmt = mo.rouletteAll; idx = mo.rouletteAll > 0 ? 0 : 1; }
+      this.rouletteIdx = idx;
+      this.ev({ t: 'roulette', round: r, idx, total: slots.length, slots: slots.map(x => ({ icon: x.icon, name: x.name, desc: x.desc })) });
+      this.addLog(`🌀 【轮盘校区】第 ${r} 轮转盘定格：${slots[idx].icon} ${slots[idx].name} —— ${slots[idx].desc}`);
+      if (allAmt !== null) {
+        if (allAmt > 0) wave('🌀', '轮盘·' + slots[idx].name, () => allAmt);
+        else waveOut('🌀', '轮盘·' + slots[idx].name, () => -allAmt);
+      } else if (idx === 0) { wave('🧧', '轮盘·大红包', () => 800); }
+      else if (idx === 1) { waveOut('🧾', '轮盘·罚单', () => 500); }
+      else if (idx === 2) { this.rouletteRentMul = 1.5; this.addLog('🌀 【轮盘校区】房东市场：本轮全场租金 ×1.5'); }
+      else if (idx === 3) { this.rouletteRentMul = 0.5; this.addLog('🌀 【轮盘校区】租金冻结：本轮全场租金 ×0.5'); }
+      else if (idx === 4) { wave('🌦️', '轮盘·雨露均沾', () => 400); }
+      else if (idx === 5) {
+        const list = this.alive(); let rich = null;
+        for (const q of list) if (!rich || this.netWorth(q) > this.netWorth(rich)) rich = q;
+        if (rich) { const pay = Math.min(rich.cash, 1200); if (pay > 0) { rich.cash -= pay; this.addToFund(pay); this.ev({ t: 'paid', pid: rich.id, amount: pay, creditor: null, toPool: true }); this.ev({ t: 'facfx', pid: rich.id, kind: 'roulette', name: '轮盘校区', detail: `尖子生 −¥${pay}` }); this.addLog(`🌀 【轮盘校区】尖子生：${rich.name} −¥${pay}（进基金池）`); } }
+      }
+      else if (idx === 6) {
+        const list = this.alive().slice().sort((a, b) => a.cash - b.cash);
+        if (list.length) { const poor = list[0]; poor.cash += 2000; this.ev({ t: 'money', pid: poor.id, amount: 2000, reason: '轮盘·助学金' }); this.ev({ t: 'facfx', pid: poor.id, kind: 'roulette', name: '轮盘校区', detail: '助学金 +¥2000' }); this.addLog(`🌀 【轮盘校区】助学金：${poor.name} +¥2000`); }
+      }
+    }
+    // ---- 大乐透校区：每轮注资，本届最后一轮独吞 ----
+    if (this.facIs('jackpot')) {
+      if (!mo.jackpotOff) {
+        const items = [];
+        for (const q of this.alive()) { const pay = Math.min(q.cash, 100); if (pay > 0) { q.cash -= pay; q.combo = 0; items.push({ pid: q.id, amount: -pay }); this.ev({ t: 'paid', pid: q.id, amount: pay, creditor: null, toPool: true }); } }
+        const total = items.reduce((a, x) => a - x.amount, 0);
+        this.jackpotPool += total;
+        if (items.length) this.ev({ t: 'faculty_wave', icon: '🎰', name: '大乐透·注资', gain: false, items, total });
+        this.addLog(`🎰 【大乐透校区】全场各注资 ¥100，奖池累计 ¥${this.jackpotPool}`);
+        if (r === (this.facTermStart || 1) + 9) {
+          let pool = this.jackpotPool;
+          if (mo.jackpotX2) pool *= 2;
+          if (pool > 0) {
+            const win = pick(this.alive());
+            if (win) {
+              win.cash += pool; this.jackpotPool = 0;
+              this.ev({ t: 'money', pid: win.id, amount: pool, reason: '大乐透·独吞奖池' });
+              this.ev({ t: 'jackpot', pid: win.id, amount: pool, round: r });
+              this.addLog(`🎰 【大乐透校区】本届开奖！${win.name} 独吞奖池 ¥${pool}！`);
+              this.aiChat(win, '🤑 中大奖了！', true);
+            }
+          }
+        }
+      }
+    }
+    // ---- 黑天鹅校区：本届第 6 轮（强化：第 8 轮再来一次）财富重排 ----
+    if (this.facIs('blackswan') && !mo.blackswanOff) {
+      const trig = [(this.facTermStart || 1) + 5];
+      if (mo.blackswanExtra) trig.push((this.facTermStart || 1) + 7);
+      if (trig.includes(r)) {
+        const list = this.alive().slice();
+        for (let i = list.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); const t = list[i]; list[i] = list[j]; list[j] = t; }
+        const half = Math.ceil(list.length / 2);
+        const losers = list.slice(0, half), winners = list.slice(half);
+        for (const q of losers) { const pay = Math.min(q.cash, 1500); if (pay > 0) { q.cash -= pay; q.combo = 0; this.addToFund(pay); this.ev({ t: 'paid', pid: q.id, amount: pay, creditor: null, toPool: true }); } this.ev({ t: 'facfx', pid: q.id, kind: 'blackswan', name: '黑天鹅校区', detail: `黑天鹅 −¥${pay}` }); }
+        for (const q of winners) { q.cash += 1000; this.ev({ t: 'money', pid: q.id, amount: 1000, reason: '黑天鹅·暴富' }); this.ev({ t: 'facfx', pid: q.id, kind: 'blackswan', name: '黑天鹅校区', detail: '黑天鹅 +¥1000' }); }
+        this.ev({ t: 'blackswan', round: r, losers: losers.map(q => ({ pid: q.id, name: q.name })), winners: winners.map(q => ({ pid: q.id, name: q.name })) });
+        this.addLog(`🦢 【黑天鹅校区】第 ${r} 轮财富重排：${losers.map(q => q.name).join('、') || '—'} 各 −¥1500，${winners.map(q => q.name).join('、') || '—'} 各 +¥1000`);
+      }
+    }
+    // ---- 幻影校区：每轮随机 n 块产业幻影化 ----
+    if (this.facIs('phantom')) {
+      this.phantomCells = [];
+      if (!mo.phantomOff) {
+        const n = mo.phantomN || 1;
+        const cand = [];
+        this.cells.forEach((cs, i) => { if (cs.own !== null && BOARD[i].type === 'prop') cand.push(i); });
+        for (let i = 0; i < n && cand.length; i++) this.phantomCells.push(cand.splice(Math.floor(Math.random() * cand.length), 1)[0]);
+        if (this.phantomCells.length) {
+          this.ev({ t: 'phantom', round: r, cells: this.phantomCells.slice(), names: this.phantomCells.map(i => BOARD[i].name) });
+          this.addLog(`🕳️ 【幻影校区】第 ${r} 轮幻影化：${this.phantomCells.map(i => BOARD[i].name).join('、')}（踩到不用付租，也不能买卖 / 盖楼）`);
+        }
+      }
+    }
+    // ---- 通胀校区：每轮全场 +¥300；本届收官全场现金 −10% ----
+    if (this.facIs('inflation')) {
+      if (!mo.inflationFlip) wave('📈', '通胀·全民红包', () => 300);
+      if (r === (this.facTermStart || 1) + 9) {
+        const items = []; let sum = 0;
+        for (const q of this.alive()) { const pay = Math.floor(q.cash * 0.1); if (pay > 0) { q.cash -= pay; q.combo = 0; sum += pay; items.push({ pid: q.id, amount: -pay }); this.ev({ t: 'paid', pid: q.id, amount: pay, creditor: null, toPool: true }); } }
+        if (sum > 0) { this.addToFund(sum); this.ev({ t: 'faculty_wave', icon: '📈', name: '通胀·货币贬值', gain: false, items, total: sum }); this.addLog(`📈 【通胀校区】本届收官，货币贬值：全场各 −10% 现金（合计 ¥${sum} 进基金池）`); }
+      }
+    }
+    // ---- 通缩校区：每 3 轮全场现金 −5% ----
+    if (this.facIs('deflation') && !mo.deflationFlip && r % 3 === 0) {
+      const items = []; let sum = 0;
+      for (const q of this.alive()) { const pay = Math.floor(q.cash * 0.05); if (pay > 0) { q.cash -= pay; q.combo = 0; sum += pay; items.push({ pid: q.id, amount: -pay }); this.ev({ t: 'paid', pid: q.id, amount: pay, creditor: null, toPool: true }); } }
+      if (sum > 0) { this.addToFund(sum); this.ev({ t: 'faculty_wave', icon: '📉', name: '通缩·现金缩水', gain: false, items, total: sum }); this.addLog(`📉 【通缩校区】每 3 轮现金 −5%：合计 ¥${sum} 进基金池`); }
+    }
+    // ---- 联赛校区：每 3 轮强制两两配对打擂台 ----
+    if (this.facIs('league') && !mo.leagueOff) {
+      const every = mo.leagueEvery || 3;
+      const n0 = r - (this.facTermStart || 1);
+      if (n0 > 0 && n0 % every === 0 && !mo.duelOff) {
+        let stake = mo.leagueStake || 1500;
+        if (this.facIs('gamble')) stake = Math.round(stake * 1.6 * (mo.gambleUp ? 1.25 : 1));
+        const list = this.alive().slice();
+        for (let i = list.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); const t = list[i]; list[i] = list[j]; list[j] = t; }
+        const pairs = [];
+        for (let i = 0; i + 1 < list.length; i += 2) pairs.push([list[i], list[i + 1]]);
+        if (pairs.length) {
+          this.addLog(`🥊 【联赛校区】第 ${r} 轮强制联赛开打（赌注 ¥${stake} × ${pairs.length} 场）`);
+          this.ev({ t: 'faculty_round', kind: 'league', round: r, title: '联赛校区 · 强制赛', sub: `${pairs.length} 场擂台同时开打（赌注 ¥${stake}）`, icon: '🥊' });
+          for (const pr of pairs) { if (this.tryTruce(pr[1], '联赛校区')) continue; this.duelBetween(pr[0], pr[1], stake, '联赛校区'); }
+        }
+      }
+    }
+    // ---- 悬赏校区：每轮刷新「校霸」= 总资产最高者 ----
+    if (this.facIs('bounty')) {
+      if (mo.bountyOff) { this.bountyPid = null; }
+      else {
+        const list = this.alive(); let rich = null;
+        for (const q of list) if (!rich || this.netWorth(q) > this.netWorth(rich)) rich = q;
+        const nid = rich ? rich.id : null;
+        if (nid !== this.bountyPid) {
+          this.bountyPid = nid;
+          if (rich) { this.addLog(`🎯 【悬赏校区】总资产最高者易主 → ${rich.name} 当选新「校霸」（收租 ×1.2）`); this.ev({ t: 'facfx', pid: rich.id, kind: 'bounty', name: '悬赏校区', detail: '当选校霸（收租 ×1.2）' }); }
+        }
+      }
+    }
+    // ---- 借贷校区：自动低息借款 + 每轮自动还款 ----
+    if (this.facIs('credit')) {
+      const limit = mo.creditLimit || 5000;
+      const rate = mo.creditRepay || 0.10;
+      for (const q of this.alive()) {
+        if (q.loanOutstanding) {
+          const pay = Math.min(q.cash, Math.ceil(q.loanOutstanding * rate));
+          if (pay > 0) { q.cash -= pay; q.loanOutstanding = Math.max(0, q.loanOutstanding - pay); this.ev({ t: 'loan', pid: q.id, repay: pay, left: q.loanOutstanding }); this.addLog(`💳 【借贷校区】${q.name} 自动还款 ¥${pay}（剩余欠款 ¥${q.loanOutstanding}）`); }
+        }
+        if (q.cash < 2000 && (q.loanBorrowed || 0) < limit) {
+          const borrow = Math.min(2000, limit - (q.loanBorrowed || 0));
+          if (borrow > 0) { q.cash += borrow; q.loanBorrowed = (q.loanBorrowed || 0) + borrow; q.loanOutstanding = (q.loanOutstanding || 0) + borrow; this.ev({ t: 'loan', pid: q.id, borrow, total: q.loanBorrowed }); this.addLog(`💳 【借贷校区】${q.name} 向银行借款 ¥${borrow}（累计 ¥${q.loanBorrowed}/${limit}）`); }
+        }
+      }
+    }
+    // ---- 购物节校区：每 4 轮全场大促 ----
+    if (this.facIs('shopping')) {
+      const every = mo.shoppingEvery || 4;
+      const n0 = r - (this.facTermStart || 1);
+      if (n0 > 0 && n0 % every === 0 && !mo.shoppingOff) {
+        this.shoppingRound = r;
+        this.ev({ t: 'faculty_round', kind: 'shopping', round: r, title: '购物节 · 全场大促', sub: '买地 7 折、盖楼 7 折；但全场现金被剁掉 5%', icon: '🛒' });
+        this.addLog(`🛒 【购物节校区】第 ${r} 轮全场大促：买地 / 盖楼 7 折！`);
+        waveOut('🛒', '购物节·剁手费', q => Math.floor(q.cash * 0.05));
+      }
+    }
+    // ---- 天气工厂校区：天气按轮次强制循环 ----
+    if (this.facIs('weatherlab')) {
+      const n0 = Math.max(0, r - (this.facTermStart || 1));
+      const w = WEATHER_CYCLE[n0 % WEATHER_CYCLE.length];
+      if (w !== this.weather) { this.weather = w; this.ev({ t: 'weather', w }); this.addLog(`${WEATHER[w].icon} 【天气工厂校区】强制天气：${WEATHER[w].name}`); }
+      if (['rain', 'fog', 'snow', 'storm'].includes(w)) {
+        const amt = mo.weatherlabUp ? 1200 : 600;
+        wave('🌪️', '天气工厂·恶劣天气补贴', () => amt);
+      }
+      if (mo.weatherlabDown) waveOut('🌪️', '天气工厂·天灾', () => 250);
+    }
+    // ---- 模仿校区：本届复制上一届的效果（被动，无每轮结算） ----
+    // ==================== v7.3：突变的每轮结算（通用池 + 专属） ====================
+    if (this.mutation) {
+      const mname = '突变·' + this.mutation.name;
+      if (mo.roundCash) {
+        if (mo.roundCash > 0) wave('🌀', mname, () => mo.roundCash);
+        else waveOut('🌀', mname, () => -mo.roundCash);
+        this.addLog(`🌀 【${mname}】全场 ${mo.roundCash > 0 ? '+' : '−'}¥${Math.abs(mo.roundCash)}`);
+      }
+      if (mo.every && mo.everyAmt && r % mo.every === 0) {
+        if (mo.everyAmt > 0) wave('🌀', mname, () => mo.everyAmt); else waveOut('🌀', mname, () => -mo.everyAmt);
+      }
+      if (mo.roundCashPick) {
+        const t = pick(this.alive());
+        if (t) { t.cash += mo.roundCashPick; this.ev({ t: 'money', pid: t.id, amount: mo.roundCashPick, reason: mname }); this.ev({ t: 'facfx', pid: t.id, kind: 'mutation', name: mname, detail: `+¥${mo.roundCashPick}` }); }
+      }
+      if (mo.poolInject > 0) { this.addToFund(mo.poolInject); this.addLog(`🌀 【${mname}】向教育基金池注资 ¥${mo.poolInject}`); }
+      if (mo.demolish) {
+        for (let i = 0; i < mo.demolish; i++) {
+          const cand = [];
+          this.cells.forEach((cs, ci) => { if (cs.own !== null && !cs.mortgaged && BOARD[ci].type === 'prop' && cs.level > 0) cand.push(ci); });
+          if (!cand.length) break;
+          const ci = pick(cand);
+          const owner = this.players.find(q => q.id === this.cells[ci].own);
+          this.cells[ci].level--;
+          this.ev({ t: 'demolish', pid: owner ? owner.id : null, cell: ci, kind: 'house', level: this.cells[ci].level, name: BOARD[ci].name, mutation: true });
+          this.addLog(`🌀 【${mname}】「${BOARD[ci].name}」被拆掉一栋楼（现 Lv${this.cells[ci].level}）`);
+        }
+      }
+      if (mo.luckyDice) {
+        const list = this.alive();
+        for (let i = 0; i < mo.luckyDice && list.length; i++) {
+          const t = pick(list);
+          t.stepBuffs = (t.stepBuffs || []).concat([3]);
+          this.ev({ t: 'facfx', pid: t.id, kind: 'mutation', name: mname, detail: '幸运骰：下次移动 +3 步' });
+        }
+      }
+      if (mo.duelRound && !mo.duelOff) {
+        const list = this.alive();
+        if (list.length >= 2) {
+          const a = pick(list); let b = pick(list); let guard = 0;
+          while (b === a && guard++ < 10) b = pick(list);
+          if (b && b !== a && !this.tryTruce(b, mname)) this.duelBetween(a, b, mo.duelRound, mname);
+        }
+      }
+    }
+    // ---- 每届第 5 轮：中期突变降临 ----
+    this.maybeMutation();
   }
   // 校历事件的具体结算
   applyCalEvent(e) {
@@ -2129,7 +2676,8 @@ class Room {
     return { tax, hold, bld };
   }
   collectTax() {
-    if (this.facIs('austerity')) { this.addLog('⏰ 【紧缩校区】本局免征物业税，本轮无人缴税'); return; }   // v5.2
+    if (this.facIs('austerity') && !this.mut().taxUnfree) { this.addLog('⏰ 【紧缩校区】本局免征物业税，本轮无人缴税'); return; }   // v5.2
+    if (this.mut().taxFree) { this.addLog('🧾 【突变·免税期】本届免征物业税，本轮无人缴税'); return; }
     const items = [];
     for (const p of this.alive()) {
       const { tax: raw, hold, bld } = this.taxFor(p);
@@ -2896,10 +3444,10 @@ class Room {
     // v7.2 宿舍校区（温和）：被罚停留时 30% 概率「宿管放行」——免除本次停留，仍领补贴，本回合正常继续
     if (_skipping && this.facIs('dorm') && Math.random() < 0.30) {
       if (p.skipNext) p.skipNext = false; else p.skipTurns--;
-      p.cash += 1600;
-      this.addLog('🛏️ 【宿舍校区】宿管查寝放行：本次停留免除，仍领休整补贴 +¥1600');
-      this.ev({ t: 'money', pid: p.id, amount: 1600, reason: '宿舍校区·查寝放行' });
-      this.ev({ t: 'facfx', pid: p.id, kind: 'dorm', name: '宿舍校区', detail: '查寝放行 +¥1600' });
+      const dA = (this.mut().dormAmt !== undefined) ? this.mut().dormAmt : 1600;
+      if (dA > 0) { p.cash += dA; this.addLog(`🛏️ 【宿舍校区】宿管查寝放行：本次停留免除，仍领休整补贴 +¥${dA}`); this.ev({ t: 'money', pid: p.id, amount: dA, reason: '宿舍校区·查寝放行' }); }
+      else { this.addLog('🛏️ 【宿舍校区】宿管查寝放行：本次停留免除'); }
+      this.ev({ t: 'facfx', pid: p.id, kind: 'dorm', name: '宿舍校区', detail: `查寝放行 +¥${Math.max(0, dA)}` });
     } else if (_skipping) {
       if (p.skipNext) p.skipNext = false; else p.skipTurns--;
       const left = p.skipTurns || 0;
@@ -2914,9 +3462,9 @@ class Room {
       }
       // v5.10：宿舍校区 —— 被罚停留休整补贴
       if (this.facIs('dorm')) {
-        p.cash += 1600;   // v7.2 宿舍校区（温和）：1200 → 1600
-        this.addLog('🛏️ 【宿舍校区】休整补贴 +¥1600');
-        this.ev({ t: 'money', pid: p.id, amount: 1600, reason: '宿舍校区补贴' });
+        const dA2 = (this.mut().dormAmt !== undefined) ? this.mut().dormAmt : 1600;
+        if (dA2 > 0) { p.cash += dA2; this.addLog(`🛏️ 【宿舍校区】休整补贴 +¥${dA2}`); this.ev({ t: 'money', pid: p.id, amount: dA2, reason: '宿舍校区补贴' }); }
+        else { const pay = Math.min(p.cash, -dA2); if (pay > 0) { p.cash -= pay; this.addToFund(pay); this.ev({ t: 'paid', pid: p.id, amount: pay, creditor: null, toPool: true }); this.addLog(`🛏️ 【宿舍校区·突变】查寝罚款 −¥${pay}`); } }
       }
       // v5.10：研究项目的停留补贴（通宵补习 / 弹性学制）
       if (p.hex && p.hex.stayCash) {
@@ -3191,6 +3739,14 @@ class Room {
   execRoll(p) {
     const d1 = this.dice[0], d2 = this.dice[1];
     const raw = d1 + d2;
+    // ---------- v7.3：突变 rollPay（每次掷骰固定扣费） ----------
+    {
+      const mop = this.mut();
+      if (mop.rollPay) {
+        const pay = Math.min(p.cash, mop.rollPay);
+        if (pay > 0) { p.cash -= pay; this.addToFund(pay); this.ev({ t: 'paid', pid: p.id, amount: pay, creditor: null, toPool: true }); this.ev({ t: 'facfx', pid: p.id, kind: 'mutation', name: '突变·误点', detail: `掷骰费 −¥${pay}` }); }
+      }
+    }
     // ===== v7.0 效果卡（移动类）=====
     // 岔路卡：立刻传送到最近的岔路入口并直接进入
     if (p.branchCard) {
@@ -3324,54 +3880,121 @@ class Room {
   // 是否还发工资（v4.0 终局模式；v5.2：停发轮次受校园风貌影响）
   salaryOn() { return this.round < this.salaryStop(); }
   salaryStop() {
-    if (this.facIs('austerity')) return ENDGAME_ROUND - 5;   // 紧缩校区：提前 5 轮（第 10 轮起）
-    if (this.facIs('boom'))      return ENDGAME_ROUND + 6;   // v7.0 繁荣校区：推迟 6 轮（第 21 轮起）
-    if (this.facIs('nofund'))    return 1;                   // 限薪校区：全程不发
-    return ENDGAME_ROUND;
+    let st = ENDGAME_ROUND;
+    if (this.facIs('austerity')) st = ENDGAME_ROUND - 5;   // 紧缩校区：提前 5 轮（第 10 轮起）
+    else if (this.facIs('boom')) st = ENDGAME_ROUND + 6;   // v7.0 繁荣校区：推迟 6 轮（第 21 轮起）
+    else if (this.facIs('nofund')) st = 1;                 // 限薪校区：全程不发
+    const mo = this.mut();
+    if (mo.salaryStopDelay) st += mo.salaryStopDelay;      // v7.3 突变：停发工资提前 / 推迟
+    return Math.max(1, st);
   }
   // v5.2：起点工资（受校园风貌影响）
-  wageOf() {
-    if (this.facIs('urban'))  return SALARY + 500;   // v7.2 都市校区（激进）：+250 → +500
-    if (this.facIs('garden')) return 1800;
-    if (this.facIs('boom'))   return SALARY + 320;
-    if (this.facIs('agri'))   return SALARY + 450;
-    if (this.facIs('green'))  return SALARY - 150;   // v5.10 环保校区
+  kWage(k) {
+    if (k === 'urban')  return SALARY + 500;
+    if (k === 'garden') return 1800;
+    if (k === 'boom')   return SALARY + 320;
+    if (k === 'agri')   return SALARY + 450;
+    if (k === 'green')  return SALARY - 150;
     return SALARY;
+  }
+  wageOf() {
+    let w = this.kWage(this.faculty);
+    if (this.facIs('mimic') && this.mimicKey) w = SALARY + (this.kWage(this.mimicKey) - SALARY) * this.mimicBlendFactor();
+    // v7.3 通缩校区：过起点工资每轮 −¥100
+    if (this.facIs('deflation') && !this.mut().deflationWageLock) w -= 100 * Math.max(0, this.round - (this.facTermStart || 1) + 1);
+    w = Math.round(w);
+    const mo = this.mut();
+    if (mo.wageSet !== undefined) w = mo.wageSet;
+    if (mo.wageMul) w = Math.round(w * mo.wageMul);
+    if (mo.wageFlat) w += mo.wageFlat;
+    return Math.max(0, w);
+  }
+  mimicBlendFactor() {
+    const mo = this.mut();
+    if (mo.mimicOff) return 0;
+    return (mo.mimicStrength !== undefined) ? mo.mimicStrength : 0.7;
   }
   // v5.7：工资统一入口 ——「双倍工资」项目在这里翻倍，三个发放点共用
   payWage(p) {
     let w = this.wageOf();
+    // v7.3 借贷校区：借款超 ¥3000 后过起点工资 ×0.7（信用受损）
+    if (this.facIs('credit') && (p.loanBorrowed || 0) > 3000) {
+      w = Math.round(w * 0.7);
+      this.ev({ t: 'facfx', pid: p.id, kind: 'credit', name: '借贷校区', detail: `信用受损：工资 ×0.7 → ¥${w}` });
+    }
     if (p.hex && p.hex.salaryX2) { w *= 2; this.hexFx(p, 'salaryx2', '双倍工资：工资 ×2'); }
     p.cash += w;
     this.ev({ t: 'money', pid: p.id, amount: w, reason: '工资' });
     return w;
   }
   // v5.2：风貌对地价 / 升级费 / 租金 / 基金池上限 / 罚款 / 岔路奖励 / 重投费用的影响，集中读表，避免散落 if
-  facLandMul() {
-    switch (this.faculty) {
-      case 'garden': return 0.93;   // v7.2 园林校区（温和）：−4% → −7%
+  // v7.3：按 key 读地价乘数（供「模仿校区」双表查询）
+  kLandMul(k) {
+    switch (k) {
+      case 'garden': return 0.93;
       case 'nofund': return 0.85;
       case 'life': case 'retrain': return 1.03;
-      case 'urban':  return 1.04;   // v7.2 都市校区（激进）：+3% → +4%
-      case 'art':    return 1.05;   // v7.2 艺术校区：+4% → +5%
+      case 'urban':  return 1.04;
+      case 'art':    return 1.05;
       case 'boom':   return 1.06;
-      // v5.10 新城邦
       case 'hxSilver': case 'runner': return 1.03;
       case 'dorm': case 'veteran': return 1.04;
       case 'market': return 1.02;
       default:       return 1;
     }
   }
-  facBuildMul() {
-    switch (this.faculty) {
-      case 'tech':   return 0.88;   // v7.2 理工校区（温和）：−8% → −12%
+  // v7.3：模仿校区 —— 把某个 key 的乘数按强度折半叠加（默认 70%）
+  mimicBlend(x) {
+    if (!this.facIs('mimic') || !this.mimicKey) return 1;
+    const mo = this.mut();
+    if (mo.mimicOff) return 1;
+    const st = (mo.mimicStrength !== undefined) ? mo.mimicStrength : 0.7;
+    return 1 + (x - 1) * st;
+  }
+  // v7.3：通胀 / 通缩校区的每轮累积乘数
+  inflMul() {
+    const mo = this.mut();
+    const x2 = !!(mo.inflationX2 || mo.deflationX2);
+    const rate = x2 ? 0.03 : 0.015;
+    const n = Math.max(0, this.round - (this.facTermStart || 1) + 1);
+    if (this.facIs('inflation')) {
+      if (mo.inflationFlip) return Math.max(0.7, 1 - rate * n);
+      return 1 + rate * n;
+    }
+    if (this.facIs('deflation')) {
+      if (mo.deflationFlip) return 1 + rate * n;
+      return Math.max(0.7, 1 - rate * n);
+    }
+    return 1;
+  }
+  mut() { return (this.mutation && this.mutation.ops) || {}; }
+  facLandMul() {
+    let m = this.kLandMul(this.faculty);
+    m *= this.mimicBlend(this.kLandMul(this.mimicKey));
+    m *= this.inflMul();
+    if (this.facIs('shopping') && this.shoppingRound === this.round) m *= 0.7;
+    const mo = this.mut();
+    if (mo.landMul) m *= mo.landMul;
+    return m;
+  }
+  kBuildMul(k) {
+    switch (k) {
+      case 'tech':   return 0.88;
       case 'nofund': return 0.87;
       case 'agri':   return 1.03;
-      // v5.10 新城邦
       case 'spring': return 0.91;
       case 'green':  return 0.90;
       default:       return 1;
     }
+  }
+  facBuildMul() {
+    let m = this.kBuildMul(this.faculty);
+    m *= this.mimicBlend(this.kBuildMul(this.mimicKey));
+    if (this.facIs('shopping') && this.shoppingRound === this.round) m *= 0.7;
+    if (this.facIs('weatherlab') && this.weather === 'heat' && !this.mut().weatherlabUp) m *= 1.3;
+    const mo = this.mut();
+    if (mo.buildMul) m *= mo.buildMul;
+    return m;
   }
   facRentMul() {
     let m = 1;
@@ -3393,30 +4016,68 @@ class Room {
       default: break;
     }
     if (this.facIs('ancient') && this.round <= 3) m *= 0.93;   // 百年学府：开局三轮收租偏弱
+    // ---------- v7.3 ----------
+    m *= this.mimicBlend(this.kRentMulRaw(this.mimicKey));
+    m *= this.inflMul();
+    if (this.facIs('weatherlab') && this.weather === 'storm') m *= 1.2;
+    if (this.facIs('roulette')) m *= (this.rouletteRentMul || 1);
+    const mo = this.mut();
+    if (mo.rentMul) m *= mo.rentMul;
     return Math.round(m * 1000) / 1000;
   }
+  // v7.3：按 key 读租金乘数（模仿校区用；不含 ancient 的前三轮特例）
+  kRentMulRaw(k) {
+    let m = 1;
+    switch (k) {
+      case 'sports':    m *= 0.96; break;
+      case 'normal':    m *= 0.97; break;
+      case 'reform':    m *= 1.05; break;
+      case 'freeRound': m *= 1.08; break;
+      case 'freeRent':  m *= 1.08; break;
+      case 'silent':    m *= 0.85; break;
+      case 'lantern': case 'hxSilver': m *= 1.03; break;
+      case 'shuffle': case 'charity': m *= 1.02; break;
+      case 'gala':    m *= 1.04; break;
+      case 'carnival': case 'hxGold': m *= 1.05; break;
+      case 'hxPrism':  m *= 1.06; break;
+      case 'spring': case 'gamble': m *= 1.03; break;
+      case 'professor': m *= 1.04; break;
+      default: break;
+    }
+    return m;
+  }
   fundCap() {
+    const mo = this.mut();
+    if (mo.fundCapSet) return mo.fundCapSet;
     if (this.facIs('finance')) return 32000;
     if (this.facIs('oldbook')) return Math.round(FUND_CAP * 0.85);  // v7.0 旧书集：基金池 −15%
     if (this.facIs('artfest')) return Math.round(FUND_CAP * 0.90);  // v7.2 艺术节（温和）：基金池 −8% → −10%（与文案一致）
     return FUND_CAP;
   }
-  facFine(amt) { return this.facIs('med') ? Math.round(amt * 1.2) : (this.facIs('cafe') ? Math.round(amt * 1.1) : amt); }   // 医学 +20% / v5.10 咖啡 +10%
-  facBranch(amt) { return this.facIs('intl') ? Math.round(amt * 1.25) + 300 : amt; }    // v7.2 国际校区（温和）：岔路奖励 ×1.12 → ×1.25，且每次额外 +¥300
+  facFine(amt) { const mo = this.mut(); let v = this.facIs('med') ? Math.round(amt * 1.2) : (this.facIs('cafe') ? Math.round(amt * 1.1) : amt); if (mo.fineMul) v = Math.round(v * mo.fineMul); return v; }   // 医学 +20% / v5.10 咖啡 +10%
+  facBranch(amt) { const mo = this.mut(); if (mo.branchMul === 0) return 0; let v = this.facIs('intl') ? Math.round(amt * 1.25) + 300 : amt; if (mo.branchMul) v = Math.round(v * mo.branchMul); return v; }    // v7.2 国际校区（温和）：岔路奖励 ×1.12 → ×1.25，且每次额外 +¥300
   // v5.10：城邦的点数类修正（早八 / 观星 / 校车站）—— 在掷骰结算点调用
   facRollFx(p, raw, isDouble) {
-    if (this.facIs('stampede')) {
-      if (raw === 7) { p.cash += 750; this.ev({ t: 'money', pid: p.id, amount: 750, reason: '早八校区·准时到教室' }); this.ev({ t: 'facfx', pid: p.id, kind: 'stampede', name: '早八校区', detail: '7 点准时 +¥750' }); }
-      else if (raw <= 3) { const pay = Math.min(p.cash, 400); if (pay > 0) { p.cash -= pay; this.ev({ t: 'facfx', pid: p.id, kind: 'stampede', name: '早八校区', detail: `起晚了 −¥${pay}` }); this.ev({ t: 'paid', pid: p.id, amount: pay, creditor: null, toPool: true }); this.addToFund(pay); } }
+    const rmo = this.mut();
+    if (this.facIs('stampede') && !rmo.stampedeOff) {
+      const up = rmo.stampedeUp;
+      if (raw === 7) { const g = up ? 900 : 750; p.cash += g; this.ev({ t: 'money', pid: p.id, amount: g, reason: '早八校区·准时到教室' }); this.ev({ t: 'facfx', pid: p.id, kind: 'stampede', name: '早八校区', detail: `7 点准时 +¥${g}` }); }
+      else if (raw <= 3) { const pay = Math.min(p.cash, up ? 500 : 400); if (pay > 0) { p.cash -= pay; this.ev({ t: 'facfx', pid: p.id, kind: 'stampede', name: '早八校区', detail: `起晚了 −¥${pay}` }); this.ev({ t: 'paid', pid: p.id, amount: pay, creditor: null, toPool: true }); this.addToFund(pay); } }
     }
-    if (this.facIs('observatory')) {
-      if (raw >= 10) { p.cash += 800; this.ev({ t: 'money', pid: p.id, amount: 800, reason: '观星校区·星象大吉' }); this.ev({ t: 'facfx', pid: p.id, kind: 'observatory', name: '观星校区', detail: '星象大吉 +¥800' }); }
-      else if (raw <= 4) { const pay = Math.min(p.cash, 400); if (pay > 0) { p.cash -= pay; this.ev({ t: 'facfx', pid: p.id, kind: 'observatory', name: '观星校区', detail: `乌云蔽月 −¥${pay}` }); this.ev({ t: 'paid', pid: p.id, amount: pay, creditor: null, toPool: true }); this.addToFund(pay); } }
+    if (this.facIs('observatory') && !rmo.obsOff) {
+      if (raw >= 10) { const g = rmo.obsUp ? 1200 : 800; p.cash += g; this.ev({ t: 'money', pid: p.id, amount: g, reason: '观星校区·星象大吉' }); this.ev({ t: 'facfx', pid: p.id, kind: 'observatory', name: '观星校区', detail: `星象大吉 +¥${g}` }); }
+      else if (raw <= 4) { const pay = Math.min(p.cash, rmo.obsUp ? 600 : 400); if (pay > 0) { p.cash -= pay; this.ev({ t: 'facfx', pid: p.id, kind: 'observatory', name: '观星校区', detail: `乌云蔽月 −¥${pay}` }); this.ev({ t: 'paid', pid: p.id, amount: pay, creditor: null, toPool: true }); this.addToFund(pay); } }
     }
-    if (this.facIs('runner') && isDouble) { p.cash += 400; this.ev({ t: 'money', pid: p.id, amount: 400, reason: '校车站校区·班来得巧' }); }
+    if (this.facIs('runner') && isDouble) {
+      const amt = (rmo.runnerAmt !== undefined) ? rmo.runnerAmt : 400;
+      if (amt > 0) { p.cash += amt; this.ev({ t: 'money', pid: p.id, amount: amt, reason: '校车站校区·班来得巧' }); }
+      else { const pay = Math.min(p.cash, -amt); if (pay > 0) { p.cash -= pay; this.ev({ t: 'paid', pid: p.id, amount: pay, creditor: null, toPool: true }); this.addToFund(pay); this.ev({ t: 'facfx', pid: p.id, kind: 'runner', name: '校车站校区', detail: `误点 −¥${pay}` }); } }
+    }
   }
   // v5.2 文体：每轮首次重投 ¥900；v5.3 软件工程·敏捷迭代：有次数时重投免费
   rerollCostFor(p) {
+    const mo = this.mut();
+    if (mo.rerollFree) return 0;   // v7.3 突变·狂欢：重投完全免费
     const mj = MAJORS[p.major] || {};
     if (mj.rerollFree && p.skillLeft > 0) return 0;
     // v6.0：重投价格「每个玩家独立计算」——首次 ¥800，本局每多用一次 +¥70，封顶 ¥1500
@@ -3429,7 +4090,7 @@ class Room {
     }
     c = Math.min(REROLL_MAX, c);
     // v6.0：嘉年华 / 文体校区 —— 每轮首次重投打 8 折
-    if ((this.facIs('carnival') || this.facIs('sports')) && !p.rerollUsed) c = Math.round(c * 0.7);
+    if ((this.facIs('carnival') || this.facIs('sports')) && !p.rerollUsed && !mo.carnivalOff) c = Math.round(c * 0.7);
     if (p.hex && p.hex.rerollCut) c = Math.round(c * (1 - p.hex.rerollCut));   // v5.7 情报网：重投打折
     return Math.max(0, c);
   }
@@ -3474,14 +4135,22 @@ class Room {
       if (this.facIs('liberal') && type === 'fate') v += 400;                 // v7.2 通识校区（激进）：命运卡 +250 → +400
       if (this.facIs('liberal') && type === 'chance') v = Math.round(v * 0.90);   // v7.2 通识校区（激进）：机会卡 −8% → −10%
       if (this.facIs('silent')) v = Math.round(v * 0.82);                     // v7.2 自习校区（激进）：卡牌经济 −12% → −18%
-      if (this.facIs('cram') && type === 'chance') v = v > 0 ? Math.round(v * 0.92) : Math.round(v * 0.78);   // v7.0 补习街：负面 −22%
+      if (this.facIs('cram') && type === 'chance' && !this.mut().cramOff) v = v > 0 ? Math.round(v * 0.92) : Math.round(v * 0.78);   // v7.0 补习街：负面 −22%
     } else {
       if (this.facIs('tech')) v = Math.round(v * 0.93);
       if (this.facIs('general')) v = Math.min(0, v + 450);   // v7.2 综合校区（激进）：负面少损 200 → 450
       if (this.facIs('book') && type === 'fate') v = Math.round(v * 1.15);
       if (this.facIs('silent')) v = Math.round(v * 0.82);                     // v7.2 自习：负面损失同口径收窄（整体 −18%）
-      if (this.facIs('cram') && type === 'chance') v = Math.round(v * 0.78);   // v7.0 补习街：机会卡负面 −22%
+      if (this.facIs('cram') && type === 'chance' && !this.mut().cramOff) v = Math.round(v * 0.78);   // v7.0 补习街：机会卡负面 −22%
     }
+    // ---------- v7.3：突变对卡牌收益的影响 ----------
+    const mo = this.mut();
+    if (mo.cardMul) v = Math.round(v * mo.cardMul);
+    if (mo.cardChanceMul && type === 'chance') v = Math.round(v * mo.cardChanceMul);
+    if (mo.cardFlatFate && type === 'fate') v += mo.cardFlatFate;
+    if (mo.fateBadMul && type === 'fate' && v < 0) v = Math.round(v * mo.fateBadMul);
+    if (mo.cramUp && type === 'chance' && v < 0) v = Math.round(v * (1 - mo.cramUp));
+    if (mo.cardFlat) { if (mo.cardFlat > 0) { if (v > 0) v += mo.cardFlat; } else v -= Math.abs(mo.cardFlat); }
     return v;
   }
 
@@ -3533,7 +4202,7 @@ class Room {
     if (this.calEvent && (this.calEvent.kind === 'buildSale' || this.calEvent.kind === 'buildBoom')) m *= this.calEvent.mul;
     return Math.max(1, Math.round(base * m));
   }
-  landCost(base) { return Math.max(1, Math.round(base * SEASON[this.season].buildMul * this.weatherBuildMul() * this.facLandMul())); }
+  landCost(base) { const v = this.mut().vacantLandMul || 1; return Math.max(1, Math.round(base * SEASON[this.season].buildMul * this.weatherBuildMul() * this.facLandMul() * v)); }
   resolveCell(p) {
     const idx = p.pos, cell = BOARD[idx], cs = this.cells[idx];
     this.ev({ t: 'land', pid: p.id, cell: idx });
@@ -3577,6 +4246,7 @@ class Room {
           }
           if (cell.type !== 'prop') { this.afterResolve(p, false); return; }
           if (cs.mortgaged) { this.addLog(`${p.name} 回到自己的抵押地「${cell.name}」，可随时在资产面板赎回`); this.afterResolve(p, false); return; }
+          if (this.facIs('phantom') && this.phantomCells.includes(idx)) { this.addLog(`🕳️ 【幻影校区】「${cell.name}」本轮处于幻影状态，无法盖楼（也收不到租）`); this.afterResolve(p, false); return; }
           if (cs.level < 4) {
             // v5.7：研究项目的盖房折扣（精打细算/工程监理）；v5.8：盖房 9 折卡（用后消耗）
             const cost0 = this.seasonCost(GROUPS[cell.g].build);
@@ -3824,6 +4494,7 @@ class Room {
         this.afterResolve(p, false); return;
       }
       case 'duel': {
+        if (this.mut().duelOff) { this.addLog('🚫 【突变】擂台被关闭，本格无事发生'); this.afterResolve(p, false); return; }
         const others = this.alive().filter(q => q.id !== p.id);
         if (!others.length) { this.afterResolve(p, false); return; }
         const opp = pick(others);
@@ -3852,7 +4523,7 @@ class Room {
           this.afterResolve(p, false); return;
         }
         const winner = a > b ? p : opp, loser = a > b ? opp : p;
-        const stake = Math.round(1500 * (this.facIs('sports') ? 1.35 : (this.facIs('gamble') ? 1.6 : 1)));   // v7.2 博弈（温和）：×1.4 → ×1.6
+        const stake = Math.round(1500 * (this.facIs('sports') ? 1.35 : (this.facIs('gamble') ? 1.6 : 1)) * (this.mut().gambleUp ? 1.25 : 1));   // v7.2 博弈（温和）：×1.4 → ×1.6
         const amount = Math.min(stake, loser.cash);
         this.addLog(`⚔️ 擂台！${p.name}(${a}) vs ${opp.name}(${b}) → ${winner.name} 胜，${loser.name} 付 ¥${amount}`);
         this.ev({ t: 'duel', pid: p.id, opp: opp.id, a, b, label: '辩论擂台', winner: winner.id, amount });
@@ -3913,7 +4584,7 @@ class Room {
         // 科研基金处（v5.1：投 ¥2000，2 轮后结题返还 ¥3000 —— 净赚从 ¥1600 降到 ¥1000）
         if (p.invest) { this.addLog(`${p.name} 已有一笔投资在途（第 ${p.invest.due} 轮返还 ¥${p.invest.back}）`); this.afterResolve(p, false); return; }
         if (p.cash < 2000) { this.addLog(`${p.name} 现金不足，错过科研投资`); this.afterResolve(p, false); return; }
-        const back = this.facIs('park') ? 4500 : 3000;   // v7.2 科技园区（温和）：返还 +35% → +50%
+        const back = this.mut().parkSet || (this.facIs('park') ? 4500 : 3000);   // v7.2 科技园区（温和）：返还 +35% → +50%
         const pkRound = this.facIs('park') ? 1 : 2;      // v7.2 科技园区（温和）：结题 2 轮 → 1 轮
         this.phase = 'invest';
         this.pendingInvest = { pid: p.id, cost: 2000, back, rounds: pkRound };
@@ -4120,7 +4791,7 @@ class Room {
           this.ev({ t: 'duel', pid: p.id, opp: rich.id, a, b, label: '校园运动会', winner: null, amount: 0 });
           this.afterResolve(p, false); return;
         }
-        const pct = this.facIs('sports') ? 0.35 : (this.facIs('gamble') ? 0.375 : 0.25);   // v7.2 博弈（温和）：运动会也生效（25% → 37.5%）
+        const pct = (this.facIs('sports') ? 0.35 : (this.facIs('gamble') ? 0.375 : 0.25)) * (this.mut().gambleUp ? 1.2 : 1);   // v7.2 博弈（温和）：运动会也生效（25% → 37.5%）
         if (a > b) {
           const take = Math.max(0, Math.floor(rich.cash * pct));
           rich.cash -= take; p.cash += take; rich.combo = 0;
@@ -4231,6 +4902,12 @@ class Room {
     p.boughtThisTurn = true;   // v5.10：计入本轮限购额度
     cs.own = p.id; cs.mortgaged = false; cs.mortgageAt = 0;
     if (p.discount) p.discount = false;
+    // v7.3 突变·地王令：买下即赠免租金卡
+    if (this.mut().giftMedal && !mortgageBuy) {
+      p.medal = (p.medal || 0) + this.mut().giftMedal;
+      this.ev({ t: 'medalGain', pid: p.id, n: p.medal });
+      this.addLog(`🌀 突变·地王令：${p.name} 买地附赠 ${this.mut().giftMedal} 张免租金卡`);
+    }
     // v5.7：研究项目的买地返现（拿地返现）
     if (p.hex && p.hex.buyCash && !mortgageBuy && price > 0) {
       p.cash += p.hex.buyCash;
@@ -4331,6 +5008,7 @@ class Room {
     const cs = this.cells[cell], c = BOARD[cell];
     this.pendingBuild = null;
     if (c.type !== 'prop') { this.afterResolve(p, true); return; }
+    if (this.mut().noBuild) { this.addLog('🚫 【突变·禁建令】本届不能盖楼，升级被禁止'); this.afterResolve(p, true); return; }
     if (cs.mortgaged) { this.addLog(`「${c.name}」处于抵押状态，赎回后才能升级`); this.afterResolve(p, true); return; }
     const baseCost = (cost != null) ? cost : GROUPS[c.g].build;
     // v5.1：专业盖房折扣（可叠乘）—— 机械常驻 −10%；机械主动技本回合再 −50%；建筑 −35%；土木工程 −20%
@@ -4427,6 +5105,8 @@ class Room {
   calcRent(idx, dice) {
     const c = BOARD[idx], cs = this.cells[idx];
     if (cs.mortgaged) return 0;
+    // v7.3 幻影校区：本轮幻影化的地块不收租金
+    if (this.facIs('phantom') && this.phantomCells && this.phantomCells.includes(idx)) return 0;
     const owner = this.players.find(p => p.id === cs.own);
     let base = 0;
     if (c.type === 'prop') {
@@ -4459,13 +5139,27 @@ class Room {
     // v7.2 聚餐校区（温和）：本轮请客的人收租 ×1.2
     if (owner && this.facIs('reunion') && owner.reunionRentX12Round === this.round) mul *= 1.2;
     // v5.2 生活区校区：只减免「公用事业（文印店/快递驿站）」与「机场路费」，不碰学生宿舍地皮租金
-    if (this.facIs('life') && (c.type === 'util' || c.type === 'transport')) mul *= 0.80;   // v7.2 生活区（温和）：×0.87 → ×0.80
+    if (this.facIs('life') && (c.type === 'util' || c.type === 'transport')) mul *= 0.80 * (this.mut().lifeMul || 1);   // v7.2 生活区（温和）：×0.87 → ×0.80
     // v5.10 地铁校区：机场便宜，驿站变贵
-    if (this.facIs('metro') && c.type === 'transport') mul *= 0.70;   // v7.2 地铁（温和）：×0.80 → ×0.70
-    if (this.facIs('metro') && c.type === 'util') mul *= 1.20;         // v7.2 地铁（温和）：×1.15 → ×1.20
+    if (this.facIs('metro') && c.type === 'transport') mul *= 0.70 * (this.mut().metroAirX || 1);   // v7.2 地铁（温和）：×0.80 → ×0.70
+    if (this.facIs('metro') && c.type === 'util') mul *= 1.20 * (this.mut().metroUtilX || 1);         // v7.2 地铁（温和）：×1.15 → ×1.20
     // v7.0 路过租金小幅上调；v7.1 修正口径：只作用于「有建筑的租金」（1~3 栋房 / 旅馆），
     // 裸地（地皮）租金维持 v6.0 原值不变；机场 / 公用事业不受影响
     if (c.type === 'prop' && cs.level > 0) mul *= RENT_MUL_V7;
+    // ---------- v7.3：连锁校区 —— 垄断色组涨、散地跌（地皮与房子租金同时生效） ----------
+    if (this.facIs('chain') && c.type === 'prop' && owner) {
+      const mo = this.mut();
+      if (mo.chainOff) { /* 断裂：不加不减 */ }
+      else {
+        const full2 = this.groupCells(c.g).every(i => this.cells[i].own === owner.id);
+        mul *= full2 ? (mo.chainUp || 1.35) : 0.9;
+      }
+    }
+    // v7.3 悬赏校区：校霸收租 ×1.2（强化突变 ×1.5；反转突变取消）
+    if (this.facIs('bounty') && owner && this.bountyPid) {
+      const mo = this.mut();
+      if (!mo.bountyOff && owner.id === this.bountyPid) mul *= (mo.bountyUp ? 1.5 : 1.2);
+    }
     return Math.max(0, Math.round(base * mul));
   }
 
@@ -4603,6 +5297,11 @@ class Room {
         const bonus = Math.round(mp * hx.mortgageUp);
         if (bonus > 0) mp += bonus;
       }
+    }
+    // ---------- v7.3：突变的抵押加成 / 抽贷 ----------
+    {
+      const moM = this.mut();
+      if (moM.mortgageUp) { const b = Math.round(mp * moM.mortgageUp); mp += b; this.addLog(`🌀 突变·银根：抵押多拿 ¥${b}`); }
     }
     cs.mortgaged = true;
     cs.mortgageAt = this.round;   // v5.1：记录抵押轮次，用于计算赎回解锁轮

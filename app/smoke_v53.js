@@ -197,7 +197,7 @@ function sliceFn(src, name) {
     ok(rt.elec === '电气工程' && rt.elecMode === 'active', `电气工程 = ${rt.elec}（${rt.elecMode} 主动技）`);
     ok(rt.sfx === 104, `运行时音效表 ${rt.sfx} 种`);
     ok(rt.fns.every(t => t === 'function'), `5 个新特效函数均已挂载：${rt.fns.join('/')}`);
-    ok(rt.fac === 60, `v5.2 校园风貌镜像同步（${rt.fac} 项，v6.0 新增「拆迁校区」）`);
+    ok(rt.fac === 74, `v5.2 校园风貌镜像同步（${rt.fac} 项，v7.3 新增 14 城邦）`);
 
     console.log('\n[7] 掷骰落定涟漪可复现（且不再晃屏）');
     const ripple = await page.evaluate(() => {

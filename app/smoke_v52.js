@@ -112,8 +112,24 @@ const ok = (cond, msg) => { if (cond) { pass++; console.log('  ✓', msg); } els
       const nm = (S && S.faculty && FACULTY[S.faculty]) ? FACULTY[S.faculty].name : null;
       return { key: S ? S.faculty : null, name: nm, badgeTxt: document.getElementById('facBadge').textContent };
     });
+    // v7.3：新增城邦含大乐透 / 购物节等长描述，曾把徽章文字撑出看板 —— 扫一遍文案最长的 12 个城邦做防溢出回归
+    const badgeScan = await page.evaluate(() => {
+      const card = { x: 430, y: 288, w: 640, h: 356 };
+      const len = k => ((FACULTY[k].lead || '').length + (FACULTY[k].cost || '').length);
+      const sample = FACULTY_KEYS.slice().sort((a, b) => len(b) - len(a)).slice(0, 12);
+      const keep = S.faculty;
+      const overflow = [];
+      for (const k of sample) {
+        S.faculty = k; facBadgeKey = null; renderFacultyBadge(false);
+        const b = document.getElementById('facBadge').getBBox();
+        if (!(b.x >= card.x - 4 && b.x + b.width <= card.x + card.w + 4)) overflow.push(FACULTY[k].name);
+      }
+      S.faculty = keep; facBadgeKey = null; renderFacultyBadge(false);
+      return { n: sample.length, overflow };
+    });
     ok(badge.exists && badge.kids >= 6, `中央徽章已渲染（${badge.kids} 个图形元素）`);
-    ok(badge.inside, '徽章完整落在中央看板范围内（不会被挤到看板外）');
+    ok(badge.inside && badgeScan.overflow.length === 0,
+      `徽章完整落在中央看板范围内（含 ${badgeScan.n} 个最长文案城邦扫描${badgeScan.overflow.length ? '，溢出：' + badgeScan.overflow.join('/') : ''}）`);
     ok(Math.abs(badge.cx - badge.boardCx) < 40 && Math.abs(badge.cy - badge.boardCy) < 200, `徽章居中于地图中央（x=${badge.cx.toFixed(0)}，看板中心 750）`);
     ok(stateMatch.name && badge.txt.includes(stateMatch.name), `徽章内容 == 本局风貌「${stateMatch.name}」`);
     await shot('04-badge.png');
