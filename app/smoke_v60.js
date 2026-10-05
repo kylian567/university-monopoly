@@ -31,7 +31,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 
     console.log('\n[1] 公告版本 v6.0 + client 运行时常量镜像');
     const ann = await page.evaluate(() => (document.querySelector('#intro .announce-logo') || {}).textContent || '');
-    ok(/v6\.0/.test(ann), `开局公告标题：${ann.trim()}`);
+    ok(/v([67])\.\d+/.test(ann), `开局公告标题：${ann.trim()}`);
     const marks = await page.evaluate(() => ({
       reroll: typeof REROLL_COST !== 'undefined' ? REROLL_COST : null,
       facMs: typeof FACULTY_VOTE_MS !== 'undefined' ? FACULTY_VOTE_MS : null,
@@ -56,10 +56,10 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
     ok(/queueIdle/.test(src), '投票 / 三选一快照兜底受 queueIdle 约束（等上一轮走完）');
     ok(/\.fv-card\.st0/.test(css) && /\.fv-card\.st1/.test(css) && /\.fv-card\.st2/.test(css), '三风格卡片 CSS 齐备');
     ok(/\.rc-panel/.test(css) && /\.rc-now/.test(css), '租金详情面板 CSS 齐备');
-    ok(/\.mj-tier/.test(css) && /\.mj-mode/.test(css), '专业卡片档位 / 主动被动标签 CSS 齐备');
+    ok(!/\.mj-tier/.test(css) && /\.mj-mode/.test(css), '专业卡片已去 ★ 档位（v7.0），保留主动/被动标签 CSS');
     ok(/rentViews/.test(srv), 'server 快照暴露 rentViews');
     ok((html.match(/<div class="intro-scroll">/g) || []).length === 2, '两份公告各一个滚动内容区');
-    ok(/v6\.0/.test(html) && /v6\.0 规则调整速览/.test(html), 'index.html 含 v6.0 公告 + 规则速览');
+    ok(/v7\.0/.test(html) && /v7\.0 规则调整速览/.test(html) && /v6\.0 规则调整速览/.test(html), 'index.html 含 v7.0 公告 + v7.0/v6.0 规则速览');
     await shot(page, '10-desktop.png');
     await page.close();
 
@@ -78,6 +78,9 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
     await sleep(700);
     await p2.evaluate(() => { for (let i = 0; i < 2; i++) { const b = document.querySelector('#btnAddAI'); if (b) b.click(); } });
     await sleep(600);
+    // v7.0：开局改为「全员准备」门控 —— 先点准备，再开始
+    await p2.evaluate(() => { const b = document.querySelector('#btnReady'); if (b && !b.classList.contains('on')) b.click(); }).catch(() => {});
+    await sleep(700);
     await p2.click('#btnStart').catch(() => {});
     // 等推选浮层出现
     let seen = false, styles = [];
@@ -122,7 +125,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
       };
     });
     ok(maj && maj.n >= 60, `专业按钮共 ${maj ? maj.n : 0} 个`);
-    ok(maj && maj.tier && maj.mode && maj.use, `卡片含档位★ / 主动被动 / 触发方式（示例：${maj ? maj.txt : ''}）`);
+    ok(maj && !maj.tier && maj.mode && maj.use, `卡片已去档位★、保留主动被动 / 触发方式（示例：${maj ? maj.txt : ''}）`);
     await shot(p3, '30-majors.png');
     await p3.close();
 
@@ -140,6 +143,9 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
     await sleep(700);
     await p4.evaluate(() => { for (let i = 0; i < 2; i++) { const b = document.querySelector('#btnAddAI'); if (b) b.click(); } });
     await sleep(600);
+    // v7.0：开局改为「全员准备」门控 —— 先点准备，再开始
+    await p4.evaluate(() => { const b = document.querySelector('#btnReady'); if (b && !b.classList.contains('on')) b.click(); }).catch(() => {});
+    await sleep(700);
     await p4.click('#btnStart').catch(() => {});
     // 跳过推选（若有）
     for (let i = 0; i < 30; i++) {

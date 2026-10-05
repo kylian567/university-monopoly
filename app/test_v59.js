@@ -31,7 +31,7 @@ section(1, '城邦 60 / 海克斯 105 / 镜像一致 / 提前触发表');
   const total = Object.keys(G.PROJECTS).length;
   ok(total === 105 && cnt.silver === 40 && cnt.gold === 35 && cnt.prism === 30,
     `海克斯共 ${total} 个（银 ${cnt.silver} / 金 ${cnt.gold} / 彩 ${cnt.prism}）`);
-  ok(JSON.stringify(G.HEX_TRIGGERS_EARLY) === JSON.stringify([2, 5, 10, 16, 20, 25, 32, 36, 40, 46, 50]), 'HEX_TRIGGERS_EARLY v6.0 = 2/5/10/16/20/25/32/36/40/46/50');
+  ok(JSON.stringify(G.HEX_TRIGGERS_EARLY) === JSON.stringify([2, 5, 10, 16, 25, 32, 40, 49, 55, 62, 70, 77, 85, 91, 100]), 'HEX_TRIGGERS_EARLY v7.0 = 2/5/10/16/25/32/40/49/55/62/70/77/85/91/100');
   // 客户端镜像逐字一致
   const game = fs.readFileSync(path.join(__dirname, 'game.js'), 'utf8');
   const cli = fs.readFileSync(path.join(__dirname, 'public/client.js'), 'utf8');
@@ -159,7 +159,7 @@ section(4, '定调城邦：前三次强制档位 / 仅 3 次 / 提前触发');
     r.applyFacultySetup('hxMix');
     r.hexDoneRounds = []; r.hexTiers = [];
     const got = [];
-    for (const rd of [2, 10, 20]) {
+    for (const rd of [2, 16, 25]) {
       r.round = rd; r.phase = 'roll';
       r.maybeProject();
       got.push(r.project.tier);
@@ -175,7 +175,7 @@ section(4, '定调城邦：前三次强制档位 / 仅 3 次 / 提前触发');
     r.applyFacultySetup('hex3');
     r.hexDoneRounds = []; r.hexTiers = [];
     ok(r.hexMaxCount === 3, '【精研之城】hexMaxCount = 3');
-    for (const rd of [2, 10, 20]) { r.round = rd; r.phase = 'roll'; r.maybeProject(); r.project = null; r.phase = 'roll'; r.clearTimer(); r.clearAiTimers(); }
+    for (const rd of [2, 16, 25]) { r.round = rd; r.phase = 'roll'; r.maybeProject(); r.project = null; r.phase = 'roll'; r.clearTimer(); r.clearAiTimers(); }
     r.round = 40; r.phase = 'roll';
     ok(r.maybeProject() === false, '第 4 次立项被取消（第 40 轮不再触发）');
   }
@@ -192,7 +192,7 @@ section(4, '定调城邦：前三次强制档位 / 仅 3 次 / 提前触发');
   {
     const r = mkRoom(3);
     r.round = 5; r.phase = 'roll';
-    ok(r.maybeProject() === false, '普通局第 5 轮不触发（仍为 2/10/20/30/40/50）');
+    ok(r.maybeProject() === false, '普通局第 5 轮不触发（v7.0 触发轮：2/8/16/25/32/40/49/55/62/70/77/85/91/100/110）');
   }
 }
 
@@ -316,7 +316,7 @@ section(8, '娱乐城邦每轮结算：灯会 / 期中周 / 名师 / 老生 / �
     r.faculty = 'lantern';
     for (const q of r.players) q.cash = 10000;
     r.applyFacultyRound();
-    ok(r.players.every(q => q.cash === 10150), '灯会校区：每轮开场全场 +¥150');
+    ok(r.players.every(q => q.cash === 10220), '灯会校区：每轮开场全场 +¥220');
   }
   // 期中周：每 5 轮全场各缴 400 进池
   {
@@ -325,20 +325,20 @@ section(8, '娱乐城邦每轮结算：灯会 / 期中周 / 名师 / 老生 / �
     for (const q of r.players) q.cash = 10000;
     const pool0 = r.fundPool;
     r.applyFacultyRound();
-    ok(r.players.every(q => q.cash === 9600) && r.fundPool === pool0 + 1200, '期中周校区：第 5 轮全场各缴 ¥400');
+    ok(r.players.every(q => q.cash === 9480) && r.fundPool === pool0 + 1560, '期中周校区：第 5 轮全场各缴 ¥520');
     r.round = 6; r.applyFacultyRound();
-    ok(r.players.every(q => q.cash === 9600), '第 6 轮不再缴');
+    ok(r.players.every(q => q.cash === 9480), '第 6 轮不再缴');
   }
   // 名师：每 3 轮随机 1 人免费盖房
   {
     const r = mkRoom(3);
-    r.faculty = 'professor'; r.round = 3;
+    r.faculty = 'professor'; r.round = 2;
     const a = r.players[0];
     const idx = G.BOARD.findIndex(c => c.type === 'prop');
     r.cells[idx].own = a.id; r.cells[idx].level = 0;
     r.applyFacultyRound();
     const sum = r.players.reduce((s, q) => s + r.propCells(q).reduce((x, i) => x + r.cells[i].level, 0), 0);
-    ok(sum === 1, `名师校区：第 3 轮随机 1 人免费盖 1 房（总建筑 ${sum}）`);
+    ok(sum === 1, `名师校区：第 2 轮随机 1 人免费盖 1 房（总建筑 ${sum}）`);
   }
   // 老生 / 新生一次性结算
   {
@@ -349,7 +349,7 @@ section(8, '娱乐城邦每轮结算：灯会 / 期中周 / 名师 / 老生 / �
     ok(r.players.every(q => q.medal >= 1), '老生校区：当选时全场各领 1 张免租金卡');
     for (const q of r.players) q.cash = 10000;
     r.applyFacultySetup('freshman');
-    ok(r.players.every(q => q.cash === 11500), '新生校区：当选时全场各领 ¥1500');
+    ok(r.players.every(q => q.cash === 12000), '新生校区：当选时全场各领 ¥2000');
   }
   // 早八 / 观星点数结算
   {
@@ -357,15 +357,15 @@ section(8, '娱乐城邦每轮结算：灯会 / 期中周 / 名师 / 老生 / �
     r.faculty = 'stampede';
     const a = r.players[0]; a.cash = 10000;
     r.facRollFx(a, 7, false);
-    ok(a.cash === 10300, '早八校区：7 点 +¥300');
+    ok(a.cash === 10450, '早八校区：7 点 +¥450');
     r.facRollFx(a, 3, false);
-    ok(a.cash === 10150, '早八校区：≤3 点 −¥150');
+    ok(a.cash === 10230, '早八校区：≤3 点 −¥220');
     r.faculty = 'observatory';
     r.facRollFx(a, 11, false);
-    ok(a.cash === 10550, '观星校区：≥10 点 +¥400');
+    ok(a.cash === 10830, '观星校区：≥10 点 +¥600');
     r.faculty = 'runner';
     r.facRollFx(a, 4, true);
-    ok(a.cash === 10800, '校车站校区：双数 +¥250');
+    ok(a.cash === 11230, '校车站校区：双数 +¥400');
   }
   // 地铁：机场便宜 / 驿站贵
   {
@@ -376,7 +376,7 @@ section(8, '娱乐城邦每轮结算：灯会 / 期中周 / 名师 / 老生 / �
     const base = r.calcRent(tIdx, [2, 5]);
     r.faculty = 'metro';
     const m = r.calcRent(tIdx, [2, 5]);
-    ok(Math.abs(m - Math.round(base * 0.85)) <= 1, `地铁校区：机场租金 ${base} → ${m}（×0.85）`);
+    ok(Math.abs(m - Math.round(base * 0.80)) <= 1, `地铁校区：机场租金 ${base} → ${m}（×0.80）`);
   }
 }
 
@@ -406,7 +406,7 @@ section(9, 'v5.11：换届只在轮次刚开始触发 / 每次立项都有刷新
   // ④ 每次立项三选一都重置刷新机会（原 v5.10 为整局一次）
   const r4 = mkRoom(2);
   r4.players[0].hexRefreshLeft = 0; r4.players[1].hexRefreshLeft = 0;
-  r4.hexDoneRounds = []; r4.round = 10; r4.phase = 'roll';
+  r4.hexDoneRounds = []; r4.round = 16; r4.phase = 'roll';
   const opened = r4.maybeProject();
   r4.clearTimer(); r4.clearAiTimers();
   ok(opened && r4.players.every(p => p.hexRefreshLeft === 1),
@@ -527,9 +527,9 @@ section(10, 'v5.13：海克斯限次（合约期）/ 抽取降彩升银 / 描述
 // ================= [11] v5.14：合约再平衡（数值 + 机制）/ 彩卡上调 / 第 32 轮 / 竖屏与公告 =================
 section(11, 'v5.14：海克斯合约再平衡（数值 + 机制）/ 彩卡上调 / 第 32 轮第四次 / 手机竖屏与公告常驻按钮');
 {
-  // ① 第四次立项改到第 32 轮
-  ok(JSON.stringify(G.HEX_TRIGGERS) === JSON.stringify([2, 10, 16, 20, 25, 32, 36, 40, 46, 50, 60, 70, 80, 90, 100, 110, 120]),
-    '① v6.0 触发轮 = 2/10/16/20/25/32/36/40/46/50 + 每 10 轮（60~120）');
+  // ① 触发轮改为 v7.0 的 15 次表
+  ok(JSON.stringify(G.HEX_TRIGGERS) === JSON.stringify([2, 8, 16, 25, 32, 40, 49, 55, 62, 70, 77, 85, 91, 100, 110]),
+    '① v7.0 触发轮 = 2/8/16/25/32/40/49/55/62/70/77/85/91/100/110（共 15 次）');
   const rr = mkRoom(2);
   rr.round = 30; rr.hexDoneRounds = [];
   rr.phase = 'roll'; rr.project = null; rr.clearTimer(); rr.clearAiTimers();
@@ -588,7 +588,7 @@ section(11, 'v5.14：海克斯合约再平衡（数值 + 机制）/ 彩卡上调
   ok(G.PROJECTS.salaryx2.mods.salaryX2 === 1 && G.PROJECTS.salaryx2.mods.goCash === 800 && G.PROJECTS.salaryx2.charges === 12,
     '⑥ v6.0：双倍工资 = 工资 ×2 + 过起点 +¥800（限 12 次）');
   const wd = mkRoom(2, { hex: true });
-  wd.round = 20; wd.hexDoneRounds = [];   // 20 轮在触发表内，且已在停薪线（15 轮）之后
+  wd.round = 25; wd.hexDoneRounds = [];   // 25 轮在 v7.0 触发表内，且已在停薪线（15 轮）之后
   wd.maybeProject(); wd.clearTimer(); wd.clearAiTimers();
   const offs = Object.values(wd.project.offers).flat();
   ok(!offs.includes('salaryx2'), `⑥ 停薪后候选池不含双倍工资（含 goCash 会被剔除），共 ${offs.length} 张`);

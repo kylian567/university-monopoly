@@ -201,6 +201,6 @@ console.log('\n[7] 既有机制回归');
       ok(q.cash === 12000, `寒冬前过起点领 ¥2000（现金 ${q.cash}）`);
       console.log(`\n结果：${pass} 通过 / ${fail} 失败`);
       process.exit(fail ? 1 : 0);
-    }, 30);
-  }, 30);
+    }, 60);
+  }, 60);
 }

@@ -4,7 +4,7 @@ const http = require('http');
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
-const { Room, FUND_CAP, ENDGAME_ROUND, PCOLOR, HEX_PICK_MS } = require('./game');
+const { Room, FUND_CAP, ENDGAME_ROUND, PCOLOR, HEX_PICK_MS, EFFECT_CARDS } = require('./game');
 // v5.5：AI 名字按棋子颜色取叠字名 —— 紫色棋子的 AI 就叫「紫紫」，全场一眼对上号
 const AI_NAME_BY_COLOR = { '#E53935': '红红', '#1E88E5': '蓝蓝', '#FDD835': '黄黄', '#43A047': '绿绿', '#8E24AA': '紫紫' };
 
@@ -51,6 +51,13 @@ function snapshot(room) {
     players: room.players.map(p => ({
       id: p.id, name: p.name, isAI: p.isAI, trustee: !!p.trustee, cash: p.cash, pos: p.pos, alive: p.alive, color: p.color,
       voucher: p.voucher, discount: p.discount, skipNext: p.skipNext,
+      ready: !!p.ready,                        // v7.0：大厅准备状态
+      hand: (p.hand || []).map(h => ({ uid: h.uid, id: h.id })),   // v7.0：手动 / 响应型效果卡手牌
+      cardCount: (p.hand || []).length,        // v7.0：手牌张数（他人视角只显示数量）
+      rentX2: p.rentX2 || 0, rentHalf: p.rentHalf || 0,   // v7.0：租金翻倍 / 减半
+      insure: p.insure || 0, truce: p.truce || 0, auctionVouch: p.auctionVouch || 0,   // v7.0
+      revive: p.revive || 0, investCards: (p.investCards || []).length,               // v7.0
+      forceReroll: p.forceReroll || 0, backstep: p.backstep || 0, reverseDice: p.reverseDice || 0, branchCard: p.branchCard || 0,   // v7.0
       major: p.major, skillLeft: p.skillLeft, combo: p.combo || 0, ach: p.ach || {},
       shield: !!p.shield, sabotage: p.sabotage || 0,
       medal: p.medal || 0, stayFree: p.stayFree || 0,
@@ -76,6 +83,12 @@ function snapshot(room) {
     pendingReroll: room.pendingReroll || null,
     pendingBranch: room.pendingBranch || null, pendingInvest: room.pendingInvest || null,
     pendingSkill: room.pendingSkill || null,
+    // v7.0：效果卡 —— 手动发动阶段 / 响应（无懈可击）阶段
+    pendingCard: room.pendingCard ? { pid: room.pendingCard.pid } : null,
+    pendingNegate: room.pendingNegate ? { pid: room.pendingNegate.pid, card: room.pendingNegate.card, attacker: room.pendingNegate.attacker, name: (room.pendingNegate.card && (EFFECT_CARDS.find(c => c.id === room.pendingNegate.card) || {}).name) || room.pendingNegate.card } : null,
+    allReady: room.allReady ? room.allReady() : false,   // v7.0：大厅是否全员就绪
+    // v7.0：海克斯奖励卡「三张翻面卡」（每人一份候选，断线重连按快照补回浮层）
+    draft: room.draft ? { round: room.draft.round, offers: room.draft.offers, picks: { ...(room.draft.picks) }, ms: 30000 } : null,
     auction: room.auction ? { cell: room.auction.cell, highest: room.auction.highest, bidder: room.auction.bidder } : null,
     raise: room.raise, vote: room.vote,
     events: room.events,
@@ -264,7 +277,7 @@ function onMessage(ws, str) {
     let code = m.code;
     if (m.type === 'create') {
       code = newCode();
-      const room = new Room(code, { faculty: true, hex: true });   // v5.2：线上房局开启校园风貌
+      const room = new Room(code, { faculty: true, hex: true, draft: true });   // v5.2：线上房局开启校园风貌；v7.0：开启海克斯奖励卡抽取
       const p = room.join(name);
       if (!p) return;
       const obj = { room, clients: new Map(), createdAt: Date.now(), lastActive: Date.now() };
@@ -308,7 +321,12 @@ function onMessage(ws, str) {
   let changed = true;
   switch (a.type) {
     case 'addAI': if (room.phase === 'lobby') { const nm = AI_NAME_BY_COLOR[PCOLOR[room.players.length]] || ('小福' + (room.players.length + 1)); const q = room.join(nm, true); if (q) room.addLog(`AI「${q.name}」就位`); } break;
-    case 'start': room.start(); break;
+    case 'start': if (room.allReady && room.allReady()) room.start(); else room.addLog('⏳ 还有玩家没点「准备」，无法开始'); break;
+    case 'ready': room.setReady(p, a.on === undefined ? true : !!a.on); break;   // v7.0 大厅准备
+    case 'useCard': room.useCard(p, a.uid, { target: a.target, cell: a.cell, pick: a.pick }); break;   // v7.0 手动发动效果卡
+    case 'skipCard': room.skipCard(p); break;                                        // v7.0 结束手动发动
+    case 'useNegate': room.useNegate(p, !!a.yes); break;                             // v7.0 无懈可击卡响应
+    case 'pickDraft': room.pickDraftCard(p, a.idx | 0); break;                       // v7.0 海克斯奖励卡三选一
     case 'roll': room.doRoll(p); break;
     case 'buy': room.buy(p); break;
     case 'decline': room.declineBuy(p); break;
@@ -354,7 +372,7 @@ function onMessage(ws, str) {
       if (room.phase === 'over') {
         const obj = rooms.get(room.code);
         const { Room: R } = require('./game');
-        const nr = new R(room.code, { faculty: true, hex: true });
+        const nr = new R(room.code, { faculty: true, hex: true, draft: true });
         for (const q of room.players) { const np = nr.join(q.name, q.isAI); if (np && q.major) np.major = q.major; }
         obj.room = nr;
         roomObj.room = nr;

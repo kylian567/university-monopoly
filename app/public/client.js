@@ -160,69 +160,119 @@ const MAJORS = {
 const FACULTY = {
   urban:    { name: '都市校区',   icon: '🏙️', color: '#4A90D9', lead: '经过起点工资 ¥2250（+250）',           cost: '所有地皮买入价 +3%',              tag: '钱来得快，地也贵' },
   garden:   { name: '园林校区',   icon: '🌳', color: '#6FAE3F', lead: '所有地皮买入价 −4%',                  cost: '经过起点工资 ¥1800（−200）',       tag: '便宜是便宜，就是远' },
-  ancient:  { name: '百年学府',   icon: '🏛️', color: '#C8941F', terms: [1, 1], lead: '每 3 轮全场各领 ¥300 校友捐款',         cost: '本届前 3 轮全场租金 ×0.93',         tag: '底蕴要慢慢显（只在第一轮城邦出现）' },
+  ancient:  { name: '百年学府',   icon: '🏛️', color: '#C8941F', terms: [1, 1], lead: '每 3 轮全场各领 ¥450 校友捐款',         cost: '本届前 3 轮全场租金 ×0.93',         tag: '底蕴要慢慢显（只在第一轮城邦出现）' },
   tech:     { name: '理工校区',   icon: '🔬', color: '#2E7BC4', lead: '全场建筑升级费 −8%',                  cost: '机会 / 命运卡的金钱收益 −7%',       tag: '自己动手，丰衣足食' },
   general:  { name: '综合校区',   icon: '🎓', color: '#9A968C', lead: '正面卡 +¥200、负面卡少损失 ¥200',       cost: '无——但也没有爆发点',              tag: '什么都有点，什么都不极致' },
   biz:      { name: '商科校区',   icon: '💼', color: '#A9682B', lead: '抵押可拿地价 58%（基准 50%）',          cost: '赎回时多付 8% 手续费',             tag: '银行永远在你身边，也永远在收你的钱' },
   intl:     { name: '国际校区',   icon: '🌏', color: '#1FA37A', lead: '岔路奖励 ×1.12、长廊入口门槛降到 1 块地', cost: '主路机会卡的收益 −15%',            tag: '世界那么大，出去看看' },
-  sports:   { name: '文体校区',   icon: '🎪', color: '#E2564F', lead: '擂台/运动会赌注 ×1.2、每轮首次重投 8 折', cost: '全场租金 ×0.96',                  tag: '打球要花钱，打架要命' },
-  finance:  { name: '金融校区',   icon: '🏦', color: '#D9A32B', lead: '基金池上限 ¥25000、每轮注入 ¥500',      cost: '物业税起征门槛降低 1',              tag: '池子大了，谁都想跳进去' },
-  reform:   { name: '改革校区',   icon: '⚡', color: '#E07A45', lead: '全场每轮开局 +¥300',                  cost: '全场租金 ×1.06',                    tag: '速战速决，谁都别想慢慢发育' },
-  med:      { name: '医学校区',   icon: '🩺', color: '#D9648F', lead: '单笔被收租 ≥¥1500 时减免 10%',         cost: '罚款类支出 +20%',                   tag: '治得了大病，治不了穷' },
-  agri:     { name: '农业校区',   icon: '🌾', color: '#8FC24F', lead: '经过起点额外领 ¥300',                 cost: '建筑升级费 +3%',                    tag: '春种秋收，急不来' },
-  art:      { name: '艺术校区',   icon: '🎨', color: '#8E86E0', lead: '效果卡盲盒每次多抽 1 张',               cost: '地皮买入价 +4%',                    tag: '灵感多，钱少' },
-  park:     { name: '科技园区',   icon: '🚀', color: '#6B60C9', lead: '科研基金会返还 +20%（净赚 ¥1200）',     cost: '机会卡的收益 −10%',                 tag: '立项要靠硬实力' },
-  normal:   { name: '师范校区',   icon: '🎯', color: '#2BB88C', lead: '每过 10 轮全场各得 1 张「免停留卡」',    cost: '全场租金 ×0.97',                    tag: '老师总是手下留情' },
-  book:     { name: '书香校区',   icon: '📚', color: '#B04B2C', lead: '每抽到一张机会卡 +¥250',               cost: '命运卡的负面金额 +10%',             tag: '书中自有黄金屋，也有催款单' },
-  life:     { name: '生活区校区', icon: '🍜', color: '#E88A6F', lead: '文印店/快递租金、机场路费 ×0.92',       cost: '地皮买入价 +3%',                    tag: '生活便利，就是有点挤' },
+  sports:   { name: '文体校区',   icon: '🎪', color: '#E2564F', lead: '擂台/运动会赌注 ×1.35、每轮首次重投 7 折', cost: '全场租金 ×0.96',                  tag: '打球要花钱，打架要命' },
+  finance:  { name: '金融校区',   icon: '🏦', color: '#D9A32B', lead: '基金池上限 ¥32000、每轮注入 ¥800',      cost: '物业税起征门槛降低 1',              tag: '池子大了，谁都想跳进去' },
+  reform:   { name: '改革校区',   icon: '⚡', color: '#E07A45', lead: '全场每轮开局 +¥450',                  cost: '全场租金 ×1.05',                    tag: '速战速决，谁都别想慢慢发育' },
+  med:      { name: '医学校区',   icon: '🩺', color: '#D9648F', lead: '单笔被收租 ≥¥1200 时减免 15%',         cost: '罚款类支出 +20%',                   tag: '治得了大病，治不了穷' },
+  agri:     { name: '农业校区',   icon: '🌾', color: '#8FC24F', lead: '经过起点额外领 ¥450',                 cost: '建筑升级费 +3%',                    tag: '春种秋收，急不来' },
+  art:      { name: '艺术校区',   icon: '🎨', color: '#8E86E0', lead: '效果卡盲盒每次多抽 2 张',               cost: '地皮买入价 +4%',                    tag: '灵感多，钱少' },
+  park:     { name: '科技园区',   icon: '🚀', color: '#6B60C9', lead: '科研基金会返还 +35%（净赚 ¥2050）',     cost: '机会卡的收益 −10%',                 tag: '立项要靠硬实力' },
+  normal:   { name: '师范校区',   icon: '🎯', color: '#2BB88C', lead: '每过 8 轮全场各得 1 张「免停留卡」',    cost: '全场租金 ×0.97',                    tag: '老师总是手下留情' },
+  book:     { name: '书香校区',   icon: '📚', color: '#B04B2C', lead: '每抽到一张机会卡 +¥400',               cost: '命运卡的负面金额 +10%',             tag: '书中自有黄金屋，也有催款单' },
+  life:     { name: '生活区校区', icon: '🍜', color: '#E88A6F', lead: '文印店/快递租金、机场路费 ×0.87',       cost: '地皮买入价 +3%',                    tag: '生活便利，就是有点挤' },
   austerity:{ name: '紧缩校区',   icon: '⏰', color: '#6E6C66', terms: [1, 2], lead: '本届免征物业税',                    cost: '银行提前 5 轮停发工资（第 10 轮起）', tag: '勒紧腰带过日子' },
-  boom:     { name: '繁荣校区',   icon: '🌇', color: '#C99A3F', terms: [1, 2], lead: '停发工资推迟 5 轮、过起点额外 +¥200',   cost: '所有地皮买入价 +6%',                tag: '日子还长，先涨个价' },
-  nofund:   { name: '限薪校区',   icon: '🏚️', color: '#9B3A3A', terms: [1, 2], lead: '全场地价 −12%、升级费 −10%',           cost: '本届起停发起点工资',                tag: '没有工资，全凭本事' },
-  retrain:  { name: '进修校区',   icon: '📖', color: '#5548B0', lead: '当选时全场技能次数 +1',                 cost: '所有地皮买入价 +3%',                tag: '多学一门手艺' },
-  freeRound:{ name: '免费轮校区', icon: '🎟️', color: '#4E9B2A', lead: '随机 1 轮全场买地、盖楼完全免费',       cost: '全场租金 ×1.08',                    tag: '那一轮，随便花' },
-  freeRent: { name: '免租轮校区', icon: '🕊️', color: '#3FBF9E', lead: '随机 4 轮全场所有人免交租金',           cost: '其余轮次全场租金 ×1.05',            tag: '这四轮，谁也别想收租' },
+  boom:     { name: '繁荣校区',   icon: '🌇', color: '#C99A3F', terms: [1, 2], lead: '停发工资推迟 6 轮、过起点额外 +¥320',   cost: '所有地皮买入价 +6%',                tag: '日子还长，先涨个价' },
+  nofund:   { name: '限薪校区',   icon: '🏚️', color: '#9B3A3A', terms: [1, 2], lead: '全场地价 −15%、升级费 −13%',           cost: '本届起停发起点工资',                tag: '没有工资，全凭本事' },
+  retrain:  { name: '进修校区',   icon: '📖', color: '#5548B0', lead: '当选时全场技能次数 +2',                 cost: '所有地皮买入价 +3%',                tag: '多学一门手艺' },
+  freeRound:{ name: '免费轮校区', icon: '🎟️', color: '#4E9B2A', lead: '随机 2 轮全场买地、盖楼完全免费',       cost: '全场租金 ×1.08',                    tag: '那一轮，随便花' },
+  freeRent: { name: '免租轮校区', icon: '🕊️', color: '#3FBF9E', lead: '随机 5 轮全场所有人免交租金',           cost: '其余轮次全场租金 ×1.08',            tag: '这五轮，谁也别想收租' },
   // ===== v5.10 新增：「海克斯定调」六城（只在第一轮城邦推选出现，且候选权重更高） =====
   hxPrism:  { name: '彩霞之城',   icon: '🌈', color: '#B76CE8', hexTheme: 1, terms: [1, 1], lead: '本局海克斯前三次必出国家级（棱彩）',  cost: '全场租金 ×1.05',                    tag: '天降紫雨，只下前三发' },
   hxSilver: { name: '白银学城',   icon: '⚪', color: '#8FA6BF', hexTheme: 1, terms: [1, 1], lead: '本局海克斯前三次必出校级（银）',      cost: '所有地皮买入价 +3%',                tag: '稳扎稳打，从不惊喜' },
   hxGold:   { name: '黄金学府',   icon: '🟡', color: '#E8B04B', hexTheme: 1, terms: [1, 1], lead: '本局海克斯前三次必出省级（金）',      cost: '全场租金 ×1.04',                    tag: '含金量直接拉满' },
   hxMix:    { name: '极光之城',   icon: '🌌', color: '#7B68EE', hexTheme: 1, terms: [1, 1], lead: '本局海克斯前三次必为银/金/彩各一个',  cost: '物业税起征门槛降低 1',              tag: '雨露均沾，档档来一遍' },
-  hex3:     { name: '精研之城',   icon: '🧭', color: '#3FBF9E', hexTheme: 1, terms: [1, 1], lead: '本局海克斯只有 3 次（第 2/10/16 轮）', cost: '此后所有立项机会全部取消——选卡时记得用刷新', tag: '少即是多，张张要紧' },
-  hexEarly: { name: '时光之城',   icon: '⏳', color: '#E07A45', hexTheme: 1, terms: [1, 1], lead: '海克斯提前触发：第 2/5/10/16/20/25/32/36/40/46/50 轮', cost: '第 50 轮后就再也没有立项机会',      tag: '早起的鸟儿有项目吃' },
+  hex3:     { name: '精研之城',   icon: '🧭', color: '#3FBF9E', hexTheme: 1, terms: [1, 1], lead: '本局海克斯只有 3 次（第 2/8/16 轮）', cost: '此后所有立项机会全部取消——选卡时记得用刷新', tag: '少即是多，张张要紧' },
+  hexEarly: { name: '时光之城',   icon: '⏳', color: '#E07A45', hexTheme: 1, terms: [1, 1], lead: '海克斯提前触发：第 2/5/10/16/25/32/40/49/55 轮起更密集', cost: '第 100 轮后就再也没有立项机会',      tag: '早起的鸟儿有项目吃' },
   // ===== v5.10 新增：30 个娱乐城邦（一利一弊，幅度克制，主打好玩） =====
-  lantern:  { name: '灯会校区',   icon: '🏮', color: '#E8A23F', lead: '每轮开场全场 +¥150 灯会补贴',           cost: '全场租金 ×1.03',                    tag: '张灯结彩，人人有份' },
-  midterm:  { name: '期中周校区', icon: '📝', color: '#8E86E0', lead: '每 5 轮全场各缴 ¥400 助学捐款',         cost: '躲不掉——人人有份，直接进基金池',     tag: '谁也别想逃' },
-  lottery:  { name: '抽奖校区',   icon: '🎰', color: '#D9437A', lead: '每 3 轮随机 1 人独中 ¥1000',            cost: '其余人各付 ¥100 参与费',            tag: '一夜暴富的梦想还是要有的' },
-  oldbook:  { name: '旧书集校区', icon: '📦', color: '#A9682B', lead: '每 3 轮按名下地皮数 ×¥120 摆摊收益',    cost: '基金池上限 −20%',                   tag: '书摊支起来，地越多越赚' },
-  nightowl: { name: '夜猫校区',   icon: '🌙', color: '#5548B0', lead: '每轮开场现金最少者 +¥600',              cost: '现金最多者缴 ¥300 进基金池',         tag: '熬夜的人有补贴' },
-  shuffle:  { name: '洗牌校区',   icon: '🔀', color: '#2E9BC4', lead: '每 8 轮全场所有玩家随机互换现金（也可能换了个寂寞）', cost: '全场租金 ×1.02',               tag: '钱在谁手里，全看天意' },
-  stampede: { name: '早八校区',   icon: '🌅', color: '#F2B33D', lead: '掷出 7 点 +¥300（准时到教室）',         cost: '掷出 ≤3 点 −¥150（起晚了）',        tag: '早八人的悲欢并不相通' },
-  carnival: { name: '嘉年华校区', icon: '🎡', color: '#E2569F', lead: '每轮首次重投打 8 折（v6.0 修好：旧版重投没效果）', cost: '全场租金 ×1.05',                    tag: '今天全场都是游乐场' },
-  liberal:  { name: '通识校区',   icon: '🎭', color: '#6FAE3F', lead: '每抽一张命运卡 +¥150',                  cost: '机会卡的收益 −8%',                  tag: '命运的馈赠暗中标好了价' },
-  dorm:     { name: '宿舍校区',   icon: '🛏️', color: '#B04B2C', lead: '被罚停留时 +¥800 休整补贴',             cost: '所有地皮买入价 +4%',                tag: '躺平也有躺平的收入' },
-  runner:   { name: '校车站校区', icon: '🚌', color: '#3F8FBF', lead: '掷出双数时 +¥250（班来得巧）',          cost: '所有地皮买入价 +3%',                tag: '等车的时间也是钱' },
-  cafe:     { name: '咖啡校区',   icon: '☕', color: '#8B5A3C', lead: '每 3 轮全场各领 ¥250 咖啡补贴',         cost: '罚款类支出 +10%',                   tag: '续命水，学院报销一半' },
-  silent:   { name: '自习校区',   icon: '🤫', color: '#7A8B99', lead: '全场租金 ×0.94',                        cost: '卡牌收益 −10%',                     tag: '安静，但安静得有点穷' },
-  gala:     { name: '校友日校区', icon: '🎗️', color: '#C99A3F', lead: '每 5 轮总资产最高者捐 ¥800 进基金池',   cost: '全场租金 ×1.02',                    tag: '成功人士该表示表示了' },
-  spring:   { name: '创业热土校区', icon: '🌱', color: '#4E9B2A', lead: '全场建筑升级费 −5%',                  cost: '全场租金 ×1.03',                    tag: '万物生长，施工不停' },
-  artfest:  { name: '艺术节校区', icon: '🎪', color: '#9B59B6', lead: '效果卡盲盒每次多抽 1 张',               cost: '基金池上限 −10%',                   tag: '艺术无价，池子有价' },
-  metro:    { name: '地铁校区',   icon: '🚇', color: '#2E7BC4', lead: '机场路费 ×0.85',                        cost: '文印店/快递租金 ×1.15',             tag: '机场快了，驿站贵了' },
-  scholar:  { name: '讲座校区',   icon: '🎤', color: '#1FA37A', lead: '每 3 轮随机 1 人技能次数 +1',           cost: '其余人各付 ¥150 讲座门票',          tag: '听讲座也能涨本事' },
-  market:   { name: '市集校区',   icon: '🧺', color: '#D98E2B', lead: '每 4 轮全场各领 ¥200 摊位分红',         cost: '所有地皮买入价 +2%',                tag: '摆摊的自由，买地的代价' },
-  snowville:{ name: '冰雪校区',   icon: '❄️', color: '#7FB3D9', lead: '雨/雾/雪/台风天全场各 +¥250',           cost: '晴/烈日天全场各 −¥150',             tag: '怕冷的来，怕热的绕道' },
-  veteran:  { name: '老生校区',   icon: '🎓', color: '#6B8E23', lead: '当选时全场各领 1 张免租金卡',           cost: '所有地皮买入价 +5%',                tag: '学长学姐的传家宝' },
-  freshman: { name: '新生校区',   icon: '🍼', color: '#F4A460', lead: '当选时全场各领 ¥1500 迎新红包',         cost: '第 10 轮起每 3 轮各缴 ¥300 社团费',  tag: '先甜后苦，年轻的代价' },
-  dicegod:  { name: '骰神校区',   icon: '🎲', color: '#E67E22', lead: '每轮开场随机 1 人移动 +2 步',           cost: '被选中者当场付 ¥300 车马费',         tag: '被骰神摸过头' },
-  charity:  { name: '公益校区',   icon: '🤲', color: '#E74C3C', lead: '每 5 轮最富者向最穷者转 ¥600',          cost: '全场租金 ×1.02',                    tag: '先富带后富' },
-  professor:{ name: '名师校区',   icon: '👨‍🏫', color: '#34495E', lead: '每 3 轮随机 1 人免费盖一栋房',         cost: '全场租金 ×1.04',                    tag: '名师亲自监工' },
-  cram:     { name: '补习街校区', icon: '📐', color: '#16A085', lead: '机会卡的负面金额 −15%',                 cost: '机会卡的正面收益 −8%',              tag: '补课补不出暴富' },
-  reunion:  { name: '聚餐校区',   icon: '🍲', color: '#C0392B', lead: '每 4 轮随机 1 人请全场吃饭（每人 +¥150）', cost: '请客的人当场放血 ¥150×人数',        tag: 'AA 是不可能 AA 的' },
-  observatory:{ name: '观星校区', icon: '🔭', color: '#2C3E94', lead: '掷出 ≥10 点 +¥400（星象大吉）',        cost: '掷出 ≤4 点 −¥200（乌云蔽月）',      tag: '夜观天象，日进斗金' },
-  green:    { name: '环保校区',   icon: '♻️', color: '#27AE60', lead: '全场建筑升级费 −6%',                    cost: '经过起点工资 ¥1850（−150）',        tag: '绿化好了，工资少了' },
-  gamble:   { name: '博弈校区',   icon: '🃏', color: '#8E44AD', lead: '擂台/运动会赌注 ×1.25',                 cost: '全场租金 ×1.03',                    tag: '富贵险中求' },
-  redevelop:{ name: '拆迁校区',   icon: '🏗️', color: '#B0563A', lead: '每 3 轮随机拆掉场上的一栋楼（旅馆按 4 层算）', cost: '全场租金 ×1.03',                 tag: '旧的不去，新的不来' },
+  lantern:  { name: '灯会校区',   icon: '🏮', color: '#E8A23F', lead: '每轮开场全场 +¥220 灯会补贴',           cost: '全场租金 ×1.03',                    tag: '张灯结彩，人人有份' },
+  midterm:  { name: '期中周校区', icon: '📝', color: '#8E86E0', lead: '每 5 轮全场各缴 ¥520 助学捐款',         cost: '躲不掉——人人有份，直接进基金池',     tag: '谁也别想逃' },
+  lottery:  { name: '抽奖校区',   icon: '🎰', color: '#D9437A', lead: '每 3 轮随机 1 人独中 ¥1600',            cost: '其余人各付 ¥150 参与费',            tag: '一夜暴富的梦想还是要有的' },
+  oldbook:  { name: '旧书集校区', icon: '📦', color: '#A9682B', lead: '每 3 轮按名下地皮数 ×¥180 摆摊收益',    cost: '基金池上限 −15%',                   tag: '书摊支起来，地越多越赚' },
+  nightowl: { name: '夜猫校区',   icon: '🌙', color: '#5548B0', lead: '每轮开场现金最少者 +¥900',              cost: '现金最多者缴 ¥450 进基金池',         tag: '熬夜的人有补贴' },
+  shuffle:  { name: '洗牌校区',   icon: '🔀', color: '#2E9BC4', lead: '每 6 轮全场所有玩家随机互换现金（也可能换了个寂寞）', cost: '全场租金 ×1.02',               tag: '钱在谁手里，全看天意' },
+  stampede: { name: '早八校区',   icon: '🌅', color: '#F2B33D', lead: '掷出 7 点 +¥450（准时到教室）',         cost: '掷出 ≤3 点 −¥220（起晚了）',        tag: '早八人的悲欢并不相通' },
+  carnival: { name: '嘉年华校区', icon: '🎡', color: '#E2569F', lead: '每轮首次重投打 7 折（v6.0 修好：旧版重投没效果）', cost: '全场租金 ×1.05',                    tag: '今天全场都是游乐场' },
+  liberal:  { name: '通识校区',   icon: '🎭', color: '#6FAE3F', lead: '每抽一张命运卡 +¥250',                  cost: '机会卡的收益 −8%',                  tag: '命运的馈赠暗中标好了价' },
+  dorm:     { name: '宿舍校区',   icon: '🛏️', color: '#B04B2C', lead: '被罚停留时 +¥1200 休整补贴',             cost: '所有地皮买入价 +4%',                tag: '躺平也有躺平的收入' },
+  runner:   { name: '校车站校区', icon: '🚌', color: '#3F8FBF', lead: '掷出双数时 +¥400（班来得巧）',          cost: '所有地皮买入价 +3%',                tag: '等车的时间也是钱' },
+  cafe:     { name: '咖啡校区',   icon: '☕', color: '#8B5A3C', lead: '每 3 轮全场各领 ¥400 咖啡补贴',         cost: '罚款类支出 +10%',                   tag: '续命水，学院报销一半' },
+  silent:   { name: '自习校区',   icon: '🤫', color: '#7A8B99', lead: '全场租金 ×0.92',                        cost: '卡牌收益 −12%',                     tag: '安静，但安静得有点穷' },
+  gala:     { name: '校友日校区', icon: '🎗️', color: '#C99A3F', lead: '每 5 轮总资产最高者捐 ¥1400 进基金池',   cost: '全场租金 ×1.02',                    tag: '成功人士该表示表示了' },
+  spring:   { name: '创业热土校区', icon: '🌱', color: '#4E9B2A', lead: '全场建筑升级费 −9%',                  cost: '全场租金 ×1.03',                    tag: '万物生长，施工不停' },
+  artfest:  { name: '艺术节校区', icon: '🎪', color: '#9B59B6', lead: '效果卡盲盒每次多抽 2 张',               cost: '基金池上限 −10%',                   tag: '艺术无价，池子有价' },
+  metro:    { name: '地铁校区',   icon: '🚇', color: '#2E7BC4', lead: '机场路费 ×0.80',                        cost: '文印店/快递租金 ×1.15',             tag: '机场快了，驿站贵了' },
+  scholar:  { name: '讲座校区',   icon: '🎤', color: '#1FA37A', lead: '每 2 轮随机 1 人技能次数 +1',           cost: '其余人各付 ¥200 讲座门票',          tag: '听讲座也能涨本事' },
+  market:   { name: '市集校区',   icon: '🧺', color: '#D98E2B', lead: '每 4 轮全场各领 ¥350 摊位分红',         cost: '所有地皮买入价 +2%',                tag: '摆摊的自由，买地的代价' },
+  snowville:{ name: '冰雪校区',   icon: '❄️', color: '#7FB3D9', lead: '雨/雾/雪/台风天全场各 +¥400',           cost: '晴/烈日天全场各 −¥250',             tag: '怕冷的来，怕热的绕道' },
+  veteran:  { name: '老生校区',   icon: '🎓', color: '#6B8E23', lead: '当选时全场各领 1 张免租金卡 + ¥600',           cost: '所有地皮买入价 +5%',                tag: '学长学姐的传家宝' },
+  freshman: { name: '新生校区',   icon: '🍼', color: '#F4A460', lead: '当选时全场各领 ¥2000 迎新红包',         cost: '第 10 轮起每 3 轮各缴 ¥300 社团费',  tag: '先甜后苦，年轻的代价' },
+  dicegod:  { name: '骰神校区',   icon: '🎲', color: '#E67E22', lead: '每轮开场随机 1 人移动 +3 步',           cost: '被选中者当场付 ¥420 车马费',         tag: '被骰神摸过头' },
+  charity:  { name: '公益校区',   icon: '🤲', color: '#E74C3C', lead: '每 5 轮最富者向最穷者转 ¥1100',          cost: '全场租金 ×1.02',                    tag: '先富带后富' },
+  professor:{ name: '名师校区',   icon: '👨‍🏫', color: '#34495E', lead: '每 2 轮随机 1 人免费盖一栋房',         cost: '全场租金 ×1.04',                    tag: '名师亲自监工' },
+  cram:     { name: '补习街校区', icon: '📐', color: '#16A085', lead: '机会卡的负面金额 −22%',                 cost: '机会卡的正面收益 −8%',              tag: '补课补不出暴富' },
+  reunion:  { name: '聚餐校区',   icon: '🍲', color: '#C0392B', lead: '每 4 轮随机 1 人请全场吃饭（每人 +¥240）', cost: '请客的人当场放血 ¥150×人数',        tag: 'AA 是不可能 AA 的' },
+  observatory:{ name: '观星校区', icon: '🔭', color: '#2C3E94', lead: '掷出 ≥10 点 +¥600（星象大吉）',        cost: '掷出 ≤4 点 −¥300（乌云蔽月）',      tag: '夜观天象，日进斗金' },
+  green:    { name: '环保校区',   icon: '♻️', color: '#27AE60', lead: '全场建筑升级费 −10%',                    cost: '经过起点工资 ¥1850（−150）',        tag: '绿化好了，工资少了' },
+  gamble:   { name: '博弈校区',   icon: '🃏', color: '#8E44AD', lead: '擂台/运动会赌注 ×1.4',                 cost: '全场租金 ×1.03',                    tag: '富贵险中求' },
+  redevelop:{ name: '拆迁校区',   icon: '🏗️', color: '#B0563A', lead: '每 2 轮随机拆掉场上的一栋楼（旅馆按 4 层算）', cost: '全场租金 ×1.03',                 tag: '旧的不去，新的不来' },
 };
 const FACULTY_KEYS = Object.keys(FACULTY);
 const FACULTY_VOTE_MS = 60000;   // v5.12：与服务端同步拉长到 60s（59 个城邦说明更厚，看清楚再投）
+
+// ---------- v7.0：效果卡表（与服务端 game.js 的 EFFECT_CARDS 逐字同步，改一边必须改另一边） ----------
+// 服务端只在事件里携带卡面数据；手牌（手动发动）在快照里只给 id，所以客户端需要这张镜像表才能渲染。
+// 品级权重表（与服务端 CARD_RARITY 同步；客户端只用于展示，实际抽取在服务端）
+const CARD_RARITY = {
+  SSR: { key: 'SSR', name: '传说', weight: 15, color: '#D9942B', light: 'rgba(217,148,43,.16)' },
+  SR:  { key: 'SR',  name: '史诗', weight: 25, color: '#9B5BD6', light: 'rgba(155,91,214,.16)' },
+  R:   { key: 'R',   name: '稀有', weight: 35, color: '#2F7DD1', light: 'rgba(47,125,209,.14)' },
+  N:   { key: 'N',   name: '普通', weight: 25, color: '#7C7A72', light: 'rgba(124,122,114,.13)' },
+};
+const CARD_RARITY_ORDER = ['SSR', 'SR', 'R', 'N'];
+const EFFECT_CARDS = [
+  // ---- 原有卡（v7.0 重新定级：免租金卡与万能卡为 SR，其余为 R）----
+  { id: 'medal',     name: '免租金卡',      icon: '🎫', rare: 'SR', mode: 'auto',    desc: '保留到下次应付租金时自动消耗（可叠加持有）' },
+  { id: 'joker',     name: '万能卡',        icon: '🃏', rare: 'SR', mode: 'auto',    desc: '保留到下次遇到任何负面效果（付租 / 罚款 / 停留 / 拆房 / 挂科…）时自动免除' },
+  { id: 'skill',     name: '技能次数 +1',   icon: '✨', rare: 'R',  mode: 'auto',    desc: '本局专业技剩余次数 +1' },
+  { id: 'discount',  name: '买地皮 8 折卡', icon: '🏷️', rare: 'R',  mode: 'auto',    desc: '保留到下次买地时自动 8 折' },
+  { id: 'buildcut',  name: '盖房 9 折卡',   icon: '🔨', rare: 'R',  mode: 'auto',    desc: '保留到下次盖房 / 升级时自动 9 折' },
+  { id: 'step',      name: '加速卡',        icon: '👟', rare: 'R',  mode: 'auto',    desc: '保留到下一次移动，额外 +4 步' },
+  { id: 'cash',      name: '现金红包',      icon: '🧧', rare: 'R',  mode: 'instant', desc: '立刻到账 ¥800~1200（随机）' },
+  { id: 'stayfree',  name: '免停留卡',      icon: '🎯', rare: 'R',  mode: 'auto',    desc: '保留到下次纯惩罚性停留时自动消耗（罚款照付）' },
+  { id: 'finefree',  name: '免罚款卡',      icon: '📜', rare: 'R',  mode: 'auto',    desc: '保留到下次缴纳「非租金罚款」时自动免除' },
+  { id: 'steal',     name: '偷师卡',        icon: '🕵️', rare: 'R',  mode: 'instant', desc: '获得时立刻发动：随机让一名有技能次数的对手技能次数 −1，你获得该技能的一次使用；若无人可偷则自己技能次数 +1' },
+  // ---- v7.0 新增：进攻 / 互动（手动发动）----
+  { id: 'seize',      name: '夺金券',      icon: '🧲', rare: 'R',   mode: 'manual', desc: '指定一名对手，抽取其现金 ¥800 到自己账上（对手不足则全拿）' },
+  { id: 'demolish',   name: '拆迁令',      icon: '🏚️', rare: 'SSR', mode: 'manual', desc: '指定一块对手的地皮，拆掉 1 层楼（旅馆按 4 层递减）' },
+  { id: 'repeat',     name: '留级通知单',  icon: '📵', rare: 'N',   mode: 'manual', desc: '指定一名对手，TA 下一回合停留一回合（免停留卡 / 万能卡可挡）' },
+  { id: 'forcetax',   name: '强制补税单',  icon: '🧾', rare: 'N',   mode: 'manual', desc: '指定一名对手，TA 立刻按当前税表补缴一次物业税（税款进教育基金池）' },
+  { id: 'forceroll',  name: '强制重投',    icon: '🎲', rare: 'N',   mode: 'manual', desc: '指定一名对手，TA 下一次掷骰必须采用第二次点数' },
+  { id: 'challenge',  name: '强制挑战令',  icon: '⚔️', rare: 'R',   mode: 'manual', desc: '指定一名对手立刻进行一次擂台对决，赌注 ¥800（平局互不相欠）' },
+  { id: 'snatch',     name: '顺手牵羊',    icon: '🖐️', rare: 'SR',  mode: 'manual', desc: '指定一名对手，随机偷走 TA 持有的一张效果卡' },
+  { id: 'dismantle',  name: '过河拆桥',    icon: '🚧', rare: 'R',   mode: 'manual', desc: '指定一名对手，随机弃掉 TA 持有的一张效果卡' },
+  { id: 'backstep',   name: '后退卡',      icon: '🔙', rare: 'N',   mode: 'manual', desc: '发动后本次移动改为后退 3 步（可用来回踩自己的地 / 躲开危险区）' },
+  { id: 'reverse',    name: '反向骰子卡',  icon: '🔄', rare: 'R',   mode: 'manual', desc: '发动后本回合点数改为 14 − 实际点数' },
+  { id: 'branchcard', name: '岔路卡',      icon: '🛤️', rare: 'SR',  mode: 'manual', desc: '立刻移动到最近的一条岔路入口，直接进入岔路' },
+  { id: 'redeemcard', name: '抵押赎回券',  icon: '🏦', rare: 'R',   mode: 'manual', desc: '免费赎回自己一块抵押中的地皮（免除赎回价与赎回锁）' },
+  { id: 'auctionvouch', name: '拍卖代金券', icon: '🔨', rare: 'R',  mode: 'auto',   desc: '保留到下次拍卖成交时，成交价自动 −¥800' },
+  { id: 'flawless',   name: '无懈可击卡',  icon: '🌀', rare: 'R',   mode: 'reactive', desc: '别人使用效果卡时询问你是否响应——使用后使那张效果卡失效（自己被攻击时也可使用）' },
+  { id: 'copycard',   name: '复印卡',      icon: '📋', rare: 'SSR', mode: 'manual', desc: '复制自己持有的一张效果卡（无懈可击卡与复印卡本身不可复制）' },
+  // ---- v7.0 新增：自动 / 即时型 ----
+  { id: 'skillfull',  name: '技能刷新卡',  icon: '🌟', rare: 'SSR', mode: 'auto',    desc: '立即把自己的专业技能次数回满（回到该专业的初始次数）' },
+  { id: 'truce',      name: '免战牌',      icon: '🛡️', rare: 'R',   mode: 'auto',    desc: '保留到下次被擂台 / 校园运动会挑战时自动免除（不参与、不付赌注）' },
+  { id: 'insure',     name: '资产保护卡',  icon: '🏥', rare: 'R',   mode: 'auto',    desc: '保留到下次自己被拆楼 / 失去地皮时，自动获赔 ¥1500' },
+  { id: 'funddiv',    name: '基金分红券',  icon: '🎓', rare: 'SSR', mode: 'auto',    desc: '立刻领取教育基金池的 15%（池子不足时保底 ¥500）' },
+  { id: 'charity',    name: '慈善捐',      icon: '💝', rare: 'N',   mode: 'instant', desc: '获得时立刻发动：自己缴 ¥500，教育基金池 +¥1500' },
+  { id: 'investcard', name: '投资券',      icon: '📈', rare: 'SR',  mode: 'auto',    desc: '立刻存 ¥2000 进科研基金，5 轮后连本带利返还 ¥3500' },
+  { id: 'rentx2',     name: '租金翻倍券',  icon: '💹', rare: 'SSR', mode: 'auto',    desc: '保留到下次自己收租时，那一笔租金 ×2（可叠加持有）' },
+  { id: 'renthalf',   name: '租金减半卡',  icon: '📉', rare: 'SR',  mode: 'auto',    desc: '保留到下次自己被收租时，那一笔租金减半（可叠加持有）' },
+  { id: 'revive',     name: '复活卡',      icon: '🕊️', rare: 'SSR', mode: 'auto',    desc: '破产被淘汰时自动发动：清空债务，带着 ¥3000 卷土重来（限 1 次）' },
+];
 
 // ---------- v5.7：海克斯 · 研究项目（与服务端 game.js 的 PROJECTS/HEX_TIERS 表逐字同步，改一边必须改另一边） ----------
 const HEX_TIERS = {
@@ -554,6 +604,10 @@ const SFX = {
   },
   hexFlip: n => tone({ f: 740 + Math.max(0, Math.min(3, n || 0)) * 130, t: 'triangle', d: 0.11, v: 0.14 }),
   hexPick: () => { noiseFx({ d: 0.05, v: 0.16, hp: 800 }); [660, 990].forEach((f, i) => tone({ f, t: 'sine', d: 0.14, v: 0.16, when: i * 0.08 })); },
+  // v7.0 效果卡：手动锁定（清脆双击）
+  pow: () => { tone({ f: 880, t: 'triangle', d: 0.1, v: 0.18 }); noiseFx({ d: 0.05, v: 0.14, hp: 900 }); tone({ f: 1320, t: 'sine', d: 0.16, v: 0.13, when: 0.06 }); },
+  // v7.0 慈善捐：温暖三音（向善）
+  cardCharity: () => { [523, 659, 880].forEach((f, i) => tone({ f, t: 'sine', d: 0.22, v: 0.14, when: i * 0.12 })); },
   hexHit: () => [523, 784].forEach((f, i) => tone({ f, t: 'triangle', d: 0.16, v: 0.16, when: i * 0.09 })),
   hexPrism: () => [523, 659, 784, 1047, 1319, 1568].forEach((f, i) => tone({ f, t: 'sine', d: 0.2, v: 0.18, when: i * 0.07 })),
   // v5.8：市场收紧警报（三连下行锯齿）
@@ -1235,6 +1289,8 @@ $('btnCreate').onclick = () => { const n = $('nameInput').value.trim(); if (!n) 
 $('btnJoin').onclick = () => { const n = $('nameInput').value.trim(); const c = $('codeInput').value.trim(); if (!n) return $('lobbyErr').textContent = '先给自己起个名字'; if (!/^\d{6}$/.test(c)) return $('lobbyErr').textContent = '房间号是 6 位数字'; try { localStorage.setItem('fdm_name', n); } catch (e) {} send({ type: 'join', code: c, name: n }); };
 $('btnAddAI').onclick = () => act({ type: 'addAI' });
 $('btnStart').onclick = () => act({ type: 'start' });
+// v7.0：大厅准备开关
+$('btnReady').onclick = () => { const me = (S && S.players) ? S.players.find(p => p.id === myPid) : null; act({ type: 'ready', on: !(me && me.ready) }); };
 $('btnCopy').onclick = () => { navigator.clipboard.writeText(`${location.origin}?room=${roomCode}`).then(() => { $('btnCopy').textContent = '已复制 ✓'; setTimeout(() => $('btnCopy').textContent = '复制邀请链接', 1500); }); };
 
 // URL 带房间号 → 预填
@@ -1258,7 +1314,7 @@ function onState(state) {
   if (wasLobby) overShown = false;   // 新一局允许再次触发结算页
   $('lobby').style.display = wasLobby ? 'flex' : 'none';
   $('game').style.display = wasLobby ? 'none' : 'flex';
-  if (wasLobby) { $('lobby-home').style.display = 'none'; $('lobby-room').style.display = 'block'; $('roomCode').textContent = roomCode; renderLobby(); }
+  if (wasLobby) { $('lobby-home').style.display = 'none'; $('lobby-room').style.display = 'block'; $('roomCode').textContent = roomCode; renderLobby(); try { if (cdEl && !cdPicked) cardDraftClose(); closeCardPanel(); if (ngEl) { ngEl.remove(); ngEl = null; ngSig = ''; } } catch (e) {} }
   else {
     for (const e of state.events) {
       // v5.1：只有「自己发的」聊天即时显示（否则要等动画播完才看到自己的话）；
@@ -1285,16 +1341,41 @@ function onState(state) {
     if (state.phase === 'project' && state.project && state.project.offers) {
       if (!hexPickEl && queueIdle) projectOpenPick({ round: state.project.round, tier: state.project.tier, offers: state.project.offers, picks: state.project.picks, ms: state.project.ms });
     } else if (state.phase !== 'project' && hexPickEl && queueIdle) closeHexUI();
+    // ---------- v7.0：效果卡浮层（全部由快照驱动，断线重连也能补回来） ----------
+    //  ① 海克斯奖励卡「三张翻面卡」
+    if (state.phase === 'carddraft' && state.draft && state.draft.offers) {
+      if (!cdEl && queueIdle) cardDraftOpen({ round: state.draft.round, offers: state.draft.offers, ms: state.draft.ms });
+      if (cdEl && state.draft.picks) for (const pid in state.draft.picks) cardDraftMark({ pid });
+    } else if (state.phase !== 'carddraft' && cdEl && !cdPicked) cardDraftClose();
+    //  ② 手动发动面板 / ③ 无懈可击响应框
+    cardPanelSync();
+    negateSync();
   }
 }
 function renderLobby() {
   $('playerList').innerHTML = S.players.map(p => {
     const mj = MAJORS[p.major] || {};
-    return `<div class="player-item" data-pid="${p.id}"><span class="dot" style="background:${p.color}"></span>${p.voice ? `<span class="vmic on" data-vmic="${p.id}">🎤</span>` : ''}${esc(p.name)}${p.isAI ? '<span class="tag">AI</span>' : ''}${p.id === myPid ? '<span class="tag">你</span>' : ''}${mj.name ? `<span class="mj-tag">${mj.icon}${esc(mj.name)}</span>` : ''}</div>`;
+    return `<div class="player-item${p.ready ? ' ready' : ''}" data-pid="${p.id}"><span class="dot" style="background:${p.color}"></span>${p.voice ? `<span class="vmic on" data-vmic="${p.id}">🎤</span>` : ''}${esc(p.name)}${p.isAI ? '<span class="tag">AI</span>' : ''}${p.id === myPid ? '<span class="tag">你</span>' : ''}<span class="rdy${p.ready ? '' : ' no'}">${p.ready ? '已准备' : '未准备'}</span>${mj.name ? `<span class="mj-tag">${mj.icon}${esc(mj.name)}</span>` : ''}</div>`;
   }).join('');
   paintSpeaking();
-  $('btnStart').disabled = S.players.length < 2;
   const me = S.players.find(p => p.id === myPid);
+  const allReady = !!S.allReady;
+  const btnStart = $('btnStart');
+  btnStart.disabled = S.players.length < 2 || !allReady;
+  btnStart.title = allReady ? '' : '需要全员准备后才能开始';
+  // v7.0：准备按钮（自己）
+  const btnReady = $('btnReady');
+  if (btnReady) {
+    const mine = !!(me && me.ready);
+    btnReady.classList.toggle('on', mine);
+    btnReady.textContent = mine ? '✅ 已准备（点击取消）' : '✋ 我准备好了';
+    btnReady.disabled = !me;
+  }
+  const rh = $('readyHint');
+  if (rh) {
+    const n = S.players.filter(p => p.ready).length;
+    rh.textContent = allReady ? '✅ 全员已准备，可以开始了！' : `已准备 ${n}/${S.players.length} 人 —— 全员准备后才能开始游戏`;
+  }
   const row = $('majorRow');
   if (row) {
     // v5.3：专业扩到 60 种 —— 平铺样式不变，仅新增搜索；用签名守卫避免每次状态推送都重建 DOM
@@ -1312,16 +1393,14 @@ function renderLobby() {
 // v5.3：专业扩到 60 种 —— 布局与 v5.2 之前的平铺样式完全一致，仅新增搜索；
 // 用签名守卫避免每次状态推送都重建 DOM（否则正在输入的搜索词与滚动位置会被重置）
 let majorRowSig = '';
-// v6.0：专业介绍补全 —— 补上「档位（★）」「主动 / 被动」「触发方式与使用次数」
+// v6.0：专业介绍补全 —— 主动 / 被动 + 触发方式与使用次数（v7.0：去掉档位 ★，并把技能介绍完整展开）
 function buildMajorHtml(me) {
   return Object.values(MAJORS).map(m => {
     const active = m.mode === 'active';
     const modeTxt = active ? '主动' : '被动';
-    const tier = Math.max(1, Math.min(3, m.tier || 1));
-    const tierTxt = '★'.repeat(tier);
     const useTxt = active ? `可手动发动 ${m.uses} 次` : `满足条件自动触发，每局 ${m.uses} 次`;
     return `<button class="major-btn ${me && me.major === m.id ? 'sel' : ''}" data-txt="${esc((m.name + ' ' + m.skill + ' ' + m.desc + ' ' + m.id + ' ' + modeTxt).toLowerCase())}" onclick="act({type:'major',major:'${m.id}'})">
-        <span class="mj-name">${m.icon} ${esc(m.name)} · ${esc(m.skill)}<em class="mj-tier" title="专业档位">${tierTxt}</em><em class="mj-mode ${active ? 'act' : 'pas'}">${modeTxt}</em></span>
+        <span class="mj-name">${m.icon} ${esc(m.name)} · ${esc(m.skill)}<em class="mj-mode ${active ? 'act' : 'pas'}">${modeTxt}</em></span>
         <span class="mj-skill">${esc(m.desc)}<br><span class="mj-use">（${useTxt}）</span></span>
       </button>`;
   }).join('');
@@ -1348,7 +1427,9 @@ const ANIMATED = new Set(['roll', 'move', 'card', 'buy', 'build', 'charge', 'mon
   // v5.10：前五轮限购
   'buy_capped',
   // v6.0：万能卡 / 攻守互换
-  'joker_free', 'swap_cash']);
+  'joker_free', 'swap_cash',
+  // v7.0：效果卡品级（SSR/SR/R/N）+ 手动发动 / 响应 / 海克斯奖励卡三张翻面卡
+  'card_act', 'charity', 'negate', 'card_draft_offer', 'card_draft_pick', 'card_draft_done']);
 let animPending = 0;   // 排队中的动画数；>0 时 renderTokens 冻结，防止棋子瞬移
 let visLog = [];       // 已"播放"的日志：按事件流逐步出现，与地图动画严格同节奏（不超前、不滞后）
 let logRendered = 0;   // visLog 中已渲染的下标数（增量渲染，避免每次重排 200+ 行）
@@ -1718,6 +1799,14 @@ async function handleAnim(e) {
     case 'invest': { SFX.item(); await announce(`🔬 <span class="who">${esc(ownerName(e.pid))}</span> 投入科研经费 ¥${e.cost}，到期返还 ¥${e.back}`, 1500); break; }
     case 'rollpay': { await rollPayAnim(e); break; }
     case 'draw': { await drawCardsAnim(e); break; }
+    // ---------- v7.0：效果卡（品级动画 / 手动发动 / 响应 / 海克斯奖励卡） ----------
+    case 'card_act': { await cardActFx(e); break; }
+    case 'charity': { SFX.cardCharity && SFX.cardCharity(); await cardActFx({ pid: e.pid, card: 'charity', rare: 'N', detail: `缴纳 ¥${e.pay} · 教育基金 +¥${e.gain}` }); break; }
+    case 'negate': { await negateFx(e); break; }
+    case 'card_draft_offer': { cardDraftOpen(e); break; }
+    case 'card_draft_pick': { cardDraftMark(e); break; }
+    case 'card_draft_done': { await cardDraftDone(e); break; }
+    case 'ask_card': case 'card_done': case 'ask_negate': case 'ready': break;   // 由快照驱动浮层，不占动画队列
     case 'turn': {
       // v5.3：轮到谁，谁的棋子脚下亮一圈本人主题色光环；轮到自己时再补一声轻钟
       SFX.turn();
@@ -1777,7 +1866,10 @@ function drawCardsAnim(e) {
     const wrap = document.createElement('div');
     wrap.className = 'drawcards';
     wrap.innerHTML = `<div class="dc-title">🎁 ${esc(ownerName(e.pid))} 在${esc(e.label || '校园商城')}抽到 ${n} 张效果卡</div>
-      <div class="dc-row">${(e.cards || []).map((c, i) => `<div class="dc" style="animation-delay:${(i * 0.22).toFixed(2)}s"><div class="dc-ico">${c.icon || '🎁'}</div><div class="dc-name">${esc(c.name)}</div><div class="dc-desc">${esc(c.desc || '')}</div></div>`).join('')}</div>`;
+      <div class="dc-row">${(e.cards || []).map((c, i) => {
+        const R = rarOf(c.rare);
+        return `<div class="dc rar-${c.rare || 'R'}" style="--rc:${R.color};--rg:${R.glow};animation-delay:${(i * 0.22).toFixed(2)}s"><div class="dc-rar">${R.name}</div><div class="dc-ico">${c.icon || '🎁'}</div><div class="dc-name">${esc(c.name)}</div><div class="dc-desc">${esc(c.desc || '')}</div></div>`;
+      }).join('')}</div>`;
     $('fxLayer').appendChild(wrap);
     requestAnimationFrame(() => requestAnimationFrame(() => wrap.classList.add('show')));
     for (let i = 0; i < n; i++) setTimeout(() => SFX.sparkle(), sp(220 + i * 280));
@@ -2276,6 +2368,301 @@ async function hexFxBanner(e) {
   SFX.glint();
   fxBurst(playerCell(e.pid), { kind: 'spark', n: 10, speed: 2.6, size: 3, life: 32, color: [color, '#ffffff'] });
   await announce(`<span style="color:${color}">🧪</span> <span class="who">${esc(ownerName(e.pid))}</span> 的【${esc(pr.name || e.name || e.key)}】生效${e.detail ? `<br><span style="font-size:13px;opacity:.9">${esc(e.detail)}</span>` : ''}`, 1500);
+}
+
+// ================= v7.0：效果卡（品级展示 / 三张翻面卡 / 手动发动 / 响应） =================
+const RAR_UI = {
+  SSR: { name: '传说', color: '#D9942B', glow: 'rgba(217,148,43,.55)', hold: 3400, rays: 16 },
+  SR:  { name: '史诗', color: '#8E5BD8', glow: 'rgba(142,91,216,.50)', hold: 2800, rays: 12 },
+  R:   { name: '稀有', color: '#2E86C1', glow: 'rgba(46,134,193,.45)', hold: 2300, rays: 8 },
+  N:   { name: '普通', color: '#8A847A', glow: 'rgba(138,132,122,.40)', hold: 1750, rays: 6 },
+};
+const rarOf = r => RAR_UI[r] || RAR_UI.N;
+const cardOf = id => EFFECT_CARDS.find(c => c.id === id) || { id, name: id, icon: '🃏', rare: 'R', mode: 'auto', desc: '' };
+// 卡面（正面）
+function cardFaceHtml(c, o) {
+  const R = rarOf(c.rare), big = (o && o.big) || 1;
+  return `<div class="cf-face rar-${c.rare}" style="--rc:${R.color};--rg:${R.glow};--k:${big}">
+      <div class="cf-sheen"></div>
+      <div class="cf-rar">${R.name} · ${c.rare}</div>
+      <div class="cf-icon">${c.icon || '🃏'}</div>
+      <div class="cf-name">${esc(c.name)}</div>
+      <div class="cf-desc">${esc(c.desc || '')}</div>
+    </div>`;
+}
+// 卡背（翻面卡）
+function cardBackHtml(i) {
+  return `<div class="cf-back" data-i="${i}"><span class="cf-back-mark">🃏</span><span class="cf-back-q">?</span></div>`;
+}
+// ① 单张卡发动 / 获得的全屏特效（全场可见）
+async function cardActFx(e) {
+  const c = cardOf(e.card);
+  if (e.rare) c.rare = e.rare;
+  const R = rarOf(c.rare);
+  const who = ownerName(e.pid);
+  const layer = document.createElement('div');
+  layer.className = `cfx-layer rar-${c.rare}`;
+  const rays = Array.from({ length: R.rays }, ($v, i) => `<i class="cfx-ray" style="--a:${(360 / R.rays) * i}deg;--d:${(i % 3) * 90}ms"></i>`).join('');
+  layer.innerHTML = `<div class="cfx-dim"></div>
+    <div class="cfx-stage" style="--rc:${R.color};--rg:${R.glow}">
+      <div class="cfx-halo"></div>${rays}
+      <div class="cfx-burst"></div>
+      <div class="cfx-title">${e.mode === 'gain' ? '获得效果卡' : '效果卡发动'} · <b>${R.name}</b></div>
+      <div class="cfx-who">${esc(who)}</div>
+      ${cardFaceHtml(c, { big: 1.5 })}
+      ${e.detail ? `<div class="cfx-detail">${esc(e.detail)}</div>` : ''}
+    </div>`;
+  $('fxLayer').appendChild(layer);
+  requestAnimationFrame(() => requestAnimationFrame(() => layer.classList.add('show')));
+  try { SFX.card(); } catch (err) {}
+  setTimeout(() => { try { SFX.glint(); } catch (err) {} }, sp(260));
+  if (c.rare === 'SSR' || c.rare === 'SR') setTimeout(() => { try { SFX.hexPrism(); } catch (err) {} confettiBurst(c.rare === 'SSR' ? 90 : 60); }, sp(520));
+  else setTimeout(() => { try { SFX.sparkle(); } catch (err) {} }, sp(420));
+  fxBurst(playerCell(e.pid), { kind: 'star', n: c.rare === 'SSR' ? 22 : 14, speed: 3.4, size: 4.4, life: 46, color: [R.color, '#ffffff'] });
+  await sleep(R.hold);
+  layer.classList.add('out');
+  await sleep(420);
+  layer.remove();
+}
+// ② 无懈可击卡生效
+async function negateFx(e) {
+  const c = cardOf(e.card);
+  const layer = document.createElement('div');
+  layer.className = 'cfx-layer cfx-negate';
+  layer.innerHTML = `<div class="cfx-dim"></div>
+    <div class="cfx-stage" style="--rc:#5AA9E6;--rg:rgba(90,169,230,.5)">
+      <div class="cfx-halo"></div><div class="cfx-burst"></div>
+      <div class="cfx-title">效果无效化 · <b>无懈可击</b></div>
+      <div class="cfx-who">${esc(ownerName(e.pid))}</div>
+      <div class="ng-shield">🌀</div>
+      <div class="cfx-detail">让【${esc(c.name)}】失效了</div>
+    </div>`;
+  $('fxLayer').appendChild(layer);
+  requestAnimationFrame(() => requestAnimationFrame(() => layer.classList.add('show')));
+  try { SFX.clash(); SFX.beam(); } catch (err) {}
+  await sleep(1900);
+  layer.classList.add('out');
+  await sleep(360);
+  layer.remove();
+}
+
+// ③ 海克斯奖励卡：三张翻面卡 → 选一张 → 三张一起翻开 → 获得所选
+let cdEl = null, cdSig = '', cdClock = null, cdPicked = false, cdSafety = null;
+function cardDraftOpen(e) {
+  const offers = (e.offers || {})[myPid] || [];
+  if (!offers.length) return;            // 已淘汰 / 观战：只等 card_draft_done
+  const sig = `${e.round}|${offers.map(c => c.id).join(',')}`;
+  if (cdEl && cdSig === sig) return;
+  if (cdEl) cardDraftClose();
+  cdSig = sig; cdPicked = false;
+  const ms = e.ms || 30000;
+  const d = document.createElement('div');
+  d.className = 'cd-layer';
+  d.innerHTML = `<div class="cd-dim"></div>
+    <div class="cd-panel">
+      <div class="cd-glow"></div>
+      <div class="cd-head">
+        <div class="cd-kicker">第 ${e.round} 轮 · 海克斯奖励</div>
+        <div class="cd-big">🃏 三 张 翻 面 卡</div>
+        <div class="cd-sub">选一张翻开 · 三张一起揭晓 · 拿到你选中的那张</div>
+      </div>
+      <div class="cd-row">${offers.map(($c, i) => `<div class="cd-slot" data-i="${i}"><div class="cd-inner">${cardBackHtml(i)}<div class="cd-front">${cardFaceHtml(cardOf(offers[i].id), { big: 1 })}</div></div><div class="cd-tag" data-i="${i}"></div></div>`).join('')}</div>
+      <div class="cd-timer"><i class="cd-bar"><b id="cdBarFill"></b></i><span>剩余 <em id="cdClock">${Math.max(1, Math.round(ms / 1000))}</em> 秒 · 点击任意一张卡</span></div>
+      <div class="cd-picked"></div>
+    </div>`;
+  $('fxLayer').appendChild(d);
+  requestAnimationFrame(() => requestAnimationFrame(() => d.classList.add('show')));
+  cdEl = d;
+  d.__offers = offers;   // 揭晓时用（断线重连时快照可能已清空 S.draft）
+  try { SFX.hexRise(); } catch (err) {}
+  offers.forEach(($c, i) => setTimeout(() => { if (cdEl) { try { SFX.hexFlip(i); } catch (err) {} } }, sp(760 + i * 460)));
+  d.querySelectorAll('.cd-slot').forEach(slot => {
+    slot.addEventListener('mouseenter', () => { if (!cdPicked) { try { SFX.click(); } catch (err) {} slot.classList.add('hot'); } });
+    slot.addEventListener('mouseleave', () => slot.classList.remove('hot'));
+    slot.onclick = () => {
+      if (cdPicked) return;
+      cdPicked = true;
+      d.classList.add('chosen');
+      slot.classList.add('mine');
+      try { SFX.hexPick(); SFX.pow(); } catch (err) {}
+      // 已选卡：揭晓动画期间不让状态刷新把浮层摘掉；并加安全兜底，防 card_draft_done 丢失导致卡死
+      clearTimeout(cdSafety);
+      cdSafety = setTimeout(() => { if (cdEl) cardDraftClose(); }, sp(6400));
+      const idx = +slot.dataset.i;
+      // 三张一起翻开（先播动画，上报失败也不影响观感）
+      setTimeout(() => { revealDraft(d, idx); }, sp(340));
+      try { act({ type: 'pickDraft', idx }); } catch (err) {}
+    };
+  });
+  // 倒计时（真实时间）
+  let left = Math.max(1, Math.round(ms / 1000));
+  const total = left;
+  const fill = d.querySelector('#cdBarFill'), clock = d.querySelector('#cdClock');
+  if (fill) fill.style.width = '100%';
+  cdClock = setInterval(() => {
+    left--;
+    if (clock) clock.textContent = String(Math.max(0, left));
+    if (fill) {
+      const pct = Math.max(0, Math.min(100, (left / total) * 100));
+      fill.style.width = pct.toFixed(1) + '%';
+      fill.classList.toggle('warn', pct <= 55 && pct > 26);
+      fill.classList.toggle('danger', pct <= 26);
+    }
+    if (left > 0 && left <= 5) { try { SFX.tick(); } catch (err) {} }
+    if (left <= 0) clearInterval(cdClock);
+  }, 1000);
+  if ((S && S.draft && S.draft.picks) ? S.draft.picks[myPid] != null : false) { /* 重连时已选过 */ }
+}
+// 三张一起翻开
+function revealDraft(d, idx) {
+  const slots = d.querySelectorAll('.cd-slot');
+  slots.forEach((s, i) => setTimeout(() => {
+    s.classList.add('flipped');
+    try { SFX.hexFlip(i); } catch (err) {}
+  }, sp(i * 190)));
+  const mine = slots[idx];
+  setTimeout(() => {
+    if (mine) { mine.classList.add('win'); }
+    try { SFX.hexPrism(); SFX.fanfare(); } catch (err) {}
+    confettiBurst(64);
+    const card = (d.__offers && d.__offers[idx]) || null;
+    const R = card ? rarOf(card.rare) : rarOf('R');
+    const box = d.querySelector('.cd-picked');
+    if (box && card) box.innerHTML = `<span style="color:${R.color}">★ 你获得</span> ${card.icon || ''}${esc(card.name)} <em class="cd-rar" style="--rc:${R.color}">${R.name}</em>`;
+    const lay = d.querySelector('.cd-timer'); if (lay) lay.style.opacity = '.25';
+  }, sp(3 * 190 + 420));
+}
+function cardDraftMark(e) {
+  if (!cdEl) return;
+  const chip = document.createElement('i');
+  chip.className = 'cd-chip' + (e.pid === myPid ? ' me' : '');
+  chip.textContent = `${ownerName(e.pid)} 已抽`;
+  const host = cdEl.querySelector('.cd-head');
+  if (host && !host.querySelector(`[data-p="${e.pid}"]`)) { chip.dataset.p = e.pid; host.appendChild(chip); }
+}
+async function cardDraftDone(e) {
+  if (cdEl) {
+    // 自己的浮层还开着：等它播完自己的揭晓
+    await sleep(2600);
+    cardDraftClose();
+  }
+  await cardActFx({ pid: e.pid, card: e.card.id, rare: e.card.rare, mode: 'gain', detail: e.card.desc });
+}
+function cardDraftClose() {
+  clearInterval(cdClock); cdClock = null;
+  clearTimeout(cdSafety); cdSafety = null;
+  if (cdEl) { cdEl.remove(); cdEl = null; }
+  cdSig = ''; cdPicked = false;
+}
+window.cardDraftClose = cardDraftClose;
+
+// ④ 手动发动面板（自己回合，phase='card'）
+let handEl = null, handSig = '';
+function cardPanelSync() {
+  const myTurn = S && S.pendingCard && S.pendingCard.pid === myPid && S.phase === 'card';
+  if (!myTurn) { if (handEl) closeCardPanel(); return; }
+  const me = S.players.find(p => p.id === myPid);
+  const hand = (me && me.hand) || [];
+  const sig = hand.map(h => h.uid + ':' + h.id).join(',');
+  if (handEl && handSig === sig) return;
+  if (handEl) closeCardPanel();
+  handSig = sig;
+  const d = document.createElement('div');
+  d.className = 'cardp-layer';
+  d.innerHTML = `<div class="cardp">
+      <div class="cardp-head">🃏 你的效果卡 —— 现在可以发动（也可以留到下回合）</div>
+      <div class="cardp-row">${hand.length ? hand.map(h => {
+        const c = cardOf(h.id);
+        const R = rarOf(c.rare);
+        return `<button class="cardp-card rar-${c.rare}" style="--rc:${R.color};--rg:${R.glow}" data-uid="${esc(h.uid)}" data-id="${esc(h.id)}" title="${esc(c.desc)}">
+            <span class="cp-rar">${R.name}</span><span class="cp-icon">${c.icon}</span>
+            <span class="cp-name">${esc(c.name)}</span><span class="cp-desc">${esc(c.desc)}</span>
+          </button>`;
+      }).join('') : '<div class="cardp-empty">手上没有可发动的卡</div>'}</div>
+      <div class="cardp-foot"><span class="cardp-tip">点击卡片发动；需要指定对手的会弹出名单</span><button class="btn small" id="cardpSkip">跳过，直接掷骰 ▸</button></div>
+    </div>`;
+  $('fxLayer').appendChild(d);
+  requestAnimationFrame(() => requestAnimationFrame(() => d.classList.add('show')));
+  handEl = d;
+  try { SFX.card(); } catch (err) {}
+  d.querySelector('#cardpSkip').onclick = () => { try { SFX.click(); } catch (err) {} act({ type: 'skipCard' }); closeCardPanel(); };
+  d.querySelectorAll('.cardp-card').forEach(btn => {
+    btn.onclick = () => {
+      const id = btn.dataset.id, uid = btn.dataset.uid;
+      const c = cardOf(id);
+      const needTgt = ['seize', 'demolish', 'repeat', 'forcetax', 'forceroll', 'challenge', 'snatch', 'dismantle'].includes(id);
+      if (id === 'copycard') { showCopyPicker(d, uid, btn); return; }
+      if (!needTgt) { try { SFX.hexPick(); } catch (err) {} act({ type: 'useCard', uid }); closeCardPanel(); return; }
+      showTargetPicker(d, uid, id, c);
+    };
+  });
+}
+function showTargetPicker(d, uid, id, c) {
+  const cands = targetCands(id);
+  if (!cands.length) { try { SFX.buzzer(); } catch (err) {} return; }
+  const box = document.createElement('div');
+  box.className = 'cardp-targets';
+  box.innerHTML = `<div class="ct-title">发动「${esc(c.name)}」· 选择目标</div>
+    <div class="ct-row">${cands.map(t => `<button class="ct-btn" data-pid="${esc(t.id)}" style="--pc:${t.color}"><span class="dot" style="background:${t.color}"></span>${esc(t.name)}<em>¥${t.cash}</em></button>`).join('')}</div>
+    <button class="btn small" id="ctCancel">取消</button>`;
+  d.querySelector('.cardp').appendChild(box);
+  requestAnimationFrame(() => box.classList.add('show'));
+  box.querySelector('#ctCancel').onclick = () => box.remove();
+  box.querySelectorAll('.ct-btn').forEach(b => {
+    b.onclick = () => { try { SFX.pow(); } catch (err) {} act({ type: 'useCard', uid, target: b.dataset.pid }); closeCardPanel(); };
+  });
+}
+function showCopyPicker(d, uid, srcBtn) {
+  const me = S.players.find(p => p.id === myPid);
+  const pool = ((me && me.hand) || []).filter(h => h.id !== 'copycard' && h.id !== 'flawless');
+  if (!pool.length) { try { SFX.buzzer(); } catch (err) {} return; }
+  const box = document.createElement('div');
+  box.className = 'cardp-targets';
+  box.innerHTML = `<div class="ct-title">复印卡 · 选择要复制的一张</div>
+    <div class="ct-row">${pool.map(h => { const c2 = cardOf(h.id); const R = rarOf(c2.rare); return `<button class="ct-btn" data-uid="${esc(h.uid)}" style="--pc:${R.color}">${c2.icon} ${esc(c2.name)}</button>`; }).join('')}</div>
+    <button class="btn small" id="ctCancel2">取消</button>`;
+  d.querySelector('.cardp').appendChild(box);
+  requestAnimationFrame(() => box.classList.add('show'));
+  box.querySelector('#ctCancel2').onclick = () => box.remove();
+  box.querySelectorAll('.ct-btn').forEach(b => {
+    b.onclick = () => { try { SFX.hexPick(); } catch (err) {} act({ type: 'useCard', uid, pick: b.dataset.uid }); closeCardPanel(); };
+  });
+}
+function targetCands(id) {
+  const list = (S ? S.players : []).filter(p => p.id !== myPid && p.alive);
+  if (id === 'seize') return list.filter(p => p.cash > 0);
+  if (id === 'demolish') return list;   // 引擎会自动挑有楼的目标地皮；无楼则提示无效
+  if (id === 'snatch' || id === 'dismantle') return list.filter(p => (p.cardCount || 0) > 0 || (p.medal || 0) + (p.joker || 0) + (p.fineFree || 0) + (p.stayFree || 0) + (p.rentX2 || 0) + (p.rentHalf || 0) + (p.insure || 0) + (p.truce || 0) + (p.auctionVouch || 0) + (p.revive || 0) > 0);
+  return list;
+}
+function closeCardPanel() { if (handEl) { handEl.remove(); handEl = null; } handSig = ''; }
+window.closeCardPanel = closeCardPanel;
+
+// ⑤ 无懈可击响应框
+let ngEl = null, ngSig = '';
+function negateSync() {
+  const pn = S && S.phase === 'negate' ? S.pendingNegate : null;
+  const mine = pn && pn.pid === myPid;
+  if (!mine) { if (ngEl) { ngEl.remove(); ngEl = null; ngSig = ''; } return; }
+  const sig = pn.attacker + ':' + pn.card;
+  if (ngEl && ngSig === sig) return;
+  if (ngEl) { ngEl.remove(); ngEl = null; }
+  ngSig = sig;
+  const c = cardOf(pn.card);
+  const d = document.createElement('div');
+  d.className = 'ng-layer';
+  d.innerHTML = `<div class="ng-box">
+      <div class="ng-icon">🌀</div>
+      <div class="ng-txt"><b>${esc(ownerName(pn.attacker))}</b> 对你使用了「${c.icon || ''}${esc(c.name)}」<br>
+        <span class="ng-sub">使用「无懈可击卡」可以让它<b>完全失效</b>（你手上这张会被消耗）</span></div>
+      <div class="ng-btns"><button class="btn primary" id="ngYes">🌀 使用无懈可击卡</button><button class="btn" id="ngNo">不用，认下</button></div>
+    </div>`;
+  $('fxLayer').appendChild(d);
+  requestAnimationFrame(() => requestAnimationFrame(() => d.classList.add('show')));
+  ngEl = d;
+  try { SFX.beam(); SFX.tick(); } catch (err) {}
+  d.querySelector('#ngYes').onclick = () => { try { SFX.pow(); } catch (err) {} act({ type: 'useNegate', yes: true }); };
+  d.querySelector('#ngNo').onclick = () => { try { SFX.click(); } catch (err) {} act({ type: 'useNegate', yes: false }); };
 }
 
 // 地图中央常驻徽章（每帧 renderPanel 调用；landing=true 时播放落位特效）

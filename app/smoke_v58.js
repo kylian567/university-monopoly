@@ -31,9 +31,9 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 
     console.log('\n[1] 公告版本 + 运行时镜像 + 大厅美化');
     const ann = await page.evaluate(() => (document.querySelector('#intro .announce-logo') || {}).textContent || '');
-    ok(/v(?:5\.(?:14|13|12)|6\.\d+)/.test(ann), `开局公告标题：${ann}`);
+    ok(/v(?:5\.(?:14|13|12)|6\.\d+|7\.\d+)/.test(ann), `开局公告标题：${ann}`);
     const annSub = await page.evaluate(() => (document.querySelector('.announce-sub') || {}).textContent || '');
-    ok(/v6\.0/.test(annSub), `作者公告版本号：${annSub.trim()}`);
+    ok(/v7\.0/.test(annSub), `作者公告版本号：${annSub.trim()}`);
     await page.click('#btnAnnounce'); await sleep(240);
     await page.click('#btnIntro'); await sleep(240);
     await page.click('#btnRulesClose').catch(() => {});
@@ -43,7 +43,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
       newSfx: ['decay', 'investFail', 'steal'].every(k => typeof SFX[k] === 'function'),
       deco: document.querySelectorAll('.lobby-deco span').length,
     }));
-    ok(rt.sfx === 102, `音效表 ${rt.sfx} 种（预期 102）`);
+    ok(rt.sfx === 104, `音效表 ${rt.sfx} 种（预期 104 · v7.0 加 pow/cardCharity）`);
     ok(rt.newSfx, '3 个新音效 decay / investFail / steal 已挂载');
     ok(rt.deco >= 6, `大厅漂浮装饰 ${rt.deco} 枚`);
 
@@ -51,6 +51,9 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
     await page.fill('#nameInput', '验收员');
     await page.click('#btnCreate'); await sleep(400);
     await page.click('#btnAddAI'); await sleep(200);
+    // v7.0：开局改为「全员准备」门控 —— 先点准备，再开始
+    await page.evaluate(() => { const b = document.querySelector('#btnReady'); if (b && !b.classList.contains('on')) b.click(); }).catch(() => {});
+    await sleep(700);
     await page.click('#btnStart');
     await page.waitForSelector('.fac-layer.show', { timeout: 10000 });
     await sleep(1200);

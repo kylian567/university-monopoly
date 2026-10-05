@@ -203,8 +203,12 @@ console.log('\n[5] 经济寒冬：第 15 轮起停发工资');
       // v5.3：补上 discount（8折卡）与 shield（免罚符）两种不带计数的卡，消除随机抽卡造成的偶发误报
       // v5.8：卡池 9 张——voucher/shield 已移出，新增 fineFree（免罚款）/ buildCutCard（盖房9折）/ stayFree（免停留）
       // v6.0：卡池新增「万能卡」joker，判定式必须一并覆盖
+      // v7.0：手动 / 响应型效果卡改为进手牌（hand），判定式一并覆盖
       const gained = w.medal > 0 || w.voucher > 0 || w.skillLeft > ws || w.stepBuffs.length > 0 || w.cash > wc || w.discount || w.shield
-        || w.fineFree > 0 || w.buildCutCard > 0 || w.stayFree > 0 || (w.joker || 0) > 0;
+        || w.fineFree > 0 || w.buildCutCard > 0 || w.stayFree > 0 || (w.joker || 0) > 0
+        || (w.rentX2 || 0) > 0 || (w.rentHalf || 0) > 0 || (w.insure || 0) > 0 || (w.truce || 0) > 0
+        || (w.auctionVouch || 0) > 0 || (w.revive || 0) > 0 || (w.investCards || []).length > 0
+        || (w.hand || []).length > 0;
       ok(gained, `踩校园商城抽到效果卡（medal=${w.medal} voucher=${w.voucher} 技能+${w.skillLeft - ws} 加速×${w.stepBuffs.length} 现金${w.cash - wc >= 0 ? '+' : ''}${w.cash - wc}）`);
       console.log(`\n结果：${pass} 通过 / ${fail} 失败`);
       process.exit(fail ? 1 : 0);

@@ -82,7 +82,7 @@ function sliceFn(src, name) {
 
   const sfxBlock = sliceObject(cliJs, 'const SFX = {');
   const sfxKeys = (sfxBlock.match(/^\s{2}[A-Za-z_$][\w$]*\s*:/gm) || []).length;
-  ok(sfxKeys === 102, `音效表共 ${sfxKeys} 种（v5.8 新增 3 种后预期 102）`);
+  ok(sfxKeys === 104, `音效表共 ${sfxKeys} 种（v7.0 新增 pow / cardCharity 后预期 104）`);
   const newSfx = ['skillCast', 'beam', 'chip', 'upgrade', 'coinFly', 'gavel', 'pulse', 'glint', 'whooshLow', 'crown', 'revive', 'roundBell', 'diceSettle'];
   const missSfx = newSfx.filter(k => !new RegExp('\\b' + k + '\\s*:').test(sfxBlock));
   ok(missSfx.length === 0, `13 个新音效都已定义${missSfx.length ? '（缺 ' + missSfx.join(',') + '）' : ''}`);
@@ -108,7 +108,7 @@ function sliceFn(src, name) {
 
     console.log('\n[2] 开局公告与规则弹窗');
     const ann = await page.evaluate(() => (document.querySelector('#intro .announce-logo') || {}).textContent || '');
-    ok(/v(?:5\.\d+|6\.\d+)/.test(ann), `开局公告标题：${ann}`);
+    ok(/v(?:5\.\d+|6\.\d+|7\.\d+)/.test(ann), `开局公告标题：${ann}`);
     const body = await page.evaluate(() => [...document.querySelectorAll('#intro .intro-body')].map(e => e.textContent).join('\n'));   // v5.6：多版本段落为并列 body，全部拼接
     ok(/60 种/.test(body) && /电气/.test(body), '公告正文写明"专业 33 → 60 种"并点名电气');
     ok(/不再整个屏幕晃/.test(body) || /不再.*晃/.test(body), '公告写明"骰子掷完不再晃屏"');
@@ -195,7 +195,7 @@ function sliceFn(src, name) {
     }));
     ok(rt.majors === 60, `运行时 MAJORS ${rt.majors} 项`);
     ok(rt.elec === '电气工程' && rt.elecMode === 'active', `电气工程 = ${rt.elec}（${rt.elecMode} 主动技）`);
-    ok(rt.sfx === 102, `运行时音效表 ${rt.sfx} 种`);
+    ok(rt.sfx === 104, `运行时音效表 ${rt.sfx} 种`);
     ok(rt.fns.every(t => t === 'function'), `5 个新特效函数均已挂载：${rt.fns.join('/')}`);
     ok(rt.fac === 60, `v5.2 校园风貌镜像同步（${rt.fac} 项，v6.0 新增「拆迁校区」）`);
 
@@ -217,6 +217,9 @@ function sliceFn(src, name) {
     ok(!/shake/.test(ripple.boardAnim), `棋盘当前未挂 shake 动画（animation-name: ${ripple.boardAnim}）`);
 
     console.log('\n[8] 带新专业开局不报错');
+    // v7.0：开局改为「全员准备」门控 —— 先点准备，再开始
+    await page.evaluate(() => { const b = document.querySelector('#btnReady'); if (b && !b.classList.contains('on')) b.click(); }).catch(() => {});
+    await page.waitForTimeout(700);
     await page.click('#btnStart');
     await page.waitForSelector('.fac-layer.show, #board', { timeout: 10000 });
     await page.waitForTimeout(1200);

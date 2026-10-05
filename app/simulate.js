@@ -21,7 +21,30 @@ function pump(room, maxSteps = 200000) {
       case 'branch': p.isAI ? room.aiBranch(p) : room.declineBranch(p); break;
       case 'invest': p.isAI ? room.aiInvest(p) : room.declineInvest(p); break;
       case 'skill': p.isAI ? room.aiSkill(p) : room.skipSkill(p); break;
+      // v7.0：手动效果卡 —— 待决策者可能是非当前玩家，按 pid 定位
+      case 'card': {
+        const pc = room.pendingCard;
+        const t = pc ? room.players.find(q => q.id === pc.pid) : null;
+        if (t) { t.isAI ? room.aiCard(t) : room.skipCard(t); }
+        break;
+      }
+      // v7.0：无懈可击响应 —— 响应方是「被攻击者」而非当前玩家
+      case 'negate': {
+        const pn = room.pendingNegate;
+        const t = pn ? room.players.find(q => q.id === pn.pid) : null;
+        if (t) { t.isAI ? room.aiNegate(t, pn.card) : room.useNegate(t, false); }
+        break;
+      }
       case 'auction': room.endAuction(); break;
+      // v7.0：海克斯奖励卡「三张翻面卡」—— 全员各自选，选完自动结算
+      case 'carddraft': {
+        const dr = room.draft;
+        if (!dr) { room.settleDraft(); break; }
+        const t = room.alive().find(q => dr.picks[q.id] == null);
+        if (!t) { room.settleDraft(); break; }
+        t.isAI ? room.aiDraft(t) : room.pickDraftCard(t, 0);
+        break;
+      }
       case 'raise': room.forceSettleRaise(); break;
       case 'resolving': /* doRoll 中 setTimeout(resolveCell) —— 同步替代 */ break;
       default: room.endTurn();
@@ -46,7 +69,7 @@ global.setTimeout = function (fn, ms) {
   return _setTimeout(fn, 1);
 };
 
-const room = new Room('000001');
+const room = new Room('000001', { faculty: true, hex: true, draft: true });
 for (let i = 0; i < 4; i++) room.join('AI' + (i + 1), true);
 room.start();
 const steps = pump(room);

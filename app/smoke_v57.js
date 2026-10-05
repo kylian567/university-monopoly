@@ -32,7 +32,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 
     console.log('\n[1] 公告版本 + 运行时镜像');
     const ann = await page.evaluate(() => (document.querySelector('#intro .announce-logo') || {}).textContent || '');
-    ok(/v(?:5\.(?:7|8|9|10|11|12|13|14)|6\.\d+)/.test(ann), `开局公告标题：${ann}`);
+    ok(/v(?:5\.(?:7|8|9|10|11|12|13|14)|6\.\d+|7\.\d+)/.test(ann), `开局公告标题：${ann}`);
     await page.click('#btnAnnounce'); await sleep(240);
     await page.click('#btnIntro'); await sleep(240);
     await page.click('#btnRulesClose').catch(() => {});
@@ -56,6 +56,9 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
     await page.fill('#nameInput', '验收员');
     await page.click('#btnCreate'); await sleep(400);
     await page.click('#btnAddAI'); await sleep(200);
+    // v7.0：开局改为「全员准备」门控 —— 先点准备，再开始
+    await page.evaluate(() => { const b = document.querySelector('#btnReady'); if (b && !b.classList.contains('on')) b.click(); }).catch(() => {});
+    await sleep(700);
     await page.click('#btnStart');
     await page.waitForSelector('.fac-layer.show', { timeout: 10000 });
     await sleep(1200);
@@ -151,6 +154,12 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
         ai: (S.players.find(p => p.isAI) || {}).hexList || [],
         overlay: !!document.querySelector('.hx-layer'),
       }));
+      // v7.0：立项结算后先进入「三张翻面卡」（phase='carddraft'）—— 自动选一张再继续等
+      if (st.phase === 'carddraft') {
+        await page.evaluate(() => { const c = document.querySelector('.cd-slot'); if (c) c.click(); });
+        await sleep(2600);
+        continue;
+      }
       if ((st.phase === 'roll' || st.phase === 'skill') && st.mine.length === 1 && st.ai.length === 1 && !st.overlay) { ok(true, `结算完成：双方各立项 1 个，回到 ${st.phase}（我=${JSON.stringify(st.mine)}）`); break; }
       await sleep(700);
       if (Date.now() - t0 > 28000) ok(false, `结算未完成：phase=${st.phase} hexList=${JSON.stringify(st.mine)}/${JSON.stringify(st.ai)}`);

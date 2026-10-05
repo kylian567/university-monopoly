@@ -134,7 +134,7 @@ section(4, '重投：连用两回合，第三回合锁定');
 // ================= [5] 效果卡池重做 =================
 section(5, '效果卡池：9 张新池（无免租券/免罚符）+ 盲盒 1/2/3 张 50/30/20');
 {
-  ok(G.EFFECT_CARDS.length === 10, `池 10 张（v6.0 新增万能卡，实际 ${G.EFFECT_CARDS.length}）`);
+  ok(G.EFFECT_CARDS.length === 34, `池 34 张（v7.0：原 10 张 + 新增 24 张，实际 ${G.EFFECT_CARDS.length}）`);
   ok(!G.EFFECT_CARDS.some(c => c.id === 'voucher') && !G.EFFECT_CARDS.some(c => c.id === 'shield'), '免租券 / 免罚符已移出卡池');
   ok(G.EFFECT_CARDS.some(c => c.id === 'buildcut') && G.EFFECT_CARDS.some(c => c.id === 'finefree') && G.EFFECT_CARDS.some(c => c.id === 'steal') && G.EFFECT_CARDS.some(c => c.id === 'stayfree'), '新增 盖房9折 / 免罚款 / 偷师 / 免停留');
   const r = mkRoom();
@@ -144,6 +144,7 @@ section(5, '效果卡池：9 张新池（无免租券/免罚符）+ 盲盒 1/2/3
   ok(Math.abs(cnt[0] / 600 - 0.5) < 0.12 && Math.abs(cnt[2] / 600 - 0.2) < 0.08, `比例接近 50/30/20`);
   // 偷师卡
   const [a, b] = r.players;
+  b.major = 'fin';   // 固定为被动技专业，避免抽到主动技时走「借技能」分支导致断言随机失败
   a.skillLeft = 0; b.skillLeft = 2;
   r.grantCards(a, a.pos, 1, '测试');   // 随机卡，可能不是 steal —— 直接构造
   a.skillLeft = 0; b.skillLeft = 2;
@@ -242,7 +243,7 @@ section(8, '裸地 ×1.3 / 垄断裸地 ×2 / 机场 800/1600/3500/5500（v5.9�
 // ================= [9] 海克斯：第 4 次触发 + 削弱抽查 =================
 section(9, '海克斯：第 32 轮第四次立项 + 全池削弱抽查 + 镜像一致');
 {
-  ok(JSON.stringify(G.HEX_TRIGGERS) === JSON.stringify([2, 10, 16, 20, 25, 32, 36, 40, 46, 50, 60, 70, 80, 90, 100, 110, 120]), '触发轮 v6.0：2/10/16/20/25/32/36/40/46/50 + 每 10 轮（60~120）');
+  ok(JSON.stringify(G.HEX_TRIGGERS) === JSON.stringify([2, 8, 16, 25, 32, 40, 49, 55, 62, 70, 77, 85, 91, 100, 110]), '触发轮 v7.0：2/8/16/25/32/40/49/55/62/70/77/85/91/100/110（共 15 次）');
   ok(G.HEX_TIER_P.length === 1 && G.HEX_TIER_P[0][0] === 0.43 && G.HEX_TIER_P[0][1] === 0.32 && G.HEX_TIER_P[0][2] === 0.25, 'v6.0：所有立项统一 43/32/25');
   ok(G.HEX_PICK_MS === 70000, `海克斯选择时长 70s（v5.12）`);
   ok(G.FACULTY_VOTE_MS === 60000, `风貌投票时长 60s（v5.12）`);
@@ -343,9 +344,9 @@ section(12, 'v5.9 城邦 10 轮一届：换届触发 / 届次限池 / 抽签窗�
   r.facTermStart = 11;
   for (let i = 0; i < 20; i++) {
     r.applyFacultySetup('freeRound');
-    ok(r.freeRound >= 11 && r.freeRound <= 20, `第 2 届免费轮落在本届窗口（${r.freeRound}）`);
+    ok(r.freeRounds.length === 2 && r.freeRounds.every(x => x >= 11 && x <= 20), `第 2 届免费轮落在本届窗口（${r.freeRounds.join('/')}）`);
     r.applyFacultySetup('freeRent');
-    ok(r.freeRentRounds.every(x => x >= 11 && x <= 20) && new Set(r.freeRentRounds).size === 4, `第 2 届免租轮全部落在本届窗口（${r.freeRentRounds.join('/')}）`);
+    ok(r.freeRentRounds.every(x => x >= 11 && x <= 20) && new Set(r.freeRentRounds).size === 5, `第 2 届免租轮全部落在本届窗口（${r.freeRentRounds.join('/')}）`);
   }
 }
 
@@ -364,8 +365,8 @@ section(13, 'v5.9 海克斯平衡：停发工资后工资类项目不再出现')
     r.phase = 'roll'; r.project = null;
     return offs;
   };
-  // 第 32/40/50 轮立项（停薪 15 轮之后）：不应出现工资类项目（v5.14 第 4 次改到 32 轮）
-  for (const round of [32, 40, 50]) {
+  // 第 32/40/49 轮立项（停薪 15 轮之后）：不应出现工资类项目（v7.0 触发轮表）
+  for (const round of [32, 40, 49]) {
     const offs = check(round);
     ok(!offs.some(k => DEAD.includes(k)), `第 ${round} 轮立项不含工资类项目（共 ${offs.length} 张候选）`);
   }

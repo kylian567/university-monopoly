@@ -43,10 +43,10 @@ section(1, 'v6.0 常量：初始资金 26666 / 触发轮重排 / 统一概率 / 
 {
   ok(START_CASH === 26666, `初始资金 = ¥${START_CASH}（原 30000）`);
   ok(REROLL_COST === 800, `重投基准价 = ¥${REROLL_COST}（原 1200）`);
-  ok(JSON.stringify(HEX_TRIGGERS) === JSON.stringify([2, 10, 16, 20, 25, 32, 36, 40, 46, 50, 60, 70, 80, 90, 100, 110, 120]),
-    '触发轮 = 2/10/16/20/25/32/36/40/46/50 + 每 10 轮（60~120）');
-  ok(JSON.stringify(HEX_TRIGGERS_EARLY) === JSON.stringify([2, 5, 10, 16, 20, 25, 32, 36, 40, 46, 50]),
-    '提前表（时光之城）= 2/5/10/16/20/25/32/36/40/46/50');
+  ok(JSON.stringify(HEX_TRIGGERS) === JSON.stringify([2, 8, 16, 25, 32, 40, 49, 55, 62, 70, 77, 85, 91, 100, 110]),
+    'v7.0 触发轮 = 2/8/16/25/32/40/49/55/62/70/77/85/91/100/110（共 15 次）');
+  ok(JSON.stringify(HEX_TRIGGERS_EARLY) === JSON.stringify([2, 5, 10, 16, 25, 32, 40, 49, 55, 62, 70, 77, 85, 91, 100]),
+    'v7.0 提前表（时光之城）= 2/5/10/16/25/32/40/49/55/62/70/77/85/91/100');
   ok(HEX_TIER_P.length === 1 && HEX_TIER_P[0][0] === 0.43 && HEX_TIER_P[0][1] === 0.32 && HEX_TIER_P[0][2] === 0.25,
     '所有立项统一 银 43 / 金 32 / 彩 25');
   const r = mkRoom(2);
@@ -87,12 +87,12 @@ section(3, '校区风貌：嘉年华与文体首次重投 8 折（修复「重�
   const rc = facRoom('carnival');
   const pc = rc.players[0];
   pc.rerollUsed = false;
-  ok(rc.rerollCostFor(pc) === 640, `嘉年华校区每轮首次重投 8 折 = ¥${rc.rerollCostFor(pc)}（修复：旧版无效果）`);
+  ok(rc.rerollCostFor(pc) === 560, `嘉年华校区每轮首次重投 7 折 = ¥${rc.rerollCostFor(pc)}（v7.0：8 折→7 折）`);
   pc.rerollUsed = true;
   ok(rc.rerollCostFor(pc) === 800, `本回合再次重投恢复 ¥${rc.rerollCostFor(pc)}`);
   const rs = facRoom('sports');
   rs.players[0].rerollUsed = false;
-  ok(rs.rerollCostFor(rs.players[0]) === 640, `文体校区同样 8 折 = ¥${rs.rerollCostFor(rs.players[0])}`);
+  ok(rs.rerollCostFor(rs.players[0]) === 560, `文体校区同样 7 折 = ¥${rs.rerollCostFor(rs.players[0])}`);
 
   ok(!!FACULTY.redevelop && FACULTY.redevelop.icon && FACULTY.redevelop.color && FACULTY.redevelop.lead && FACULTY.redevelop.cost,
     '新增「拆迁校区」字段齐全');
@@ -104,10 +104,10 @@ section(3, '校区风貌：嘉年华与文体首次重投 8 折（修复「重�
   const own = rd.players[0];
   const ci = unownedProp(rd);
   rd.cells[ci].own = own.id; rd.cells[ci].level = 4;
-  rd.round = 3;
+  rd.round = 2;   // v7.0：拆迁校区由「每 3 轮」改为「每 2 轮」
   const before = rd.cells[ci].level;
   rd.applyFacultyRound();
-  ok(rd.cells[ci].level === before - 1, `第 3 轮拆迁：Lv${before} → Lv${rd.cells[ci].level}`);
+  ok(rd.cells[ci].level === before - 1, `第 2 轮拆迁：Lv${before} → Lv${rd.cells[ci].level}`);
   // 缴税时旅馆按 4 层
   const rt = mkRoom(2);
   const pt = rt.players[0]; pt.cash = 99999;
@@ -139,7 +139,7 @@ section(4, '物业税：旅馆算 4 层、≥6 栋起征、6~10 每栋 130 / 11~
 // ================= [5] 效果卡：万能卡 / 免罚款卡 / 偷师即发动 / 现金红包 =================
 section(5, '效果卡 v6.0：万能卡（免一切负面含租金）、免罚款卡（免租金外一切）、偷师获得即发动、红包 800~1200');
 {
-  ok(EFFECT_CARDS.length === 10, `效果卡池 = ${EFFECT_CARDS.length} 张（新增万能卡）`);
+  ok(EFFECT_CARDS.length === 34, `效果卡池 = ${EFFECT_CARDS.length} 张（v7.0：原 10 张 + 新增 24 张）`);
   ok(EFFECT_CARDS.some(c => c.id === 'joker' || c.name === '万能卡'), '卡池含「万能卡」');
   const jk = EFFECT_CARDS.find(c => c.id === 'joker' || c.name === '万能卡');
   ok(/负面|租金|罚款|停留|拆/.test(jk.desc), `万能卡描述覆盖负面效果：${jk.desc}`);

@@ -33,7 +33,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 
     console.log('\n[1] 公告版本 + 运行时常量 + v5.14 标记');
     const ann = await page.evaluate(() => (document.querySelector('#intro .announce-logo') || {}).textContent || '');
-    ok(/v(?:5\.(?:14|13|12|11)|6\.\d+)/.test(ann), `开局公告标题：${ann}`);
+    ok(/v(?:5\.(?:14|13|12|11)|6\.\d+|7\.\d+)/.test(ann), `开局公告标题：${ann}`);
     const marks = await page.evaluate(() => ({
       facMs: typeof FACULTY_VOTE_MS !== 'undefined' ? FACULTY_VOTE_MS : null,
       rotScript: !!document.documentElement.outerHTML.match(/mobileLandscape/) || typeof window.closeHexUI === 'function',
@@ -94,6 +94,9 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
     await p2.fill('#nameInput', '横屏验收');
     await p2.click('#btnCreate'); await sleep(500);
     await p2.click('#btnAddAI'); await sleep(250);
+    // v7.0：开局改为「全员准备」门控 —— 先点准备，再开始
+    await p2.evaluate(() => { const b = document.querySelector('#btnReady'); if (b && !b.classList.contains('on')) b.click(); }).catch(() => {});
+    await sleep(700);
     await p2.click('#btnStart');
     await p2.waitForSelector('.fac-layer.show', { timeout: 12000 });
     await sleep(1200);

@@ -32,6 +32,9 @@ const ok = (cond, msg) => { if (cond) { pass++; console.log('  ✓', msg); } els
     await page.click('#btnCreate');
     await page.waitForTimeout(400);
     for (let i = 0; i < 3; i++) { await page.click('#btnAddAI'); await page.waitForTimeout(200); }
+    // v7.0：开局改为「全员准备」门控 —— 先点准备，再开始
+    await page.evaluate(() => { const b = document.querySelector('#btnReady'); if (b && !b.classList.contains('on')) b.click(); }).catch(() => {});
+    await page.waitForTimeout(700);
     await page.click('#btnStart');
     await page.waitForSelector('.fac-layer.show', { timeout: 8000 });
     await page.waitForTimeout(1300);   // 等浮层淡入与三张卡翻正

@@ -57,7 +57,7 @@ section(1, 'PROJECTS / HEX_TIERS 镜像一致 + 表完整性');
   ok(keysOK, 'PROJECT_KEYS 三档分组完整');
   // 同档内效果幅度一致（平衡约束抽查：同名修正在不同项目里的量纲统一）
   ok(G.HEX_TIER_P.length === 1 && G.HEX_TIER_P.every(r => Math.abs(r[0] + r[1] + r[2] - 1) < 1e-9), 'v6.0：所有立项统一一行档位概率且归一（银 43 / 金 32 / 彩 25）');
-  ok(JSON.stringify(G.HEX_TRIGGERS) === JSON.stringify([2, 10, 16, 20, 25, 32, 36, 40, 46, 50, 60, 70, 80, 90, 100, 110, 120]), '触发轮次 v6.0：2/10/16/20/25/32/36/40/46/50 + 每 10 轮（60~120）');
+  ok(JSON.stringify(G.HEX_TRIGGERS) === JSON.stringify([2, 8, 16, 25, 32, 40, 49, 55, 62, 70, 77, 85, 91, 100, 110]), '触发轮次 v7.0：2/8/16/25/32/40/49/55/62/70/77/85/91/100/110（共 15 次）');
 }
 
 // ================= [2] maybeProject 流程与发牌 =================
@@ -91,10 +91,10 @@ section(2, '三选一开启：全员同档、选项不重复、不发已拥有�
   room.players[0].hexList = ['stipend'];
   room.players[0].hexList.length; // noop
   room.project = null; room.phase = 'roll';
-  room.round = 10; room.hexDoneRounds = [];
+  room.round = 16; room.hexDoneRounds = [];
   room.maybeProject();
   ok(!room.project.offers[room.players[0].id].includes('stipend'), '已立项的项目不会再次进入候选');
-  ok(room.hexDoneRounds.includes(10) && room.hexDoneRounds.length >= 1, '触发轮次去重登记');
+  ok(room.hexDoneRounds.includes(16) && room.hexDoneRounds.length >= 1, '触发轮次去重登记');
   room.clearTimer(); room.clearAiTimers();
 }
 
@@ -114,16 +114,16 @@ section(3, '档位概率：v6.0 所有立项统一 银 43 / 金 32 / 彩 25');
   const tot = count.silver + count.gold + count.prism;
   ok(Math.abs(count.silver / tot - 0.43) < 0.07 && Math.abs(count.gold / tot - 0.32) < 0.07 && Math.abs(count.prism / tot - 0.25) < 0.07,
     `分布贴近 43/32/25（实得 ${(count.silver / tot * 100).toFixed(1)}/${(count.gold / tot * 100).toFixed(1)}/${(count.prism / tot * 100).toFixed(1)}）`);
-  // 第 8 次立项（第 50 轮）与第 1 次用同一行概率，长期分布应基本一致
+  // 第 8 次立项（第 49 轮）与第 1 次用同一行概率，长期分布应基本一致
   const cnt8 = { silver: 0, gold: 0, prism: 0 };
   for (let i = 0; i < N; i++) {
     const room = mkRoom(2);
     room.start(); room.clearTimer(); room.clearAiTimers();
-    room.round = 50; room.maybeProject();
+    room.round = 49; room.maybeProject();
     cnt8[room.project.tier]++;
     room.clearTimer(); room.clearAiTimers();
   }
-  ok(cnt8.silver > cnt8.prism && Math.abs(cnt8.prism / N - count.prism / N) < 0.08, `第 50 轮立项同样走统一概率（彩 ${(cnt8.prism / N * 100).toFixed(1)}% vs 第 1 次 ${(count.prism / N * 100).toFixed(1)}%）`);
+  ok(cnt8.silver > cnt8.prism && Math.abs(cnt8.prism / N - count.prism / N) < 0.08, `第 49 轮立项同样走统一概率（彩 ${(cnt8.prism / N * 100).toFixed(1)}% vs 第 1 次 ${(count.prism / N * 100).toFixed(1)}%）`);
 }
 
 // ================= [4] 选择与结算闭环 =================
@@ -145,7 +145,7 @@ section(4, 'pickProject → settleProject → 立项生效 → 回到 roll');
   // AI 全自动走一遍
   const room2 = mkRoom(4);
   room2.start(); room2.clearTimer(); room2.clearAiTimers();
-  room2.round = 10; room2.maybeProject();
+  room2.round = 16; room2.maybeProject();
   for (const p of room2.players) room2.aiProject(p);
   ok(room2.project === null && room2.phase !== 'project' && room2.players.every(p => p.hexList.length === 1), 'AI 自动三选一也能走完整个流程');
   room2.clearTimer(); room2.clearAiTimers();
