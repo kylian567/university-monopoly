@@ -91,6 +91,8 @@ function snapshot(room) {
     pendingNegate: room.pendingNegate ? { pid: room.pendingNegate.pid, card: room.pendingNegate.card, attacker: room.pendingNegate.attacker, name: (room.pendingNegate.card && (EFFECT_CARDS.find(c => c.id === room.pendingNegate.card) || {}).name) || room.pendingNegate.card } : null,
     // v7.6：时机型询问（加速 / 反向 / 后退 / 强制重投 / 租金翻倍 / 减半 / 万能卡…）—— 断线重连补回浮层
     pendingAsk: room.pendingAsk ? { pid: room.pendingAsk.pid, card: room.pendingAsk.card, payload: room.pendingAsk.payload || {}, ms: ASK_MS } : null,
+    // v7.7：多选一抉择（万箭齐发：缴钱 / 自己挑一块地皮拆）—— 断线重连补回浮层
+    pendingChoice: room.pendingChoice ? { pid: room.pendingChoice.pid, kind: (room.pendingChoice.payload || {}).kind || '', title: (room.pendingChoice.payload || {}).title || '', desc: (room.pendingChoice.payload || {}).desc || '', options: (room.pendingChoice.payload || {}).options || [], ms: (room.pendingChoice.payload || {}).ms || ASK_MS } : null,
     allReady: room.allReady ? room.allReady() : false,   // v7.0：大厅是否全员就绪
     // v7.0：海克斯奖励卡「三张翻面卡」（每人一份候选，断线重连按快照补回浮层）
     draft: room.draft ? { round: room.draft.round, offers: room.draft.offers, picks: { ...(room.draft.picks) }, ms: 30000 } : null,
@@ -332,6 +334,7 @@ function onMessage(ws, str) {
     case 'skipCard': room.skipCard(p); break;                                        // v7.0 结束手动发动
     case 'useNegate': room.useNegate(p, !!a.yes); break;                             // v7.0 无懈可击卡响应
     case 'answerTiming': room.answerTimingBy(p, !!a.yes); break;                     // v7.6 时机型效果卡询问应答
+    case 'answerChoice': room.answerChoiceBy(p, a.key); break;                       // v7.7 多选一抉择应答（万箭齐发）
     case 'pickDraft': room.pickDraftCard(p, a.idx | 0); break;                       // v7.0 海克斯奖励卡三选一
     case 'roll': room.doRoll(p); break;
     case 'buy': room.buy(p); break;

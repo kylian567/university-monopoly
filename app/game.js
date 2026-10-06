@@ -418,14 +418,18 @@ const EFFECT_CARDS = [
   { id: 'revive',     name: '复活卡',      icon: '🕊️', rare: 'SSR', mode: 'auto',    desc: '破产被淘汰时自动发动：清空债务，带着 ¥3000 卷土重来（限 1 次）' },
   // ---- v7.6 新增：群伤 / 干扰 / 变换 ----
   { id: 'nanman',     name: '南蛮入侵',    icon: '🗡️', rare: 'SR',  mode: 'manual', desc: '自己回合发动：除自己外所有玩家「要么缴 ¥1000，要么自己下一轮地皮与房子不收租金」（二选一）' },
-  { id: 'arrowrain',  name: '万箭齐发',    icon: '🏹', rare: 'SSR', mode: 'manual', desc: '自己回合发动：除自己外所有玩家「要么拆掉一块地皮，要么缴 ¥2200 现金」（二选一）' },
+  { id: 'arrowrain',  name: '万箭齐发',    icon: '🏹', rare: 'SSR', mode: 'manual', desc: '自己回合发动：除自己外所有玩家「要么缴 ¥2200 现金，要么自己挑一块地皮拆掉」（由受击方本人抉择；现金不足 ¥2200 则必须拆地）' },
   { id: 'leroi',      name: '乐不思蜀',    icon: '🛌', rare: 'SR',  mode: 'manual', desc: '自己回合发动：主动让自己下一回合被停留一回合（可用于避险 / 蓄力）' },
   { id: 'graincut',   name: '兵粮寸断',    icon: '🌾', rare: 'SR',  mode: 'reactive', desc: '当有玩家获得「非租金类现金收入」时询问你是否发动：使用则取消 TA 这次奖励（全款领走教育基金也可被取消）' },
-  { id: 'fireattack', name: '火攻',        icon: '🔥', rare: 'SSR', mode: 'manual', desc: '自己回合发动：自己现金 −¥500，并指定一名对手，烧掉 TA 一块地皮（化为无主，附火焰特效）' },
+  { id: 'fireattack', name: '火攻',        icon: '🔥', rare: 'SSR', mode: 'manual', desc: '自己回合发动：自己现金 −¥500，并指定一名对手，烧掉 TA 一块「房子最少的地皮」——优先无房空地；名下全部有房时才烧 Lv1 的，再往上以此类推（化为无主，附火焰特效）' },
   { id: 'alliance',   name: '远交近攻',    icon: '🤝', rare: 'SR',  mode: 'manual', desc: '自己回合发动：挑选一名对手，你与 TA 各获得 ¥1000' },
   { id: 'swapReaction', name: '置换反应',  icon: '⚗️', rare: 'SSR', mode: 'manual', desc: '自己回合发动：指定一名对手，拆掉 TA 某格上的一栋楼，再给 TA 另一格盖上一层楼' },
   { id: 'swapSplit',  name: '复分解反应',  icon: '🧬', rare: 'SSR', mode: 'manual', desc: '自己回合发动：选一名对手一块「没有房子的地皮」，再选自己一块「没有房子的地皮」，双方互换地皮' },
 ];
+// v7.7：效果卡「占位」口径 —— 拿到后留在身上的卡都占名额（同一张卡有 2 张就算 2 张）
+// 只有「获得即结算、不会留在手上」的即时型不占名额（现金红包 / 慈善捐 / 技能刷新 / 基金分红 / 投资券 / 技能次数 +1）
+const INSTANT_CARDS = new Set(['cash', 'charity', 'skillfull', 'funddiv', 'investcard', 'skill']);
+const SLOT_CARDS = new Set(EFFECT_CARDS.map(c => c.id).filter(id => !INSTANT_CARDS.has(id)));
 
 // ---------- 卡牌（30 机会 + 30 命运） ----------
 // kind: money(+收/-付) / moveTo / move / each(每位玩家±) / skip / discount
@@ -1029,6 +1033,8 @@ class Room {
     this.pendingNegate = null; // {pid, card, attacker, resume, target} v7.0 无懈可击响应（v7.5：全场依次询问）
     this.negateChain = null;   // {ids, i, actor, card, resume, target} v7.5：无懈可击的「依次询问」队列
     this.pendingAsk = null;    // v7.6：时机型询问 {pid, card, payload, onYes, onNo}（加速 / 反向 / 翻滚 / 万能卡…）
+    this.pendingChoice = null; // v7.7：多选一抉择 {pid, payload, onPick}（万箭齐发：缴钱 / 自己挑地皮拆）
+    this.cardAsync = false;    // v7.7：效果卡是否走「异步结算、自行收尾」
     this.timingQueue = [];     // v7.6：多个时机询问依次弹出的队列（如：掷骰后连问 加速→反向→后退）
     this.pendingReroll = null; // {pid, cost} 掷骰后重投询问（v4.0）
     this.auction = null;       // {cell, highest, bidder, endsAt, maxBid:{}}
@@ -1182,8 +1188,8 @@ class Room {
   // v7.0：手牌（手动发动 / 响应型效果卡）
   addHandCard(p, id) {
     if (!p.hand) p.hand = [];
-    // v7.3：手牌上限 6 张 —— 满了就不再获得新的手动 / 响应型效果卡
-    if (p.hand.length >= HAND_CAP) {
+    // v7.7：手上「卡的总量」（手牌 + 计数器各通道，同名多张按张数计）满了就不再获得
+    if (this.heldCardCount(p) >= HAND_CAP) {
       const cn = (EFFECT_CARDS.find(c => c.id === id) || {}).name || id;
       this.addLog(`📦 ${p.name} 的手牌已满（${HAND_CAP}/${HAND_CAP}），【${cn}】被退回了`);
       this.ev({ t: 'hand_full', pid: p.id, card: id, name: cn, cap: HAND_CAP });
@@ -1195,6 +1201,14 @@ class Room {
   }
   // v7.0：把一张效果卡「入账」——自动型立刻结算，手动 / 响应型进手牌
   applyEffectCard(p, card) {
+    // v7.7：效果卡总量上限 6 —— 手牌 + 计数器合计，同名多张按张数计（3 张免租金卡 + 2 张免停留卡 + 1 张万能卡 = 已满 6 张）
+    if (SLOT_CARDS.has(card.id) && this.heldCardCount(p) >= HAND_CAP) {
+      const cn = card.name || card.id;
+      const n = this.heldCardCount(p);
+      this.addLog(`📦 ${p.name} 的效果卡已满 ${n}/${HAND_CAP}（手牌 + 计数器合计），【${cn}】被退回`);
+      this.ev({ t: 'hand_full', pid: p.id, card: card.id, name: cn, cap: HAND_CAP, total: n });
+      return;
+    }
     switch (card.id) {
       case 'medal':    p.medal++; break;
       case 'skill':    p.skillLeft++; break;
@@ -3146,18 +3160,65 @@ class Room {
     }
     this.answerTiming(yes);
   }
+  // ================= v7.7：通用「多选一」抉择询问 =================
+  // 与 askTiming（是 / 否）互补：给受影响的玩家一组具体选项（万箭齐发：缴 ¥2200 还是自己挑一块地皮拆）
+  askChoice(p, payload, onPick) {
+    const opts = (payload && payload.options) || [];
+    if (!p || !p.alive || !opts.length) { if (onPick) onPick.call(this, null); return false; }
+    this.pendingChoice = { pid: p.id, payload: payload || {}, onPick };
+    this.phase = 'choice';
+    this.ev({ t: 'ask_choice', pid: p.id, kind: (payload && payload.kind) || '',
+              title: (payload && payload.title) || '', desc: (payload && payload.desc) || '',
+              options: opts, ms: (payload && payload.ms) || ASK_MS });
+    this.setTimer((payload && payload.ms) || ASK_MS, () => this.answerChoice(opts[0].key));
+    if (p.isAI) this.aiTimers.push(setTimeout(() => this.aiChoice(p), rnd(1200, 2600)));
+    return true;
+  }
+  answerChoice(key) {
+    const pc = this.pendingChoice; if (!pc) return;
+    this.clearTimer(); this.pendingChoice = null;
+    const opts = (pc.payload && pc.payload.options) || [];
+    const hit = opts.find(o => String(o.key) === String(key));
+    const k = hit ? hit.key : ((opts[0] || {}).key);
+    try { if (pc.onPick) pc.onPick.call(this, k); } catch (e) { console.error('[answerChoice]', e && e.message); }
+  }
+  answerChoiceBy(p, key) {
+    const pc = this.pendingChoice;
+    if (!pc || !p || pc.pid !== p.id) return;
+    this.answerChoice(key);
+  }
+  // AI 的抉择策略（v7.7：万箭齐发 —— 缴钱保地 还是 拆掉最便宜那块）
+  aiChoice(p) {
+    const pc = this.pendingChoice;
+    if (!pc || pc.pid !== p.id) return;
+    const opts = (pc.payload && pc.payload.options) || [];
+    let key = (opts[0] || {}).key;
+    if ((pc.payload.kind || '') === 'arrowrain') {
+      const landKeys = opts.filter(o => String(o.key).indexOf('land:') === 0).map(o => String(o.key));
+      const payOpt = opts.find(o => String(o.key) === 'pay');
+      const first = landKeys.length ? +landKeys[0].slice(5) : -1;
+      const val = first >= 0 ? (BOARD[first].price || 0) * (1 + (this.cells[first].level || 0)) : 0;
+      // 地皮（含楼）比 ¥2200 值钱 → 倾向缴钱保地；否则拆掉最便宜那块
+      if (payOpt && (val >= 2200 ? Math.random() < 0.8 : Math.random() < 0.3)) key = 'pay';
+      else if (landKeys.length) key = landKeys[0];
+      else key = payOpt ? payOpt.key : key;
+    }
+    this.answerChoice(key);
+  }
   // 一张效果卡正式发动：先走「无懈可击全场响应」，无异议后结算 effectFn 并广播 card_act
   // opts: { target, after, silent }  —— after 为结算完之后的收尾回调（默认回到手动面板）
   fireCard(actor, cardId, effectFn, opts) {
     const o = opts || {};
     const card = EFFECT_CARDS.find(c => c.id === cardId) || { id: cardId, name: cardId, icon: '🃏' };
     const wrap = () => {
+      this.cardAsync = false;   // v7.7：结算函数可置 true —— 表示要走异步流程，after 由它自己收尾
       let detail = '';
       try { detail = effectFn.call(this) || ''; } catch (e) { console.error('[fireCard]', e && e.message); }
       if (!o.silent) {
         this.addLog(`🃏 ${actor.name} 发动「${card.icon || ''}${card.name || cardId}」${detail ? '：' + detail : ''}`);
         this.ev({ t: 'card_act', pid: actor.id, card: cardId, rare: card.rare, target: o.target ? o.target.id : null, detail });
       }
+      if (this.cardAsync) return;   // v7.7：异步结算（万箭齐发逐人抉择）自行收尾，别在这里抢跑
       if (o.after) { try { o.after.call(this); } catch (e) { console.error('[fireCard after]', e && e.message); } }
     };
     if (this.askNegate(actor, cardId, wrap, o.target || null, { after: o.after })) return true;
@@ -3248,6 +3309,8 @@ class Room {
     if (p.discount) L.push({ src: 'discount', id: 'discount' });
     return L;
   }
+  // v7.7：手上效果卡的总张数（手牌 + 计数器各通道；同名多张按张数计），用于 6 张上限判定
+  heldCardCount(p) { return this.heldCardList(p).length; }
   removeHeldCard(p, item) {
     switch (item.src) {
       case 'hand':      p.hand = (p.hand || []).filter(h => h.uid !== item.uid); break;
@@ -3493,31 +3556,16 @@ class Room {
         return `全场索取：${paid} 人共缴 ¥${total}，${free} 人下一轮免收租金`;
       }
       case 'arrowrain': {
-        // 万箭齐发：除自己外所有玩家「要么拆掉一块地皮，要么缴 ¥2200 现金」
+        // v7.7：除自己外所有玩家「缴 ¥2200」或「自己挑一块地皮拆掉」——由受击方本人抉择
         const others = this.alive().filter(q => q !== p);
         if (!others.length) return '全场只剩自己，无事发生';
-        const parts = [];
-        for (const q of others) {
-          const lands = this.propCells(q);
-          const preferPay = !lands.length || (q.cash >= 2200 && Math.random() < 0.5);
-          if (preferPay) {
-            const pay = Math.min(q.cash, 2200);
-            if (pay > 0) {
-              q.cash -= pay; q.combo = 0; p.cash += pay;
-              this.ev({ t: 'charge', pid: q.id, amount: pay, creditor: p.id, reason: '万箭齐发', cell: p.pos, toPool: false });
-              this.ev({ t: 'paid', pid: q.id, amount: pay, creditor: p.id, toPool: false });
-              parts.push(`${q.name} 缴 ¥${pay}`);
-            } else parts.push(`${q.name} 身无分文`);
-          } else {
-            const cands = lands.filter(i => this.cells[i].level === 0);
-            const cell = pick(cands.length ? cands : lands);
-            this.stripLand(cell, p.id);
-            this.ev({ t: 'landlost', pid: q.id, cell, by: p.id, name: BOARD[cell].name, why: '万箭齐发' });
-            this.checkLandInsure(q, `万箭齐发拆了「${BOARD[cell].name}」`);
-            parts.push(`${q.name} 的「${BOARD[cell].name}」被拆`);
-          }
-        }
-        return parts.join('；');
+        this.cardAsync = true;     // 逐人询问：收尾（afterCardUse）交给 arrowRainFlow
+        this.arrowRainFlow(p, others, parts => {
+          this.addLog(`🏹 万箭齐发结算：${parts.join('；') || '无人受影响'}`);
+          this.ev({ t: 'card_act', pid: p.id, card: 'arrowrain', rare: 'SSR', detail: parts.join('；') });
+          this.afterCardUse(p);
+        });
+        return '全场抉择中…';
       }
       case 'leroi': {
         p.skipTurns = Math.max(p.skipTurns || 0, 1);
@@ -3531,11 +3579,14 @@ class Room {
         if (pay > 0) { p.cash -= pay; p.combo = 0; this.addToFund(pay); this.ev({ t: 'paid', pid: p.id, amount: pay, creditor: null, toPool: true }); }
         const t = (tgt && tgt !== p && this.propCells(tgt).length > 0) ? tgt : pick(cands0);
         const cells = this.propCells(t);
-        const cell = (opts.cell != null && cells.includes(+opts.cell)) ? +opts.cell : pick(cells);
+        // v7.7：只烧「房子最少的地皮」——优先无房（Lv0）；名下全部有房时，才烧当前最低层数（Lv1）的，再往上以此类推
+        const minLv = Math.min.apply(null, cells.map(i => this.cells[i].level || 0));
+        const pool = cells.filter(i => (this.cells[i].level || 0) === minLv);
+        const cell = (opts.cell != null && pool.includes(+opts.cell)) ? +opts.cell : pick(pool);
         this.stripLand(cell, p.id);
         this.ev({ t: 'fireburn', pid: t.id, cell, by: p.id, name: BOARD[cell].name });
         this.checkLandInsure(t, `火攻烧了「${BOARD[cell].name}」`);
-        return `支付 ¥${pay}，烧掉 ${t.name} 的「${BOARD[cell].name}」`;
+        return `支付 ¥${pay}，烧掉 ${t.name} 的「${BOARD[cell].name}」${minLv > 0 ? `（名下已无空地，取最低 Lv${minLv}）` : '（无房空地）'}`;
       }
       case 'alliance': {
         const t = (tgt && tgt !== p) ? tgt : pick(this.alive().filter(q => q !== p));
@@ -3585,6 +3636,64 @@ class Room {
     const prev = cs.own;
     cs.own = null; cs.level = 0; cs.mortgaged = false; cs.mortgageAt = 0;
     return prev;
+  }
+  // v7.7：万箭齐发 —— 逐人抉择（缴 ¥2200 / 自己挑一块地皮拆），全部抉择完才回调 done(parts)
+  arrowRainFlow(attacker, victims, done) {
+    let i = 0;
+    const parts = [];
+    const applyPay = q => {
+      const pay = Math.min(q.cash, 2200);
+      if (pay > 0) {
+        q.cash -= pay; q.combo = 0; attacker.cash += pay;
+        this.ev({ t: 'charge', pid: q.id, amount: pay, creditor: attacker.id, reason: '万箭齐发', cell: attacker.pos, toPool: false });
+        this.ev({ t: 'paid', pid: q.id, amount: pay, creditor: attacker.id, toPool: false });
+        parts.push(`${q.name} 缴 ¥${pay}`);
+      } else parts.push(`${q.name} 身无分文`);
+    };
+    const applyStrip = (q, cell) => {
+      this.stripLand(cell, attacker.id);
+      this.ev({ t: 'landlost', pid: q.id, cell, by: attacker.id, name: BOARD[cell].name, why: '万箭齐发' });
+      this.checkLandInsure(q, `万箭齐发拆了「${BOARD[cell].name}」`);
+      parts.push(`${q.name} 自己拆掉「${BOARD[cell].name}」`);
+    };
+    const next = () => {
+      while (i < victims.length) {
+        const q = victims[i++];
+        if (!q || !q.alive) continue;
+        const lands = this.propCells(q);
+        if (!lands.length) { applyPay(q); continue; }      // 名下没有地皮 → 只能缴钱（有多少缴多少）
+        const canPay = q.cash >= 2200;                      // 现金不足 2200 → 只能拆地（但仍由自己挑哪一块）
+        this.askChoice(q, this.arrowChoicePayload(attacker, q, lands, canPay), key => {
+          const k = String(key);
+          if (k === 'pay') applyPay(q);
+          else {
+            const cell = +k.replace(/^land:/, '');
+            applyStrip(q, lands.includes(cell) ? cell : pick(lands));
+          }
+          next();
+        });
+        return;
+      }
+      if (done) done.call(this, parts);
+    };
+    next();
+  }
+  // v7.7：万箭齐发给受击方的选项（缴 ¥2200 / 自己挑一块地皮；地皮按「层数少 → 价格低」排序，AI 取第一个即最便宜的）
+  arrowChoicePayload(attacker, q, lands, canPay) {
+    const sorted = lands.slice().sort((a, b) => ((this.cells[a].level || 0) - (this.cells[b].level || 0))
+                                              || ((BOARD[a].price || 0) - (BOARD[b].price || 0)));
+    const options = [];
+    if (canPay) options.push({ key: 'pay', label: '缴 ¥2200', hint: `现有现金 ¥${q.cash}` });
+    for (const i of sorted) {
+      const lv = this.cells[i].level || 0;
+      options.push({ key: 'land:' + i, label: `拆「${BOARD[i].name}」`, hint: lv > 0 ? `Lv${lv}` : '无房' });
+    }
+    return {
+      kind: 'arrowrain', ms: ASK_MS,
+      title: `🏹 ${attacker.name} 发动了「万箭齐发」`,
+      desc: canPay ? '你可以缴 ¥2200 了事，也可以自己挑一块地皮拆掉' : '你的现金不足 ¥2200，必须自己挑一块地皮拆掉',
+      options,
+    };
   }
   // 被拆楼 / 失地时的「资产保护卡」理赔
   checkLandInsure(tgt, why) {
@@ -3969,7 +4078,7 @@ class Room {
     p.defBuff = 0;                      // v5.1：被收租减免到期
     this.phase = 'roll';
     this.dice = null;
-    this.pendingBuy = null; this.pendingBuild = null; this.pendingReroll = null; this.pendingBranch = null; this.pendingInvest = null; this.pendingSkill = null; this.pendingCard = null; this.pendingNegate = null; this.negateChain = null; this.pendingAsk = null; this.timingQueue = []; this.raise = null; this.auction = null; this.vote = null;
+    this.pendingBuy = null; this.pendingBuild = null; this.pendingReroll = null; this.pendingBranch = null; this.pendingInvest = null; this.pendingSkill = null; this.pendingCard = null; this.pendingNegate = null; this.negateChain = null; this.pendingAsk = null; this.pendingChoice = null; this.cardAsync = false; this.timingQueue = []; this.raise = null; this.auction = null; this.vote = null;
     const _skipping = p.skipNext || (p.skipTurns || 0) > 0;
     // v7.2 宿舍校区（温和）：被罚停留时 30% 概率「宿管放行」——免除本次停留，仍领补贴，本回合正常继续
     if (_skipping && this.facIs('dorm') && Math.random() < 0.30) {
@@ -4155,7 +4264,7 @@ class Room {
   }
   endTurn() {
     this.clearTimer(); this.clearAiTimers();
-    this.pendingBuy = null; this.pendingBuild = null; this.pendingPick = null; this.pendingBranch = null; this.pendingInvest = null; this.pendingSkill = null; this.pendingCard = null; this.pendingNegate = null; this.negateChain = null; this.pendingAsk = null; this.timingQueue = []; this.raise = null;
+    this.pendingBuy = null; this.pendingBuild = null; this.pendingPick = null; this.pendingBranch = null; this.pendingInvest = null; this.pendingSkill = null; this.pendingCard = null; this.pendingNegate = null; this.negateChain = null; this.pendingAsk = null; this.pendingChoice = null; this.cardAsync = false; this.timingQueue = []; this.raise = null;
     let n = this.players.length;
     let idx = this.cur;
     for (let i = 0; i < n; i++) {
@@ -6780,4 +6889,4 @@ class Room {
   }
 }
 
-module.exports = { Room, BOARD, GROUPS, CHANCE, FATE, SALARY, START_CASH, SEASON, SEASON_ORDER, WEATHER, CALEVENTS, MAJORS, MAJOR_KEYS, ACHS, ITEMS, EFFECT_CARDS, FUND_CAP, ENDGAME_ROUND, REROLL_COST, BRANCH, BRANCH2, FACULTY, FACULTY_KEYS, FACULTY_VOTE_MS, PCOLOR, PROJECTS, EXPIRY_STIPEND, HEX_TIERS, PROJECT_KEYS, HEX_TRIGGERS, HEX_TRIGGERS_EARLY, HEX_TIER_P, HEX_PICK_MS, CARD_RARITY, CARD_RARITY_ORDER, drawEffectCard, drawEffectCards, ATTACK_CARDS, DRAFT_MS, NEGATE_MS, ASK_MS, INCOME_DECAY, HAND_CAP, MUT_GENERAL, MUT_SPECIAL };
+module.exports = { Room, BOARD, GROUPS, CHANCE, FATE, SALARY, START_CASH, SEASON, SEASON_ORDER, WEATHER, CALEVENTS, MAJORS, MAJOR_KEYS, ACHS, ITEMS, EFFECT_CARDS, FUND_CAP, ENDGAME_ROUND, REROLL_COST, BRANCH, BRANCH2, FACULTY, FACULTY_KEYS, FACULTY_VOTE_MS, PCOLOR, PROJECTS, EXPIRY_STIPEND, HEX_TIERS, PROJECT_KEYS, HEX_TRIGGERS, HEX_TRIGGERS_EARLY, HEX_TIER_P, HEX_PICK_MS, CARD_RARITY, CARD_RARITY_ORDER, drawEffectCard, drawEffectCards, ATTACK_CARDS, DRAFT_MS, NEGATE_MS, ASK_MS, INCOME_DECAY, HAND_CAP, SLOT_CARDS, INSTANT_CARDS, MUT_GENERAL, MUT_SPECIAL };

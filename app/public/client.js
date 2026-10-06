@@ -289,10 +289,10 @@ const EFFECT_CARDS = [
   { id: 'revive',     name: '复活卡',      icon: '🕊️', rare: 'SSR', mode: 'auto',    desc: '破产被淘汰时自动发动：清空债务，带着 ¥3000 卷土重来（限 1 次）' },
   // ---- v7.6 新增：群伤 / 干扰 / 变换 ----
   { id: 'nanman',     name: '南蛮入侵',    icon: '🗡️', rare: 'SR',  mode: 'manual', desc: '自己回合发动：除自己外所有玩家「要么缴 ¥1000，要么自己下一轮地皮与房子不收租金」（二选一）' },
-  { id: 'arrowrain',  name: '万箭齐发',    icon: '🏹', rare: 'SSR', mode: 'manual', desc: '自己回合发动：除自己外所有玩家「要么拆掉一块地皮，要么缴 ¥2200 现金」（二选一）' },
+  { id: 'arrowrain',  name: '万箭齐发',    icon: '🏹', rare: 'SSR', mode: 'manual', desc: '自己回合发动：除自己外所有玩家「要么缴 ¥2200 现金，要么自己挑一块地皮拆掉」（由受击方本人抉择；现金不足 ¥2200 则必须拆地）' },
   { id: 'leroi',      name: '乐不思蜀',    icon: '🛌', rare: 'SR',  mode: 'manual', desc: '自己回合发动：主动让自己下一回合被停留一回合（可用于避险 / 蓄力）' },
   { id: 'graincut',   name: '兵粮寸断',    icon: '🌾', rare: 'SR',  mode: 'reactive', desc: '当有玩家获得「非租金类现金收入」时询问你是否发动：使用则取消 TA 这次奖励（全款领走教育基金也可被取消）' },
-  { id: 'fireattack', name: '火攻',        icon: '🔥', rare: 'SSR', mode: 'manual', desc: '自己回合发动：自己现金 −¥500，并指定一名对手，烧掉 TA 一块地皮（化为无主，附火焰特效）' },
+  { id: 'fireattack', name: '火攻',        icon: '🔥', rare: 'SSR', mode: 'manual', desc: '自己回合发动：自己现金 −¥500，并指定一名对手，烧掉 TA 一块「房子最少的地皮」——优先无房空地；名下全部有房时才烧 Lv1 的，再往上以此类推（化为无主，附火焰特效）' },
   { id: 'alliance',   name: '远交近攻',    icon: '🤝', rare: 'SR',  mode: 'manual', desc: '自己回合发动：挑选一名对手，你与 TA 各获得 ¥1000' },
   { id: 'swapReaction', name: '置换反应',  icon: '⚗️', rare: 'SSR', mode: 'manual', desc: '自己回合发动：指定一名对手，拆掉 TA 某格上的一栋楼，再给 TA 另一格盖上一层楼' },
   { id: 'swapSplit',  name: '复分解反应',  icon: '🧬', rare: 'SSR', mode: 'manual', desc: '自己回合发动：选一名对手一块「没有房子的地皮」，再选自己一块「没有房子的地皮」，双方互换地皮' },
@@ -1426,6 +1426,7 @@ function onState(state) {
     cardPanelSync();
     negateSync();
     askSync();
+    choiceSync();
   }
 }
 function renderLobby() {
@@ -3191,6 +3192,35 @@ function askSync() {
   try { SFX.card(); SFX.tick(); } catch (err) {}
   d.querySelector('#tqYes').onclick = () => { try { SFX.pow(); } catch (err) {} act({ type: 'answerTiming', yes: true }); askEl && askEl.remove(); askEl = null; askSig = ''; };
   d.querySelector('#tqNo').onclick = () => { try { SFX.click(); } catch (err) {} act({ type: 'answerTiming', yes: false }); askEl && askEl.remove(); askEl = null; askSig = ''; };
+}
+
+// ⑦ v7.7：多选一抉择框（万箭齐发：缴 ¥2200 还是自己挑一块地皮拆）
+let chEl = null, chSig = '';
+function choiceSync() {
+  const pc = S && S.phase === 'choice' ? S.pendingChoice : null;
+  const mine = pc && pc.pid === myPid;
+  if (!mine) { if (chEl) { chEl.remove(); chEl = null; chSig = ''; } return; }
+  const sig = (pc.kind || '') + ':' + JSON.stringify(pc.options || []);
+  if (chEl && chSig === sig) return;
+  if (chEl) { chEl.remove(); chEl = null; }
+  chSig = sig;
+  const opts = pc.options || [];
+  const kindIcon = pc.kind === 'arrowrain' ? '🏹' : '❓';
+  const d = document.createElement('div');
+  d.className = 'ch-layer';
+  d.innerHTML = `<div class="ch-box">
+      <div class="ch-icon">${kindIcon}</div>
+      <div class="ch-title">${esc(pc.title || '请选择')}</div>
+      <div class="ch-desc">${esc(pc.desc || '')}</div>
+      <div class="ch-opts">${opts.map((o, i) => `<button class="ch-btn${i === 0 ? ' primary' : ''}" data-key="${esc(o.key)}">${esc(o.label)}${o.hint ? `<em>${esc(o.hint)}</em>` : ''}</button>`).join('')}</div>
+    </div>`;
+  $('fxLayer').appendChild(d);
+  requestAnimationFrame(() => requestAnimationFrame(() => d.classList.add('show')));
+  chEl = d;
+  try { SFX.card(); SFX.tick(); } catch (err) {}
+  d.querySelectorAll('.ch-btn').forEach(b => {
+    b.onclick = () => { try { SFX.pow(); } catch (err) {} act({ type: 'answerChoice', key: b.dataset.key }); if (chEl) { chEl.remove(); chEl = null; chSig = ''; } };
+  });
 }
 
 // 地图中央常驻徽章（每帧 renderPanel 调用；landing=true 时播放落位特效）

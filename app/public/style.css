@@ -1635,6 +1635,25 @@ body.rotmode .hxp-assets { max-height:36%; }
 .tq-q { font-size:14px; color:#4a4238; line-height:1.6; margin-top:6px; }
 .tq-sub { font-size:12px; color:#8a7f6c; margin-top:4px; }
 .tq-btns { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+/* ---- ⑦ v7.7：多选一抉择框（万箭齐发：缴 ¥2200 / 自己挑一块地皮拆） ----
+   同样挂在 #fxLayer 下，必须显式 pointer-events:auto，否则看得见点不动 */
+.ch-layer { position:fixed; inset:0; z-index:10002; display:flex; align-items:center; justify-content:center;
+  background:radial-gradient(circle at 50% 50%, rgba(58,40,20,.5), rgba(16,12,26,.8)); opacity:0; transition:opacity .24s; pointer-events:auto; }
+.ch-layer.show { opacity:1; }
+.ch-box { position:relative; width:min(520px,94vw); max-height:86vh; overflow:auto; border-radius:18px; padding:18px 20px 16px; text-align:center;
+  background:linear-gradient(180deg,#fffdf6,#f2ebdc); border:2px solid #c9a05a;
+  box-shadow:0 18px 48px rgba(20,14,4,.5), inset 0 0 0 4px rgba(255,255,255,.5);
+  transform:scale(.92); transition:transform .34s cubic-bezier(.2,1.4,.4,1); }
+.ch-layer.show .ch-box { transform:scale(1); }
+.ch-icon { font-size:44px; line-height:1; filter:drop-shadow(0 4px 12px rgba(0,0,0,.28)); animation:cgBob 1.8s ease-in-out infinite; }
+.ch-title { font-size:17px; font-weight:900; color:#3a2f1c; margin-top:6px; }
+.ch-desc { font-size:13.5px; color:#4a4238; line-height:1.6; margin-top:6px; }
+.ch-opts { display:flex; flex-direction:column; gap:8px; margin-top:12px; }
+.ch-btn { font-size:14px; font-weight:800; color:#3a2f1c; background:#fff; border:2px solid #d9cbb0; border-radius:12px;
+  padding:10px 12px; cursor:pointer; text-align:left; transition:transform .12s, box-shadow .12s, background .12s; }
+.ch-btn em { font-style:normal; font-size:11.5px; font-weight:700; color:#8a7f6c; float:right; }
+.ch-btn:hover { transform:translateY(-1px); box-shadow:0 6px 16px rgba(20,14,4,.18); background:#fffaf0; }
+.ch-btn.primary { background:linear-gradient(180deg,#ffd98a,#e8b855); border-color:#b98f34; }
 
 /* v7.0：抽卡演出加品级标记 */
 .drawcards .dc-rar { font-size:9px; font-weight:800; color:#fff; background:var(--rc,#8A847A); border-radius:5px; padding:0 5px; margin-bottom:2px; }

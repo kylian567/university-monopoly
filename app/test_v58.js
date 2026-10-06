@@ -155,6 +155,10 @@ section(5, '效果卡池：42 张（v7.6）+ 盲盒 1/2/3 张 50/30/20');
   for (let i = 0; i < 200 && !done; i++) {
     a.skillLeft = 0; b.skillLeft = 2;
     a.hand = [];
+    // v7.7：上限按「手牌 + 计数器」总量计 → 循环里要把计数器也清空，否则第二轮起就被上限挡住
+    a.medal = 0; a.joker = 0; a.fineFree = 0; a.stayFree = 0; a.buildCutCard = 0;
+    a.rentX2 = 0; a.rentHalf = 0; a.insure = 0; a.truce = 0; a.auctionVouch = 0; a.revive = 0;
+    a.discount = false; a.stepBuffs = [];
     const drawn = r.grantCards(a, a.pos, 1, '测试');
     if (drawn[0].id === 'steal') {
       ok(a.hand.some(h => h.id === 'steal') && a.skillLeft === 0 && b.skillLeft === 2,

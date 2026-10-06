@@ -378,14 +378,20 @@ section(8, 'v7.6：八张新卡 + 偷师卡的真实结算（resolveCardEffect�
     r.resolveCardEffect(a, 'swapSplit', b, { myCell: mc, cell: tc });
     ok(r.cells[mc].own === b.id && r.cells[tc].own === a.id, '复分解反应：双方无房地皮互换');
   }
-  // arrowrain：没钱的地主被拆地
+  // arrowrain：v7.7 起由受击方本人抉择（先询问，再按 TA 选的那块拆）
   {
     const r = mkRoom(2); neutral(r);
     const [a, b] = r.players;
     const idx = G.BOARD.findIndex(x => x.type === 'prop');
     r.cells[idx].own = b.id; r.cells[idx].level = 0; b.cash = 100;
     const msg = r.resolveCardEffect(a, 'arrowrain', null, {});
-    ok(r.cells[idx].own === null && b.cash === 100, `万箭齐发：身无分文 → 拆一块地皮（${msg}）`);
+    ok(r.phase === 'choice' && r.pendingChoice && r.pendingChoice.pid === b.id,
+      `万箭齐发：先问受击方（${msg}）`);
+    const opts = (r.pendingChoice.payload.options || []);
+    ok(opts.length === 1 && opts[0].key === 'land:' + idx, `现金不足 ¥2200 → 只给拆地选项（${opts.map(o => o.key).join('|')}）`);
+    r.answerChoiceBy(b, 'land:' + idx);
+    ok(r.cells[idx].own === null && b.cash === 100 && !r.pendingChoice,
+      '万箭齐发：按受击方挑的那块拆掉，现金不变');
   }
 }
 

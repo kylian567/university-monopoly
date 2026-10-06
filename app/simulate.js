@@ -43,6 +43,14 @@ function pump(room, maxSteps = 200000) {
         else room.answerTiming(false);
         break;
       }
+      // v7.7：多选一抉择（万箭齐发）—— AI 走 aiChoice，人类玩家默认取第一个选项
+      case 'choice': {
+        const pc = room.pendingChoice;
+        const t = pc ? room.players.find(q => q.id === pc.pid) : null;
+        if (t) { t.isAI ? room.aiChoice(t) : room.answerChoiceBy(t, ((pc.payload || {}).options || [])[0] && ((pc.payload || {}).options || [])[0].key); }
+        else room.answerChoice(null);
+        break;
+      }
       case 'auction': room.endAuction(); break;
       // v7.0：海克斯奖励卡「三张翻面卡」—— 全员各自选，选完自动结算
       case 'carddraft': {
