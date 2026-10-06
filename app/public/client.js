@@ -250,32 +250,32 @@ const CARD_RARITY = {
 };
 const CARD_RARITY_ORDER = ['SSR', 'SR', 'R', 'N'];
 const EFFECT_CARDS = [
-  // ---- 原有卡（v7.0 重新定级：免租金卡与万能卡为 SR，其余为 R）----
-  { id: 'medal',     name: '免租金卡',      icon: '🎫', rare: 'SR', mode: 'auto',    desc: '保留到下次应付租金时自动消耗（可叠加持有）' },
-  { id: 'joker',     name: '万能卡',        icon: '🃏', rare: 'SR', mode: 'auto',    desc: '保留到下次遇到任何负面效果（付租 / 罚款 / 停留 / 拆房 / 挂科…）时自动免除' },
-  { id: 'skill',     name: '技能次数 +1',   icon: '✨', rare: 'R',  mode: 'auto',    desc: '本局专业技剩余次数 +1' },
-  { id: 'discount',  name: '买地皮 8 折卡', icon: '🏷️', rare: 'R',  mode: 'auto',    desc: '保留到下次买地时自动 8 折' },
-  { id: 'buildcut',  name: '盖房 9 折卡',   icon: '🔨', rare: 'R',  mode: 'auto',    desc: '保留到下次盖房 / 升级时自动 9 折' },
-  { id: 'step',      name: '加速卡',        icon: '👟', rare: 'R',  mode: 'auto',    desc: '保留到下一次移动，额外 +4 步' },
-  { id: 'cash',      name: '现金红包',      icon: '🧧', rare: 'R',  mode: 'instant', desc: '立刻到账 ¥800~1200（随机）' },
-  { id: 'stayfree',  name: '免停留卡',      icon: '🎯', rare: 'R',  mode: 'auto',    desc: '保留到下次纯惩罚性停留时自动消耗（罚款照付）' },
-  { id: 'finefree',  name: '免罚款卡',      icon: '📜', rare: 'R',  mode: 'auto',    desc: '保留到下次缴纳「非租金罚款」时自动免除' },
-  { id: 'steal',     name: '偷师卡',        icon: '🕵️', rare: 'R',  mode: 'instant', desc: '获得时立刻发动：随机让一名有技能次数的对手技能次数 −1，你获得该技能的一次使用；若无人可偷则自己技能次数 +1' },
+  // ---- 原有卡（v7.6 重新定级：万能卡 / 无懈可击卡 / 租金翻倍券升为 SSR，多张卡改为主动询问型）----
+  { id: 'medal',     name: '免租金卡',      icon: '🎫', rare: 'SR',  mode: 'auto',    desc: '保留到下次应付租金时自动消耗（可叠加持有）' },
+  { id: 'joker',     name: '万能卡',        icon: '🃏', rare: 'SSR', mode: 'ask',     desc: '遇到任何负面效果（付租 / 罚款 / 停留 / 拆房 / 挂科…）时主动询问是否使用：使用则完全免除这一次' },
+  { id: 'skill',     name: '技能次数 +1',   icon: '✨', rare: 'R',   mode: 'auto',    desc: '本局专业技剩余次数 +1' },
+  { id: 'discount',  name: '买地皮 8 折卡', icon: '🏷️', rare: 'R',   mode: 'auto',    desc: '保留到下次买地时自动 8 折' },
+  { id: 'buildcut',  name: '盖房 9 折卡',   icon: '🔨', rare: 'R',   mode: 'auto',    desc: '保留到下次盖房 / 升级时自动 9 折' },
+  { id: 'step',      name: '加速卡',        icon: '👟', rare: 'R',   mode: 'ask',     desc: '掷骰看到点数后主动询问是否发动：发动则本次移动额外 +4 步' },
+  { id: 'cash',      name: '现金红包',      icon: '🧧', rare: 'R',   mode: 'instant', desc: '立刻到账 ¥800~1200（随机）' },
+  { id: 'stayfree',  name: '免停留卡',      icon: '🎯', rare: 'R',   mode: 'auto',    desc: '保留到下次纯惩罚性停留时自动消耗（罚款照付）' },
+  { id: 'finefree',  name: '免罚款卡',      icon: '📜', rare: 'R',   mode: 'auto',    desc: '保留到下次缴纳「非租金罚款」时自动免除' },
+  { id: 'steal',     name: '偷师卡',        icon: '🕵️', rare: 'SR',  mode: 'manual', desc: '自己回合开始时主动询问：选择一名「有技能次数」的对手，偷走 TA 的 1 次技能为你所用' },
   // ---- v7.0 新增：进攻 / 互动（手动发动）----
   { id: 'seize',      name: '夺金券',      icon: '🧲', rare: 'R',   mode: 'manual', desc: '指定一名对手，抽取其现金 ¥800 到自己账上（对手不足则全拿）' },
   { id: 'demolish',   name: '拆迁令',      icon: '🏚️', rare: 'SSR', mode: 'manual', desc: '指定一块对手的地皮，拆掉 1 层楼（旅馆按 4 层递减）' },
   { id: 'repeat',     name: '留级通知单',  icon: '📵', rare: 'N',   mode: 'manual', desc: '指定一名对手，TA 下一回合停留一回合（免停留卡 / 万能卡可挡）' },
   { id: 'forcetax',   name: '强制补税单',  icon: '🧾', rare: 'N',   mode: 'manual', desc: '指定一名对手，TA 立刻按当前税表补缴一次物业税（税款进教育基金池）' },
-  { id: 'forceroll',  name: '强制重投',    icon: '🎲', rare: 'N',   mode: 'manual', desc: '指定一名对手，TA 下一次掷骰必须采用第二次点数' },
-  { id: 'challenge',  name: '强制挑战令',  icon: '⚔️', rare: 'R',   mode: 'manual', desc: '指定一名对手立刻进行一次擂台对决，赌注 ¥800（平局互不相欠）' },
+  { id: 'forceroll',  name: '强制重投',    icon: '🎲', rare: 'SR',  mode: 'ask',    desc: '别人掷骰看到点数后主动询问是否发动：发动则让 TA 强制购买一次重投骰子，重新再投一次' },
+  { id: 'challenge',  name: '决斗',        icon: '⚔️', rare: 'R',   mode: 'manual', desc: '指定一名对手立刻进行一次擂台对决，赌注 ¥800（平局则重掷直到分出胜负）' },
   { id: 'snatch',     name: '顺手牵羊',    icon: '🖐️', rare: 'SR',  mode: 'manual', desc: '自己回合开始时询问是否发动：指定一名对手，随机偷走 TA 持有的一张效果卡' },
   { id: 'dismantle',  name: '过河拆桥',    icon: '🚧', rare: 'R',   mode: 'manual', desc: '自己回合开始时询问是否发动：指定一名对手，随机弃掉 TA 持有的一张效果卡' },
-  { id: 'backstep',   name: '后退卡',      icon: '🔙', rare: 'N',   mode: 'manual', desc: '发动后本次移动改为后退 3 步（可用来回踩自己的地 / 躲开危险区）' },
-  { id: 'reverse',    name: '反向骰子卡',  icon: '🔄', rare: 'R',   mode: 'manual', desc: '发动后本回合点数改为 14 − 实际点数' },
+  { id: 'backstep',   name: '后退卡',      icon: '🔙', rare: 'SR',  mode: 'ask',    desc: '自己掷骰看到点数后主动询问是否发动：发动则本次移动改为后退 3 步' },
+  { id: 'reverse',    name: '反向骰子卡',  icon: '🔄', rare: 'SR',  mode: 'ask',    desc: '自己投出点数后主动询问是否发动：发动则本次点数变为 14 − 实际点数' },
   { id: 'branchcard', name: '岔路卡',      icon: '🛤️', rare: 'SR',  mode: 'manual', desc: '立刻移动到最近的一条岔路入口，直接进入岔路' },
   { id: 'redeemcard', name: '抵押赎回券',  icon: '🏦', rare: 'R',   mode: 'manual', desc: '免费赎回自己一块抵押中的地皮（免除赎回价与赎回锁）' },
   { id: 'auctionvouch', name: '拍卖代金券', icon: '🔨', rare: 'R',  mode: 'auto',   desc: '保留到下次拍卖成交时，成交价自动 −¥800' },
-  { id: 'flawless',   name: '无懈可击卡',  icon: '🌀', rare: 'R',   mode: 'reactive', desc: '别人发动效果卡时询问你是否响应：使用后使那张卡完全失效（被点名时优先询问你）' },
+  { id: 'flawless',   name: '无懈可击卡',  icon: '🌀', rare: 'SSR', mode: 'reactive', desc: '任何人（含自己）发动任何效果卡时都会询问你是否响应：使用则那张卡完全失效（被点名时优先询问你）' },
   { id: 'copycard',   name: '复印卡',      icon: '📋', rare: 'SSR', mode: 'manual', desc: '自己回合开始时询问是否发动，并选择要复制的一张自己持有的效果卡（无懈可击卡与复印卡不可复制）' },
   // ---- v7.0 新增：自动 / 即时型 ----
   { id: 'skillfull',  name: '技能刷新卡',  icon: '🌟', rare: 'SSR', mode: 'auto',    desc: '立即把自己的专业技能次数回满（回到该专业的初始次数）' },
@@ -284,9 +284,18 @@ const EFFECT_CARDS = [
   { id: 'funddiv',    name: '基金分红券',  icon: '🎓', rare: 'SSR', mode: 'auto',    desc: '立刻领取教育基金池的 15%（池子不足时保底 ¥500）' },
   { id: 'charity',    name: '慈善捐',      icon: '💝', rare: 'N',   mode: 'instant', desc: '获得时立刻发动：自己缴 ¥500，教育基金池 +¥1500' },
   { id: 'investcard', name: '投资券',      icon: '📈', rare: 'SR',  mode: 'auto',    desc: '立刻存 ¥2000 进科研基金，5 轮后连本带利返还 ¥3500' },
-  { id: 'rentx2',     name: '租金翻倍券',  icon: '💹', rare: 'SSR', mode: 'auto',    desc: '保留到下次自己收租时，那一笔租金 ×2（可叠加持有）' },
-  { id: 'renthalf',   name: '租金减半卡',  icon: '📉', rare: 'SR',  mode: 'auto',    desc: '保留到下次自己被收租时，那一笔租金减半（可叠加持有）' },
+  { id: 'rentx2',     name: '租金翻倍券',  icon: '💹', rare: 'SSR', mode: 'ask',     desc: '自己每次收租时主动询问是否发动：使用则本笔租金 ×2（可叠加持有）' },
+  { id: 'renthalf',   name: '租金减半卡',  icon: '📉', rare: 'SR',  mode: 'ask',     desc: '自己被收租时主动询问是否发动：使用则本笔租金减半（可叠加持有）' },
   { id: 'revive',     name: '复活卡',      icon: '🕊️', rare: 'SSR', mode: 'auto',    desc: '破产被淘汰时自动发动：清空债务，带着 ¥3000 卷土重来（限 1 次）' },
+  // ---- v7.6 新增：群伤 / 干扰 / 变换 ----
+  { id: 'nanman',     name: '南蛮入侵',    icon: '🗡️', rare: 'SR',  mode: 'manual', desc: '自己回合发动：除自己外所有玩家「要么缴 ¥1000，要么自己下一轮地皮与房子不收租金」（二选一）' },
+  { id: 'arrowrain',  name: '万箭齐发',    icon: '🏹', rare: 'SSR', mode: 'manual', desc: '自己回合发动：除自己外所有玩家「要么拆掉一块地皮，要么缴 ¥2200 现金」（二选一）' },
+  { id: 'leroi',      name: '乐不思蜀',    icon: '🛌', rare: 'SR',  mode: 'manual', desc: '自己回合发动：主动让自己下一回合被停留一回合（可用于避险 / 蓄力）' },
+  { id: 'graincut',   name: '兵粮寸断',    icon: '🌾', rare: 'SR',  mode: 'reactive', desc: '当有玩家获得「非租金类现金收入」时询问你是否发动：使用则取消 TA 这次奖励（全款领走教育基金也可被取消）' },
+  { id: 'fireattack', name: '火攻',        icon: '🔥', rare: 'SSR', mode: 'manual', desc: '自己回合发动：自己现金 −¥500，并指定一名对手，烧掉 TA 一块地皮（化为无主，附火焰特效）' },
+  { id: 'alliance',   name: '远交近攻',    icon: '🤝', rare: 'SR',  mode: 'manual', desc: '自己回合发动：挑选一名对手，你与 TA 各获得 ¥1000' },
+  { id: 'swapReaction', name: '置换反应',  icon: '⚗️', rare: 'SSR', mode: 'manual', desc: '自己回合发动：指定一名对手，拆掉 TA 某格上的一栋楼，再给 TA 另一格盖上一层楼' },
+  { id: 'swapSplit',  name: '复分解反应',  icon: '🧬', rare: 'SSR', mode: 'manual', desc: '自己回合发动：选一名对手一块「没有房子的地皮」，再选自己一块「没有房子的地皮」，双方互换地皮' },
 ];
 
 // ---------- v5.7：海克斯 · 研究项目（与服务端 game.js 的 PROJECTS/HEX_TIERS 表逐字同步，改一边必须改另一边） ----------
@@ -1413,9 +1422,10 @@ function onState(state) {
       if (!cdEl && queueIdle) cardDraftOpen({ round: state.draft.round, offers: state.draft.offers, ms: state.draft.ms });
       if (cdEl && state.draft.picks) for (const pid in state.draft.picks) cardDraftMark({ pid });
     } else if (state.phase !== 'carddraft' && cdEl && !cdPicked) cardDraftClose();
-    //  ② 手动发动面板 / ③ 无懈可击响应框
+    //  ② 手动发动面板 / ③ 无懈可击响应框 / ④ v7.6 时机型询问框
     cardPanelSync();
     negateSync();
+    askSync();
   }
 }
 function renderLobby() {
@@ -1495,7 +1505,9 @@ const ANIMATED = new Set(['roll', 'move', 'card', 'buy', 'build', 'charge', 'mon
   // v6.0：万能卡 / 攻守互换
   'joker_free', 'swap_cash',
   // v7.0：效果卡品级（SSR/SR/R/N）+ 手动发动 / 响应 / 海克斯奖励卡三张翻面卡
-  'card_act', 'charity', 'negate', 'card_draft_offer', 'card_draft_pick', 'card_draft_done']);
+  'card_act', 'charity', 'negate', 'card_draft_offer', 'card_draft_pick', 'card_draft_done',
+  // v7.6：擂台 / 运动会平局重掷
+  'duel_tie']);
 let animPending = 0;   // 排队中的动画数；>0 时 renderTokens 冻结，防止棋子瞬移
 let visLog = [];       // 已"播放"的日志：按事件流逐步出现，与地图动画严格同节奏（不超前、不滞后）
 let logRendered = 0;   // visLog 中已渲染的下标数（增量渲染，避免每次重排 200+ 行）
@@ -1835,6 +1847,7 @@ async function handleAnim(e) {
       break;
     }
     case 'duel': { await duelAnim(e); break; }
+    case 'duel_tie': { await duelTieAnim(e); break; }   // v7.6：平局重掷
     case 'demolish': {
       SFX.demolish(); SFX.sweepDown(); SFX.gavel();
       const nm = e.name || (BOARD[e.cell] ? BOARD[e.cell].name : '');
@@ -2780,19 +2793,68 @@ function cardFaceHtml(c, o) {
 function cardBackHtml(i) {
   return `<div class="cf-back" data-i="${i}"><span class="cf-back-mark">🃏</span><span class="cf-back-q">?</span></div>`;
 }
-// ① 单张卡发动 / 获得的全屏特效（全场可见）
+// v7.6：42 张效果卡「各自专属」的发动演出表 —— 专属主色 / 徽记 / 运动预设 / 粒子 / 音效
+//   pre = 专属样式名（对应 CSS 里的 .cg-<pre> 运动动画）；part = 粒子种类（spark/star/shard/coin/ring）
+const CARD_FX = {
+  medal:        { pre: 'shield',   c: ['#f3d27a', '#fff6d6'], glyph: '🎫', part: 'star',  sfx: 'bell' },
+  joker:        { pre: 'wildcard', c: ['#d9942b', '#ffe9b0'], glyph: '🃏', part: 'star',  sfx: 'hexPrism' },
+  skill:        { pre: 'sparkUp',  c: ['#8ee6b3', '#ffffff'], glyph: '✨', part: 'spark', sfx: 'sparkle' },
+  discount:     { pre: 'tagCut',   c: ['#7fb2f0', '#dceafc'], glyph: '🏷️', part: 'spark', sfx: 'item' },
+  buildcut:     { pre: 'hammer',   c: ['#e8b04b', '#ffe4a6'], glyph: '🔨', part: 'star',  sfx: 'build' },
+  step:         { pre: 'dash',     c: ['#6fd6ad', '#e8fff5'], glyph: '👟', part: 'spark', sfx: 'whoosh' },
+  cash:         { pre: 'coinRain', c: ['#e8b04b', '#fff1c2'], glyph: '🧧', part: 'coin',  sfx: 'coinRain' },
+  stayfree:     { pre: 'anchor',   c: ['#9ec9f2', '#eaf4ff'], glyph: '🎯', part: 'spark', sfx: 'item' },
+  finefree:     { pre: 'scroll',   c: ['#d9c9a4', '#fff8e6'], glyph: '📜', part: 'star',  sfx: 'item' },
+  steal:        { pre: 'sneak',    c: ['#b76ce8', '#efe0ff'], glyph: '🕵️', part: 'shard', sfx: 'steal' },
+  seize:        { pre: 'magnet',   c: ['#e2574c', '#ffd0c8'], glyph: '🧲', part: 'coin',  sfx: 'coinFly' },
+  demolish:     { pre: 'wreck',    c: ['#c0563f', '#ffd9c9'], glyph: '🏚️', part: 'shard', sfx: 'demolish' },
+  repeat:       { pre: 'chain',    c: ['#8d8d8d', '#e0e0e0'], glyph: '📵', part: 'shard', sfx: 'stay' },
+  forcetax:     { pre: 'stamp',    c: ['#d08531', '#ffe6c2'], glyph: '🧾', part: 'spark', sfx: 'pay' },
+  forceroll:    { pre: 'diceSpin', c: ['#8E5BD8', '#e9dcff'], glyph: '🎲', part: 'star',  sfx: 'dice' },
+  challenge:    { pre: 'swords',   c: ['#b03a3a', '#ffd6d6'], glyph: '⚔️', part: 'spark', sfx: 'duel' },
+  snatch:       { pre: 'grab',     c: ['#c58bd8', '#f3e4fb'], glyph: '🖐️', part: 'shard', sfx: 'steal' },
+  dismantle:    { pre: 'breakCard',c: ['#9aa7b0', '#e6eef2'], glyph: '🚧', part: 'shard', sfx: 'demolish' },
+  backstep:     { pre: 'rewind',   c: ['#5aa9e6', '#dcefff'], glyph: '🔙', part: 'spark', sfx: 'whoosh' },
+  reverse:      { pre: 'flipRoll', c: ['#4a90d9', '#dbe9fb'], glyph: '🔄', part: 'star',  sfx: 'glint' },
+  branchcard:   { pre: 'fork',     c: ['#66A05B', '#e2f5db'], glyph: '🛤️', part: 'spark', sfx: 'whoosh' },
+  redeemcard:   { pre: 'vault',    c: ['#c9a227', '#fff2c2'], glyph: '🏦', part: 'coin',  sfx: 'redeem' },
+  auctionvouch: { pre: 'gavel',    c: ['#b98a3a', '#f6e4bd'], glyph: '🔨', part: 'star',  sfx: 'stamp' },
+  flawless:     { pre: 'negateShield', c: ['#5AA9E6', '#d8efff'], glyph: '🌀', part: 'ring', sfx: 'beam' },
+  copycard:     { pre: 'mirror',   c: ['#9B5BD6', '#ece0fb'], glyph: '📋', part: 'star',  sfx: 'card' },
+  skillfull:    { pre: 'starBurst',c: ['#ffd76a', '#fff8dc'], glyph: '🌟', part: 'star',  sfx: 'fanfare' },
+  truce:        { pre: 'peace',    c: ['#7ec8b0', '#e6f7f1'], glyph: '🛡️', part: 'spark', sfx: 'item' },
+  insure:       { pre: 'cross',    c: ['#5cc98a', '#e5fbef'], glyph: '🏥', part: 'spark', sfx: 'item' },
+  funddiv:      { pre: 'jar',      c: ['#e8b04b', '#fff3c4'], glyph: '🎓', part: 'coin',  sfx: 'jackpot' },
+  charity:      { pre: 'heart',    c: ['#e8809a', '#ffe4ec'], glyph: '💝', part: 'star',  sfx: 'bell' },
+  investcard:   { pre: 'chartUp',  c: ['#4fae7a', '#dcf5e8'], glyph: '📈', part: 'coin',  sfx: 'item' },
+  rentx2:       { pre: 'doubleUp', c: ['#d9942b', '#fff0c2'], glyph: '💹', part: 'coin',  sfx: 'coinRain' },
+  renthalf:     { pre: 'halve',    c: ['#5aa9e6', '#dcefff'], glyph: '📉', part: 'spark', sfx: 'item' },
+  revive:       { pre: 'phoenix',  c: ['#ffb347', '#fff0d0'], glyph: '🕊️', part: 'star',  sfx: 'fanfare' },
+  nanman:       { pre: 'raid',     c: ['#b5512f', '#ffd8c2'], glyph: '🗡️', part: 'shard', sfx: 'clash' },
+  arrowrain:    { pre: 'arrows',   c: ['#7a8fa6', '#e3edf7'], glyph: '🏹', part: 'spark', sfx: 'whoosh' },
+  leroi:        { pre: 'sleepZ',   c: ['#8a7fd1', '#e8e2fb'], glyph: '🛌', part: 'spark', sfx: 'stay' },
+  graincut:     { pre: 'scythe',   c: ['#c9a227', '#fff2c2'], glyph: '🌾', part: 'shard', sfx: 'buzzer' },
+  fireattack:   { pre: 'flame',    c: ['#ff7a2f', '#ffe0b8'], glyph: '🔥', part: 'shard', sfx: 'demolish' },
+  alliance:     { pre: 'handshake',c: ['#4fae7a', '#dff5e8'], glyph: '🤝', part: 'spark', sfx: 'bell' },
+  swapReaction: { pre: 'alchemy',  c: ['#8e6bd8', '#eae0ff'], glyph: '⚗️', part: 'star',  sfx: 'pow' },
+  swapSplit:    { pre: 'dna',      c: ['#3fb6b0', '#dcf6f4'], glyph: '🧬', part: 'star',  sfx: 'pow' },
+};
+const CARD_FX_DEF = { pre: 'wildcard', c: ['#8E5BD8', '#ffffff'], glyph: '🃏', part: 'star', sfx: 'card' };
+// ① 单张卡发动 / 获得的全屏特效（全场可见）—— v7.6：按卡牌 id 取专属配色 / 徽记 / 粒子 / 音效
 async function cardActFx(e) {
   const c = cardOf(e.card);
   if (e.rare) c.rare = e.rare;
   const R = rarOf(c.rare);
+  const F = CARD_FX[e.card] || CARD_FX_DEF;
   const who = ownerName(e.pid);
   const layer = document.createElement('div');
-  layer.className = `cfx-layer rar-${c.rare}`;
+  layer.className = `cfx-layer rar-${c.rare} pre-${F.pre}`;
   const rays = Array.from({ length: R.rays }, ($v, i) => `<i class="cfx-ray" style="--a:${(360 / R.rays) * i}deg;--d:${(i % 3) * 90}ms"></i>`).join('');
   layer.innerHTML = `<div class="cfx-dim"></div>
-    <div class="cfx-stage" style="--rc:${R.color};--rg:${R.glow}">
+    <div class="cfx-stage" style="--rc:${R.color};--rg:${R.glow};--ac:${F.c[0]};--ac2:${F.c[1]}">
       <div class="cfx-halo"></div>${rays}
       <div class="cfx-burst"></div>
+      <div class="cfx-glyph cg-${F.pre}">${F.glyph}</div>
       <div class="cfx-title">${e.mode === 'gain' ? '获得效果卡' : '效果卡发动'} · <b>${R.name}</b></div>
       <div class="cfx-who">${esc(who)}</div>
       ${cardFaceHtml(c, { big: 1.5 })}
@@ -2800,12 +2862,16 @@ async function cardActFx(e) {
     </div>`;
   $('fxLayer').appendChild(layer);
   requestAnimationFrame(() => requestAnimationFrame(() => layer.classList.add('show')));
-  try { SFX.card(); } catch (err) {}
-  setTimeout(() => { try { SFX.glint(); } catch (err) {} }, sp(260));
+  const playSfx = n => { try { (SFX[n] || SFX.card)(); } catch (err) {} };
+  playSfx('card');
+  setTimeout(() => playSfx(F.sfx), sp(240));
   if (c.rare === 'SSR' || c.rare === 'SR') setTimeout(() => { try { SFX.hexPrism(); } catch (err) {} confettiBurst(c.rare === 'SSR' ? 90 : 60); }, sp(520));
   else setTimeout(() => { try { SFX.sparkle(); } catch (err) {} }, sp(420));
-  fxBurst(playerCell(e.pid), { kind: 'star', n: c.rare === 'SSR' ? 22 : 14, speed: 3.4, size: 4.4, life: 46, color: [R.color, '#ffffff'] });
-  await sleep(R.hold);
+  // 专属粒子 + 屏幕闪光
+  fxBurst(playerCell(e.pid), { kind: F.part, n: c.rare === 'SSR' ? 26 : 16, speed: 3.6, size: 4.6, life: 48,
+    color: [F.c[0], F.c[1], '#ffffff'], wave: { r: 64, color: F.c[0], life: 42 } });
+  flashScreen(`radial-gradient(circle at 50% 46%, ${hexA(F.c[0], .30)}, rgba(0,0,0,0) 66%)`, 460);
+  await sleep(Math.round(R.hold * 0.95));
   layer.classList.add('out');
   await sleep(420);
   layer.remove();
@@ -2979,7 +3045,7 @@ function cardPanelSync() {
       const id = btn.dataset.id, uid = btn.dataset.uid;
       const c = cardOf(id);
       if (btn.dataset.ok === '0' && !cardUsableUI(id)) { try { SFX.buzzer(); } catch (err) {} return; }
-      const needTgt = ['seize', 'demolish', 'repeat', 'forcetax', 'forceroll', 'challenge', 'snatch', 'dismantle'].includes(id);
+      const needTgt = ['seize', 'demolish', 'repeat', 'forcetax', 'forceroll', 'challenge', 'snatch', 'dismantle', 'steal', 'fireattack', 'swapReaction', 'swapSplit', 'alliance'].includes(id);
       if (id === 'copycard') { showCopyPicker(d, uid, btn); return; }
       if (!needTgt) { try { SFX.hexPick(); } catch (err) {} act({ type: 'useCard', uid }); closeCardPanel(); return; }
       showTargetPicker(d, uid, id, c);
@@ -2998,11 +3064,19 @@ function cardUsableUI(id) {
   switch (id) {
     case 'seize': return others.some(q => q.cash > 0);
     case 'demolish': return others.some(q => (S.cells || []).some((cs, i) => cs.own === q.id && cs.level > 0 && BOARD[i] && BOARD[i].type === 'prop'));
-    case 'repeat': case 'forcetax': case 'forceroll': case 'challenge': return others.length > 0;
+    case 'repeat': case 'forcetax': case 'forceroll': case 'challenge': case 'nanman': case 'alliance': return others.length > 0;
     case 'snatch': case 'dismantle': return others.some(q => heldN(q) > 0);
+    case 'steal': return others.some(q => (q.skillLeft || 0) > 0);
     case 'redeemcard': return (S.cells || []).some((cs, i) => cs.own === myPid && cs.mortgaged);
     case 'copycard': return (me.hand || []).filter(h => h.id !== 'copycard' && h.id !== 'flawless').length > 0;
-    case 'backstep': case 'reverse': case 'branchcard': return true;
+    case 'backstep': case 'reverse': case 'branchcard': case 'leroi': return true;
+    case 'arrowrain': return others.some(q => (S.cells || []).some((cs, i) => cs.own === q.id && BOARD[i] && BOARD[i].type === 'prop') || q.cash > 0);
+    case 'fireattack': return others.some(q => (S.cells || []).some((cs, i) => cs.own === q.id && BOARD[i] && BOARD[i].type === 'prop'));
+    case 'swapReaction': return others.some(q => (S.cells || []).some((cs, i) => cs.own === q.id && BOARD[i] && BOARD[i].type === 'prop'));
+    case 'swapSplit': {
+      const mine = (S.cells || []).some((cs, i) => cs.own === myPid && cs.level === 0 && BOARD[i] && BOARD[i].type === 'prop');
+      return mine && others.some(q => (S.cells || []).some((cs, i) => cs.own === q.id && cs.level === 0 && BOARD[i] && BOARD[i].type === 'prop'));
+    }
     default: return true;
   }
 }
@@ -3042,6 +3116,9 @@ function targetCands(id) {
   if (id === 'seize') return list.filter(p => p.cash > 0);
   if (id === 'demolish') return list;   // 引擎会自动挑有楼的目标地皮；无楼则提示无效
   if (id === 'snatch' || id === 'dismantle') return list.filter(p => (p.cardCount || 0) > 0 || (p.medal || 0) + (p.joker || 0) + (p.fineFree || 0) + (p.stayFree || 0) + (p.rentX2 || 0) + (p.rentHalf || 0) + (p.insure || 0) + (p.truce || 0) + (p.auctionVouch || 0) + (p.revive || 0) > 0);
+  if (id === 'steal') return list.filter(p => (p.skillLeft || 0) > 0);
+  if (id === 'fireattack' || id === 'swapReaction') return list.filter(p => (S.cells || []).some((cs, i) => cs.own === p.id && BOARD[i] && BOARD[i].type === 'prop'));
+  if (id === 'swapSplit') return list.filter(p => (S.cells || []).some((cs, i) => cs.own === p.id && cs.level === 0 && BOARD[i] && BOARD[i].type === 'prop'));
   return list;
 }
 function closeCardPanel() { if (handEl) { handEl.remove(); handEl = null; } handSig = ''; }
@@ -3075,11 +3152,62 @@ function negateSync() {
   d.querySelector('#ngNo').onclick = () => { try { SFX.click(); } catch (err) {} act({ type: 'useNegate', yes: false }); };
 }
 
+// ⑥ v7.6：时机型效果卡询问框（加速 / 反向 / 后退 / 强制重投 / 租金翻倍 / 减半 / 万能卡 / 兵粮寸断）
+let askEl = null, askSig = '';
+function askSync() {
+  const pa = S && S.phase === 'ask' ? S.pendingAsk : null;
+  const mine = pa && pa.pid === myPid;
+  if (!mine) { if (askEl) { askEl.remove(); askEl = null; askSig = ''; } return; }
+  const sig = pa.card + ':' + JSON.stringify(pa.payload || {});
+  if (askEl && askSig === sig) return;
+  if (askEl) { askEl.remove(); askEl = null; }
+  askSig = sig;
+  const c = cardOf(pa.card), R = rarOf(c.rare), pl = pa.payload || {};
+  const isMeTarget = pl.rollPid === myPid || pl.whoName === undefined;
+  const head = {
+    step: '掷骰结果已定 —— 是否用「加速卡」再快 4 步？',
+    reverse: '是否用「反向骰子卡」把点数反过来？（点数 = 14 − 实际点数）',
+    backstep: '是否用「后退卡」改为后退 3 步？',
+    forceroll: `对手已掷出点数 —— 是否用「强制重投」让 TA 买一次重投骰子重新再投？`,
+    rentx2: '你即将收租 —— 是否用「租金翻倍券」让这一笔 ×2？',
+    renthalf: '你即将被收租 —— 是否用「租金减半卡」让这一笔减半？',
+    joker: '是否使用「万能卡」免除这一次负面效果？',
+    graincut: '有玩家即将获得非租金现金收入 —— 是否用「兵粮寸断」取消它？',
+  }[pa.card] || '是否发动这张效果卡？';
+  const d = document.createElement('div');
+  d.className = 'tq-layer rar-' + c.rare;
+  d.innerHTML = `<div class="tq-box" style="--rc:${R.color};--rg:${R.glow}">
+      <div class="tq-icon">${c.icon || '🃏'}</div>
+      <div class="tq-txt">
+        <div class="tq-name">${esc(c.name)}<em>${R.name} · ${c.rare}</em></div>
+        <div class="tq-q">${esc(head)}</div>
+        ${pl.detail ? `<div class="tq-sub">${esc(pl.detail)}</div>` : ''}
+      </div>
+      <div class="tq-btns"><button class="btn primary" id="tqYes">▶ 发动（消耗这张卡）</button><button class="btn" id="tqNo">不发动，跳过</button></div>
+    </div>`;
+  $('fxLayer').appendChild(d);
+  requestAnimationFrame(() => requestAnimationFrame(() => d.classList.add('show')));
+  askEl = d;
+  try { SFX.card(); SFX.tick(); } catch (err) {}
+  d.querySelector('#tqYes').onclick = () => { try { SFX.pow(); } catch (err) {} act({ type: 'answerTiming', yes: true }); askEl && askEl.remove(); askEl = null; askSig = ''; };
+  d.querySelector('#tqNo').onclick = () => { try { SFX.click(); } catch (err) {} act({ type: 'answerTiming', yes: false }); askEl && askEl.remove(); askEl = null; askSig = ''; };
+}
+
 // 地图中央常驻徽章（每帧 renderPanel 调用；landing=true 时播放落位特效）
 function renderFacultyBadge(landing) {
   const g = $('facBadge'); if (!g) return;
   const C = CTR_CARD;
   const bx = C.x + 20, by = C.y + 78, bw = C.w - 40, bh = 62;   // v5.6：徽章上移压扁，给下方胶囊区让位
+  // v7.6：免费轮 / 免租轮的具体轮次要挂到中央徽章上（徽章向下加高，图标与文字基线不动）
+  const frRounds = (S && S.freeRounds) || [];
+  const frRentRounds = (S && S.freeRentRounds) || [];
+  const roundNote = (() => {
+    const a = frRounds.length ? `🎟️ 免费轮 第 ${frRounds.join('·')} 轮` : '';
+    const b = frRentRounds.length ? `🕊️ 免租轮 第 ${frRentRounds.join('·')} 轮` : '';
+    return [a, b].filter(Boolean).join('　　');
+  })();
+  const bhDraw = roundNote ? 76 : bh;
+  const roundLine = roundNote ? `<text class="fac-badge-round" x="${bx + 78}" y="${by + 71}" font-size="11.5" font-weight="800" fill="#8a6d1a">${esc(roundNote)}</text>` : '';
   const key = S ? S.faculty : null;
   if (!key || !FACULTY[key]) {
     if (facBadgeKey === '__none__') return;
@@ -3092,8 +3220,8 @@ function renderFacultyBadge(landing) {
   // v7.5：中期突变 —— 中央城邦徽章要「跟着变异」，把突变后的实际效果写在原位置
   const mut = (S && S.mutation && (!S.mutation.facId || S.mutation.facId === key)) ? S.mutation : null;
   const mutTag = mut ? `${mut.kind}|${mut.id}` : '';
-  if (facBadgeKey === key + mutTag && !landing) return;
-  facBadgeKey = key + mutTag;
+  if (facBadgeKey === key + mutTag + '|' + roundNote && !landing) return;
+  facBadgeKey = key + mutTag + '|' + roundNote;
   const f = FACULTY[key];
   const col = f.color || '#9A968C';
   const cy = by + bh / 2;
@@ -3102,8 +3230,8 @@ function renderFacultyBadge(landing) {
     const MC = mut.kind === 'buff' ? '#2FA36B' : (mut.kind === 'nerf' ? '#B0344C' : '#9B4BE0');
     g.classList.add('fac-mut');
     g.innerHTML = `
-      <rect x="${bx}" y="${by}" width="${bw}" height="${bh}" rx="16" fill="${hexA(MC, .16)}" stroke="${hexA(MC, .62)}" stroke-width="2"/>
-      <rect x="${bx}" y="${by}" width="${bw}" height="${bh}" rx="16" fill="none" stroke="${hexA(MC, .35)}" stroke-width="1.1" stroke-dasharray="9 6">
+      <rect x="${bx}" y="${by}" width="${bw}" height="${bhDraw}" rx="16" fill="${hexA(MC, .16)}" stroke="${hexA(MC, .62)}" stroke-width="2"/>
+      <rect x="${bx}" y="${by}" width="${bw}" height="${bhDraw}" rx="16" fill="none" stroke="${hexA(MC, .35)}" stroke-width="1.1" stroke-dasharray="9 6">
         <animate attributeName="stroke-dashoffset" from="0" to="60" dur="7s" repeatCount="indefinite"/>
       </rect>
       <rect x="${bx}" y="${by}" width="5.5" height="${bh}" rx="3" fill="${MC}"/>
@@ -3123,11 +3251,12 @@ function renderFacultyBadge(landing) {
       <g transform="translate(${bx + bw - 62},${by + bh - 21})">
         <rect width="52" height="15" rx="7.5" fill="${hexA(MC, .16)}" stroke="${hexA(MC, .4)}" stroke-width="1"/>
         <text x="26" y="11" text-anchor="middle" font-size="9.5" font-weight="800" fill="${shade(MC, -46)}">${mut.kind === 'buff' ? '专属强化' : (mut.kind === 'nerf' ? '专属反转' : '通用突变')}</text>
-      </g>`;
+      </g>
+      ${roundLine}`;
   } else {
     g.classList.remove('fac-mut');
     g.innerHTML = `
-    <rect x="${bx}" y="${by}" width="${bw}" height="${bh}" rx="16" fill="${hexA(col, .12)}" stroke="${hexA(col, .5)}" stroke-width="1.6"/>
+    <rect x="${bx}" y="${by}" width="${bw}" height="${bhDraw}" rx="16" fill="${hexA(col, .12)}" stroke="${hexA(col, .5)}" stroke-width="1.6"/>
     <rect x="${bx}" y="${by}" width="5.5" height="${bh}" rx="3" fill="${col}"/>
     <circle cx="${bx + 42}" cy="${cy}" r="21" fill="${hexA(col, .18)}" stroke="${col}" stroke-width="1.8"/>
     <circle cx="${bx + 42}" cy="${cy}" r="26.5" fill="none" stroke="${col}" stroke-width="1.2" stroke-dasharray="4 7" opacity=".55">
@@ -3138,7 +3267,8 @@ function renderFacultyBadge(landing) {
     <text x="${bx + 78}" y="${by + 42}" font-size="19" font-weight="800" fill="${shade(col, -58)}">${esc(f.name)}</text>
     <text class="fac-badge-line" x="${bx + 78}" y="${by + 56.5}" font-size="12" fill="#7a6a52">▸ ${esc(f.lead)}　｜　代价：${esc(f.cost)}</text>
     <rect x="${bx + bw - 62}" y="${by + 6}" width="52" height="17" rx="8.5" fill="${hexA(col, .18)}" stroke="${hexA(col, .45)}" stroke-width="1"/>
-    <text x="${bx + bw - 36}" y="${by + 18.5}" text-anchor="middle" font-size="10.5" font-weight="700" fill="${shade(col, -58)}">详情</text>`;
+    <text x="${bx + bw - 36}" y="${by + 18.5}" text-anchor="middle" font-size="10.5" font-weight="700" fill="${shade(col, -58)}">详情</text>
+    ${roundLine}`;
   }
   g.style.cursor = 'pointer';
   if (!g.dataset.bound) { g.dataset.bound = '1'; g.addEventListener('click', openFacDetail); }
@@ -3188,7 +3318,7 @@ function openFacDetail() {
         <div class="fd-row bad"><b>代价</b>${esc(f.cost)}</div>
         <div class="fd-quote">「${esc(f.tag)}」</div>
       </div>
-      ${S.freeRound ? `<div class="fd-note">🎟️ 已抽定免费轮：<b>第 ${S.freeRound} 轮</b>（买地皮、盖楼完全免费）</div>` : ''}
+      ${(S.freeRounds && S.freeRounds.length) ? `<div class="fd-note">🎟️ 已抽定免费轮：<b>第 ${S.freeRounds.join(' / ')} 轮</b>（买地皮、盖楼完全免费）</div>` : ''}
       ${(S.freeRentRounds && S.freeRentRounds.length) ? `<div class="fd-note">🕊️ 已抽定免租轮：<b>第 ${S.freeRentRounds.join(' / ')} 轮</b>（踩到谁的地都不用付租金）</div>` : ''}
       <div class="fd-sub">本局共有 ${FACULTY_KEYS.length} 种校园风貌，开局随机抽 3 个候选、随机抽一位玩家定夺</div>
       <div class="fd-grid">${FACULTY_KEYS.map(k => {
@@ -3288,6 +3418,15 @@ function chatFx(e) {
 // ---------- v5.1 对决演出（辩论擂台 / 校园运动会共用） ----------
 // 分步：①抽签（双方名字飞转后定格）②两人登上大屏幕（左右滑入 + 专业亮相）
 //       ③两人依次掷骰（骰子 3D 翻滚，落定后揭晓点数）④比大小 → 高亮胜者 → 结算
+// v7.6：擂台 / 运动会平局 → 快速提示「平局，重新掷骰」，然后由紧接着的 duel 事件播放正式演出
+async function duelTieAnim(e) {
+  try { SFX.buzzer(); } catch (err) {}
+  const pa = playerCell(e.pid), pb = playerCell(e.opp);
+  fxBurst(pa, { kind: 'spark', n: 12, speed: 3.0, size: 3.0, life: 32, color: ['#ffd76a', '#ffffff', '#e2574c'] });
+  fxBurst(pb, { kind: 'spark', n: 12, speed: 3.0, size: 3.0, life: 32, color: ['#ffd76a', '#ffffff', '#4a90d9'] });
+  flashScreen('radial-gradient(circle at 50% 46%, rgba(255,214,140,.30), rgba(120,60,20,0) 66%)', 420);
+  await announce(`⚔️ <b>平局！</b>${esc(ownerName(e.pid))} 与 ${esc(ownerName(e.opp))} 均掷出 ${e.a} 点<br><span style="font-size:14px;opacity:.9">重新掷骰 · 第 ${e.round || 1} 次</span>`, 1250);
+}
 async function duelAnim(e) {
   const isArena = e.label === '校园运动会';
   const A = ownerName(e.pid), B = ownerName(e.opp);

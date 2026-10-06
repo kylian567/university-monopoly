@@ -4,16 +4,16 @@
 // ---------- 棋盘数据（大学主题 · 主路线 48 格 + 两条岔路各 7 格） ----------
 // v5.1：盖房成本整体下调约 15%，各级租金同步下调约 12%（盖楼更便宜、收租也不再那么暴利）
 const GROUPS = {
-  g1:  { label: '棕',   color: '#A1887F', build: 890,  refRent: 230,  rents: [620, 1410, 2900, 5460] },
-  g2:  { label: '浅蓝', color: '#90CAF9', build: 1260, refRent: 320,  rents: [840, 1940, 4050, 7570] },
-  g3:  { label: '粉',   color: '#F48FB1', build: 1630, refRent: 410,  rents: [1100, 2550, 5280, 9860] },
-  g4:  { label: '橙',   color: '#FFB74D', build: 1940, refRent: 500,  rents: [1320, 3080, 6420, 12060] },
-  g5:  { label: '红',   color: '#E57373', build: 2310, refRent: 590,  rents: [1580, 3700, 7660, 14340] },
-  g6:  { label: '黄',   color: '#FFE082', build: 2680, refRent: 680,  rents: [1850, 4310, 8890, 16720] },
-  g7:  { label: '绿',   color: '#A5D6A7', build: 3050, refRent: 770,  rents: [2110, 4930, 10210, 19100] },
-  g8:  { label: '青',   color: '#4DB6AC', build: 3360, refRent: 860,  rents: [2380, 5540, 11530, 21560] },
-  g9:  { label: '深蓝', color: '#9FA8DA', build: 3730, refRent: 980,  rents: [2730, 6340, 13110, 24550] },
-  g10: { label: '紫',   color: '#B39DDB', build: 4310, refRent: 1100, rents: [3080, 7130, 14780, 27720] },
+  g1:  { label: '棕',   color: '#A1887F', build: 960,  refRent: 230,  rents: [660, 1490, 3070, 5790] },
+  g2:  { label: '浅蓝', color: '#90CAF9', build: 1360, refRent: 320,  rents: [890, 2060, 4290, 8020] },
+  g3:  { label: '粉',   color: '#F48FB1', build: 1760, refRent: 410,  rents: [1170, 2700, 5600, 10450] },
+  g4:  { label: '橙',   color: '#FFB74D', build: 2100, refRent: 500,  rents: [1400, 3260, 6810, 12780] },
+  g5:  { label: '红',   color: '#E57373', build: 2490, refRent: 590,  rents: [1670, 3920, 8120, 15200] },
+  g6:  { label: '黄',   color: '#FFE082', build: 2890, refRent: 680,  rents: [1960, 4570, 9420, 17720] },
+  g7:  { label: '绿',   color: '#A5D6A7', build: 3290, refRent: 770,  rents: [2240, 5230, 10820, 20250] },
+  g8:  { label: '青',   color: '#4DB6AC', build: 3630, refRent: 860,  rents: [2520, 5870, 12220, 22850] },
+  g9:  { label: '深蓝', color: '#9FA8DA', build: 4030, refRent: 980,  rents: [2890, 6720, 13900, 26020] },
+  g10: { label: '紫',   color: '#B39DDB', build: 4650, refRent: 1100, rents: [3260, 7560, 15670, 29380] },
 };
 const PCOLOR = ['#E53935', '#1E88E5', '#FDD835', '#43A047', '#8E24AA']; // 玩家棋子色（最多 5 人）
 
@@ -27,53 +27,53 @@ function P(name, g, price, rent) { return { name, type: 'prop', g, price, rent }
 //             东南392 · 华东师大433 · 深圳大学452 ｜ 附加：西北农林科技(801-850) · 长安大学
 const BOARD = [
   { name: '起点', type: 'start' },                         //0
-  P('华中科大', 'g5', 2100, 560),                               //1
-  P('山东大学', 'g4', 1900, 500),                               //2
+  P('华中科大', 'g5', 2100, 594),                               //1
+  P('山东大学', 'g4', 1900, 530),                               //2
   { name: '命运', type: 'fate' },                          //3
   { name: '缴学费', type: 'tax', amount: 900 },             //4（v5.1：实际扣款改为随机 ¥800~1500，此字段仅作占位）
   { name: '浦东机场', type: 'transport', price: 2000 },  //5
-  P('浙江大学', 'g9', 3450, 900),                               //6
-  P('厦门大学', 'g4', 1800, 470),                               //7
+  P('浙江大学', 'g9', 3450, 954),                               //6
+  P('厦门大学', 'g4', 1800, 498),                               //7
   { name: '机会', type: 'chance' },                        //8
-  P('北航', 'g2', 1300, 320),                                 //9
-  P('北京理工', 'g6', 2400, 650),                               //10（与北理工互换）
-  P('中山大学', 'g6', 2300, 620),                               //11
+  P('北航', 'g2', 1300, 339),                                 //9
+  P('北京理工', 'g6', 2400, 689),                               //10（与北理工互换）
+  P('中山大学', 'g6', 2300, 657),                               //11
   { name: '文印店', type: 'util', price: 1700 },            //12（v5.1：涨价 1600→1700）
-  P('香港大学', 'g10', 3900, 1020),                             //13
-  P('四川大学', 'g5', 2000, 530),                               //14
+  P('香港大学', 'g10', 3900, 1081),                             //13
+  P('四川大学', 'g5', 2000, 562),                               //14
   { name: '白云机场', type: 'transport', price: 2000 },  //15
-  P('西北农林', 'g1', 900, 205),                                //16
+  P('西北农林', 'g1', 900, 217),                                //16
   { name: '命运', type: 'fate' },                          //17
-  P('南京大学', 'g8', 3300, 860),                               //18
-  P('南开大学', 'g3', 1600, 410),                               //19
+  P('南京大学', 'g8', 3300, 912),                               //18
+  P('南开大学', 'g3', 1600, 435),                               //19
   { name: '长廊入口', type: 'junction' },                //20（岔路入口：持有 ≥2 块地皮可进·与教育基金会互换）
-  P('东南大学', 'g2', 1200, 290),                               //21
+  P('东南大学', 'g2', 1200, 307),                               //21
   { name: '机会', type: 'chance' },                        //22
-  P('北京大学', 'g10', 4050, 1060),                             //23
+  P('北京大学', 'g10', 4050, 1124),                             //23
   { name: '宝安机场', type: 'transport', price: 2000 },  //24（v5.1：与中科大互换）
-  P('中科大', 'g8', 3150, 830),                                //25（v5.1：与宝安机场互换）
-  P('天津大学', 'g6', 2500, 680),                               //26
-  P('华东师大', 'g2', 1100, 260),                               //27
+  P('中科大', 'g8', 3150, 880),                                //25（v5.1：与宝安机场互换）
+  P('天津大学', 'g6', 2500, 721),                               //26
+  P('华东师大', 'g2', 1100, 276),                               //27
   { name: '教育基金会', type: 'parking' },                   //28（走到领走基金池·与长廊入口互换）
-  P('华南理工', 'g3', 1400, 350),                               //29
+  P('华南理工', 'g3', 1400, 371),                               //29
   { name: '挂科留级', type: 'gojail' },                     //30（原入狱）
-  P('深圳大学', 'g1', 1000, 230),                               //31
-  P('北师大', 'g7', 2700, 740),                                //32
-  P('同济大学', 'g8', 3000, 800),                               //33
-  P('武汉大学', 'g7', 2850, 770),                               //34
+  P('深圳大学', 'g1', 1000, 244),                               //31
+  P('北师大', 'g7', 2700, 784),                                //32
+  P('同济大学', 'g8', 3000, 848),                               //33
+  P('武汉大学', 'g7', 2850, 816),                               //34
   { name: '大兴机场', type: 'transport', price: 2000 },  //35
   { name: '大道入口', type: 'junction2' },               //36（原大道入口）
-  P('南科大', 'g4', 1700, 440),                                //37
+  P('南科大', 'g4', 1700, 466),                                //37
   { name: '快递驿站', type: 'util', price: 1600 },           //38（v5.1：涨价 1500→1600）
   { name: '校园商城', type: 'jail' },                       //39（免费领「免租金卡」·与北理工互换）
-  P('清华大学', 'g10', 4200, 1100),                             //40
-  P('国科大', 'g3', 1500, 380),                                //41
-  P('上海交大', 'g9', 3600, 940),                               //42
-  P('长安大学', 'g1', 800, 180),                                //43
+  P('清华大学', 'g10', 4200, 1166),                             //40
+  P('国科大', 'g3', 1500, 403),                                //41
+  P('上海交大', 'g9', 3600, 996),                               //42
+  P('长安大学', 'g1', 800, 191),                                //43
   { name: '辩论擂台', type: 'duel' },                        //44（原擂台）
-  P('西安交大', 'g5', 2200, 590),                               //45
-  P('复旦大学', 'g9', 3750, 980),                               //46
-  P('哈工大', 'g7', 2600, 710),                                //47
+  P('西安交大', 'g5', 2200, 625),                               //45
+  P('复旦大学', 'g9', 3750, 1039),                               //46
+  P('哈工大', 'g7', 2600, 753),                                //47
 ];
 
 // ---------- 学术长廊（48~54 号格，7 格） ----------
@@ -116,8 +116,9 @@ const REROLL_ROUND_EVERY = 2;  // 每 2 轮一档
 const REROLL_ROUND_STEP = 55;  // 每档 +¥55
 const REROLL_COST = REROLL_BASE;   // 兼容旧引用（文案 / 老测试），等价于首次价
 // v7.0：经济微调 —— 盖房价格小幅上调 5%；路过租金小幅上调 6%
-// v7.1 修正：租金上调只对「已建有房子的地皮」生效（1~3 栋房 / 旅馆），裸地（地皮）租金回到 v6.0 原值
-const RENT_MUL_V7  = 1.06;   // （盖房价直接写进 GROUPS.build：×1.05，四舍五入到 10）
+// v7.1 修正：租金上调只对「已建有房子的地皮」生效；v7.6：地皮与房子租金整体再 ×1.06，
+// 并直接写进 GROUPS.rents / BOARD.rent 数值表（RENT_MUL_V7 保留仅作口径记录，运行时不再乘）
+const RENT_MUL_V7  = 1.06;   // （盖房价直接写进 GROUPS.build：v7.6 起 ×1.08，四舍五入到 10）
 const FUND_SHARE = 1 / 3;      // v5.0：重掷/免罚符的花费有 1/3 进入教育基金池
 
 // ---------- 市场周期（季节） / 天气 / 校历事件 ----------
@@ -375,35 +376,35 @@ const CARD_RARITY = {
 };
 const CARD_RARITY_ORDER = ['SSR', 'SR', 'R', 'N'];
 // v7.0：进攻型效果卡（可被「无懈可击卡 / 万能卡」响应抵消）
-const ATTACK_CARDS = ['seize', 'demolish', 'repeat', 'forcetax', 'forceroll', 'challenge', 'snatch', 'dismantle'];
-// mode：auto=满足条件自动消耗 / manual=自己回合手动发动 / instant=获得即发动 / reactive=别人发动时响应
+const ATTACK_CARDS = ['seize', 'demolish', 'repeat', 'forcetax', 'forceroll', 'challenge', 'snatch', 'dismantle', 'nanman', 'arrowrain', 'fireattack', 'swapReaction', 'swapSplit', 'graincut'];
+// mode：auto=满足条件自动消耗 / manual=自己回合手动发动 / instant=获得即发动 / reactive=别人发动时响应 / ask=在特定时机主动询问是否发动
 const EFFECT_CARDS = [
-  // ---- 原有卡（v7.0 重新定级：免租金卡与万能卡为 SR，其余为 R）----
-  { id: 'medal',     name: '免租金卡',      icon: '🎫', rare: 'SR', mode: 'auto',    desc: '保留到下次应付租金时自动消耗（可叠加持有）' },
-  { id: 'joker',     name: '万能卡',        icon: '🃏', rare: 'SR', mode: 'auto',    desc: '保留到下次遇到任何负面效果（付租 / 罚款 / 停留 / 拆房 / 挂科…）时自动免除' },
-  { id: 'skill',     name: '技能次数 +1',   icon: '✨', rare: 'R',  mode: 'auto',    desc: '本局专业技剩余次数 +1' },
-  { id: 'discount',  name: '买地皮 8 折卡', icon: '🏷️', rare: 'R',  mode: 'auto',    desc: '保留到下次买地时自动 8 折' },
-  { id: 'buildcut',  name: '盖房 9 折卡',   icon: '🔨', rare: 'R',  mode: 'auto',    desc: '保留到下次盖房 / 升级时自动 9 折' },
-  { id: 'step',      name: '加速卡',        icon: '👟', rare: 'R',  mode: 'auto',    desc: '保留到下一次移动，额外 +4 步' },
-  { id: 'cash',      name: '现金红包',      icon: '🧧', rare: 'R',  mode: 'instant', desc: '立刻到账 ¥800~1200（随机）' },
-  { id: 'stayfree',  name: '免停留卡',      icon: '🎯', rare: 'R',  mode: 'auto',    desc: '保留到下次纯惩罚性停留时自动消耗（罚款照付）' },
-  { id: 'finefree',  name: '免罚款卡',      icon: '📜', rare: 'R',  mode: 'auto',    desc: '保留到下次缴纳「非租金罚款」时自动免除' },
-  { id: 'steal',     name: '偷师卡',        icon: '🕵️', rare: 'R',  mode: 'instant', desc: '获得时立刻发动：随机让一名有技能次数的对手技能次数 −1，你获得该技能的一次使用；若无人可偷则自己技能次数 +1' },
+  // ---- 原有卡（v7.6 重新定级：万能卡 / 无懈可击卡 / 租金翻倍券升为 SSR，多张卡改为主动询问型）----
+  { id: 'medal',     name: '免租金卡',      icon: '🎫', rare: 'SR',  mode: 'auto',    desc: '保留到下次应付租金时自动消耗（可叠加持有）' },
+  { id: 'joker',     name: '万能卡',        icon: '🃏', rare: 'SSR', mode: 'ask',     desc: '遇到任何负面效果（付租 / 罚款 / 停留 / 拆房 / 挂科…）时主动询问是否使用：使用则完全免除这一次' },
+  { id: 'skill',     name: '技能次数 +1',   icon: '✨', rare: 'R',   mode: 'auto',    desc: '本局专业技剩余次数 +1' },
+  { id: 'discount',  name: '买地皮 8 折卡', icon: '🏷️', rare: 'R',   mode: 'auto',    desc: '保留到下次买地时自动 8 折' },
+  { id: 'buildcut',  name: '盖房 9 折卡',   icon: '🔨', rare: 'R',   mode: 'auto',    desc: '保留到下次盖房 / 升级时自动 9 折' },
+  { id: 'step',      name: '加速卡',        icon: '👟', rare: 'R',   mode: 'ask',     desc: '掷骰看到点数后主动询问是否发动：发动则本次移动额外 +4 步' },
+  { id: 'cash',      name: '现金红包',      icon: '🧧', rare: 'R',   mode: 'instant', desc: '立刻到账 ¥800~1200（随机）' },
+  { id: 'stayfree',  name: '免停留卡',      icon: '🎯', rare: 'R',   mode: 'auto',    desc: '保留到下次纯惩罚性停留时自动消耗（罚款照付）' },
+  { id: 'finefree',  name: '免罚款卡',      icon: '📜', rare: 'R',   mode: 'auto',    desc: '保留到下次缴纳「非租金罚款」时自动免除' },
+  { id: 'steal',     name: '偷师卡',        icon: '🕵️', rare: 'SR',  mode: 'manual', desc: '自己回合开始时主动询问：选择一名「有技能次数」的对手，偷走 TA 的 1 次技能为你所用' },
   // ---- v7.0 新增：进攻 / 互动（手动发动）----
   { id: 'seize',      name: '夺金券',      icon: '🧲', rare: 'R',   mode: 'manual', desc: '指定一名对手，抽取其现金 ¥800 到自己账上（对手不足则全拿）' },
   { id: 'demolish',   name: '拆迁令',      icon: '🏚️', rare: 'SSR', mode: 'manual', desc: '指定一块对手的地皮，拆掉 1 层楼（旅馆按 4 层递减）' },
   { id: 'repeat',     name: '留级通知单',  icon: '📵', rare: 'N',   mode: 'manual', desc: '指定一名对手，TA 下一回合停留一回合（免停留卡 / 万能卡可挡）' },
   { id: 'forcetax',   name: '强制补税单',  icon: '🧾', rare: 'N',   mode: 'manual', desc: '指定一名对手，TA 立刻按当前税表补缴一次物业税（税款进教育基金池）' },
-  { id: 'forceroll',  name: '强制重投',    icon: '🎲', rare: 'N',   mode: 'manual', desc: '指定一名对手，TA 下一次掷骰必须采用第二次点数' },
-  { id: 'challenge',  name: '强制挑战令',  icon: '⚔️', rare: 'R',   mode: 'manual', desc: '指定一名对手立刻进行一次擂台对决，赌注 ¥800（平局互不相欠）' },
+  { id: 'forceroll',  name: '强制重投',    icon: '🎲', rare: 'SR',  mode: 'ask',    desc: '别人掷骰看到点数后主动询问是否发动：发动则让 TA 强制购买一次重投骰子，重新再投一次' },
+  { id: 'challenge',  name: '决斗',        icon: '⚔️', rare: 'R',   mode: 'manual', desc: '指定一名对手立刻进行一次擂台对决，赌注 ¥800（平局则重掷直到分出胜负）' },
   { id: 'snatch',     name: '顺手牵羊',    icon: '🖐️', rare: 'SR',  mode: 'manual', desc: '自己回合开始时询问是否发动：指定一名对手，随机偷走 TA 持有的一张效果卡' },
   { id: 'dismantle',  name: '过河拆桥',    icon: '🚧', rare: 'R',   mode: 'manual', desc: '自己回合开始时询问是否发动：指定一名对手，随机弃掉 TA 持有的一张效果卡' },
-  { id: 'backstep',   name: '后退卡',      icon: '🔙', rare: 'N',   mode: 'manual', desc: '发动后本次移动改为后退 3 步（可用来回踩自己的地 / 躲开危险区）' },
-  { id: 'reverse',    name: '反向骰子卡',  icon: '🔄', rare: 'R',   mode: 'manual', desc: '发动后本回合点数改为 14 − 实际点数' },
+  { id: 'backstep',   name: '后退卡',      icon: '🔙', rare: 'SR',  mode: 'ask',    desc: '自己掷骰看到点数后主动询问是否发动：发动则本次移动改为后退 3 步' },
+  { id: 'reverse',    name: '反向骰子卡',  icon: '🔄', rare: 'SR',  mode: 'ask',    desc: '自己投出点数后主动询问是否发动：发动则本次点数变为 14 − 实际点数' },
   { id: 'branchcard', name: '岔路卡',      icon: '🛤️', rare: 'SR',  mode: 'manual', desc: '立刻移动到最近的一条岔路入口，直接进入岔路' },
   { id: 'redeemcard', name: '抵押赎回券',  icon: '🏦', rare: 'R',   mode: 'manual', desc: '免费赎回自己一块抵押中的地皮（免除赎回价与赎回锁）' },
   { id: 'auctionvouch', name: '拍卖代金券', icon: '🔨', rare: 'R',  mode: 'auto',   desc: '保留到下次拍卖成交时，成交价自动 −¥800' },
-  { id: 'flawless',   name: '无懈可击卡',  icon: '🌀', rare: 'R',   mode: 'reactive', desc: '别人发动效果卡时询问你是否响应：使用后使那张卡完全失效（被点名时优先询问你）' },
+  { id: 'flawless',   name: '无懈可击卡',  icon: '🌀', rare: 'SSR', mode: 'reactive', desc: '任何人（含自己）发动任何效果卡时都会询问你是否响应：使用则那张卡完全失效（被点名时优先询问你）' },
   { id: 'copycard',   name: '复印卡',      icon: '📋', rare: 'SSR', mode: 'manual', desc: '自己回合开始时询问是否发动，并选择要复制的一张自己持有的效果卡（无懈可击卡与复印卡不可复制）' },
   // ---- v7.0 新增：自动 / 即时型 ----
   { id: 'skillfull',  name: '技能刷新卡',  icon: '🌟', rare: 'SSR', mode: 'auto',    desc: '立即把自己的专业技能次数回满（回到该专业的初始次数）' },
@@ -412,9 +413,18 @@ const EFFECT_CARDS = [
   { id: 'funddiv',    name: '基金分红券',  icon: '🎓', rare: 'SSR', mode: 'auto',    desc: '立刻领取教育基金池的 15%（池子不足时保底 ¥500）' },
   { id: 'charity',    name: '慈善捐',      icon: '💝', rare: 'N',   mode: 'instant', desc: '获得时立刻发动：自己缴 ¥500，教育基金池 +¥1500' },
   { id: 'investcard', name: '投资券',      icon: '📈', rare: 'SR',  mode: 'auto',    desc: '立刻存 ¥2000 进科研基金，5 轮后连本带利返还 ¥3500' },
-  { id: 'rentx2',     name: '租金翻倍券',  icon: '💹', rare: 'SSR', mode: 'auto',    desc: '保留到下次自己收租时，那一笔租金 ×2（可叠加持有）' },
-  { id: 'renthalf',   name: '租金减半卡',  icon: '📉', rare: 'SR',  mode: 'auto',    desc: '保留到下次自己被收租时，那一笔租金减半（可叠加持有）' },
+  { id: 'rentx2',     name: '租金翻倍券',  icon: '💹', rare: 'SSR', mode: 'ask',     desc: '自己每次收租时主动询问是否发动：使用则本笔租金 ×2（可叠加持有）' },
+  { id: 'renthalf',   name: '租金减半卡',  icon: '📉', rare: 'SR',  mode: 'ask',     desc: '自己被收租时主动询问是否发动：使用则本笔租金减半（可叠加持有）' },
   { id: 'revive',     name: '复活卡',      icon: '🕊️', rare: 'SSR', mode: 'auto',    desc: '破产被淘汰时自动发动：清空债务，带着 ¥3000 卷土重来（限 1 次）' },
+  // ---- v7.6 新增：群伤 / 干扰 / 变换 ----
+  { id: 'nanman',     name: '南蛮入侵',    icon: '🗡️', rare: 'SR',  mode: 'manual', desc: '自己回合发动：除自己外所有玩家「要么缴 ¥1000，要么自己下一轮地皮与房子不收租金」（二选一）' },
+  { id: 'arrowrain',  name: '万箭齐发',    icon: '🏹', rare: 'SSR', mode: 'manual', desc: '自己回合发动：除自己外所有玩家「要么拆掉一块地皮，要么缴 ¥2200 现金」（二选一）' },
+  { id: 'leroi',      name: '乐不思蜀',    icon: '🛌', rare: 'SR',  mode: 'manual', desc: '自己回合发动：主动让自己下一回合被停留一回合（可用于避险 / 蓄力）' },
+  { id: 'graincut',   name: '兵粮寸断',    icon: '🌾', rare: 'SR',  mode: 'reactive', desc: '当有玩家获得「非租金类现金收入」时询问你是否发动：使用则取消 TA 这次奖励（全款领走教育基金也可被取消）' },
+  { id: 'fireattack', name: '火攻',        icon: '🔥', rare: 'SSR', mode: 'manual', desc: '自己回合发动：自己现金 −¥500，并指定一名对手，烧掉 TA 一块地皮（化为无主，附火焰特效）' },
+  { id: 'alliance',   name: '远交近攻',    icon: '🤝', rare: 'SR',  mode: 'manual', desc: '自己回合发动：挑选一名对手，你与 TA 各获得 ¥1000' },
+  { id: 'swapReaction', name: '置换反应',  icon: '⚗️', rare: 'SSR', mode: 'manual', desc: '自己回合发动：指定一名对手，拆掉 TA 某格上的一栋楼，再给 TA 另一格盖上一层楼' },
+  { id: 'swapSplit',  name: '复分解反应',  icon: '🧬', rare: 'SSR', mode: 'manual', desc: '自己回合发动：选一名对手一块「没有房子的地皮」，再选自己一块「没有房子的地皮」，双方互换地皮' },
 ];
 
 // ---------- 卡牌（30 机会 + 30 命运） ----------
@@ -953,11 +963,12 @@ const INCOME_DECAY = [{ r: 15, mul: 0.70 }, { r: 25, mul: 0.50 }, { r: 40, mul: 
 // 衰减豁免的入账理由（非「奖金」类：转账 / 返还 / 返现 / 兜底等）
 const INCOME_EXEMPT = ['抵押', '赎回', '拆除回售', '卖房', '返现', '遗产继承', '收费站过路费', '风险兜底', '涅槃', '投资结项', '转移', '对决', '带货', '偷', '强取豪夺', '模型推理', '帮扶', '慈善', '捐款', '接管', '基金会划拨', '众筹', '项目·', '结项经费', '万能卡', '租金'];   // v6.0：海克斯（研究项目）获得的钱一律豁免衰减
 
-const SALARY = 2000, START_CASH = 26666, TURN_MS = 30000, AUCTION_MS = 15000;   // v6.0：初始资金 30000 → 26666
+const SALARY = 2000, START_CASH = 20000, TURN_MS = 30000, AUCTION_MS = 15000;   // v7.6：初始资金 26666 → 20000（配合建造费与租金上调，整体更紧张）
 // v6.0：给「筹钱」和「升级房子」留足思考时间（要仔细权衡抵押哪几块地）
 const RAISE_MS = 75000, BUILD_MS = 55000;
 const DRAFT_MS = 30000;          // v7.0：海克斯奖励卡「三张翻面卡」决策时长（动画本身约 8 秒，留足时间看）
 const NEGATE_MS = 12000;          // v7.5：无懈可击响应窗口（每次卡发动都会问全场持有者，缩短到 12 秒）
+const ASK_MS = 15000;             // v7.6：时机型效果卡（加速 / 反向 / 后退 / 强制重投 / 租金翻倍 / 减半 / 万能卡…）的询问窗口
 const rnd = (a, b) => a + Math.random() * (b - a);
 const pick = arr => arr[Math.floor(Math.random() * arr.length)];
 // v7.0：按品级权重抽一张效果卡（SSR 15 / SR 25 / R 35 / N 25）；exclude 为需排除的 id 数组
@@ -1017,6 +1028,8 @@ class Room {
     this.pendingCard = null;   // {pid} v7.0 效果卡手动发动询问
     this.pendingNegate = null; // {pid, card, attacker, resume, target} v7.0 无懈可击响应（v7.5：全场依次询问）
     this.negateChain = null;   // {ids, i, actor, card, resume, target} v7.5：无懈可击的「依次询问」队列
+    this.pendingAsk = null;    // v7.6：时机型询问 {pid, card, payload, onYes, onNo}（加速 / 反向 / 翻滚 / 万能卡…）
+    this.timingQueue = [];     // v7.6：多个时机询问依次弹出的队列（如：掷骰后连问 加速→反向→后退）
     this.pendingReroll = null; // {pid, cost} 掷骰后重投询问（v4.0）
     this.auction = null;       // {cell, highest, bidder, endsAt, maxBid:{}}
     this.raise = null;         // {pid, need, creditor}
@@ -1187,7 +1200,7 @@ class Room {
       case 'skill':    p.skillLeft++; break;
       case 'discount': p.discount = true; break;
       case 'buildcut': p.buildCutCard = (p.buildCutCard || 0) + 1; break;
-      case 'step':     p.stepBuffs.push(4); break;
+      case 'step':     this.addHandCard(p, 'step'); break;   // v7.6：加速卡改为「掷骰后主动询问」
       case 'cash': {
         const rmb = 800 + Math.floor(Math.random() * 401);
         p.cash += rmb; this.ev({ t: 'money', pid: p.id, amount: rmb, reason: '现金红包' }); break;
@@ -1195,29 +1208,6 @@ class Room {
       case 'stayfree': p.stayFree = (p.stayFree || 0) + 1; break;
       case 'finefree': p.fineFree = (p.fineFree || 0) + 1; break;
       case 'joker':    p.joker = (p.joker || 0) + 1; break;
-      case 'steal': {
-        const cands = this.alive().filter(q => q !== p && (q.skillLeft || 0) > 0);
-        if (cands.length) {
-          const t = pick(cands);
-          t.skillLeft--;
-          const mj = MAJORS[t.major] || {};
-          if (mj.mode === 'active') {
-            p.borrow = p.borrow || {};
-            p.borrow[t.major] = (p.borrow[t.major] || 0) + 1;
-            this.addLog(`🕵️ ${p.name} 的「偷师卡」发动：从 ${t.name}（${mj.name}）偷到 1 次【${mj.skill}】，可在自己回合发动`);
-            this.ev({ t: 'skill_steal', pid: p.id, target: t.id, targetName: t.name, major: t.major, skill: mj.skill, active: true });
-          } else {
-            p.skillLeft = (p.skillLeft || 0) + 1;
-            this.addLog(`🕵️ ${p.name} 的「偷师卡」发动：偷走 ${t.name}（${mj.name}）的 1 次技能次数，转化为自己的技能次数 +1`);
-            this.ev({ t: 'skill_steal', pid: p.id, target: t.id, targetName: t.name, major: t.major, skill: mj.skill, active: false });
-          }
-        } else {
-          p.skillLeft = (p.skillLeft || 0) + 1;
-          this.addLog(`🕵️ ${p.name} 的「偷师卡」发动：全场其他人的技能次数都用完了，改为自己的技能次数 +1`);
-          this.ev({ t: 'skill_steal', pid: p.id, target: null, self: true });
-        }
-        break;
-      }
       // ---- v7.0 新增：即时 / 自动型 ----
       case 'charity': {
         const pay = Math.min(p.cash, 500);
@@ -1264,6 +1254,9 @@ class Room {
       case 'seize': case 'demolish': case 'repeat': case 'forcetax': case 'forceroll':
       case 'challenge': case 'snatch': case 'dismantle': case 'backstep': case 'reverse':
       case 'branchcard': case 'redeemcard': case 'copycard': case 'flawless':
+      // v7.6：偷师卡改为手动；8 张新卡全部进手牌
+      case 'steal': case 'nanman': case 'arrowrain': case 'leroi': case 'graincut':
+      case 'fireattack': case 'alliance': case 'swapReaction': case 'swapSplit':
         this.addHandCard(p, card.id);
         break;
       default: break;
@@ -1342,6 +1335,8 @@ class Room {
       reverseDice: 0,           // 反向骰子卡：本回合点数 = 14 − 实际点数
       branchCard: 0,            // 岔路卡：立刻移动到最近的岔路入口
       pendingCardUse: null,     // v7.0：正在等待手动发动选择的效果卡 { uid, id }
+      rentFreeRound: 0,         // v7.6：南蛮入侵 —— 该轮自己名下地皮与房子不收租（0 = 无）
+      jokerSkip: false,         // v7.6：玩家已明确「不用万能卡」的这一笔，避免 tryPay 二次自动消耗
     };
     this.players.push(p);
     this.addLog(`${name} 加入了房间`);
@@ -1351,7 +1346,7 @@ class Room {
     if (this.phase !== 'lobby' || this.players.length < 2) return false;
     this.startedAt = Date.now();
     for (const p of this.players) p.skillLeft = MAJORS[p.major].uses;
-    this.addLog('游戏开始！初始资金 ¥30000，祝大家武运昌隆');
+    this.addLog('游戏开始！初始资金 ¥20000，祝大家武运昌隆');
     this.addLog('专业：' + this.players.map(p => `${p.name}·${MAJORS[p.major].name}`).join('，'));
     if (this.facultyOn) { this.openFacultyVote(); return true; }   // v5.2：先定本局校园风貌，再进第 1 轮
     this.beginRound();
@@ -3061,6 +3056,177 @@ class Room {
     else this.declineInvest(p);
   }
 
+  // ================= v7.6：效果卡通用「时机询问」机制 =================
+  // 与 v7.5 的「无懈可击全场响应链」配套：任何效果卡的发动，都会先走 fireCard（全场可响应），
+  // 而「在某个时机问玩家是否发动手里那张卡」统一走 askTiming / askChain。
+  holdsCard(p, cardId) {
+    if (!p || !p.alive) return false;
+    if (cardId === 'joker')    return (p.joker || 0) > 0;
+    if (cardId === 'rentx2')   return (p.rentX2 || 0) > 0;
+    if (cardId === 'renthalf') return (p.rentHalf || 0) > 0;
+    return (p.hand || []).some(h => h.id === cardId);
+  }
+  spendCard(p, cardId) {
+    if (cardId === 'joker')    { p.joker = Math.max(0, (p.joker || 0) - 1); return; }
+    if (cardId === 'rentx2')   { p.rentX2 = Math.max(0, (p.rentX2 || 0) - 1); return; }
+    if (cardId === 'renthalf') { p.rentHalf = Math.max(0, (p.rentHalf || 0) - 1); return; }
+    const i = (p.hand || []).findIndex(h => h.id === cardId);
+    if (i >= 0) p.hand.splice(i, 1);
+  }
+  // 单次时机询问：问 p 是否发动 cardId；onYes/onNo 由调用方给出后续
+  askTiming(p, cardId, payload, onYes, onNo) {
+    if (!this.holdsCard(p, cardId)) { if (onNo) onNo.call(this, p, false); return false; }
+    const card = EFFECT_CARDS.find(c => c.id === cardId) || { id: cardId, name: cardId, icon: '🃏' };
+    this.pendingAsk = { pid: p.id, card: cardId, payload: payload || {}, onYes, onNo };
+    this.phase = 'ask';
+    this.ev({ t: 'ask_timing', pid: p.id, card: cardId, rare: card.rare, name: card.name, icon: card.icon || '🃏',
+              detail: (payload && payload.detail) || '', ms: ASK_MS, atype: (payload && payload.atype) || '' });
+    this.setTimer(ASK_MS, () => this.answerTiming(false));
+    if (p.isAI) this.aiTimers.push(setTimeout(() => this.aiTiming(p), rnd(1100, 2400)));
+    return true;
+  }
+  // 依次询问队列：items = [{pid, card, payload}]，全部问完（或任一项发动后）才回调 done
+  // 语义：把这些卡按顺序问一遍，各自独立决定；每一项发动与否都不影响下一项。
+  askChain(items, done, idx) {
+    const list = items || [];
+    let i = idx || 0;
+    const next = () => {
+      while (i < list.length) {
+        const it = list[i];
+        const p = this.players.find(q => q.id === it.pid);
+        if (p && p.alive && this.holdsCard(p, it.card)) {
+          i++;
+          const realIdx = i;
+          return this.askTiming(p, it.card, it.payload, () => {
+            if (it.onYes) it.onYes.call(this, p);
+            this.askChain(list, done, realIdx);
+          }, () => {
+            if (it.onNo) it.onNo.call(this, p);
+            this.askChain(list, done, realIdx);
+          });
+        }
+        i++;
+      }
+      if (done) done.call(this);
+    };
+    return next();
+  }
+  answerTiming(yes) {
+    const pa = this.pendingAsk; if (!pa) return;
+    this.clearTimer(); this.pendingAsk = null;
+    const p = this.players.find(q => q.id === pa.pid);
+    if (yes && p) this.spendCard(p, pa.card);
+    // v7.6：玩家明确选择「不用万能卡」时，打上标记 —— 后续 tryPay 不再自动消耗万能卡
+    if (pa.card === 'joker' && !yes && p) p.jokerSkip = true;
+    const fn = yes ? pa.onYes : pa.onNo;
+    this.phase = 'roll';
+    try { if (fn) fn.call(this, p, !!yes); } catch (e) { console.error('[answerTiming]', e && e.message); }
+  }
+  answerTimingBy(p, yes) {
+    const pa = this.pendingAsk;
+    if (!pa || !p || pa.pid !== p.id) return;
+    this.answerTiming(!!yes);
+  }
+  // AI 的时机询问策略：给出可选的「值不值得用」判断
+  aiTiming(p) {
+    const pa = this.pendingAsk;
+    if (!pa || pa.pid !== p.id) return;
+    const pl = pa.payload || {};
+    let yes = false;
+    switch (pa.card) {
+      case 'joker':    yes = (pl.amount || 0) >= 600 || !!pl.keep; break;   // 省得够多才用
+      case 'step':     yes = pl.wantLong ? true : (pl.good ? true : Math.random() < 0.35); break;
+      case 'backstep': yes = !!pl.good; break;
+      case 'reverse':  yes = false; break;                                   // 反向常是自坑，AI 不用
+      case 'forceroll': yes = !!pl.good; break;
+      case 'rentx2':   yes = (pl.amount || 0) >= 700; break;
+      case 'renthalf': yes = (pl.amount || 0) >= 900; break;
+      case 'graincut': yes = !!pl.worth; break;
+      default:         yes = false;
+    }
+    this.answerTiming(yes);
+  }
+  // 一张效果卡正式发动：先走「无懈可击全场响应」，无异议后结算 effectFn 并广播 card_act
+  // opts: { target, after, silent }  —— after 为结算完之后的收尾回调（默认回到手动面板）
+  fireCard(actor, cardId, effectFn, opts) {
+    const o = opts || {};
+    const card = EFFECT_CARDS.find(c => c.id === cardId) || { id: cardId, name: cardId, icon: '🃏' };
+    const wrap = () => {
+      let detail = '';
+      try { detail = effectFn.call(this) || ''; } catch (e) { console.error('[fireCard]', e && e.message); }
+      if (!o.silent) {
+        this.addLog(`🃏 ${actor.name} 发动「${card.icon || ''}${card.name || cardId}」${detail ? '：' + detail : ''}`);
+        this.ev({ t: 'card_act', pid: actor.id, card: cardId, rare: card.rare, target: o.target ? o.target.id : null, detail });
+      }
+      if (o.after) { try { o.after.call(this); } catch (e) { console.error('[fireCard after]', e && e.message); } }
+    };
+    if (this.askNegate(actor, cardId, wrap, o.target || null, { after: o.after })) return true;
+    wrap();
+    return false;
+  }
+  // 对「被点名的目标」先问一句：要不要用万能卡把这一次抵消掉
+  askJokerFor(target, payload, onYes, onNo) {
+    if (!target || !target.alive || (target.joker || 0) <= 0) { if (onNo) onNo.call(this); return false; }
+    return this.askTiming(target, 'joker', Object.assign({ atype: 'joker' }, payload || {}), onYes, onNo);
+  }
+  // v7.6：租金结算前的「翻倍 / 减半」询问（收租方 → 付租方 依次问）
+  // 返回 true 表示已进入异步询问（会稍后调用 done(finalRent)）；false 表示没有可用卡，调用方自行结算
+  askRentCards(owner, payer, rent, done) {
+    const steps = [];
+    if ((owner.rentX2 || 0) > 0 && rent > 0)   steps.push({ who: owner, card: 'rentx2' });
+    if ((payer.rentHalf || 0) > 0 && rent > 0) steps.push({ who: payer, card: 'renthalf' });
+    if (!steps.length) return false;
+    let cur = rent, i = 0;
+    const next = () => {
+      while (i < steps.length) {
+        const st = steps[i++];
+        if (!this.holdsCard(st.who, st.card)) continue;
+        return this.askTiming(st.who, st.card, { amount: cur, atype: 'rent', detail: `本笔租金 ¥${cur}` },
+          () => {
+            if (st.card === 'rentx2') {
+              cur *= 2;
+              this.addLog(`💹 ${owner.name} 的「租金翻倍券」生效：本笔租金 ×2 → ¥${cur}`);
+              this.ev({ t: 'card_act', pid: owner.id, card: 'rentx2', rare: 'SSR', detail: `本笔租金 ×2 → ¥${cur}` });
+            } else {
+              const saved = Math.round(cur * 0.5); cur -= saved;
+              this.addLog(`📉 ${payer.name} 的「租金减半卡」生效：减免 ¥${saved}`);
+              this.ev({ t: 'card_act', pid: payer.id, card: 'renthalf', rare: 'SR', detail: `租金减半 ¥${saved}` });
+            }
+            next();
+          },
+          () => next());
+      }
+      try { done.call(this, cur); } catch (e) { console.error('[askRentCards]', e && e.message); }
+    };
+    next();
+    return true;
+  }
+  // v7.6 兵粮寸断：某玩家将获得「非租金类现金收入」时，依次询问持有者是否发动取消
+  // apply 为「真正发钱」的回调；若被取消则不调用。返回 true 表示已进入异步询问
+  askGrainCut(p, amount, reason, apply, finish) {
+    const holders = this.alive().filter(q => q !== p && this.holdsCard(q, 'graincut'));
+    // 没有持有者（或金额为 0）→ 交回调用方自行结算（切勿在此直接 apply，否则调用方会再 apply 一次）
+    if (!holders.length || amount <= 0) return false;
+    let i = 0, cancelled = false;
+    const next = () => {
+      // finish 无论取消与否都必须回调 —— 否则回合收尾（afterResolve）丢失，流程会挂死
+      if (cancelled || i >= holders.length) { if (!cancelled) apply.call(this); if (finish) finish.call(this); return; }
+      const q = holders[i++];
+      if (!this.holdsCard(q, 'graincut')) { next(); return; }
+      this.askTiming(q, 'graincut',
+        { atype: 'graincut', amount, reason, whoName: p.name, worth: amount >= 800, detail: `${p.name} 将获得「${reason}」¥${amount}` },
+        () => {
+          cancelled = true;
+          this.addLog(`🌾 ${q.name} 发动「兵粮寸断」，取消了 ${p.name} 的「${reason}」¥${amount}`);
+          this.ev({ t: 'card_act', pid: q.id, card: 'graincut', rare: 'SR', target: p.id, detail: `取消 ${p.name} 的「${reason}」¥${amount}` });
+          this.ev({ t: 'grain_cut', pid: p.id, by: q.id, amount, reason, whoName: p.name });
+          next();
+        }, () => next());
+    };
+    next();
+    return true;
+  }
+
   // ================= v7.0：效果卡 —— 手动发动 / 响应 =================
   // 玩家当前「持有的一切卡」（手牌 + 各类计数器），用于顺手牵羊 / 过河拆桥
   heldCardList(p) {
@@ -3096,13 +3262,26 @@ class Room {
       case 'seize':      return this.alive().some(q => q !== p && q.cash > 0);
       case 'demolish':   return this.alive().some(q => q !== p && this.propCells(q).some(i => this.cells[i].level > 0));
       case 'repeat': case 'forcetax': case 'forceroll': case 'challenge':
+      case 'nanman': case 'alliance':
                          return this.alive().some(q => q !== p);
       case 'snatch': case 'dismantle':
                          return this.alive().some(q => q !== p && this.heldCardList(q).length > 0);
+      case 'steal':      return this.alive().some(q => q !== p && (q.skillLeft || 0) > 0);
       case 'redeemcard': return this.propCells(p).some(i => this.cells[i].mortgaged);
       case 'copycard':   return (p.hand || []).filter(h => h.id !== 'copycard' && h.id !== 'flawless').length > 0;
-      case 'backstep': case 'reverse': case 'branchcard': return true;
-      default: return false;   // flawless 是响应型，不在回合面板里
+      case 'backstep': case 'reverse': case 'branchcard': case 'leroi': return true;
+      // v7.6 新卡
+      case 'arrowrain':  return this.alive().some(q => q !== p && (this.propCells(q).length > 0 || q.cash > 0));
+      case 'fireattack': return this.alive().some(q => q !== p && this.propCells(q).length > 0);
+      case 'swapReaction': {
+        // 需存在「有楼的格子」与「可加盖的格子」——可以都是同一个对手（也可以就在他身上换）
+        return this.alive().some(q => q !== p && this.propCells(q).length > 0);
+      }
+      case 'swapSplit': {
+        const mine = this.propCells(p).filter(i => this.cells[i].level === 0);
+        return mine.length > 0 && this.alive().some(q => q !== p && this.propCells(q).some(i => this.cells[i].level === 0));
+      }
+      default: return false;   // flawless / graincut 是响应型，不在回合面板里
     }
   }
   // 回合开始：手上只要还有「手动发动型」效果卡就一定询问（v7.5 起不再因为「暂时没有合法目标」而跳过，
@@ -3137,7 +3316,11 @@ class Room {
     if (id === 'seize') return this.alive().filter(q => q !== p && q.cash > 0).map(q => q.id);
     if (id === 'demolish') return this.alive().filter(q => q !== p && this.propCells(q).some(i => this.cells[i].level > 0)).map(q => q.id);
     if (id === 'snatch' || id === 'dismantle') return this.alive().filter(q => q !== p && this.heldCardList(q).length > 0).map(q => q.id);
-    if (id === 'repeat' || id === 'forcetax' || id === 'forceroll' || id === 'challenge') return this.alive().filter(q => q !== p).map(q => q.id);
+    if (id === 'steal') return this.alive().filter(q => q !== p && (q.skillLeft || 0) > 0).map(q => q.id);
+    if (id === 'repeat' || id === 'forcetax' || id === 'forceroll' || id === 'challenge' || id === 'nanman' || id === 'alliance') return this.alive().filter(q => q !== p).map(q => q.id);
+    if (id === 'fireattack') return this.alive().filter(q => q !== p && this.propCells(q).length > 0).map(q => q.id);
+    if (id === 'swapReaction') return this.alive().filter(q => q !== p && this.propCells(q).length > 0).map(q => q.id);
+    if (id === 'swapSplit') return this.alive().filter(q => q !== p && this.propCells(q).some(i => this.cells[i].level === 0)).map(q => q.id);
     return ids;
   }
   // 发动一张手动效果卡（uid 定位手牌；o = { target, cell, pick }）
@@ -3151,24 +3334,22 @@ class Room {
     const card = EFFECT_CARDS.find(c => c.id === id) || {};
     p.hand.splice(i, 1);   // 先行移除（被无效化也不退还）
     const tgt = opts.target ? this.players.find(q => q.id === opts.target) : null;
-    const finish = () => {
-      const detail = this.resolveCardEffect(p, id, tgt, opts);
-      this.addLog(`🃏 ${p.name} 发动「${card.icon || ''}${card.name || id}」${detail ? '：' + detail : ''}`);
-      this.ev({ t: 'card_act', pid: p.id, card: id, rare: card.rare, target: tgt ? tgt.id : null, detail });
-      this.afterCardUse(p);
-    };
-    // v7.5：万能卡 —— 只有「自己是这张卡的攻击目标」时才会自动抵消（保留 v7.0 行为）
-    if (tgt && ATTACK_CARDS.includes(id) && (tgt.joker || 0) > 0) {
-      tgt.joker--;
-      this.addLog(`🃏 ${tgt.name} 的「万能卡」自动发动，抵消了 ${p.name} 的【${card.name || id}】`);
-      this.ev({ t: 'card_act', pid: tgt.id, card: 'joker', detail: `抵消了 ${p.name} 的【${card.name || id}】` });
-      this.afterCardUse(p);
+    const after = () => this.afterCardUse(p);
+    const effect = () => this.resolveCardEffect(p, id, tgt, opts);
+    // v7.6：被点名的目标若持有「万能卡」，先问 TA 是否用它抵挡（取代 v7.5 的「自动消耗」）
+    if (tgt && ATTACK_CARDS.includes(id)) {
+      this.askJokerFor(tgt,
+        { amount: 0, reason: `${p.name} 的【${card.name || id}】`, detail: `${p.name} 对 TA 发动了【${card.name || id}】`, atype: 'joker' },
+        () => {
+          this.addLog(`🃏 ${tgt.name} 使用「万能卡」，抵消了 ${p.name} 的【${card.name || id}】`);
+          this.ev({ t: 'card_act', pid: tgt.id, card: 'joker', rare: 'SSR', detail: `抵消了 ${p.name} 的【${card.name || id}】` });
+          after();
+        },
+        () => { this.fireCard(p, id, effect, { target: tgt, after }); }
+      );
       return;
     }
-    // v7.5：任何人发动效果卡 → 依次询问全场**其他**持有「无懈可击卡」的玩家是否响应
-    //        （被这张卡点名的目标排在最前面，其余持有者按座位顺序跟在后面）
-    if (this.askNegate(p, id, finish, tgt)) return;
-    finish();
+    this.fireCard(p, id, effect, { target: tgt, after });
   }
   // 一次发动结束后的收尾：回到手动发动面板，等下一次决定或点「继续掷骰」
   afterCardUse(p) {
@@ -3227,8 +3408,29 @@ class Room {
       case 'challenge': {
         if (!tgt) return '目标无效';
         if ((tgt.truce || 0) > 0) { tgt.truce--; return `${tgt.name} 用「免战牌」拒绝了挑战`; }
-        this.duelBetween(p, tgt, 800, '强制挑战令');
-        return `与 ${tgt.name} 进行了擂台对决（赌注 ¥800）`;
+        this.duelBetween(p, tgt, 800, '决斗');
+        return `与 ${tgt.name} 进行了决斗（赌注 ¥800）`;
+      }
+      case 'steal': {
+        // v7.6：偷师卡改为手动发动 —— 指定一名「有技能次数」的对手，偷 TA 的技能
+        const cands = this.alive().filter(q => q !== p && (q.skillLeft || 0) > 0);
+        const t = (tgt && tgt !== p && (tgt.skillLeft || 0) > 0) ? tgt : (cands.length ? pick(cands) : null);
+        if (!t) {
+          p.skillLeft = (p.skillLeft || 0) + 1;
+          this.ev({ t: 'skill_steal', pid: p.id, target: null, self: true });
+          return '全场无人有技能次数，改为自己的技能次数 +1';
+        }
+        t.skillLeft--;
+        const mj = MAJORS[t.major] || {};
+        if (mj.mode === 'active') {
+          p.borrow = p.borrow || {};
+          p.borrow[t.major] = (p.borrow[t.major] || 0) + 1;
+          this.ev({ t: 'skill_steal', pid: p.id, target: t.id, targetName: t.name, major: t.major, skill: mj.skill, active: true });
+          return `从 ${t.name}（${mj.name}）偷到 1 次【${mj.skill}】，可在自己回合发动`;
+        }
+        p.skillLeft = (p.skillLeft || 0) + 1;
+        this.ev({ t: 'skill_steal', pid: p.id, target: t.id, targetName: t.name, major: t.major, skill: mj.skill, active: false });
+        return `偷走 ${t.name}（${mj.name}）的 1 次技能，转化为自己的技能次数 +1`;
       }
       case 'snatch': {
         if (!tgt) return '目标无效';
@@ -3270,8 +3472,119 @@ class Room {
         this.applyEffectCard(p, cc);
         return `复制出「${cc.name || it.id}」`;
       }
+      // ===== v7.6 新增卡牌的结算 =====
+      case 'nanman': {
+        // 南蛮入侵：除自己外所有玩家「要么缴 ¥1000，要么自己下一轮地皮与房子不收租金」
+        const others = this.alive().filter(q => q !== p);
+        if (!others.length) return '全场只剩自己，无事发生';
+        let paid = 0, free = 0, total = 0;
+        for (const q of others) {
+          if (q.cash >= 1500) {
+            const pay = Math.min(q.cash, 1000);
+            q.cash -= pay; q.combo = 0; p.cash += pay; total += pay; paid++;
+            this.ev({ t: 'charge', pid: q.id, amount: pay, creditor: p.id, reason: '南蛮入侵', cell: p.pos, toPool: false });
+            this.ev({ t: 'paid', pid: q.id, amount: pay, creditor: p.id, toPool: false });
+          } else {
+            q.rentFreeRound = this.round + 1;
+            this.ev({ t: 'facfx', pid: q.id, kind: 'mutation', name: '南蛮入侵', detail: `第 ${this.round + 1} 轮名下地皮与房子不收租金` });
+            free++;
+          }
+        }
+        return `全场索取：${paid} 人共缴 ¥${total}，${free} 人下一轮免收租金`;
+      }
+      case 'arrowrain': {
+        // 万箭齐发：除自己外所有玩家「要么拆掉一块地皮，要么缴 ¥2200 现金」
+        const others = this.alive().filter(q => q !== p);
+        if (!others.length) return '全场只剩自己，无事发生';
+        const parts = [];
+        for (const q of others) {
+          const lands = this.propCells(q);
+          const preferPay = !lands.length || (q.cash >= 2200 && Math.random() < 0.5);
+          if (preferPay) {
+            const pay = Math.min(q.cash, 2200);
+            if (pay > 0) {
+              q.cash -= pay; q.combo = 0; p.cash += pay;
+              this.ev({ t: 'charge', pid: q.id, amount: pay, creditor: p.id, reason: '万箭齐发', cell: p.pos, toPool: false });
+              this.ev({ t: 'paid', pid: q.id, amount: pay, creditor: p.id, toPool: false });
+              parts.push(`${q.name} 缴 ¥${pay}`);
+            } else parts.push(`${q.name} 身无分文`);
+          } else {
+            const cands = lands.filter(i => this.cells[i].level === 0);
+            const cell = pick(cands.length ? cands : lands);
+            this.stripLand(cell, p.id);
+            this.ev({ t: 'landlost', pid: q.id, cell, by: p.id, name: BOARD[cell].name, why: '万箭齐发' });
+            this.checkLandInsure(q, `万箭齐发拆了「${BOARD[cell].name}」`);
+            parts.push(`${q.name} 的「${BOARD[cell].name}」被拆`);
+          }
+        }
+        return parts.join('；');
+      }
+      case 'leroi': {
+        p.skipTurns = Math.max(p.skipTurns || 0, 1);
+        this.ev({ t: 'stay', pid: p.id });
+        return '自己下一回合被停留一回合';
+      }
+      case 'fireattack': {
+        const cands0 = this.alive().filter(q => q !== p && this.propCells(q).length > 0);
+        if (!cands0.length) return '没有可烧的目标';
+        const pay = Math.min(p.cash, 500);
+        if (pay > 0) { p.cash -= pay; p.combo = 0; this.addToFund(pay); this.ev({ t: 'paid', pid: p.id, amount: pay, creditor: null, toPool: true }); }
+        const t = (tgt && tgt !== p && this.propCells(tgt).length > 0) ? tgt : pick(cands0);
+        const cells = this.propCells(t);
+        const cell = (opts.cell != null && cells.includes(+opts.cell)) ? +opts.cell : pick(cells);
+        this.stripLand(cell, p.id);
+        this.ev({ t: 'fireburn', pid: t.id, cell, by: p.id, name: BOARD[cell].name });
+        this.checkLandInsure(t, `火攻烧了「${BOARD[cell].name}」`);
+        return `支付 ¥${pay}，烧掉 ${t.name} 的「${BOARD[cell].name}」`;
+      }
+      case 'alliance': {
+        const t = (tgt && tgt !== p) ? tgt : pick(this.alive().filter(q => q !== p));
+        if (!t) return '没有可以结盟的玩家';
+        p.cash += 1000; t.cash += 1000;
+        this.ev({ t: 'money', pid: p.id, amount: 1000, reason: '远交近攻' });
+        this.ev({ t: 'money', pid: t.id, amount: 1000, reason: '远交近攻' });
+        return `与 ${t.name} 各获得 ¥1000`;
+      }
+      case 'swapReaction': {
+        const t = (tgt && tgt !== p && this.propCells(tgt).length > 0) ? tgt : pick(this.alive().filter(q => q !== p && this.propCells(q).length > 0));
+        if (!t) return '没有可操作的目标';
+        const built = this.propCells(t).filter(i => this.cells[i].level > 0);
+        if (!built.length) return `${t.name} 没有可拆的楼`;
+        const dc = (opts.cell != null && built.includes(+opts.cell)) ? +opts.cell : pick(built);
+        this.cells[dc].level--;
+        this.ev({ t: 'demolish', pid: t.id, cell: dc, level: this.cells[dc].level, by: p.id });
+        let targets = this.propCells(t).filter(i => i !== dc && this.cells[i].level < 4);
+        if (!targets.length) targets = this.propCells(t).filter(i => this.cells[i].level < 4);
+        let bc = null;
+        if (targets.length) {
+          bc = (opts.cell2 != null && targets.includes(+opts.cell2)) ? +opts.cell2 : pick(targets);
+          this.cells[bc].level++;
+          this.ev({ t: 'cardBuild', pid: t.id, cell: bc, level: this.cells[bc].level, by: p.id });
+        }
+        return `拆掉 ${t.name} 的「${BOARD[dc].name}」1 层${bc != null ? `，给「${BOARD[bc].name}」加盖 1 层` : ''}`;
+      }
+      case 'swapSplit': {
+        const t = (tgt && tgt !== p && this.propCells(tgt).some(i => this.cells[i].level === 0)) ? tgt
+                : pick(this.alive().filter(q => q !== p && this.propCells(q).some(i => this.cells[i].level === 0)));
+        if (!t) return '没有可交换的目标';
+        const theirs = this.propCells(t).filter(i => this.cells[i].level === 0);
+        const mine = this.propCells(p).filter(i => this.cells[i].level === 0);
+        if (!mine.length) return '自己没有无房空地皮';
+        const tc = (opts.cell != null && theirs.includes(+opts.cell)) ? +opts.cell : pick(theirs);
+        const mc = (opts.myCell != null && mine.includes(+opts.myCell)) ? +opts.myCell : pick(mine);
+        this.cells[tc].own = p.id; this.cells[mc].own = t.id;
+        this.ev({ t: 'swapLand', pid: p.id, opp: t.id, a: mc, b: tc, nameA: BOARD[mc].name, nameB: BOARD[tc].name });
+        return `用「${BOARD[mc].name}」换走 ${t.name} 的「${BOARD[tc].name}」`;
+      }
       default: return '';
     }
+  }
+  // v7.6：把一块地皮「化为无主」（万箭齐发 / 火攻用）—— 房子一并清除
+  stripLand(cell, byPid) {
+    const cs = this.cells[cell];
+    const prev = cs.own;
+    cs.own = null; cs.level = 0; cs.mortgaged = false; cs.mortgageAt = 0;
+    return prev;
   }
   // 被拆楼 / 失地时的「资产保护卡」理赔
   checkLandInsure(tgt, why) {
@@ -3296,14 +3609,28 @@ class Room {
     }
     return false;
   }
+  // v7.6：擂台 / 运动会的比点判定 —— 平局则重新掷骰，直到分出胜负为止。
+  // 为避免极端情况下死循环，最多重掷 12 次；仍未分出则随机改判一点强制打破平局。
+  duelDecide(ra, rb, label, actorPid, oppPid) {
+    const MAX = 12;
+    let n = 0;
+    while (ra === rb) {
+      n++;
+      if (n > MAX) {
+        if (Math.random() < 0.5) ra = ra >= 6 ? ra - 1 : ra + 1; else rb = rb >= 6 ? rb - 1 : rb + 1;
+        this.addLog(`⚔️ ${label}：连续 ${MAX} 次平局，裁判直接改判（${ra} : ${rb}）`);
+        break;
+      }
+      this.addLog(`⚔️ ${label}：双方均掷出 ${ra} 点，平局！重掷第 ${n} 次…`);
+      this.ev({ t: 'duel_tie', pid: actorPid, opp: oppPid, a: ra, b: rb, label, round: n });
+      ra = 1 + Math.floor(Math.random() * 6);
+      rb = 1 + Math.floor(Math.random() * 6);
+    }
+    return [ra, rb];
+  }
   // 独立的一次擂台对决（强制挑战令 / 复用事件演出）
   duelBetween(a, b, stake, label) {
-    const ra = 1 + Math.floor(Math.random() * 6), rb = 1 + Math.floor(Math.random() * 6);
-    if (ra === rb) {
-      this.addLog(`⚔️ ${label}：${a.name}(${ra}) 与 ${b.name}(${rb}) 战成平手，各回各家`);
-      this.ev({ t: 'duel', pid: a.id, opp: b.id, a: ra, b: rb, label, winner: null, amount: 0 });
-      return;
-    }
+    const [ra, rb] = this.duelDecide(1 + Math.floor(Math.random() * 6), 1 + Math.floor(Math.random() * 6), label, a.id, b.id);
     const winner = ra > rb ? a : b, loser = ra > rb ? b : a;
     const amount = Math.min(stake, loser.cash);
     this.addLog(`⚔️ ${label}：${a.name}(${ra}) vs ${b.name}(${rb}) → ${winner.name} 胜，${loser.name} 付 ¥${amount}`);
@@ -3320,9 +3647,17 @@ class Room {
   //      否则 AI 会把手里的后退卡 / 反向骰子卡也一律打光，白白坑自己还拖慢对局）
   aiCard(p) {
     if (this.phase !== 'card' || !this.pendingCard || this.pendingCard.pid !== p.id) return;
-    const order = ['seize', 'demolish', 'forcetax', 'snatch', 'dismantle', 'challenge', 'repeat', 'forceroll', 'copycard', 'redeemcard', 'branchcard'];
+    const order = [
+      'seize', 'arrowrain', 'challenge', 'demolish', 'nanman', 'forcetax', 'snatch', 'fireattack',
+      'swapReaction', 'dismantle', 'repeat', 'steal', 'alliance', 'swapSplit', 'copycard', 'redeemcard', 'branchcard',
+    ];
     if ((p.aiCardsThisTurn || 0) >= 2) { this.skipCard(p); return; }
-    const usable = (p.hand || []).filter(h => this.cardUsable(p, h.id) && order.includes(h.id));
+    // v7.6：只让 AI 打「手动发动型」——ask / reactive / auto 型由各自的时机询问处理，
+    // 若混进来会绕过时机链二次消耗（step / reverse / backstep / forceroll / rentx2 / renthalf / joker）
+    const usable = (p.hand || []).filter(h => {
+      const m = (EFFECT_CARDS.find(c => c.id === h.id) || {}).mode;
+      return m === 'manual' && order.includes(h.id) && this.cardUsable(p, h.id);
+    });
     if (!usable.length) { this.skipCard(p); return; }
     p.aiCardsThisTurn = (p.aiCardsThisTurn || 0) + 1;
     const pickH = usable.sort((x, y) => order.indexOf(x.id) - order.indexOf(y.id))[0];
@@ -3338,13 +3673,14 @@ class Room {
   }
   // 响应「无懈可击」（v7.5 重做）：任何人发动效果卡时，全场**其他**持有「无懈可击卡」的玩家
   // 每人都有一次机会决定是否无效化 —— 被点名的目标优先，其余按座位顺序依次询问。
-  askNegate(actor, cardId, resume, target) {
+  askNegate(actor, cardId, resume, target, opts) {
     if (!actor) return false;
-    const askers = this.alive().filter(q => q !== actor && (q.hand || []).some(h => h.id === 'flawless'));
+    const o = opts || {};
+    const askers = this.alive().filter(q => (q.hand || []).some(h => h.id === 'flawless'));
     if (!askers.length) return false;
-    // 被这张卡点名的目标排在最前（自己被打时能第一时间决定）
+    // v7.6：自己也持有无懈可击时同样可以「反悔自己刚打的卡」→ 把自己排在最后（对自己无收益，但需求就是「任何卡都能被响应」）
     if (target) askers.sort((x, y) => (y === target ? 1 : 0) - (x === target ? 1 : 0));
-    this.negateChain = { ids: askers.map(q => q.id), i: 0, actor: actor.id, card: cardId, resume, target: target ? target.id : null };
+    this.negateChain = { ids: askers.map(q => q.id), i: 0, actor: actor.id, card: cardId, resume, target: target ? target.id : null, after: o.after || null };
     return this.askNegateNext();
   }
   // 依次问下一位持有者；全都没兴趣 → 调用 resume() 让原卡正常结算
@@ -3376,6 +3712,7 @@ class Room {
     const attacker = this.players.find(q => q.id === pn.attacker);
     const cn = (EFFECT_CARDS.find(c => c.id === pn.card) || {}).name || pn.card;
     const ch = this.negateChain;
+    const afterCh = (ch && ch.after) ? ch.after : null;
     if (use && holder) {
       const i = (holder.hand || []).findIndex(h => h.id === 'flawless');
       if (i >= 0) {
@@ -3384,6 +3721,7 @@ class Room {
         this.addLog(`🌀 ${holder.name} 使用「无懈可击卡」，让【${cn}】失效了`);
         this.ev({ t: 'negate', pid: holder.id, by: 'flawless', card: pn.card, attacker: pn.attacker });
         this.phase = 'card';
+        if (afterCh) { try { afterCh.call(this); } catch (e) { console.error('[negate after]', e && e.message); } return; }
         if (attacker) this.afterCardUse(attacker); else this.phase = 'roll';
         return;
       }
@@ -3392,6 +3730,7 @@ class Room {
     if (ch) { ch.i++; if (this.askNegateNext()) return; }
     this.phase = 'card';
     try { pn.resume(); } catch (e) { console.error('[negate resume]', e && e.message); }
+    if (afterCh) { try { afterCh.call(this); } catch (e) { console.error('[negate after]', e && e.message); } return; }
     if (attacker) this.afterCardUse(attacker); else this.phase = 'roll';
   }
   useNegate(p, yes) {
@@ -3405,7 +3744,7 @@ class Room {
     // AI：v7.5 起「打到自己身上」或「高价值进攻卡（拆迁令 / 顺手牵羊 / 过河拆桥 / 夺金券 / 补税单）」才用卡，
     //    别人之间的低烈度互动（后退卡 / 岔路卡 / 复印卡…）就留着，避免无谓烧卡
     const hitsMe = pn.target === p.id;
-    const worth = ['demolish', 'snatch', 'dismantle', 'seize', 'forcetax'].includes(cardId);
+    const worth = ['demolish', 'snatch', 'dismantle', 'seize', 'forcetax', 'nanman', 'arrowrain', 'fireattack', 'swapReaction', 'swapSplit', 'graincut'].includes(cardId);
     this.useNegate(p, !!(hitsMe || worth));
   }
   // 被「强制重投」影响的判定：掷骰后是否必须采用第二次点数
@@ -3619,13 +3958,18 @@ class Room {
     p.boughtThisTurn = false;           // v5.10：前五轮限购 —— 每回合最多买一块地皮
     p.hexFreeUsed = false;              // v5.7 重投大师：每回合的免费重投重置
     p.aiCardsThisTurn = 0;              // v7.0：AI 本回合已自动打出的手动效果卡张数（上限 2）
+    p.rollAskDone = 0;                  // v7.6：本回合的「掷骰后时机卡」询问是否已走完
+    p.frDone = 0;                       // v7.6：本回合的「强制重投」询问是否已走完
+    p.forcedReroll = false;
+    p.rollStepBonus = 0;
+    p.jokerSkip = false;                // v7.6：「明确不用万能卡」的标记只在当回合有效
     if (p.hex && p.hex.shieldEach) p.shield = true;   // v5.7 平安符：每回合自动挂免罚符
     // rentBuff / defBuff 是「本轮」持续：上一次自己回合发动后，一直保留到这一次自己回合才清零
     p.rentBuff = 0;                     // v5.1：收租加成到期
     p.defBuff = 0;                      // v5.1：被收租减免到期
     this.phase = 'roll';
     this.dice = null;
-    this.pendingBuy = null; this.pendingBuild = null; this.pendingReroll = null; this.pendingBranch = null; this.pendingInvest = null; this.pendingSkill = null; this.pendingCard = null; this.pendingNegate = null; this.negateChain = null; this.raise = null; this.auction = null; this.vote = null;
+    this.pendingBuy = null; this.pendingBuild = null; this.pendingReroll = null; this.pendingBranch = null; this.pendingInvest = null; this.pendingSkill = null; this.pendingCard = null; this.pendingNegate = null; this.negateChain = null; this.pendingAsk = null; this.timingQueue = []; this.raise = null; this.auction = null; this.vote = null;
     const _skipping = p.skipNext || (p.skipTurns || 0) > 0;
     // v7.2 宿舍校区（温和）：被罚停留时 30% 概率「宿管放行」——免除本次停留，仍领补贴，本回合正常继续
     if (_skipping && this.facIs('dorm') && Math.random() < 0.30) {
@@ -3811,7 +4155,7 @@ class Room {
   }
   endTurn() {
     this.clearTimer(); this.clearAiTimers();
-    this.pendingBuy = null; this.pendingBuild = null; this.pendingPick = null; this.pendingBranch = null; this.pendingInvest = null; this.pendingSkill = null; this.pendingCard = null; this.pendingNegate = null; this.negateChain = null; this.raise = null;
+    this.pendingBuy = null; this.pendingBuild = null; this.pendingPick = null; this.pendingBranch = null; this.pendingInvest = null; this.pendingSkill = null; this.pendingCard = null; this.pendingNegate = null; this.negateChain = null; this.pendingAsk = null; this.timingQueue = []; this.raise = null;
     let n = this.players.length;
     let idx = this.cur;
     for (let i = 0; i < n; i++) {
@@ -3926,6 +4270,51 @@ class Room {
   }
   // 按最终点数实际移动并结算（天气/校历/陷害/长廊加成都在这里叠加）
   execRoll(p) {
+    // ===== v7.6 阶段 0：别人手里的「强制重投」—— 掷骰看到点数后询问是否发动 =====
+    if (!p.frDone) {
+      p.frDone = 1;
+      const holders = this.alive().filter(q => q !== p && this.holdsCard(q, 'forceroll'));
+      if (holders.length) {
+        const cur = this.dice || [0, 0], sum = cur[0] + cur[1];
+        const items = holders.map(q => ({
+          pid: q.id, card: 'forceroll',
+          payload: { atype: 'forceroll', rollPid: p.id, d1: cur[0], d2: cur[1], sum, good: sum >= 8,
+                     detail: `${p.name} 掷出 ${sum} 点`, whoName: p.name },
+          onYes: () => {
+            p.forcedReroll = true;
+            this.addLog(`🎲 ${q.name} 发动「强制重投」：${p.name} 必须购买重投骰子再投一次`);
+            this.ev({ t: 'card_act', pid: q.id, card: 'forceroll', rare: 'SR', target: p.id, detail: `强制 ${p.name} 重投` });
+          },
+        }));
+        this.askChain(items, () => this.execRoll(p));
+        return;
+      }
+    }
+    // 被强制重投：扣钱 + 重新掷一次（不再追问对手，避免连锁）
+    if (p.forcedReroll) {
+      p.forcedReroll = false;
+      p.frDone = 1;
+      const cost = this.rerollCostFor(p);
+      const pay = Math.min(p.cash, cost);
+      if (pay > 0) { p.cash -= pay; this.addToFund(Math.round(pay * FUND_SHARE)); }
+      const onBr0 = this.onBranch(p.pos);
+      let [f1, f2] = this.rollDice(p, onBr0);
+      if (!onBr0) [f1, f2] = this.avoidDupLanding(p, f1, f2);
+      this.dice = onBr0 ? [f1, 0] : [f1, f2];
+      this.addLog(`🎲 ${p.name} 被强制重投（花 ¥${pay}）：新点数 ${onBr0 ? f1 + ' 点' : f1 + ' + ' + f2 + ' = ' + (f1 + f2)}`);
+      this.ev({ t: 'roll', pid: p.id, d1: f1, d2: onBr0 ? 0 : f2, single: onBr0 });
+    }
+    // ===== v7.6 阶段 1：自己手里的时机卡（加速 → 反向骰子 → 后退）=====
+    if (!p.rollAskDone) {
+      p.rollAskDone = 1;
+      const cur = this.dice || [0, 0], sum = cur[0] + cur[1];
+      const items = [];
+      if (this.holdsCard(p, 'step'))     items.push({ pid: p.id, card: 'step',     payload: { atype: 'roll', detail: `本回合点数 ${sum}` }, onYes: () => { p.rollStepBonus = 4; } });
+      if (this.holdsCard(p, 'reverse'))  items.push({ pid: p.id, card: 'reverse',  payload: { atype: 'roll', detail: `本回合点数 ${sum} → ${Math.max(1, 14 - sum)}` }, onYes: () => { p.reverseDice = 1; } });
+      if (this.holdsCard(p, 'backstep')) items.push({ pid: p.id, card: 'backstep', payload: { atype: 'roll', detail: `本回合点数 ${sum}` }, onYes: () => { p.backstep = 1; } });
+      if (items.length) { this.askChain(items, () => this.execRoll(p)); return; }
+    }
+    p.rollAskDone = 0; p.frDone = 0;
     const d1 = this.dice[0], d2 = this.dice[1];
     const raw = d1 + d2;
     // ---------- v7.3：突变 rollPay（每次掷骰固定扣费） ----------
@@ -3959,6 +4348,12 @@ class Room {
       this.addLog(`🔄 ${p.name} 的「反向骰子卡」生效：点数 ${raw} → ${nv}`);
       this.ev({ t: 'card_act', pid: p.id, card: 'reverse', rare: 'R', detail: `点数 ${raw} → ${nv}` });
       steps = nv;
+    }
+    if (p.rollStepBonus) {
+      const b = p.rollStepBonus; p.rollStepBonus = 0;
+      steps += b;
+      this.addLog(`👟 ${p.name} 的「加速卡」生效：本次移动额外 +${b} 步`);
+      this.ev({ t: 'card_act', pid: p.id, card: 'step', rare: 'R', detail: `额外 +${b} 步` });
     }
     if (p.backstep) {
       p.backstep = 0; backMode = true;
@@ -4284,18 +4679,11 @@ class Room {
     return Math.max(0, c);
   }
   // v5.2：统一的「停留」入口 —— 师范校区发的「免停留卡」在这里生效（只对纯惩罚性停留有效）
-  applyStay(p, turns, why) {
+  applyStayCore(p, turns, why) {
     // v6.0 时间管理：自己永远不会被罚停留
     if (p.hex && p.hex.stayImmune) {
       this.hexFx(p, 'timemgmt', `时间管理：免除「${why}」的停留`);
       this.addLog(`⏰ ${p.name} 的【时间管理】生效，永远不会被罚停留`);
-      return false;
-    }
-    // v6.0 万能卡：也能免掉停留
-    if ((p.joker || 0) > 0) {
-      p.joker--;
-      this.addLog(`🃏 ${p.name} 使用「万能卡」，免除「${why}」的停留（还剩 ${p.joker} 张）`);
-      this.ev({ t: 'joker_free', pid: p.id, amount: 0, reason: why + '·停留', left: p.joker });
       return false;
     }
     if ((p.stayFree || 0) > 0) {
@@ -4312,6 +4700,19 @@ class Room {
     p.skipTurns = Math.max(p.skipTurns || 0, turns);
     return true;
   }
+  // v7.6：停留前先问一句「要不要用万能卡免掉」（万能卡改为主动询问）；done(stayed) 回调
+  askStay(p, turns, why, done) {
+    const core = () => { const stayed = this.applyStayCore(p, turns, why); if (done) done.call(this, stayed); };
+    this.askJokerFor(p, { amount: 0, reason: why + '·停留', keep: true, detail: `将因「${why}」停留 ${turns} 回合` },
+      () => {
+        this.addLog(`🃏 ${p.name} 使用「万能卡」，免除了「${why}」的停留`);
+        this.ev({ t: 'joker_free', pid: p.id, amount: 0, reason: why + '·停留' });
+        if (done) done.call(this, false);
+      }, core);
+    return true;
+  }
+  // 兼容旧同步调用（无询问）
+  applyStay(p, turns, why) { return this.applyStayCore(p, turns, why); }
   // v5.2：风貌对卡牌金钱收益的影响（type: 'chance' | 'fate'）
   facCardMoney(amt, type) {
     if (!this.faculty || !amt) return amt;
@@ -4594,21 +4995,11 @@ class Room {
             this.hexFx(p, 'firstaid', `应急减免 ¥${saved}（剩 ${hx.tollShield} 次）`);
           }
         }
-        // ===== v7.0 效果卡：收租方翻倍 / 付租方减半 =====
-        if ((owner.rentX2 || 0) > 0 && rent > 0) {
-          owner.rentX2--;
-          this.addLog(`💹 ${owner.name} 的「租金翻倍券」生效，本笔租金 ×2`);
-          this.ev({ t: 'card_act', pid: owner.id, card: 'rentx2', rare: 'SSR', detail: '本笔租金 ×2' });
-          rent *= 2;
-        }
-        if ((p.rentHalf || 0) > 0 && rent > 0) {
-          p.rentHalf--;
-          const saved = Math.round(rent * 0.5); rent -= saved;
-          this.addLog(`📉 ${p.name} 的「租金减半卡」生效，减免 ¥${saved}`);
-          this.ev({ t: 'card_act', pid: p.id, card: 'renthalf', rare: 'SR', detail: `租金减半 ¥${saved}` });
-        }
-        if (rent < 1) rent = 1;
+        // ===== v7.6 效果卡：收租方翻倍 / 付租方减半 —— 改为「主动询问」 =====
+        const finishRent = (finalRent) => {
+        let rent = Math.max(1, finalRent);
         if (rent >= 10000) this.giveAch(owner, 'rent10k');
+        const doRent = () => {
         this.addLog(`${p.name} 踩到 ${owner.name} 的「${cell.name}」，应付租金 ¥${rent}`);
         this.charge(p, rent, owner, `租金·${cell.name}`, idx);
         // ===== v7.4 项目：被收租时的联动 =====
@@ -4650,6 +5041,20 @@ class Room {
           this.ev({ t: 'facfx', pid: p.id, kind: 'metro', name: '地铁校区', detail: '通勤补贴 +¥300' });
         }
         return;
+        };
+        // v7.6：万能卡改为「主动询问」—— 付租前先问一句，用则完全免除这笔租金
+        // 注意：askJokerFor 在「没有万能卡」时也会同步回调 onNo（doRent），所以这里不能再补一次 doRent()
+        this.askJokerFor(p, { amount: rent, reason: `租金·${cell.name}`, detail: `应付 ${owner.name} 的「${cell.name}」租金 ¥${rent}` },
+          () => {
+            this.addLog(`🃏 ${p.name} 使用「万能卡」，免除了「租金·${cell.name}」¥${rent}`);
+            this.ev({ t: 'joker_free', pid: p.id, amount: rent, reason: `租金·${cell.name}`, rent: true });
+            this.afterResolve(p, false);   // v7.6 修复：免租路径不经过 charge→tryPay，必须自己收尾回合
+          }, doRent);
+        };
+        // v7.6 修复：进入异步询问时必须立即 return —— 否则会 fall-through 进 case 'jail'（重复抽卡 + afterResolve），租金询问也永远得不到结算
+        if (this.askRentCards(owner, p, rent, finishRent)) return;
+        finishRent(rent);
+        return;
       }
       case 'jail': {
         // 校园商城（v5.1）：随机抽 1 张（35% 概率抽到 2 张）效果卡，卡池含「免租金卡 / 免租券 / 技能次数 +1」等
@@ -4681,12 +5086,14 @@ class Room {
           if (!noFee) this.charge(p, this.facFine(1200), null, '补考费', idx, true);
           return;
         }
-        const stayed = this.applyStay(p, 1, '挂科留级');   // v5.2：师范校区的「免停留卡」在这里生效
-        const fee = this.facFine(1200);
-        this.addLog(`${p.name} 挂科留级：${stayed ? '休整一回合，并' : ''}交补考费 ¥${fee}`);
-        this.ev({ t: 'gojail', pid: p.id, cell: idx, stayed });
-        this.aiChat(p, pick(['😭', '😤']));
-        this.charge(p, fee, null, '补考费', idx, true);
+        // v7.6：挂科留级 —— 先问万能卡是否免停留
+        this.askStay(p, 1, '挂科留级', (stayed) => {   // v5.2：师范校区的「免停留卡」在这里生效
+          const fee = this.facFine(1200);
+          this.addLog(`${p.name} 挂科留级：${stayed ? '休整一回合，并' : ''}交补考费 ¥${fee}`);
+          this.ev({ t: 'gojail', pid: p.id, cell: idx, stayed });
+          this.aiChat(p, pick(['😭', '😤']));
+          this.charge(p, fee, null, '补考费', idx, true);
+        });
         return;
       }
       case 'parking': {
@@ -4701,17 +5108,22 @@ class Room {
           //        没领走的部分留在基金池里（后面走到的人还能领），避免后期奖池一次清空。
           const mul = this.round >= INCOME_DECAY[0].r ? this.incomeMul() : 1;
           const gain = Math.max(0, Math.round(got * mul));
-          const left = got - gain;
-          this.fundPool = left;
-          p.cash += gain;
-          if (left > 0) {
-            this.addLog(`${p.name} 走进教育基金会，领取教育基金 ¥${gain}（市场收紧 ×${Math.round(mul * 100)}%，剩余 ¥${left} 留在池中）！`);
-          } else {
-            this.addLog(`${p.name} 走进教育基金会，领取教育基金 ¥${gain}！`);
-          }
-          this.ev({ t: 'jackpot', pid: p.id, amount: gain, cell: idx, poolLeft: left, decayMul: mul });
-          this.aiChat(p, pick(['🤩', '🎉']));
-          this.checkRichest(p);
+          const grant = () => {
+            const left = got - gain;
+            this.fundPool = left;
+            p.cash += gain;
+            if (left > 0) {
+              this.addLog(`${p.name} 走进教育基金会，领取教育基金 ¥${gain}（市场收紧 ×${Math.round(mul * 100)}%，剩余 ¥${left} 留在池中）！`);
+            } else {
+              this.addLog(`${p.name} 走进教育基金会，领取教育基金 ¥${gain}！`);
+            }
+            this.ev({ t: 'jackpot', pid: p.id, amount: gain, cell: idx, poolLeft: left, decayMul: mul });
+            this.aiChat(p, pick(['🤩', '🎉']));
+            this.checkRichest(p);
+          };
+          // v7.6 兵粮寸断：全款领走教育基金也可以被取消（finish 无论取消与否都要收尾回合）
+          if (this.askGrainCut(p, gain, '教育基金池全款', grant, () => this.afterResolve(p, false))) return;
+          grant();
         } else this.addLog(`${p.name} 走进教育基金会，可惜基金空空`);
         this.afterResolve(p, false); return;
       }
@@ -4723,7 +5135,7 @@ class Room {
         // v7.0「免战牌」：被挑战方可以拒绝，擂台取消
         if (this.tryTruce(opp, '辩论擂台')) { this.afterResolve(p, false); return; }
         let a = 1 + Math.floor(Math.random() * 6);
-        const b = 1 + Math.floor(Math.random() * 6);
+        let b = 1 + Math.floor(Math.random() * 6);
         // 专业：军事 · 战术压制（自己点数 +1）
         if (p.major === 'mil' && p.skillLeft > 0) {
           a += 1; p.skillLeft--;
@@ -4739,11 +5151,9 @@ class Room {
             this.ev({ t: 'skill', pid: p.id, major: p.major, name: dmj.skill, detail: `点数 +${dmj.duelPip}` });
           }
         }
-        if (a === b) {
-          this.addLog(`⚔️ 擂台！${p.name}(${a}) 与 ${opp.name}(${b}) 战成平手，各回各家`);
-          this.ev({ t: 'duel', pid: p.id, opp: opp.id, a, b, label: '辩论擂台', winner: null, amount: 0 });
-          this.afterResolve(p, false); return;
-        }
+        // v7.6：平局则重掷直到分出胜负（不再「各回各家」）
+        const dr = this.duelDecide(a, b, '辩论擂台', p.id, opp.id);
+        a = dr[0]; b = dr[1];
         const winner = a > b ? p : opp, loser = a > b ? opp : p;
         const stake = Math.round(1500 * (this.facIs('sports') ? 1.35 : (this.facIs('gamble') ? 1.6 : 1)) * (this.mut().gambleUp ? 1.25 : 1));   // v7.2 博弈（温和）：×1.4 → ×1.6
         const amount = Math.min(stake, loser.cash);
@@ -5002,16 +5412,16 @@ class Room {
         // v7.0「免战牌」：首富可以拒绝参加运动会
         if (this.tryTruce(rich, '校园运动会')) { this.afterResolve(p, false); return; }
         let a = 1 + Math.floor(Math.random() * 6);
-        const b = 1 + Math.floor(Math.random() * 6);
+        let b = 1 + Math.floor(Math.random() * 6);
         if (p.major === 'mil' && p.skillLeft > 0) {
           a += 1; p.skillLeft--;
           this.addLog(`🎖️ ${p.name} 发动【战术压制】，运动会点数 +1`);
           this.ev({ t: 'skill', pid: p.id, major: 'mil', name: '战术压制', detail: '点数 +1' });
         }
-        if (a === b) {
-          this.addLog(`🏟️ 校园运动会：${p.name}(${a}) 与首富 ${rich.name}(${b}) 战成平手，握手致意`);
-          this.ev({ t: 'duel', pid: p.id, opp: rich.id, a, b, label: '校园运动会', winner: null, amount: 0 });
-          this.afterResolve(p, false); return;
+        // v7.6：平局则重掷直到分出胜负（不再「握手致意」）
+        {
+          const dr = this.duelDecide(a, b, '校园运动会', p.id, rich.id);
+          a = dr[0]; b = dr[1];
         }
         const pct = (this.facIs('sports') ? 0.35 : (this.facIs('gamble') ? 0.375 : 0.25)) * (this.mut().gambleUp ? 1.2 : 1);   // v7.2 博弈（温和）：运动会也生效（25% → 37.5%）
         if (a > b) {
@@ -5330,6 +5740,8 @@ class Room {
     // v7.3 幻影校区：本轮幻影化的地块不收租金
     if (this.facIs('phantom') && this.phantomCells && this.phantomCells.includes(idx)) return 0;
     const owner = this.players.find(p => p.id === cs.own);
+    // v7.6 南蛮入侵：被指定的玩家在其免租轮内，名下地皮与房子一律不收租
+    if (owner && owner.rentFreeRound === this.round) return 0;
     let base = 0;
     if (c.type === 'prop') {
       if (cs.level > 0) {
@@ -5365,9 +5777,8 @@ class Room {
     // v5.10 地铁校区：机场便宜，驿站变贵
     if (this.facIs('metro') && c.type === 'transport') mul *= 0.70 * (this.mut().metroAirX || 1);   // v7.2 地铁（温和）：×0.80 → ×0.70
     if (this.facIs('metro') && c.type === 'util') mul *= 1.20 * (this.mut().metroUtilX || 1);         // v7.2 地铁（温和）：×1.15 → ×1.20
-    // v7.0 路过租金小幅上调；v7.1 修正口径：只作用于「有建筑的租金」（1~3 栋房 / 旅馆），
-    // 裸地（地皮）租金维持 v6.0 原值不变；机场 / 公用事业不受影响
-    if (c.type === 'prop' && cs.level > 0) mul *= RENT_MUL_V7;
+    // v7.0 路过租金小幅上调；v7.1 修正口径：只作用于「有建筑的租金」；v7.6 再上调并**直接写进数值表**——
+    // 地皮租金（BOARD.rent）与建筑租金（GROUPS.rents）均已含 ×1.06，运行时不再重复乘（防 ×1.1236 双重上调）
     // ---------- v7.3：连锁校区 —— 垄断色组涨、散地跌（地皮与房子租金同时生效） ----------
     if (this.facIs('chain') && c.type === 'prop' && owner) {
       const mo = this.mut();
@@ -5427,7 +5838,9 @@ class Room {
   checkCombo(p) { if ((p.combo || 0) >= 3) this.giveAch(p, 'combo3'); }
   tryPay(p, amount, creditor, toPool = false, reason = '') {
     // v6.0 万能卡 —— 免除**一切**负面现金支出（含租金 / 罚款 / 卡牌损失 / 缴税…）
-    if (amount > 0 && (p.joker || 0) > 0) {
+    // v7.6：若刚刚在「主动询问」里选择了不使用万能卡（jokerSkip），这里就不再自动消耗
+    const jokerSkip = p.jokerSkip; p.jokerSkip = false;
+    if (amount > 0 && (p.joker || 0) > 0 && !jokerSkip) {
       p.joker--; p.combo = 0;
       this.addLog(`🃏 ${p.name} 使用「万能卡」，免除「${reason || (creditor ? '租金' : '支出')}」¥${amount}（还剩 ${p.joker} 张）`);
       this.ev({ t: 'joker_free', pid: p.id, amount, reason, left: p.joker, rent: !!creditor });
@@ -5860,10 +6273,12 @@ class Room {
         }
         this.afterResolve(p, false); return;
       }
-      case 'skip': {   // v5.2：免停留卡可抵消（只对纯惩罚性停留生效）
-        const st = this.applyStay(p, 1, card.name);
-        this.addLog(`${p.name} 因「${card.name}」${st ? '停留一回合' : '—— 免停留卡已抵消'}`);
-        this.afterResolve(p, false); return;
+      case 'skip': {   // v5.2：免停留卡可抵消（只对纯惩罚性停留生效）；v7.6：万能卡改为主动询问
+        this.askStay(p, 1, card.name, (st) => {
+          this.addLog(`${p.name} 因「${card.name}」${st ? '停留一回合' : '—— 已被抵消'}`);
+          this.afterResolve(p, false);
+        });
+        return;
       }
       case 'discount': {
         p.discount = true;
@@ -6013,10 +6428,12 @@ class Room {
           this.ev({ t: 'gojail', pid: p.id, cell: p.pos, stayed: false });
           this.afterResolve(p, false); return;
         }
-        const st2 = this.applyStay(p, 1, card.name);   // v5.2：免停留卡可抵消
-        this.addLog(`🚔 ${p.name} ${card.name}，${st2 ? '挂科留级反省一回合' : '—— 免停留卡已抵消'}`);
-        this.ev({ t: 'gojail', pid: p.id, cell: p.pos, stayed: st2 });
-        this.afterResolve(p, false); return;
+        this.askStay(p, 1, card.name, (st2) => {   // v5.2：免停留卡可抵消；v7.6：万能卡主动询问
+          this.addLog(`🚔 ${p.name} ${card.name}，${st2 ? '挂科留级反省一回合' : '—— 已被抵消'}`);
+          this.ev({ t: 'gojail', pid: p.id, cell: p.pos, stayed: st2 });
+          this.afterResolve(p, false);
+        });
+        return;
       }
       case 'poorestMoney': {   // 翻盘：总资产最低的玩家获得资助
         const aliveP = this.aliveList();
@@ -6363,4 +6780,4 @@ class Room {
   }
 }
 
-module.exports = { Room, BOARD, GROUPS, CHANCE, FATE, SALARY, START_CASH, SEASON, SEASON_ORDER, WEATHER, CALEVENTS, MAJORS, MAJOR_KEYS, ACHS, ITEMS, EFFECT_CARDS, FUND_CAP, ENDGAME_ROUND, REROLL_COST, BRANCH, BRANCH2, FACULTY, FACULTY_KEYS, FACULTY_VOTE_MS, PCOLOR, PROJECTS, EXPIRY_STIPEND, HEX_TIERS, PROJECT_KEYS, HEX_TRIGGERS, HEX_TRIGGERS_EARLY, HEX_TIER_P, HEX_PICK_MS, CARD_RARITY, CARD_RARITY_ORDER, drawEffectCard, drawEffectCards, ATTACK_CARDS, DRAFT_MS, NEGATE_MS, INCOME_DECAY, HAND_CAP, MUT_GENERAL, MUT_SPECIAL };
+module.exports = { Room, BOARD, GROUPS, CHANCE, FATE, SALARY, START_CASH, SEASON, SEASON_ORDER, WEATHER, CALEVENTS, MAJORS, MAJOR_KEYS, ACHS, ITEMS, EFFECT_CARDS, FUND_CAP, ENDGAME_ROUND, REROLL_COST, BRANCH, BRANCH2, FACULTY, FACULTY_KEYS, FACULTY_VOTE_MS, PCOLOR, PROJECTS, EXPIRY_STIPEND, HEX_TIERS, PROJECT_KEYS, HEX_TRIGGERS, HEX_TRIGGERS_EARLY, HEX_TIER_P, HEX_PICK_MS, CARD_RARITY, CARD_RARITY_ORDER, drawEffectCard, drawEffectCards, ATTACK_CARDS, DRAFT_MS, NEGATE_MS, ASK_MS, INCOME_DECAY, HAND_CAP, MUT_GENERAL, MUT_SPECIAL };

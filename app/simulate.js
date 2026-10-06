@@ -35,6 +35,14 @@ function pump(room, maxSteps = 200000) {
         if (t) { t.isAI ? room.aiNegate(t, pn.card) : room.useNegate(t, false); }
         break;
       }
+      // v7.6：时机询问（加速 / 反向 / 后退 / 强制重投 / 租金翻倍 / 减半 / 万能 / 兵粮寸断）
+      case 'ask': {
+        const pa = room.pendingAsk;
+        const t = pa ? room.players.find(q => q.id === pa.pid) : null;
+        if (t) { t.isAI ? room.aiTiming(t) : room.answerTimingBy(t, false); }
+        else room.answerTiming(false);
+        break;
+      }
       case 'auction': room.endAuction(); break;
       // v7.0：海克斯奖励卡「三张翻面卡」—— 全员各自选，选完自动结算
       case 'carddraft': {

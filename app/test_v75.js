@@ -226,8 +226,8 @@ section(4, 'v7.5：复印卡 / 顺手牵羊 / 过河拆桥「自己回合开始�
     && /无懈可击卡与复印卡不可复制/.test(EC.copycard.desc), '复印卡 desc 写明「自己回合开始时询问 + 选一张复制」');
   ok(/自己回合开始时询问是否发动/.test(EC.snatch.desc) && /偷走/.test(EC.snatch.desc), '顺手牵羊 desc 写明「自己回合开始时询问」');
   ok(/自己回合开始时询问是否发动/.test(EC.dismantle.desc) && /弃掉/.test(EC.dismantle.desc), '过河拆桥 desc 写明「自己回合开始时询问」');
-  ok(/别人发动效果卡时询问你是否响应/.test(EC.flawless.desc) && /失效/.test(EC.flawless.desc)
-    && /被点名时优先询问你/.test(EC.flawless.desc), '无懈可击 desc 写明「别人发动时询问你」');
+  ok(/任何人（含自己）发动任何效果卡时都会询问你是否响应/.test(EC.flawless.desc) && /完全失效/.test(EC.flawless.desc)
+    && /被点名时优先询问你/.test(EC.flawless.desc), '无懈可击 desc 写明「任何人发动都询问你（v7.6：含自己）」');
 }
 
 // ================= [5] 教育基金受收益衰减 + 余款留池 =================
@@ -348,7 +348,7 @@ section(7, 'v7.5：浮层可点（pointer-events:auto）· 中央徽章突变态
     '手动卡面板：无合法目标的卡置灰（cardUsableUI + .dim + 「暂无可作用目标」）');
 
   // 无懈可击响应框文案更新
-  ok(/别人.*发动.*效果卡/.test(cli), '响应框文案已改为「别人发动效果卡时…」');
+  ok(/发动了「/.test(cli) && /无懈可击卡/.test(cli) && /完全失效/.test(cli), '响应框文案已改为「XX 发动了…你手握无懈可击卡」');
 }
 
 // ================= [8] 快照完整性（查看面板数据源）=================

@@ -20,7 +20,7 @@ function mkRoom(n = 3, opts) {
 function neutral(r) { r.faculty = null; r.season = 'mid'; r.weather = 'cloud'; r.calEvent = null; r.players.forEach(p => { p.combo = 0; }); }
 
 // ================= [1] 租金上调口径（v7.1 修正） =================
-section(1, '租金上调口径：只作用于「有建筑的租金」（1~3 栋房 / 旅馆），裸地地皮不变');
+section(1, '租金上调口径：v7.6 起 ×1.06 直接写进数值表（BOARD.rent 与 GROUPS.rents），运行时不再重复乘');
 {
   const r = mkRoom(2); neutral(r);
   const a = r.players[0];
@@ -29,24 +29,23 @@ section(1, '租金上调口径：只作用于「有建筑的租金」（1~3 栋�
   const base = G.BOARD[idx].rent, scl = base / gp.refRent;
   const g = G.BOARD[idx].g;
 
-  // ① 裸地（未建房子）：维持 v6.0 的 ×1.3，不再 ×1.06
+  // ① 裸地（未建房子）：地价租金 ×1.3（base 本身已含 v7.6 的 ×1.06）
   r.cells[idx].own = a.id; r.cells[idx].level = 0;
   const bare = r.calcRent(idx, [2, 5]);
-  ok(bare === Math.round(base * 1.3), `裸地租金 = ¥${bare}（${base}×1.3，不含 ×1.06）`);
-  ok(bare !== Math.round(base * 1.3 * 1.06), '裸地租金没有被多乘 1.06（v7.0 的口径已修正）');
+  ok(bare === Math.round(base * 1.3), `裸地租金 = ¥${bare}（${base}×1.3）`);
+  ok(bare !== Math.round(base * 1.3 * 1.06), '裸地租金没有被多乘 1.06（×1.06 已在表内，不双重上调）');
 
-  // ② 垄断裸地：×2，同样不含 ×1.06
+  // ② 垄断裸地：×2，同样不重复乘
   G.BOARD.forEach((c, i) => { if (c.type === 'prop' && c.g === g) r.cells[i].own = a.id; });
   const mono = r.calcRent(idx, [2, 5]);
-  ok(mono === Math.round(base * 2), `垄断裸地租金 = ¥${mono}（${base}×2，不含 ×1.06）`);
+  ok(mono === Math.round(base * 2), `垄断裸地租金 = ¥${mono}（${base}×2）`);
 
-  // ③ 有建筑：1 / 2 / 3 栋房与旅馆，全部 ×1.06
+  // ③ 有建筑：1 / 2 / 3 栋房与旅馆 = 表值（已含 ×1.06），运行时无二次乘算
   for (let lv = 1; lv <= 4; lv++) {
     r.cells[idx].level = lv;
-    const want = Math.round(Math.round(gp.rents[lv - 1] * scl) * 1.06);
+    const want = Math.round(gp.rents[lv - 1] * scl);
     const got = r.calcRent(idx, [2, 5]);
-    ok(Math.abs(got - want) <= 1, `${lv === 4 ? '旅馆' : lv + ' 栋房'}租金 = ¥${got}（基准 ${Math.round(gp.rents[lv - 1] * scl)} ×1.06 = ${want}）`);
-    ok(got > Math.round(gp.rents[lv - 1] * scl), `${lv === 4 ? '旅馆' : lv + ' 栋房'}确实比 v6.0 上调了`);
+    ok(Math.abs(got - want) <= 1, `${lv === 4 ? '旅馆' : lv + ' 栋房'}租金 = ¥${got}（表值 ${want}，已含 ×1.06，无双重上调）`);
   }
   r.cells[idx].level = 0;
 
@@ -60,9 +59,9 @@ section(1, '租金上调口径：只作用于「有建筑的租金」（1~3 栋�
   r.cells[uIdx].own = a.id;
   ok(r.calcRent(uIdx, [2, 5]) === 700, '公用事业（持 1 家 · 点数 7）租金 ¥700 不受影响');
 
-  // ⑤ 盖房价上调保持不变
-  ok(G.GROUPS.g1.build === 890 && G.GROUPS.g5.build === 2310 && G.GROUPS.g10.build === 4310,
-    '盖房价 ×1.05 保持不变（g1 ¥890 / g5 ¥2310 / g10 ¥4310）');
+  // ⑤ 盖房价上调（v7.6：×1.05 → ×1.08）
+  ok(G.GROUPS.g1.build === 960 && G.GROUPS.g5.build === 2490 && G.GROUPS.g10.build === 4650,
+    '盖房价 ×1.08（v7.6 再上调）：g1 ¥960 / g5 ¥2490 / g10 ¥4650');
 }
 
 // ================= [2] 时光之城：12 次全部提前 =================

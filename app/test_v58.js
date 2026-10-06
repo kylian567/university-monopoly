@@ -132,9 +132,9 @@ section(4, '重投：连用两回合，第三回合锁定');
 }
 
 // ================= [5] 效果卡池重做 =================
-section(5, '效果卡池：9 张新池（无免租券/免罚符）+ 盲盒 1/2/3 张 50/30/20');
+section(5, '效果卡池：42 张（v7.6）+ 盲盒 1/2/3 张 50/30/20');
 {
-  ok(G.EFFECT_CARDS.length === 34, `池 34 张（v7.0：原 10 张 + 新增 24 张，实际 ${G.EFFECT_CARDS.length}）`);
+  ok(G.EFFECT_CARDS.length === 42, `池 42 张（v7.6：34 + 8 张新卡，实际 ${G.EFFECT_CARDS.length}）`);
   ok(!G.EFFECT_CARDS.some(c => c.id === 'voucher') && !G.EFFECT_CARDS.some(c => c.id === 'shield'), '免租券 / 免罚符已移出卡池');
   ok(G.EFFECT_CARDS.some(c => c.id === 'buildcut') && G.EFFECT_CARDS.some(c => c.id === 'finefree') && G.EFFECT_CARDS.some(c => c.id === 'steal') && G.EFFECT_CARDS.some(c => c.id === 'stayfree'), '新增 盖房9折 / 免罚款 / 偷师 / 免停留');
   const r = mkRoom();
@@ -148,18 +148,17 @@ section(5, '效果卡池：9 张新池（无免租券/免罚符）+ 盲盒 1/2/3
   a.skillLeft = 0; b.skillLeft = 2;
   r.grantCards(a, a.pos, 1, '测试');   // 随机卡，可能不是 steal —— 直接构造
   a.skillLeft = 0; b.skillLeft = 2;
-  // 直接注入一张偷师卡
+  // v7.6：偷师卡从「即时生效」改为「手动发动」—— 抽到只进手牌，不再立刻偷技能
   const stealCard = G.EFFECT_CARDS.find(c => c.id === 'steal');
-  const savedPick = Math.random;
-  void stealCard;
-  // 用 grantCards 的 switch 逻辑：直接调一次（通过反复抽取直到抽中 steal，最多 200 次）
+  ok(stealCard && stealCard.mode === 'manual', '偷师卡 mode = manual（v7.6：instant → manual）');
   let done = false;
   for (let i = 0; i < 200 && !done; i++) {
     a.skillLeft = 0; b.skillLeft = 2;
-    const before = { a: a.skillLeft, b: b.skillLeft };
+    a.hand = [];
     const drawn = r.grantCards(a, a.pos, 1, '测试');
     if (drawn[0].id === 'steal') {
-      ok(a.skillLeft === before.a + 1 && b.skillLeft === before.b - 1, `偷师卡：对方 -1 我 +1（${before.b}→${b.skillLeft}）`);
+      ok(a.hand.some(h => h.id === 'steal') && a.skillLeft === 0 && b.skillLeft === 2,
+        '抽到偷师卡只进手牌（不与技能次数即时交互，等回合开始询问后再发动）');
       done = true;
     }
   }

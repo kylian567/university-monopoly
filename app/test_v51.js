@@ -83,8 +83,8 @@ console.log('\n[3] 公用事业：双站价格 + 垄断租金 ×350');
 console.log('\n[4] 经济数值');
 {
   ok(FUND_CAP === 20000, `教育基金池上限 = ¥${FUND_CAP}`);
-  ok(GROUPS.g1.build === 890 && GROUPS.g10.build === 4310, '盖楼价格已整体下调（v7.0 再小幅上调 5%）');
-  ok(GROUPS.g1.rents[0] === 620, '租金已同步下调');
+  ok(GROUPS.g1.build === 960 && GROUPS.g10.build === 4650, '盖楼价格（v7.6：再上调至 ×1.08）');
+  ok(GROUPS.g1.rents[0] === 660, '租金（v7.6：×1.06 后 g1 首档 ¥660）');
   const r = mkRoom();
   ok(r.shieldCost() === 245, `免罚符第 1 轮 = ¥${r.shieldCost()}`);
   // 科研投资：投 2000，2 轮后返 3000
@@ -226,7 +226,7 @@ console.log('\n[6] 岔路 12 格：逐格结算不崩 + 关键数值');
 
 console.log('\n[7] 效果卡池（校园商城 / 校庆礼品屋）');
 {
-  ok(EFFECT_CARDS.length === 34, `效果卡池 = ${EFFECT_CARDS.length} 张（v7.0：10 张原有 + 24 张新增）`);
+  ok(EFFECT_CARDS.length === 42, `效果卡池 = ${EFFECT_CARDS.length} 张（v7.6：34 + 8 张新卡）`);
   ok(EFFECT_CARDS.some(c => c.id === 'skill'), '卡池含「技能次数 +1」');
   const r = mkRoom(2);
   const p = cur(r); p.skillLeft = 3;

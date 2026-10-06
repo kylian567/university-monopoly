@@ -4,7 +4,7 @@ const http = require('http');
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
-const { Room, FUND_CAP, ENDGAME_ROUND, PCOLOR, HEX_PICK_MS, EFFECT_CARDS } = require('./game');
+const { Room, FUND_CAP, ENDGAME_ROUND, PCOLOR, HEX_PICK_MS, ASK_MS, EFFECT_CARDS } = require('./game');
 // v5.5：AI 名字按棋子颜色取叠字名 —— 紫色棋子的 AI 就叫「紫紫」，全场一眼对上号
 const AI_NAME_BY_COLOR = { '#E53935': '红红', '#1E88E5': '蓝蓝', '#FDD835': '黄黄', '#43A047': '绿绿', '#8E24AA': '紫紫' };
 
@@ -45,7 +45,7 @@ function snapshot(room) {
     // v7.5：本届中期突变（中央城邦徽章要显示「变异后的实际效果」）
     mutation: room.mutation ? { kind: room.mutation.kind, facId: room.mutation.facId || null, id: room.mutation.id, name: room.mutation.name, desc: room.mutation.desc } : null,
     facTermStart: room.facTermStart || 1,   // v5.9：本届城邦起始轮（10 轮一届）
-    freeRound: room.freeRound || 0,
+    freeRounds: (room.freeRounds || []).slice(),         // v7.6：免费轮的具体轮次（中央徽章显示）
     freeRentRounds: (room.freeRentRounds || []).slice(),
     // v5.7：研究项目三选一进行中（断线重连按快照把选择浮层补回来）
     project: room.project ? { round: room.project.round, tier: room.project.tier, offers: room.project.offers, picks: { ...(room.project.picks) }, ms: HEX_PICK_MS } : null,
@@ -89,6 +89,8 @@ function snapshot(room) {
     // v7.0：效果卡 —— 手动发动阶段 / 响应（无懈可击）阶段
     pendingCard: room.pendingCard ? { pid: room.pendingCard.pid } : null,
     pendingNegate: room.pendingNegate ? { pid: room.pendingNegate.pid, card: room.pendingNegate.card, attacker: room.pendingNegate.attacker, name: (room.pendingNegate.card && (EFFECT_CARDS.find(c => c.id === room.pendingNegate.card) || {}).name) || room.pendingNegate.card } : null,
+    // v7.6：时机型询问（加速 / 反向 / 后退 / 强制重投 / 租金翻倍 / 减半 / 万能卡…）—— 断线重连补回浮层
+    pendingAsk: room.pendingAsk ? { pid: room.pendingAsk.pid, card: room.pendingAsk.card, payload: room.pendingAsk.payload || {}, ms: ASK_MS } : null,
     allReady: room.allReady ? room.allReady() : false,   // v7.0：大厅是否全员就绪
     // v7.0：海克斯奖励卡「三张翻面卡」（每人一份候选，断线重连按快照补回浮层）
     draft: room.draft ? { round: room.draft.round, offers: room.draft.offers, picks: { ...(room.draft.picks) }, ms: 30000 } : null,
@@ -329,6 +331,7 @@ function onMessage(ws, str) {
     case 'useCard': room.useCard(p, a.uid, { target: a.target, cell: a.cell, pick: a.pick }); break;   // v7.0 手动发动效果卡
     case 'skipCard': room.skipCard(p); break;                                        // v7.0 结束手动发动
     case 'useNegate': room.useNegate(p, !!a.yes); break;                             // v7.0 无懈可击卡响应
+    case 'answerTiming': room.answerTimingBy(p, !!a.yes); break;                     // v7.6 时机型效果卡询问应答
     case 'pickDraft': room.pickDraftCard(p, a.idx | 0); break;                       // v7.0 海克斯奖励卡三选一
     case 'roll': room.doRoll(p); break;
     case 'buy': room.buy(p); break;

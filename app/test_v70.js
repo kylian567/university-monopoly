@@ -18,27 +18,48 @@ function mkRoom(n = 3, opts) {
 }
 
 // ================= [1] 效果卡品级系统 =================
-section(1, '效果卡池：34 张 · 品级齐全 · 权重 15/25/35/25');
+section(1, '效果卡池：42 张（v7.6：34 → 42）· 品级齐全 · 权重 15/25/35/25');
 {
-  ok(G.EFFECT_CARDS.length === 34, `卡池 34 张（实际 ${G.EFFECT_CARDS.length}）`);
+  ok(G.EFFECT_CARDS.length === 42, `卡池 42 张（实际 ${G.EFFECT_CARDS.length}）`);
   const ids = G.EFFECT_CARDS.map(c => c.id);
   ok(new Set(ids).size === ids.length, '卡 id 唯一');
   ok(G.EFFECT_CARDS.every(c => ['SSR', 'SR', 'R', 'N'].includes(c.rare)), '每张卡都有合法品级');
   ok(G.EFFECT_CARDS.every(c => c.name && c.icon && c.desc && c.mode), '每张卡都有 name/icon/desc/mode');
   const w = G.CARD_RARITY;
   ok(w.SSR.weight === 15 && w.SR.weight === 25 && w.R.weight === 35 && w.N.weight === 25, '权重 SSR15 / SR25 / R35 / N25');
-  // 原有卡定级：免租金卡 / 万能卡 = SR，其余原有 = R
+  // 原有卡定级（v7.6 调整）：免租金卡仍 SR，万能卡升 SSR，偷师卡升 SR，其余原有 = R
   const byId = id => G.EFFECT_CARDS.find(c => c.id === id) || {};
-  ok(byId('medal').rare === 'SR' && byId('joker').rare === 'SR', '免租金卡 / 万能卡 = SR');
-  ['skill', 'discount', 'buildcut', 'step', 'cash', 'stayfree', 'finefree', 'steal'].forEach(id =>
+  ok(byId('medal').rare === 'SR' && byId('joker').rare === 'SSR', '免租金卡 = SR / 万能卡 = SSR（v7.6 升格）');
+  ['skill', 'discount', 'buildcut', 'step', 'cash', 'stayfree', 'finefree'].forEach(id =>
     ok(byId(id).rare === 'R', `原有卡 ${id} = R`));
+  ok(byId('steal').rare === 'SR' && byId('steal').mode === 'manual', '偷师卡 = SR · 手动（v7.6：instant → manual）');
   // 24 张新增卡齐全
   const NEW10 = ['seize', 'demolish', 'repeat', 'forcetax', 'forceroll', 'challenge', 'snatch', 'dismantle', 'backstep', 'reverse'];
   const NEW14 = ['branchcard', 'redeemcard', 'flawless', 'copycard', 'skillfull', 'truce', 'insure', 'funddiv', 'charity', 'investcard', 'rentx2', 'renthalf', 'revive', 'auctionvouch'];
+  // v7.6：8 张新卡
+  const NEW8 = ['nanman', 'arrowrain', 'leroi', 'graincut', 'fireattack', 'alliance', 'swapReaction', 'swapSplit'];
   ok([...NEW10, ...NEW14].every(id => byId(id).name), '24 张新增卡全部入池');
+  ok(NEW8.every(id => byId(id).name), 'v7.6 的 8 张新卡全部入池（南蛮入侵 / 万箭齐发 / 乐不思蜀 / 兵粮寸断 / 火攻 / 远交近攻 / 置换反应 / 复分解反应）');
+  ok(byId('nanman').rare === 'SR' && byId('arrowrain').rare === 'SSR' && byId('leroi').rare === 'SR'
+    && byId('graincut').rare === 'SR' && byId('graincut').mode === 'reactive'
+    && byId('fireattack').rare === 'SSR' && byId('alliance').rare === 'SR'
+    && byId('swapReaction').rare === 'SSR' && byId('swapSplit').rare === 'SSR',
+    'v7.6 新卡品级正确（南蛮 SR / 万箭 SSR / 乐不思蜀 SR / 兵粮 SR·响应 / 火攻 SSR / 远交近攻 SR / 置换 SSR / 复分解 SSR）');
+  ok(byId('challenge').name === '决斗', '「强制挑战令」已改名为「决斗」');
+  // v7.6：动机型（ask）卡与主动询问口径
+  const ASK = ['joker', 'step', 'forceroll', 'backstep', 'reverse', 'rentx2', 'renthalf'];
+  ok(ASK.every(id => byId(id).mode === 'ask'), `7 张时机询问卡 mode = ask（${ASK.join('/')}）`);
+  const MODE = {};
+  G.EFFECT_CARDS.forEach(c => MODE[c.mode] = (MODE[c.mode] || 0) + 1);
+  ok(MODE.auto === 13 && MODE.ask === 7 && MODE.instant === 2 && MODE.manual === 18 && MODE.reactive === 2,
+    `mode 分布 auto 13 / ask 7 / instant 2 / manual 18 / reactive 2（实得 ${JSON.stringify(MODE)}）`);
+  const RARE = {};
+  G.EFFECT_CARDS.forEach(c => RARE[c.rare] = (RARE[c.rare] || 0) + 1);
+  ok(RARE.SSR === 12 && RARE.SR === 13 && RARE.R === 14 && RARE.N === 3,
+    `品级分布 SSR 12 / SR 13 / R 14 / N 3（实得 ${JSON.stringify(RARE)}）`);
   ok(byId('demolish').rare === 'SSR' && byId('snatch').rare === 'SR' && byId('repeat').rare === 'N'
     && byId('skillfull').rare === 'SSR' && byId('copycard').rare === 'SSR' && byId('revive').rare === 'SSR'
-    && byId('flawless').rare === 'R' && byId('charity').mode === 'instant', '关键新卡品级 / 模式正确');
+    && byId('flawless').rare === 'SSR' && byId('charity').mode === 'instant', '关键新卡品级 / 模式正确');
   // 权重抽样（20000 次）
   const cnt = { SSR: 0, SR: 0, R: 0, N: 0 };
   for (let i = 0; i < 20000; i++) cnt[G.drawEffectCard().rare]++;
@@ -65,7 +86,7 @@ section(2, '客户端 EFFECT_CARDS 镜像与服务端逐字一致');
   const a = grab(srv), b = grab(cli);
   ok(!!a && !!b, '两端都能取到 EFFECT_CARDS 表');
   ok(a === b, `两端 EFFECT_CARDS 逐字一致（${(a || '').length} 字节）`);
-  ok(G.EFFECT_CARDS.length === 34, '镜像张数 = 34');
+  ok(G.EFFECT_CARDS.length === 42, '镜像张数 = 42（v7.6）');
 }
 
 // ================= [3] 重投骰封顶 4000 + 第 6 轮起每 2 轮自动 +55 =================
@@ -128,34 +149,33 @@ section(4, '物业税：建筑 130/170/200 分档 · 地皮超 10 块每块 +130
   ok(r.taxFor(p).hold === 12 && r.taxFor(p).tax === 2 * 130, '抵押地不计入税基');
 }
 
-// ================= [5] 经济微调：盖房价 ×1.05 / 地皮租金 ×1.06 =================
-section(5, '经济：盖房价小幅上调（四舍五入到 10）· 有建筑的租金 ×1.06（v7.1：裸地不上调）');
+// ================= [5] 经济微调：盖房价 ×1.08 / 地皮与建筑租金 ×1.06 =================
+section(5, '经济：盖房价 ×1.08（四舍五入到 10）· 地皮与建筑租金 ×1.06（v7.6 起直接写进数值表）');
 {
-  ok(G.GROUPS.g1.build === 890 && G.GROUPS.g5.build === 2310 && G.GROUPS.g10.build === 4310,
-    `盖房价上调：g1 850→890 / g5 2200→2310 / g10 4100→4310`);
+  ok(G.GROUPS.g1.build === 960 && G.GROUPS.g5.build === 2490 && G.GROUPS.g10.build === 4650,
+    `盖房价上调（v7.6 ×1.05 → ×1.08）：g1 890→960 / g5 2310→2490 / g10 4310→4650`);
   const r = mkRoom(2);
   const propIdx = G.BOARD.map((c, i) => ({ c, i })).filter(x => x.c.type === 'prop').map(x => x.i)[0];
   const a = r.players[0], b = r.players[1];
   r.cells[propIdx].own = a.id; r.cells[propIdx].level = 0;
   r.faculty = null; r.season = 'mid'; r.weather = 'cloud'; r.calEvent = null;
-  // v7.1 修正：裸地（地皮）租金**不**上调 —— 维持 v6.0 的「基础租金 ×1.3」
+  // v7.6：地皮租金（BOARD.rent）已含 ×1.06（华中科大 560→594），裸地按「地价租金 ×1.3」
   const base = G.BOARD[propIdx].rent;
   const got = r.calcRent(propIdx, [2, 5]);
   const want = Math.round(base * 1.3);
-  ok(Math.abs(got - want) <= 1, `地皮裸地租金 ${base}×1.3 → ${got}（v7.1 不再 ×1.06，期望 ${want}）`);
-  ok(got === Math.round(base * 1.3), '裸地租金与 v6.0 完全一致（本次上调不含裸地）');
-  // v7.1：上调只作用于「有建筑的租金」—— 1~3 栋房 / 旅馆
+  ok(Math.abs(got - want) <= 1, `地皮裸地租金 ${base}×1.3 → ${got}（期望 ${want}）`);
+  // v7.6：建筑租金（GROUPS.rents）已含 ×1.06，运行时不再重复乘
   const gp = G.GROUPS[G.BOARD[propIdx].g], scl = base / gp.refRent;
   const b1 = Math.round(gp.rents[0] * scl), b3 = Math.round(gp.rents[2] * scl), b4 = Math.round(gp.rents[3] * scl);
   r.cells[propIdx].level = 1;
   const r1 = r.calcRent(propIdx, [2, 5]);
-  ok(Math.abs(r1 - Math.round(b1 * 1.06)) <= 1, `1 栋房租金 ${b1}×1.06 → ${r1}（期望 ${Math.round(b1 * 1.06)}）`);
+  ok(Math.abs(r1 - b1) <= 1, `1 栋房租金 → ${r1}（表值 ${b1}，已含 ×1.06，无双重上调）`);
   r.cells[propIdx].level = 3;
   const r3 = r.calcRent(propIdx, [2, 5]);
-  ok(Math.abs(r3 - Math.round(b3 * 1.06)) <= 1, `3 栋房租金 ${b3}×1.06 → ${r3}（期望 ${Math.round(b3 * 1.06)}）`);
+  ok(Math.abs(r3 - b3) <= 1, `3 栋房租金 → ${r3}（表值 ${b3}，已含 ×1.06，无双重上调）`);
   r.cells[propIdx].level = 4;
   const r4 = r.calcRent(propIdx, [2, 5]);
-  ok(Math.abs(r4 - Math.round(b4 * 1.06)) <= 1, `旅馆租金 ${b4}×1.06 → ${r4}（期望 ${Math.round(b4 * 1.06)}）`);
+  ok(Math.abs(r4 - b4) <= 1, `旅馆租金 → ${r4}（表值 ${b4}，已含 ×1.06，无双重上调）`);
   r.cells[propIdx].level = 0;
   // 非地皮类（机场）不加乘子
   const tIdx = G.BOARD.findIndex(c => c.type === 'transport');
@@ -310,15 +330,29 @@ section(10, '响应：进攻卡给目标一次「万能卡 / 无懈可击卡」�
   ok(a2.cash === 5800 && b2.cash === 4200, '放弃响应 → 夺金券正常生效（¥800）');
   ok(b2.hand.some(h => h.id === 'flawless'), '放弃响应的无懈可击卡保留');
   r2.clearTimer(); r2.clearAiTimers();
-  // 万能卡自动抵消（不进入 negate 相位）
+  // v7.6：万能卡改为「主动询问」—— 被点名者进入 ask 相位，由 TA 决定是否用卡抵消
   const r3 = mkRoom(2);
   const [a3, b3] = r3.players;
   a3.cash = 5000; b3.cash = 5000; b3.joker = 1;
   r3.addHandCard(a3, 'seize');
   r3.phase = 'card'; r3.pendingCard = { pid: a3.id };
   r3.useCard(a3, a3.hand[0].uid, { target: b3.id });
-  ok(r3.phase !== 'negate' && b3.joker === 0 && b3.cash === 5000, '万能卡自动抵消（不进询问，现金不变）');
+  ok(r3.phase === 'ask' && !!r3.pendingAsk && r3.pendingAsk.pid === b3.id && r3.pendingAsk.card === 'joker',
+    '被点名者持有万能卡 → 进入 ask 相位主动询问（不再自动消耗）');
+  ok(b3.joker === 1 && b3.cash === 5000 && a3.cash === 5000, '询问期间万能卡未消耗，现金未变');
+  r3.answerTimingBy(b3, true);
+  ok(b3.joker === 0 && b3.cash === 5000 && a3.cash === 5000, '回答「是」→ 万能卡抵消，夺金券未生效');
   r3.clearTimer(); r3.clearAiTimers();
+  // 回答「否」→ 夺金券照常生效
+  const r4 = mkRoom(2);
+  const [a4, b4] = r4.players;
+  a4.cash = 5000; b4.cash = 5000; b4.joker = 1;
+  r4.addHandCard(a4, 'seize');
+  r4.phase = 'card'; r4.pendingCard = { pid: a4.id };
+  r4.useCard(a4, a4.hand[0].uid, { target: b4.id });
+  r4.answerTimingBy(b4, false);
+  ok(b4.joker === 1 && a4.cash === 5800 && b4.cash === 4200, '回答「否」→ 保留万能卡，夺金券生效（¥800）');
+  r4.clearTimer(); r4.clearAiTimers();
 }
 
 // ================= [11] 海克斯奖励卡：三张翻面卡 =================

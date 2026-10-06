@@ -53,7 +53,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
       readyBtn: !!document.querySelector('#btnReady'),
       draftMs: (typeof DRAFT_MS_UI === 'undefined') ? 30000 : DRAFT_MS_UI,
     }));
-    ok(marks.cards === 34, `客户端效果卡镜像 ${marks.cards} 张`);
+    ok(marks.cards === 42, `客户端效果卡镜像 ${marks.cards} 张（v7.6 起 42）`);
     ok(marks.ssr >= 6, `SSR 卡 ${marks.ssr} 张`);
     ok(marks.w === '15/25/35/25', `品级权重镜像 ${marks.w}`);
     ok(marks.rarFn && marks.draftOpen && marks.panelSync && marks.negateSync && marks.cardAct, '客户端 v7.0 渲染入口齐全');

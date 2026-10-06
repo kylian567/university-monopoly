@@ -39,9 +39,9 @@ function facRoom(facKey, n = 2, majors) {
 const unownedProp = r => BOARD.findIndex((c, i) => c.type === 'prop' && r.cells[i].own === null);
 
 // ================= [1] 常量与基础参数 =================
-section(1, 'v6.0 常量：初始资金 26666 / 触发轮重排 / 统一概率 / 筹钱与盖房时间');
+section(1, 'v6.0 常量：初始资金（v7.6 起 ¥20000）/ 触发轮重排 / 统一概率 / 筹钱与盖房时间');
 {
-  ok(START_CASH === 26666, `初始资金 = ¥${START_CASH}（原 30000）`);
+  ok(START_CASH === 20000, `初始资金 = ¥${START_CASH}（v7.6：26666 → 20000）`);
   ok(REROLL_COST === 800, `重投基准价 = ¥${REROLL_COST}（原 1200）`);
   ok(JSON.stringify(HEX_TRIGGERS) === JSON.stringify([2, 8, 15, 23, 32, 40, 50, 62, 74, 86, 98, 110]),
     'v7.5 触发轮 = 2/8/15/23/32/40/50/62/74/86/98/110（共 12 次）');
@@ -139,7 +139,7 @@ section(4, '物业税：旅馆算 4 层、≥6 栋起征、6~10 每栋 130 / 11~
 // ================= [5] 效果卡：万能卡 / 免罚款卡 / 偷师即发动 / 现金红包 =================
 section(5, '效果卡 v6.0：万能卡（免一切负面含租金）、免罚款卡（免租金外一切）、偷师获得即发动、红包 800~1200');
 {
-  ok(EFFECT_CARDS.length === 34, `效果卡池 = ${EFFECT_CARDS.length} 张（v7.0：原 10 张 + 新增 24 张）`);
+  ok(EFFECT_CARDS.length === 42, `效果卡池 = ${EFFECT_CARDS.length} 张（v7.6：34 + 8 张新卡）`);
   ok(EFFECT_CARDS.some(c => c.id === 'joker' || c.name === '万能卡'), '卡池含「万能卡」');
   const jk = EFFECT_CARDS.find(c => c.id === 'joker' || c.name === '万能卡');
   ok(/负面|租金|罚款|停留|拆/.test(jk.desc), `万能卡描述覆盖负面效果：${jk.desc}`);
